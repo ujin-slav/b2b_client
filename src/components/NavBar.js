@@ -12,13 +12,13 @@ const NavBar = observer(() => {
     return (
         <div>
             <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
-            <div class="navbar-collapse collapse justify-content-stretch" id="navbar6">
+            <div className="navbar-collapse collapse justify-content-stretch" id="navbar6">
                 <button 
-                    class="btn btn-success ml-auto mr-1"
+                    className="btn btn-success ml-auto mr-1"
                     onClick={()=>history.push(CREATEASK)}>
                     Создать заявку</button>
             </div>
-            <div class="navbar-nav ml-auto">
+            <div className="navbar-nav ml-auto">
                 {user.isAuth?
                     <button 
                         className="btn btn-success ml-auto mr-1"

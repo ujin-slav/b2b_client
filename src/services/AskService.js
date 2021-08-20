@@ -11,4 +11,10 @@ export default class AskService {
         return  result;
     }
 
+
+    static async upload(id) {
+        const {data} = await $api.post(`/upload`,{id});
+        console.log(data)
+        return data
+    }
 }

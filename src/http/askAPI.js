@@ -12,3 +12,8 @@ export const fetchOneAsk = async (id) => {
     console.log(data)
     return data
 }
+export const upload = async (formData) => {
+    const {data} = await $api.post(`/upload`, formData);
+    return data
+}
+
