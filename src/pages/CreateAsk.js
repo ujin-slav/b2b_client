@@ -12,7 +12,7 @@ import {
 import {upload} from "../http/askAPI";
 import Forgot from './Forgot';
 
-
+const data = new FormData();
 const CreateAsk = () => {
 
     const handleSubmit = () => {
@@ -22,15 +22,14 @@ const CreateAsk = () => {
     const handleChange = () => {
 
     }
-    const data = new FormData();
+    
     const [loading, setLoading] = useState(false)
-    const [filesNames, setFilesNames] = useState([])
+    const [files, setFiles] = useState([])
 
     const onInputChange = (e) => {
       for(let i = 0; i < e.target.files.length; i++) { 
         try{
-        setFilesNames(((oldItems) => [...oldItems, e.target.files[i].name]));
-        data.append('file', e.target.files[i]);
+        setFiles(((oldItems) => [...oldItems, e.target.files[i]]));
         }catch(e){
           console.log(e)
         }
@@ -38,12 +37,17 @@ const CreateAsk = () => {
     };
 
     const onSubmit = (e) => {
+        files.forEach((item)=>data.append("file", item));
         setLoading(true)
         upload(data).then((response)=>{});      
         setLoading(false)  
     }
     
-
+    const removeFile = (id) => {
+      console.log(id);
+      const newFiles = files.filter((item,index,array)=>index!==id);
+      setFiles(newFiles);
+    }
 
     return (
         <div>
@@ -60,13 +64,35 @@ const CreateAsk = () => {
         <Row>
             <Col>
             <Form onSubmit={handleSubmit}>
-                <RegInput value={{Name: "name", Label: "Название заявки", handleChange, PlaceHolder: "Ваше имя"}} />
-                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail"}} />             
-                <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", }} />
-                <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН"}} />
-                <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации"}} />
-                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль"}} />
-                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль"}} />
+                <RegInput value={{Name: "nameOrder", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки"}} />
+                <Form.Group>
+                <Form.Label>Максимальная цена</Form.Label>
+                <Form.Control
+                    name="maxPrice"
+                    onChange={handleChange}
+                    placeholder="Максимальная стоимость"
+                />
+                <span className="errorMessage" style={{color:"red"}}></span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Максимальный срок поставки</Form.Label>
+                <Form.Control
+                    name="maxDate"
+                    onChange={handleChange}
+                    placeholder="Максимальный срок поставки"
+                />
+                <span className="errorMessage" style={{color:"red"}}></span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Текст заявка</Form.Label>
+                <Form.Control
+                    name="maxDate"
+                    onChange={handleChange}
+                    placeholder="Текст заявки"
+                    as="textarea"
+                />
+                <span className="errorMessage" style={{color:"red"}}></span>
+                </Form.Group>
                 <Button
                 variant="primary"
                 type="submit"
@@ -87,7 +113,10 @@ const CreateAsk = () => {
 
             <button>Submit</button>
             </form> 
-            {filesNames.map((a)=><div key={a}>{a}</div>)}   
+            {files.map((a,key)=><div key={key}>{a.name}
+              <button onClick={()=>removeFile(key)}>X</button>
+            </div>
+            )}   
             </Col>
         </Row>    
         </Container> 
