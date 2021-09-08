@@ -14,6 +14,7 @@ export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CREATEASK = '/createask'
+export const DOWNLOAD = '/download'
 
 export const authRoutes = [
 ]
@@ -45,6 +46,10 @@ export const publicRoutes = [
     },
     {
         path: CREATEASK,
+        Component: CreateAsk
+    },
+    {
+        path: DOWNLOAD,
         Component: CreateAsk
     }
 ]

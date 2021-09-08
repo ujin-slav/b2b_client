@@ -10,6 +10,7 @@ const CardAsk = () => {
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
+            console.log(data);
         })
       },[]);
 
@@ -75,6 +76,9 @@ const CardAsk = () => {
                     </Table>
                 </Col>
             </Row>
+            {ask?.Files?.map((item)=><div>
+                {item.originalname}
+            </div>)}
         </Container>
     );
 };

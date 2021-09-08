@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useRef} from 'react';
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -14,13 +14,60 @@ import Forgot from './Forgot';
 
 const data = new FormData();
 const CreateAsk = () => {
+    const[ask,setAsk] = useState( {
+        data: {
+          Name: null,
+          MaxPrice: null,
+          MaxDate: null,
+          DateExp: null,
+          Text: null,
+        },
+        formErrors: {
+          Name: "",
+          MaxPrice: "",
+          MaxDate: "",
+          DateExp: "",
+          Text: "",
+        }
+      }
+    );
 
     const handleSubmit = () => {
 
     }
 
-    const handleChange = () => {
-
+    const handleChange = e => {
+      e.preventDefault();
+      const { name, value } = e.target;
+      let formErrors = ask.formErrors;
+      let data = ask.data
+      data[name] = value;
+      
+      switch (name) {
+        case "nameOrder":
+          formErrors.Name =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;
+        case "MaxPrice":
+          formErrors.NameOrg =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;  
+        case "MaxDate":
+          formErrors.Inn =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;  
+        case "DateExp":
+          formErrors.Inn =
+            value.length < 3 ? "минимум 3 символа" : "";
+        break;    
+        case "Text":
+          formErrors.Inn =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;
+        default:
+          break;
+      }
+      setAsk({ data, formErrors});
     }
     
     const [loading, setLoading] = useState(false)
@@ -38,6 +85,11 @@ const CreateAsk = () => {
 
     const onSubmit = (e) => {
         files.forEach((item)=>data.append("file", item));
+        data.append("Name", ask.data.Name)
+        data.append("maxPrice", ask.data.MaxPrice)
+        data.append("maxDate", ask.data.MaxDate)
+        data.append("DateExp", ask.data.DateExp)
+        data.append("Text", ask.data.Text)
         setLoading(true)
         upload(data).then((response)=>{});      
         setLoading(false)  
@@ -63,12 +115,12 @@ const CreateAsk = () => {
         </Row>
         <Row>
             <Col>
-            <Form onSubmit={handleSubmit}>
-                <RegInput value={{Name: "nameOrder", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки"}} />
+            <Form onSubmit={onSubmit}>
+                <RegInput value={{Name: "Name", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки"}} />
                 <Form.Group>
                 <Form.Label>Максимальная цена</Form.Label>
                 <Form.Control
-                    name="maxPrice"
+                    name="MaxPrice"
                     onChange={handleChange}
                     placeholder="Максимальная стоимость"
                 />
@@ -77,22 +129,39 @@ const CreateAsk = () => {
                 <Form.Group>
                 <Form.Label>Максимальный срок поставки</Form.Label>
                 <Form.Control
-                    name="maxDate"
+                    name="MaxDate"
                     onChange={handleChange}
                     placeholder="Максимальный срок поставки"
                 />
                 <span className="errorMessage" style={{color:"red"}}></span>
                 </Form.Group>
                 <Form.Group>
-                <Form.Label>Текст заявка</Form.Label>
+                <Form.Label>Дата окончания предложений</Form.Label>
                 <Form.Control
-                    name="maxDate"
+                    type="date"
+                    name="DateExp"
+                    onChange={handleChange}
+                    placeholder="Дата окончания предложений"
+                />
+                <span className="errorMessage" style={{color:"red"}}></span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Текст заявки</Form.Label>
+                <Form.Control
+                    name="Text"
                     onChange={handleChange}
                     placeholder="Текст заявки"
                     as="textarea"
                 />
                 <span className="errorMessage" style={{color:"red"}}></span>
                 </Form.Group>
+                <div className="form-group files">
+                <label>Файлы </label>
+                <input type="file"
+                       onChange={onInputChange}
+                       className="form-control"
+                       multiple/>
+                </div>
                 <Button
                 variant="primary"
                 type="submit"
@@ -100,19 +169,7 @@ const CreateAsk = () => {
                 >
                 Отправить
                 </Button>
-    
             </Form>
-            <form onSubmit={onSubmit}>
-            <div className="form-group files">
-                <label>Upload Your File </label>
-                <input type="file"
-                       onChange={onInputChange}
-                       className="form-control"
-                       multiple/>
-            </div>
-
-            <button>Submit</button>
-            </form> 
             {files.map((a,key)=><div key={key}>{a.name}
               <button onClick={()=>removeFile(key)}>X</button>
             </div>

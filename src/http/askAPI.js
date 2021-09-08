@@ -13,7 +13,7 @@ export const fetchOneAsk = async (id) => {
     return data
 }
 export const upload = async (formData) => {
-    const {data} = await $api.post(`/upload`, formData);
+    const {data} = await $api.post(`/addask`, formData);
     return data
 }
 
