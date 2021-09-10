@@ -5,6 +5,7 @@ import CreateAsk from "../pages/CreateAsk";
 import Forgot from "../pages/Forgot";
 import Registration from "../pages/Registration";
 import Reset from "../pages/Reset";
+import Profile from "../pages/Profile";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -15,6 +16,7 @@ export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CREATEASK = '/createask'
 export const DOWNLOAD = '/download'
+export const PROFILE = '/profile'
 
 export const authRoutes = [
 ]
@@ -51,5 +53,9 @@ export const publicRoutes = [
     {
         path: DOWNLOAD,
         Component: CreateAsk
+    },
+    {
+        path: PROFILE,
+        Component: Profile
     }
 ]

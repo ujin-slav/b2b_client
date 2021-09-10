@@ -77,7 +77,7 @@ const CardAsk = () => {
                 </Col>
             </Row>
             {ask?.Files?.map((item)=><div>
-                {item.originalname}
+                <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
             </div>)}
         </Container>
     );
