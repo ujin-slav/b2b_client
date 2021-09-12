@@ -3,7 +3,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {LOGIN_ROUTE,CREATEASK} from "../utils/routes";
 import {useHistory,NavLink  } from 'react-router-dom';
-import { Button } from 'bootstrap';
+import { Button,Navbar,Nav } from "react-bootstrap";
 import logo from '../b2blogo.png'
 import profileLogo from '../profile.png'
 
@@ -13,7 +13,7 @@ const NavBar = observer(() => {
     const history = useHistory();
     return (
         <div>
-            <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+            <Navbar bg="dark" variant="dark">
             <div className="navbar-collapse collapse justify-content-stretch" id="navbar6">
                 <NavLink to="/">
                     <img
@@ -24,10 +24,12 @@ const NavBar = observer(() => {
                         alt = ""
                     />
                 </NavLink>
-                <button 
-                    className="btn btn-success ml-auto mr-1"
-                    onClick={()=>history.push(CREATEASK)}>
-                    Создать заявку</button>
+                <Nav className="me-auto">
+                    <Nav.Link href="#home">Главная</Nav.Link>
+                    <Nav.Link className="border border-dark" href={CREATEASK} style={{color: 'white'}}>Создать заявку</Nav.Link>
+                    <Nav.Link href={CREATEASK} style={{color: 'white'}}>Мои заявки</Nav.Link>
+                    <Nav.Link href={CREATEASK} style={{color: 'white'}}>Мои предложения</Nav.Link>
+                </Nav>
             </div>
             <NavLink to="/profile">
             <img
@@ -39,22 +41,15 @@ const NavBar = observer(() => {
                     />
             </NavLink>
             <div className="navbar-nav ml-auto">
-                {user.isAuth?
-                    <button 
-                        className="btn btn-success ml-auto mr-1"
-                        onClick={()=>user.logout()}>
-                        Выйти
-                    </button>
-                :
-                    <button 
-                        className="btn btn-success ml-auto mr-1 navbar-right"
-                        onClick={()=>history.push(LOGIN_ROUTE)}>
-                        Войти
-                    </button>
-                }    
-
+                <Nav className="me-auto">
+                    {user.isAuth?
+                        <Nav.Link onClick={()=>user.logout()}>Выйти</Nav.Link>
+                    :
+                        <Nav.Link onClick={()=>history.push(LOGIN_ROUTE)}>Войти</Nav.Link>     
+                    }
+                </Nav>
             </div>
-            </nav>
+            </Navbar>
         </div>    
 
     );
