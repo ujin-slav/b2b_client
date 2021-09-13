@@ -17,16 +17,16 @@ const emailRegex = RegExp(
 );
   
 const formValid = ({ data, formErrors }) => {
-let valid = true;
+    let valid = true;
 
-// validate form errors being empty
-Object.values(formErrors).forEach(val => {
-    val.length > 0 && (valid = false);
-});
+    // validate form errors being empty
+    Object.values(formErrors).forEach(val => {
+        val.length > 0 && (valid = false);
+    });
 
-// validate the form was filled out
-Object.values(data).forEach(val => {
-    val === null && (valid = false);
+    // validate the form was filled out
+    Object.values(data).forEach(val => {
+        val === null && (valid = false);
 });
 
 return valid;

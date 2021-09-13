@@ -12,15 +12,32 @@ import {
 import {upload} from "../http/askAPI";
 import Forgot from './Forgot';
 
+const formValid = ({ data, formErrors }) => {
+  let valid = true;
+
+  // validate form errors being empty
+  Object.values(formErrors).forEach(val => {
+      val.length > 0 && (valid = false);
+  });
+
+  // validate the form was filled out
+  Object.values(data).forEach(val => {
+      val === null && (valid = false);
+});
+
+return valid;
+};
+
+
 const data = new FormData();
 const CreateAsk = () => {
     const[ask,setAsk] = useState( {
         data: {
-          Name: null,
-          MaxPrice: null,
-          MaxDate: null,
-          DateExp: null,
-          Text: null,
+          Name: "",
+          MaxPrice: "",
+          MaxDate: "",
+          DateExp: "",
+          Text: "",
         },
         formErrors: {
           Name: "",
@@ -32,9 +49,23 @@ const CreateAsk = () => {
       }
     );
 
-    const handleSubmit = () => {
-
-    }
+    const onSubmit = e => {
+      e.preventDefault();
+  
+      if (formValid(ask)) {
+        files.forEach((item)=>data.append("file", item));
+        data.append("Name", ask.data.Name)
+        data.append("maxPrice", ask.data.MaxPrice)
+        data.append("maxDate", ask.data.MaxDate)
+        data.append("DateExp", ask.data.DateExp)
+        data.append("Text", ask.data.Text)
+        setLoading(true)
+        upload(data).then((response)=>{});      
+        setLoading(false)  
+      } else {
+        console.error("FORM INVALID");
+      }
+      };
 
     const handleChange = e => {
       e.preventDefault();
@@ -44,24 +75,12 @@ const CreateAsk = () => {
       data[name] = value;
       
       switch (name) {
-        case "nameOrder":
+        case "Name":
           formErrors.Name =
             value.length < 3 ? "минимум 3 символа" : "";
-          break;
-        case "MaxPrice":
-          formErrors.NameOrg =
-            value.length < 3 ? "минимум 3 символа" : "";
-          break;  
-        case "MaxDate":
-          formErrors.Inn =
-            value.length < 3 ? "минимум 3 символа" : "";
-          break;  
-        case "DateExp":
-          formErrors.Inn =
-            value.length < 3 ? "минимум 3 символа" : "";
-        break;    
+          break;   
         case "Text":
-          formErrors.Inn =
+          formErrors.Text =
             value.length < 3 ? "минимум 3 символа" : "";
           break;
         default:
@@ -82,18 +101,6 @@ const CreateAsk = () => {
         }
       }
     };
-
-    const onSubmit = (e) => {
-        files.forEach((item)=>data.append("file", item));
-        data.append("Name", ask.data.Name)
-        data.append("maxPrice", ask.data.MaxPrice)
-        data.append("maxDate", ask.data.MaxDate)
-        data.append("DateExp", ask.data.DateExp)
-        data.append("Text", ask.data.Text)
-        setLoading(true)
-        upload(data).then((response)=>{});      
-        setLoading(false)  
-    }
     
     const removeFile = (id) => {
       console.log(id);
@@ -101,12 +108,16 @@ const CreateAsk = () => {
       setFiles(newFiles);
     }
 
+    var curr = new Date();
+    curr.setDate(curr.getDate() + 3);
+    var date = curr.toISOString().substr(0,10);
+
     return (
         <div>
            <Container style={{width: 800}}>
         <Row>
             <Col>
-            <h1 className="text-success">Создать заявку</h1>
+            <h1>Создать заявку</h1>
             </Col>
         </Row>
         <Row>
@@ -116,10 +127,11 @@ const CreateAsk = () => {
         <Row>
             <Col>
             <Form onSubmit={onSubmit}>
-                <RegInput value={{Name: "Name", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки"}} />
+                <RegInput value={{Name: "Name", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки",ErrorMessage: ask.formErrors.Name}} />
                 <Form.Group>
                 <Form.Label>Максимальная цена</Form.Label>
                 <Form.Control
+                    type="number"
                     name="MaxPrice"
                     onChange={handleChange}
                     placeholder="Максимальная стоимость"
@@ -127,11 +139,12 @@ const CreateAsk = () => {
                 <span className="errorMessage" style={{color:"red"}}></span>
                 </Form.Group>
                 <Form.Group>
-                <Form.Label>Максимальный срок поставки</Form.Label>
+                <Form.Label>Максимальный срок поставки (дней)</Form.Label>
                 <Form.Control
+                    type="number"
                     name="MaxDate"
                     onChange={handleChange}
-                    placeholder="Максимальный срок поставки"
+                    placeholder="Максимальный срок поставки (дней)"
                 />
                 <span className="errorMessage" style={{color:"red"}}></span>
                 </Form.Group>
@@ -141,6 +154,7 @@ const CreateAsk = () => {
                     type="date"
                     name="DateExp"
                     onChange={handleChange}
+                    defaultValue={date} 
                     placeholder="Дата окончания предложений"
                 />
                 <span className="errorMessage" style={{color:"red"}}></span>
@@ -153,7 +167,7 @@ const CreateAsk = () => {
                     placeholder="Текст заявки"
                     as="textarea"
                 />
-                <span className="errorMessage" style={{color:"red"}}></span>
+                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                 </Form.Group>
                 <div className="form-group files">
                 <label>Файлы </label>

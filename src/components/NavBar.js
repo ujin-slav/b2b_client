@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
+import React, {useContext,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {LOGIN_ROUTE,CREATEASK} from "../utils/routes";
 import {useHistory,NavLink  } from 'react-router-dom';
-import { Button,Navbar,Nav } from "react-bootstrap";
+import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
 import profileLogo from '../profile.png'
 
@@ -11,6 +11,16 @@ const NavBar = observer(() => {
 
     const {user} = useContext(Context);
     const history = useHistory();
+    const [show, setShow] = useState(false);
+
+    const authCheck = (route) => {
+        if(user.isAuth){
+            history.push(route)
+        } else {
+            setShow(true)
+        }
+    }
+
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -25,10 +35,10 @@ const NavBar = observer(() => {
                     />
                 </NavLink>
                 <Nav className="me-auto">
-                    <Nav.Link href="#home">Главная</Nav.Link>
-                    <Nav.Link className="border border-dark" href={CREATEASK} style={{color: 'white'}}>Создать заявку</Nav.Link>
-                    <Nav.Link href={CREATEASK} style={{color: 'white'}}>Мои заявки</Nav.Link>
-                    <Nav.Link href={CREATEASK} style={{color: 'white'}}>Мои предложения</Nav.Link>
+                    <Nav.Link to="/">Главная</Nav.Link>
+                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Создать заявку</Nav.Link>
+                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Мои заявки</Nav.Link>
+                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Мои предложения</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">
@@ -50,6 +60,9 @@ const NavBar = observer(() => {
                 </Nav>
             </div>
             </Navbar>
+            <Alert variant="warning" show={show} onClose={() => setShow(false)} dismissible>
+                Вы не авторизованы
+            </Alert>
         </div>    
 
     );
