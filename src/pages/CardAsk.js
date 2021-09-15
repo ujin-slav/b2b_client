@@ -1,18 +1,90 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
-import { fetchOneAsk } from '../http/askAPI';
-import {Card, Table, Col, Container, Row} from "react-bootstrap";
+import { fetchOneAsk, fetchOffers} from '../http/askAPI';
+import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
+import {uploadOffer} from "../http/askAPI";
+import {Context} from "../index";
 
+const formValid = ({ data, formErrors }) => {
+    let valid = true;
+  
+    // validate form errors being empty
+    Object.values(formErrors).forEach(val => {
+        val.length > 0 && (valid = false);
+    });
+  
+    // validate the form was filled out
+    Object.values(data).forEach(val => {
+        val === null && (valid = false);
+  });
+  
+  return valid;
+  };
+  
+
+const data = new FormData();
 const CardAsk = () => {
-    const [ask, setAsk] = useState()
-    const {id} = useParams()
+    const [ask, setAsk] = useState();
+    const {user} = useContext(Context);  
+    const [offer, setOffer] = useState({
+        data: {
+          Price: "",
+          Text: ""
+        },
+        formErrors: {
+          Price: "",
+        }
+      });
+    const [loading, setLoading] = useState(false);
+    const [files, setFiles] = useState([]);
+    const {id} = useParams();
 
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
-            console.log(data);
         })
+        fetchOffers(id).then((data)=>{
+            setAsk(data)
+        })
+
       },[]);
+
+    const onSubmit = e => {
+        if (formValid(offer)) {
+            files.forEach((item)=>data.append("file", item));
+            data.append("Price", offer.data.Price);
+            data.append("Text", offer.data.Text)
+            data.append("Ask", id)
+            data.append("UserId", user.user.id)
+            setLoading(true)
+            uploadOffer(data).then((response)=>{});      
+            setLoading(false)  
+        }
+      };  
+      const removeFile = (id) => {
+        console.log(id);
+        const newFiles = files.filter((item,index,array)=>index!==id);
+        setFiles(newFiles);
+      }
+
+    const onInputChange = (e) => {
+        for(let i = 0; i < e.target.files.length; i++) { 
+          try{
+          setFiles(((oldItems) => [...oldItems, e.target.files[i]]));
+          }catch(e){
+            console.log(e)
+          }
+        }
+      };
+    const handleChange = e => {
+      e.preventDefault();
+      const { name, value } = e.target;
+      let formErrors = offer.formErrors;
+      let data = offer.data;
+      data[name] = value;
+      formErrors.Price = e.target.value <= 0 ? "Должно быть больше 0" : "";
+      setOffer({data,formErrors});
+    }  
 
     return (
         <Container>
@@ -79,6 +151,45 @@ const CardAsk = () => {
             {ask?.Files?.map((item)=><div>
                 <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
             </div>)}
+            <Card>
+                <Card.Header>Предложения</Card.Header>
+
+            </Card>   
+            <Card>
+            <Card.Header>Мое предложение</Card.Header>
+            <Card.Body>
+                <Form onSubmit={onSubmit}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Цена</Form.Label>
+                    <Form.Control type="number" placeholder="Цена" name="Price" onChange={handleChange}/>
+                </Form.Group>
+                <span className="errorMessage" style={{color:"red"}}>{offer.formErrors.Price}</span>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Сообщение:</Form.Label>
+                    <Form.Control as="textarea" name="Text"  onChange={handleChange} rows={3} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                    <div className="form-group files">
+                    <label>Файлы </label>
+                    <input type="file"
+                            onChange={onInputChange}
+                            className="form-control"
+                            multiple/>
+                    </div>
+                    {files.map((a,key)=><div key={key}>{a.name}
+                    <button onClick={()=>removeFile(key)}>X</button>
+                    </div>
+                    )}   
+                    <Button
+                    variant="primary"
+                    type="submit"  >
+                    Отправить
+                </Button>
+                </Form.Group>
+                </Form>
+            </Card.Body>
+            </Card>
+
         </Container>
     );
 };

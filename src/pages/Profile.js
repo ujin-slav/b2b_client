@@ -18,7 +18,7 @@ const Profile =  observer(() => {
                             <tr>
                             <td>Имя</td>
                             <td>{user.isAuth?
-                                <div>{user.user.email}</div>
+                                <div>{user.user.id}</div>
                             :
                                 <div>2</div>}</td>
                             </tr>

@@ -65,7 +65,7 @@ const CreateAsk = () => {
       } else {
         console.error("FORM INVALID");
       }
-      };
+    };
 
     const handleChange = e => {
       e.preventDefault();
@@ -169,12 +169,30 @@ const CreateAsk = () => {
                 />
                 <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                 </Form.Group>
+                <Form.Group>
+                <Form.Label>Комментарий</Form.Label>
+                <Form.Control
+                    name="Comment"
+                    onChange={handleChange}
+                    placeholder="Комментарий"
+                />
+                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Регион</Form.Label>
+                <Form.Control
+                    name="Region"
+                    onChange={handleChange}
+                    placeholder="Регион"
+                />
+                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
+                </Form.Group>
                 <div className="form-group files">
-                <label>Файлы </label>
-                <input type="file"
-                       onChange={onInputChange}
-                       className="form-control"
-                       multiple/>
+                  <label>Файлы </label>
+                  <input type="file"
+                        onChange={onInputChange}
+                        className="form-control"
+                        multiple/>
                 </div>
                 <Button
                 variant="primary"

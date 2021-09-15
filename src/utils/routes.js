@@ -6,6 +6,8 @@ import Forgot from "../pages/Forgot";
 import Registration from "../pages/Registration";
 import Reset from "../pages/Reset";
 import Profile from "../pages/Profile";
+import MyOrders from "../pages/MyOrders";
+import MyOffers from "../pages/MyOffers";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -17,6 +19,8 @@ export const CARDASK = '/cardask'
 export const CREATEASK = '/createask'
 export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
+export const MYORDERS = '/myorders'
+export const MYOFFERS = '/myoffers'
 
 export const authRoutes = [
 ]
@@ -57,5 +61,13 @@ export const publicRoutes = [
     {
         path: PROFILE,
         Component: Profile
+    },
+    {
+        path: MYORDERS,
+        Component: MyOrders
+    },
+    {
+        path: MYOFFERS,
+        Component: MyOffers
     }
 ]

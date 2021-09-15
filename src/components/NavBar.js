@@ -1,7 +1,7 @@
 import React, {useContext,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE} from "../utils/routes";
 import {useHistory,NavLink  } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -35,10 +35,10 @@ const NavBar = observer(() => {
                     />
                 </NavLink>
                 <Nav className="me-auto">
-                    <Nav.Link to="/">Главная</Nav.Link>
+                    <Nav.Link onClick={()=>history.push(B2B_ROUTE)}>Главная</Nav.Link>
                     <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Создать заявку</Nav.Link>
-                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Мои заявки</Nav.Link>
-                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Мои предложения</Nav.Link>
+                    <Nav.Link onClick={()=>authCheck(MYORDERS)} style={{color: 'white'}}>Мои заявки</Nav.Link>
+                    <Nav.Link onClick={()=>authCheck(MYOFFERS)} style={{color: 'white'}}>Мои предложения</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">
