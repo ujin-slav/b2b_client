@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
-import { fetchOneAsk, fetchOffers} from '../http/askAPI';
+import { fetchOneAsk, fetchOffers, fetchUser} from '../http/askAPI';
 import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
 import {uploadOffer} from "../http/askAPI";
 import {Context} from "../index";
@@ -25,6 +25,7 @@ const formValid = ({ data, formErrors }) => {
 const data = new FormData();
 const CardAsk = () => {
     const [ask, setAsk] = useState();
+    const [offers, setOffers] = useState();
     const {user} = useContext(Context);  
     const [offer, setOffer] = useState({
         data: {
@@ -44,9 +45,8 @@ const CardAsk = () => {
             setAsk(data)
         })
         fetchOffers(id).then((data)=>{
-            setAsk(data)
+            setOffers(data);
         })
-
       },[]);
 
     const onSubmit = e => {
@@ -153,7 +153,26 @@ const CardAsk = () => {
             </div>)}
             <Card>
                 <Card.Header>Предложения</Card.Header>
-
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Автор</th>
+                        <th>Цена</th>
+                        <th>Сообщение</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {offers?.map((item)=>
+                        <tr>
+                          <td>1</td>
+                          <td>{item.Author}</td>
+                          <td>{item.Price}</td>
+                          <td>{item.Text}</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
             </Card>   
             <Card>
             <Card.Header>Мое предложение</Card.Header>
