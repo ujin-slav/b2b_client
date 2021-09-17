@@ -15,6 +15,10 @@ export const fetchOffers = async (id) => {
     const {data} = await $api.post(`/getoffers`,{id});
     return data
 }
+export const fetchUserOffers = async (id) => {
+    const {data} = await $api.post(`/getuseroffers`,{id});
+    return data
+}
 export const fetchUser = async (id) => {
     const {data} = await $api.post(`/getuser`,{id});
     return data

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
     Container,
     Row,
@@ -8,10 +8,15 @@ import {
     Spinner,
     Alert,
     Card,
+    InputGroup
   } from "react-bootstrap";
   import '../style.css';
+import CategoryTree from './CategoryTree';
 
 const SearchForm = () => {
+    const [show, setShow] = useState(true);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     return (
         <div>
             <Container className="mb-3 mt-3">
@@ -55,11 +60,19 @@ const SearchForm = () => {
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Классификатор</Form.Label>
-                            <Form.Control type="class" placeholder="Классификатор" />
+                            <InputGroup className="mb-3">
+                                <Form.Control
+                                placeholder="Классификатор"
+                                />
+                                <Button variant="outline-secondary" id="button-addon2" onClick={handleShow}>
+                                ...
+                                </Button>
+                            </InputGroup>
                     </Form.Group>
                     </Row>                   
                 </Form>  
             </Container>
+            <CategoryTree/>
         </div>
     );
 };

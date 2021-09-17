@@ -165,7 +165,7 @@ const CardAsk = () => {
                     <tbody>
                       {offers?.map((item)=>
                         <tr>
-                          <td>1</td>
+                          <td>{item.Item}</td>
                           <td>{item.Author}</td>
                           <td>{item.Price}</td>
                           <td>{item.Text}</td>
