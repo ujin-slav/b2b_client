@@ -1,23 +1,23 @@
 import React,{useState} from 'react';
 import {Modal,Button} from "react-bootstrap";
+import Widget from './Widget';
+import Region from './Region';
 
-const CategoryTree = (handleClose) => {
-    const [show, setShow] = useState(true);
+const CategoryTree = ({active, setActive}) => {
 
-    const handleShow = () => setShow(true);
     return (
         <div>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={active} onHide={()=>setActive(false)}>
                 <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>Категории</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                <Modal.Body>
+                    {/* <Widget /> */}
+                    <Region/>
+                </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" onClick={()=>setActive(false)}>
                     Close
-                </Button>
-                <Button variant="primary" onClick={handleClose}>
-                    Save Changes
                 </Button>
                 </Modal.Footer>
             </Modal>

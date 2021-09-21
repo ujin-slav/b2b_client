@@ -12,11 +12,10 @@ import {
   } from "react-bootstrap";
   import '../style.css';
 import CategoryTree from './CategoryTree';
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 
 const SearchForm = () => {
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [modalActive, setModalActive] = useState(false);
     return (
         <div>
             <Container className="mb-3 mt-3">
@@ -64,7 +63,7 @@ const SearchForm = () => {
                                 <Form.Control
                                 placeholder="Классификатор"
                                 />
-                                <Button variant="outline-secondary" id="button-addon2" onClick={handleShow}>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActive(true)}>
                                 ...
                                 </Button>
                             </InputGroup>
@@ -72,7 +71,7 @@ const SearchForm = () => {
                     </Row>                   
                 </Form>  
             </Container>
-            <CategoryTree/>
+            <CategoryTree  active={modalActive} setActive={setModalActive}/>
         </div>
     );
 };
