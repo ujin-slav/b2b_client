@@ -14,6 +14,8 @@ import { faCheckSquare,
     faSquare,
     faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import { regionNodes } from '../config/Region';
+import SimpleLineIcon from 'react-simple-line-icons';
+import { ArrowRight, PlusCircle, DashCircleFill, Folder, Folder2Open,FileEarmark, ChevronDown, ChevronRight } from 'react-bootstrap-icons';
 
 const RegionTree =({checked, expanded, setChecked, setExpanded})=> {
     return (
@@ -25,16 +27,16 @@ const RegionTree =({checked, expanded, setChecked, setExpanded})=> {
         console.log(checked)}}
         onExpand={expanded => setExpanded(expanded)}
         icons={{
-            check: <FontAwesomeIcon icon={faCheck}/>,
-            uncheck: <FontAwesomeIcon icon={faSquare} />,
-            halfCheck: <FontAwesomeIcon icon={faCheckSquare} />,
-            expandClose: <FontAwesomeIcon icon={faChevronRight} />,
-            expandOpen: <FontAwesomeIcon icon={faChevronDown} />,
+            check: <DashCircleFill/>,
+            uncheck: <PlusCircle/>,
+            halfCheck: <DashCircleFill/>,
+            expandClose: <ChevronRight/>,
+            expandOpen: <ChevronDown/>,
             expandAll: <FontAwesomeIcon icon={faPlusSquare} />,
             collapseAll: <FontAwesomeIcon icon={faMinusSquare} />,
-            parentClose: <FontAwesomeIcon icon={faFolder}  color="gray"/>,
-            parentOpen: <FontAwesomeIcon icon={faFolderOpen} color="gray"/>,
-            leaf: <FontAwesomeIcon icon={faFile} />
+            parentClose: <Folder/>,
+            parentOpen: <Folder2Open/>,
+            leaf: <FileEarmark/>
         }}
       />
     );
