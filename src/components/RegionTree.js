@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CheckboxTree from 'react-checkbox-tree';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckSquare,
@@ -6,40 +6,38 @@ import { faCheckSquare,
     faChevronDown,
     faPlusSquare,
     faMinusSquare,
+    faSquareFull,
     faFolder,
     faFolderOpen,
-    faFile} from '@fortawesome/free-solid-svg-icons'
+    faCheck,
+    faFile,
+    faSquare,
+    faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import { regionNodes } from '../config/Region';
 
-class Region extends React.Component {
-  state = {
-    checked: [],
-    expanded: [],
-  };
-
-  render() {
+const RegionTree =({checked, expanded, setChecked, setExpanded})=> {
     return (
       <CheckboxTree
         nodes={regionNodes}
-        checked={this.state.checked}
-        expanded={this.state.expanded}
-        onCheck={checked => this.setState({ checked })}
-        onExpand={expanded => this.setState({ expanded })}
+        checked={checked}
+        expanded={expanded}
+        onCheck={checked => {setChecked(checked) 
+        console.log(checked)}}
+        onExpand={expanded => setExpanded(expanded)}
         icons={{
-            check: <FontAwesomeIcon icon={faCheckSquare} />,
-            uncheck: <FontAwesomeIcon className="rct-icon rct-icon-uncheck" icon={['far', 'square']} />,
+            check: <FontAwesomeIcon icon={faCheck}/>,
+            uncheck: <FontAwesomeIcon icon={faSquare} />,
             halfCheck: <FontAwesomeIcon icon={faCheckSquare} />,
             expandClose: <FontAwesomeIcon icon={faChevronRight} />,
             expandOpen: <FontAwesomeIcon icon={faChevronDown} />,
             expandAll: <FontAwesomeIcon icon={faPlusSquare} />,
             collapseAll: <FontAwesomeIcon icon={faMinusSquare} />,
-            parentClose: <FontAwesomeIcon icon={faFolder} />,
-            parentOpen: <FontAwesomeIcon icon={faFolderOpen} />,
+            parentClose: <FontAwesomeIcon icon={faFolder}  color="gray"/>,
+            parentOpen: <FontAwesomeIcon icon={faFolderOpen} color="gray"/>,
             leaf: <FontAwesomeIcon icon={faFile} />
         }}
       />
     );
   }
-}
 
-export default Region;
+export default RegionTree;

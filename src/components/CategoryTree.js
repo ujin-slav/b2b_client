@@ -1,28 +1,45 @@
-import React,{useState} from 'react';
-import {Modal,Button} from "react-bootstrap";
-import Widget from './Widget';
-import Region from './Region';
+import React from 'react';
+import CheckboxTree from 'react-checkbox-tree';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckSquare,
+    faChevronRight,
+    faChevronDown,
+    faPlusSquare,
+    faMinusSquare,
+    faFolder,
+    faFolderOpen,
+    faFile} from '@fortawesome/free-solid-svg-icons'
+import { categoryNodes } from '../config/Category';
 
-const CategoryTree = ({active, setActive}) => {
+class CategoryTree extends React.Component {
+  state = {
+    checked: [],
+    expanded: [],
+  };
 
+  render() {
     return (
-        <div>
-            <Modal show={active} onHide={()=>setActive(false)}>
-                <Modal.Header closeButton>
-                <Modal.Title>Категории</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {/* <Widget /> */}
-                    <Region/>
-                </Modal.Body>
-                <Modal.Footer>
-                <Button variant="secondary" onClick={()=>setActive(false)}>
-                    Close
-                </Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
+      <CheckboxTree
+        nodes={categoryNodes}
+        checked={this.state.checked}
+        expanded={this.state.expanded}
+        onCheck={checked => this.setState({ checked })}
+        onExpand={expanded => this.setState({ expanded })}
+        icons={{
+            check: <FontAwesomeIcon icon={faCheckSquare} />,
+            uncheck: <FontAwesomeIcon className="rct-icon rct-icon-uncheck" icon={['far', 'square']} />,
+            halfCheck: <FontAwesomeIcon icon={faCheckSquare} />,
+            expandClose: <FontAwesomeIcon icon={faChevronRight} />,
+            expandOpen: <FontAwesomeIcon icon={faChevronDown} />,
+            expandAll: <FontAwesomeIcon icon={faPlusSquare} />,
+            collapseAll: <FontAwesomeIcon icon={faMinusSquare} />,
+            parentClose: <FontAwesomeIcon icon={faFolder} />,
+            parentOpen: <FontAwesomeIcon icon={faFolderOpen} />,
+            leaf: <FontAwesomeIcon icon={faFile} />
+        }}
+      />
     );
-};
+  }
+}
 
 export default CategoryTree;

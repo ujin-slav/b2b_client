@@ -6,11 +6,13 @@ import {
     Col,
     Form,
     Button,
-    Spinner,
+    InputGroup,
     Alert,
   } from "react-bootstrap";
 import {upload} from "../http/askAPI";
 import Forgot from './Forgot';
+import ModalCT from '../components/ModalCT';
+import RegionTree from '../components/RegionTree';
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -48,6 +50,11 @@ const CreateAsk = () => {
         }
       }
     );
+    const [loading, setLoading] = useState(false)
+    const [files, setFiles] = useState([])
+    const [modalActiveReg,setModalActiveReg] = useState(false)
+    const [checkedRegion,setCheckedRegion] = useState([]);
+    const [expandedRegion,setExpandedRegion] = useState([]);
 
     const onSubmit = e => {
       e.preventDefault();
@@ -88,9 +95,6 @@ const CreateAsk = () => {
       }
       setAsk({ data, formErrors});
     }
-    
-    const [loading, setLoading] = useState(false)
-    const [files, setFiles] = useState([])
 
     const onInputChange = (e) => {
       for(let i = 0; i < e.target.files.length; i++) { 
@@ -179,13 +183,24 @@ const CreateAsk = () => {
                 <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                 </Form.Group>
                 <Form.Group>
-                <Form.Label>Регион</Form.Label>
+                <Form.Label>Категори товара</Form.Label>
                 <Form.Control
                     name="Region"
                     onChange={handleChange}
                     placeholder="Регион"
                 />
                 <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Регион</Form.Label>
+                <InputGroup className="mb-3">
+                                <Form.Control
+                                placeholder="Регионы"
+                                />
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                ...
+                                </Button>
+                </InputGroup>
                 </Form.Group>
                 <div className="form-group files">
                   <label>Файлы </label>
@@ -209,6 +224,14 @@ const CreateAsk = () => {
             </Col>
         </Row>    
         </Container> 
+        <ModalCT 
+                header="Регионы" 
+                active={modalActiveReg} 
+                setActive={setModalActiveReg} 
+                component={<RegionTree 
+                checked={checkedRegion} expanded={expandedRegion} 
+                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
         </div>
     );
 };
