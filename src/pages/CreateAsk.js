@@ -13,6 +13,7 @@ import {upload} from "../http/askAPI";
 import Forgot from './Forgot';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
+import CategoryTree from '../components/CategoryTree';
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -53,8 +54,11 @@ const CreateAsk = () => {
     const [loading, setLoading] = useState(false)
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
+    const [modalActiveCat,setModalActiveCat] = useState(false)
     const [checkedRegion,setCheckedRegion] = useState([]);
     const [expandedRegion,setExpandedRegion] = useState([]);
+    const [checkedCat,setCheckedCat] = useState([]);
+    const [expandedCat,setExpandedCat] = useState([]);
 
     const onSubmit = e => {
       e.preventDefault();
@@ -183,13 +187,15 @@ const CreateAsk = () => {
                 <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                 </Form.Group>
                 <Form.Group>
-                <Form.Label>Категори товара</Form.Label>
-                <Form.Control
-                    name="Region"
-                    onChange={handleChange}
-                    placeholder="Регион"
-                />
-                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
+                <Form.Label>Категории</Form.Label>
+                <InputGroup className="mb-3">
+                                <Form.Control
+                                placeholder="Категории"
+                                />
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                ...
+                                </Button>
+                </InputGroup>
                 </Form.Group>
                 <Form.Group>
                 <Form.Label>Регион</Form.Label>
@@ -231,6 +237,14 @@ const CreateAsk = () => {
                 component={<RegionTree 
                 checked={checkedRegion} expanded={expandedRegion} 
                 setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
+          <ModalCT 
+                header="Категории" 
+                active={modalActiveCat} 
+                setActive={setModalActiveCat} 
+                component={<CategoryTree 
+                checked={checkedCat} expanded={expandedCat} 
+                setChecked={setCheckedCat} setExpanded={setExpandedCat}
                 />}/>
         </div>
     );

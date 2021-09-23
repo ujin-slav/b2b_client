@@ -28,12 +28,11 @@ const App = observer(() => {
   const login = async ()=> {
     try {
       let result = await user.login(email,password);
-      if (user.isAuth) {
+      if (user.isAuth===true) {
         history.push(B2B_ROUTE)
       }
     } catch (error) {
       console.log(error)
-      console.log(user)
     }
   }
 

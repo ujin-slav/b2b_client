@@ -1,45 +1,37 @@
 import React from 'react';
 import CheckboxTree from 'react-checkbox-tree';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckSquare,
-    faChevronRight,
-    faChevronDown,
-    faPlusSquare,
-    faMinusSquare,
-    faFolder,
-    faFolderOpen,
-    faFile} from '@fortawesome/free-solid-svg-icons'
+import { PlusCircle, 
+  DashCircleFill, 
+  Folder, 
+  Folder2Open,
+  FileEarmark, 
+  ChevronDown, 
+  ChevronRight } from 'react-bootstrap-icons';
 import { categoryNodes } from '../config/Category';
 
-class CategoryTree extends React.Component {
-  state = {
-    checked: [],
-    expanded: [],
-  };
-
-  render() {
-    return (
-      <CheckboxTree
-        nodes={categoryNodes}
-        checked={this.state.checked}
-        expanded={this.state.expanded}
-        onCheck={checked => this.setState({ checked })}
-        onExpand={expanded => this.setState({ expanded })}
-        icons={{
-            check: <FontAwesomeIcon icon={faCheckSquare} />,
-            uncheck: <FontAwesomeIcon className="rct-icon rct-icon-uncheck" icon={['far', 'square']} />,
-            halfCheck: <FontAwesomeIcon icon={faCheckSquare} />,
-            expandClose: <FontAwesomeIcon icon={faChevronRight} />,
-            expandOpen: <FontAwesomeIcon icon={faChevronDown} />,
-            expandAll: <FontAwesomeIcon icon={faPlusSquare} />,
-            collapseAll: <FontAwesomeIcon icon={faMinusSquare} />,
-            parentClose: <FontAwesomeIcon icon={faFolder} />,
-            parentOpen: <FontAwesomeIcon icon={faFolderOpen} />,
-            leaf: <FontAwesomeIcon icon={faFile} />
-        }}
-      />
-    );
-  }
+const CategoryTree =({checked, expanded, setChecked, setExpanded})=> {
+  return (
+    <CheckboxTree
+      nodes={categoryNodes}
+      checked={checked}
+      expanded={expanded}
+      onCheck={checked => {setChecked(checked) 
+      console.log(checked)}}
+      onExpand={expanded => setExpanded(expanded)}
+      icons={{
+          check: <DashCircleFill/>,
+          uncheck: <PlusCircle />,
+          halfCheck: <DashCircleFill />,
+          expandClose: <ChevronRight />,
+          expandOpen: <ChevronDown />,
+          expandAll: <ChevronDown />,
+          collapseAll:  <ChevronRight/>,
+          parentClose: <Folder style={{"width": "25px", "height": "25px"}}/>,
+          parentOpen: <Folder2Open style={{"width": "25px", "height": "25px"}}/>,
+          leaf: <FileEarmark style={{"width": "20px", "height": "20px"}}/>
+      }}
+    />
+  );
 }
 
 export default CategoryTree;

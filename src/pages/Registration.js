@@ -35,7 +35,8 @@ return valid;
 
 const RegistrationForm = () => {
     
-    const[user,setUser] = useState( {
+  const {user} = useContext(Context);
+    const[userReg,setuserReg] = useState( {
         data: {
           Name: null,
           email: null,
@@ -63,9 +64,10 @@ const RegistrationForm = () => {
       };
 
     const handleSubmit = e => {
-        e.preventDefault();
-    
-        if (formValid(user)) {
+      e.preventDefault();
+      user.registration(userReg.data).then();
+        if (formValid(userReg)) {
+          
         } else {
           console.error("FORM INVALID");
         }
@@ -74,8 +76,8 @@ const RegistrationForm = () => {
     const handleChange = e => {
         e.preventDefault();
         const { name, value } = e.target;
-        let formErrors = user.formErrors;
-        let data = user.data
+        let formErrors = userReg.formErrors;
+        let data = userReg.data
         data[name] = value;
 
         switch (name) {
@@ -111,7 +113,7 @@ const RegistrationForm = () => {
           default:
             break;
         }
-        setUser({ data, formErrors});
+        setuserReg({ data, formErrors});
     };
     
     return (
@@ -129,19 +131,19 @@ const RegistrationForm = () => {
             <Col>
             <Form onSubmit={handleSubmit}>
                 <Form.Check type="checkbox" label="Я частное лицо" checked={checked} onChange={handleChecked}/>
-                <RegInput value={{Name: "name", Label: "Имя", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: user.formErrors.Name}} />
-                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: user.formErrors.email}} />   
+                <RegInput value={{Name: "name", Label: "Имя", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.Name}} />
+                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />   
                 {!checked ? 
                 <div>           
-                <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: user.formErrors.NameOrg}} />
-                <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: user.formErrors.Inn}} />
-                <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: user.formErrors.AdressOrg}} />
+                <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.NameOrg}} />
+                <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.Inn}} />
+                <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: userReg.formErrors.AdressOrg}} />
                 </div> 
                 : 
                 <div></div>
                 }
-                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: user.formErrors.password}} />
-                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: user.formErrors.confirmPassword}} />
+                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password}} />
+                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword}} />
                 <Button
                 variant="primary"
                 type="submit"

@@ -16,7 +16,10 @@ const TableAsk = observer(() => {
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
-            <th>Начальная цена</th>
+            <th>ИНН заказчика</th>
+            <th>Регионы</th>
+            <th>Категории товара</th>
+            <th>Максимальная цена</th>
             <th>Окончание предложений</th>
           </tr>
         </thead>
@@ -26,6 +29,8 @@ const TableAsk = observer(() => {
             <td>1</td>
             <td>{item.Name}</td>
             <td>{item.Status}</td>
+            <td></td>
+            <td></td>
             <td>{item.Price}</td>
             <td>{item.EndDateOffers}</td>
           </tr>
