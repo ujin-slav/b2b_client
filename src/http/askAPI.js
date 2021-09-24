@@ -31,8 +31,5 @@ export const uploadOffer = async (formData) => {
     const {data} = await $api.post(`/addoffer`, formData);
     return data
 }
-export const registration = async (formData) => {
-    const {data} = await $api.post(`/registration`, formData);
-    return data
-}
+
 

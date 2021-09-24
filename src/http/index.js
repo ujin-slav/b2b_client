@@ -2,6 +2,8 @@ import axios from 'axios';
 
 export const API_URL = `http://localhost:5000/api`;
 
+//Проверять связь с сервером
+
 const $api = axios.create({
     withCredentials:true,
     baseURL:API_URL,
@@ -28,7 +30,11 @@ $api.interceptors.response.use((config) => {
             
         }
     }
-    throw error;
+    // throw error;
+    console.log(error.response.status);
+    return error;
+
 })
+
 
 export default $api;

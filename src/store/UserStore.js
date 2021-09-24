@@ -34,6 +34,9 @@ export default class UserStore {
             if (response.data.passwordIncorrect===true){
                 this.errorString = "Неверный пароль";
             }
+            if (response.data.notActivated===true){
+                this.errorString = "Аккаунт не активирован";
+            }
             console.log(response);
             localStorage.setItem('token', response.data.accesstoken)
             if(response.data.user){
