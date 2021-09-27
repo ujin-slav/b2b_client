@@ -30,10 +30,8 @@ $api.interceptors.response.use((config) => {
             
         }
     }
-    // throw error;
-    console.log(error.response.status);
-    return error;
-
+    //throw error;
+    return error.response;
 })
 
 

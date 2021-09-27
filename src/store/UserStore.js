@@ -45,18 +45,21 @@ export default class UserStore {
             }   
         } catch (error) {
             console.log(error);
+            return error;
         }
     }
 
     async registration(data){
         try {
             const response = await AuthService.registration(data);
-            console.log(response);
-            localStorage.setItem('token', response.data.accesstoken)
-            this.setAuth(true);
-            this.setUser(response.data.user);
+            if(!response.data?.errors){
+                localStorage.setItem('token', response.data.accesstoken)
+                this.setAuth(true);
+                this.setUser(response.data.user); 
+            }   
+            return response;
         } catch (error) {
-            console.log(error);
+            console.log("error");
         }
     }
 

@@ -11,14 +11,10 @@ const NavBar = observer(() => {
 
     const {user} = useContext(Context);
     const history = useHistory();
-    const [show, setShow] = useState(false);
+    const {myalert} = useContext(Context);
 
     const authCheck = (route) => {
-        if(user.isAuth){
             history.push(route)
-        } else {
-            setShow(true)
-        }
     }
 
     return (
@@ -60,9 +56,6 @@ const NavBar = observer(() => {
                 </Nav>
             </div>
             </Navbar>
-            <Alert variant="warning" show={show} onClose={() => setShow(false)} dismissible>
-                Вы не авторизованы
-            </Alert>
         </div>    
 
     );

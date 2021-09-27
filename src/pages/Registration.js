@@ -75,7 +75,10 @@ const RegistrationForm = () => {
       e.preventDefault(); 
         if (formValid(userReg)) {
             const result = await user.registration(userReg.data);
-            //console.log(result);
+            if(result.data?.errors){
+              alert(result.data.message);
+            }
+            console.log(result.data);
         } else {
           console.error("FORM INVALID");
         }

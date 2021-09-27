@@ -23,6 +23,10 @@ export const MYORDERS = '/myorders'
 export const MYOFFERS = '/myoffers'
 
 export const authRoutes = [
+    {
+        path: CREATEASK,
+        Component: CreateAsk
+    }
 ]
 
 export const publicRoutes = [
@@ -57,17 +61,5 @@ export const publicRoutes = [
     {
         path: DOWNLOAD,
         Component: CreateAsk
-    },
-    {
-        path: PROFILE,
-        Component: Profile
-    },
-    {
-        path: MYORDERS,
-        Component: MyOrders
-    },
-    {
-        path: MYOFFERS,
-        Component: MyOffers
     }
 ]
