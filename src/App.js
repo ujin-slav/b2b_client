@@ -14,7 +14,6 @@ function App() {
     if (localStorage.getItem('token')) {
       user.checkAuth()
     }
-    console.log('handle route change here')
   }, [user])
 
   return (

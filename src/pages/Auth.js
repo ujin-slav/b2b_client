@@ -12,6 +12,7 @@ const App = observer(() => {
   const history = useHistory();
   const {user} = useContext(Context);
   const [email,setEmail] = useState('');
+  const [errorString, setErrorString] = useState('');
   const [password,setPassword] = useState('');
 
   useEffect(() => {
@@ -30,6 +31,9 @@ const App = observer(() => {
       let result = await user.login(email,password);
       if (user.isAuth===true) {
         history.push(B2B_ROUTE)
+      }
+      if (result.data?.errors){
+        setErrorString(result.data?.message)
       }
     } catch (error) {
       console.log(error)
@@ -68,7 +72,7 @@ const App = observer(() => {
                    <NavLink to="/forgot">Забыл пароль</NavLink> 
               </Row>
               <div style={{ color:"red"}}>    
-                  {user.errorString}
+                  {errorString}
               </div>    
           </Form>
       </Card>

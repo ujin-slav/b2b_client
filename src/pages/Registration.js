@@ -36,6 +36,7 @@ return valid;
 const RegistrationForm = () => {
     
   const {user} = useContext(Context);
+  const {myalert} = useContext(Context);
     const[userReg,setuserReg] = useState( {
         data: {
           name: null,
@@ -76,9 +77,15 @@ const RegistrationForm = () => {
         if (formValid(userReg)) {
             const result = await user.registration(userReg.data);
             if(result.data?.errors){
-              alert(result.data.message);
+              myalert.setMessage(result.data.message);
+            } 
+            if(result.data?.user){
+              myalert.setMessage(<div>
+                  <div>Пользователь "{result.data?.user.email}" успешно добавлен.</div>
+                  <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
+              </div>
+              );
             }
-            console.log(result.data);
         } else {
           console.error("FORM INVALID");
         }

@@ -7,7 +7,6 @@ export default class UserStore {
     user = {};
     isAuth = false;
     isLoading = false;
-    errorString = "";
 
     constructor(){
         makeAutoObservable(this);
@@ -27,22 +26,13 @@ export default class UserStore {
 
     async login(email, password){
         try {
-            const response = await AuthService.login(email,password);
-            if (response.data.emailIncorrect===true){
-                this.errorString = "Неверный email";
-            }
-            if (response.data.passwordIncorrect===true){
-                this.errorString = "Неверный пароль";
-            }
-            if (response.data.notActivated===true){
-                this.errorString = "Аккаунт не активирован";
-            }
-            console.log(response);
-            localStorage.setItem('token', response.data.accesstoken)
-            if(response.data.user){
+            const response = await AuthService.login(email,password);    
+            if(!response.data?.errors){
+               localStorage.setItem('token', response.data.accesstoken)
                this.setAuth(true);
                this.setUser(response.data.user); 
             }   
+            return response;
         } catch (error) {
             console.log(error);
             return error;

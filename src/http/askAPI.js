@@ -2,8 +2,8 @@
 import $api from "../http";
 import axios from 'axios';
 
-export const fetchAsks = async () => {
-    const {data} = await $api.get(`/getask`);
+export const fetchAsks = async (formData) => {
+    const {data} = await $api.post(`/getask`,{formData});
     return data
 }
 

@@ -16,7 +16,7 @@ export default class AlertStore {
     setMessage(string){
         this.message = string;
         this.show = true;
-        setTimeout(()=>this.setShow(false),3000)
+        setTimeout(()=>this.setShow(false),5000)
     }
 
 }    
