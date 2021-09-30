@@ -8,14 +8,14 @@ import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 
-const TableAsk = observer(() => {
+const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
-    let limit = 3;
+    let limit = 10;
 
     useEffect(() => {
-        fetchAsks({limit,page:1}).then((data)=>{
+        fetchAsks({authorId,limit,page:1}).then((data)=>{
             ask.setAsk(data.docs)
             setpageCount(data.totalPages);
         })

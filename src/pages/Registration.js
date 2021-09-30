@@ -10,6 +10,8 @@ import {
 } from "react-bootstrap";
 import {Context} from "../index";
 import RegInput from "../components/RegInput";
+import {B2B_ROUTE} from "../utils/routes";
+import {useHistory} from 'react-router-dom';
 
 
 const emailRegex = RegExp(
@@ -34,7 +36,7 @@ return valid;
 
 
 const RegistrationForm = () => {
-    
+  const history = useHistory();  
   const {user} = useContext(Context);
   const {myalert} = useContext(Context);
     const[userReg,setuserReg] = useState( {
@@ -85,6 +87,7 @@ const RegistrationForm = () => {
                   <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
               </div>
               );
+              history.push(B2B_ROUTE);
             }
         } else {
           console.error("FORM INVALID");

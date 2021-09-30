@@ -61,5 +61,10 @@ export const publicRoutes = [
     {
         path: DOWNLOAD,
         Component: CreateAsk
+    },
+    {
+        path: MYORDERS,
+        Component: MyOrders
     }
 ]
+

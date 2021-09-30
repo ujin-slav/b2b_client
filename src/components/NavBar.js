@@ -13,10 +13,6 @@ const NavBar = observer(() => {
     const history = useHistory();
     const {myalert} = useContext(Context);
 
-    const authCheck = (route) => {
-            history.push(route)
-    }
-
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -32,9 +28,9 @@ const NavBar = observer(() => {
                 </NavLink>
                 <Nav className="me-auto">
                     <Nav.Link onClick={()=>history.push(B2B_ROUTE)}>Главная</Nav.Link>
-                    <Nav.Link onClick={()=>authCheck(CREATEASK)} style={{color: 'white'}}>Создать заявку</Nav.Link>
-                    <Nav.Link onClick={()=>authCheck(MYORDERS)} style={{color: 'white'}}>Мои заявки</Nav.Link>
-                    <Nav.Link onClick={()=>authCheck(MYOFFERS)} style={{color: 'white'}}>Мои предложения</Nav.Link>
+                    <Nav.Link onClick={()=>history.push(CREATEASK)} style={{color: 'white'}}>Создать заявку</Nav.Link>
+                    <Nav.Link onClick={()=>history.push(MYORDERS)} style={{color: 'white'}}>Мои заявки</Nav.Link>
+                    <Nav.Link onClick={()=>history.push(MYOFFERS)} style={{color: 'white'}}>Мои предложения</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">

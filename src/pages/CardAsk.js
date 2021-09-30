@@ -142,7 +142,7 @@ const CardAsk = () => {
                             </tr>
                             <tr>
                             <td>Текст заявки</td>
-                            <td>{ask?.TextAsk}</td>
+                            <td>{ask?.Text}</td>
                             </tr>
                         </tbody>
                     </Table>

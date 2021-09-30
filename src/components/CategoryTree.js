@@ -15,8 +15,7 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded})=> {
       nodes={categoryNodes}
       checked={checked}
       expanded={expanded}
-      onCheck={checked => {setChecked(checked) 
-      console.log(checked)}}
+      onCheck={checked => {setChecked(checked)}}
       onExpand={expanded => setExpanded(expanded)}
       icons={{
           check: <DashCircleFill/>,

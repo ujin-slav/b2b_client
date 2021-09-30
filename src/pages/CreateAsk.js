@@ -1,4 +1,4 @@
-import React,{useState,useRef} from 'react';
+import React,{useState,useRef,useContext} from 'react';
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -7,13 +7,17 @@ import {
     Form,
     Button,
     InputGroup,
-    Alert,
+    Card,
   } from "react-bootstrap";
 import {upload} from "../http/askAPI";
 import Forgot from './Forgot';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
+import {Context} from "../index";
+import {getCategoryName} from '../utils/Convert'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -33,14 +37,20 @@ return valid;
 
 
 const data = new FormData();
+
 const CreateAsk = () => {
     const[ask,setAsk] = useState( {
         data: {
+          Author: "",
           Name: "",
           MaxPrice: "",
+          Telefon: "",
           MaxDate: "",
-          DateExp: "",
-          Text: "",
+          EndDateOffers: "",
+          Comment: "",
+          Text: null,
+          Category: "",
+          Region: "",
         },
         formErrors: {
           Name: "",
@@ -51,6 +61,7 @@ const CreateAsk = () => {
         }
       }
     );
+    const {user} = useContext(Context);  
     const [loading, setLoading] = useState(false)
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -59,22 +70,33 @@ const CreateAsk = () => {
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const {myalert} = useContext(Context);
 
-    const onSubmit = e => {
+    const onSubmit = async(e) => {
       e.preventDefault();
-  
       if (formValid(ask)) {
+        const data = new FormData();
         files.forEach((item)=>data.append("file", item));
+        data.append("Author", user.user.id)
         data.append("Name", ask.data.Name)
-        data.append("maxPrice", ask.data.MaxPrice)
-        data.append("maxDate", ask.data.MaxDate)
-        data.append("DateExp", ask.data.DateExp)
+        data.append("MaxPrice", ask.data.MaxPrice)
+        data.append("Telefon", ask.data.Telefon)
+        data.append("MaxDate", ask.data.MaxDate)
+        data.append("EndDateOffers", ask.data.EndDateOffers)
+        data.append("Comment", ask.data.Comment)
         data.append("Text", ask.data.Text)
-        setLoading(true)
-        upload(data).then((response)=>{});      
-        setLoading(false)  
+        data.append("Category", ask.data.Category)
+        data.append("Region", ask.data.Region)
+        data.append("Date", new Date())
+        const result = await upload(data)
+        if(result.ask){
+          myalert.setMessage("Заявка успешно добавлена");
+        } else if(!result.errors){
+          myalert.setMessage(result.errors?.message);
+        }
       } else {
         console.error("FORM INVALID");
+        myalert.setMessage("Не заполнено поле текст заявки");
       }
     };
 
@@ -160,7 +182,7 @@ const CreateAsk = () => {
                 <Form.Label>Дата окончания предложений</Form.Label>
                 <Form.Control
                     type="date"
-                    name="DateExp"
+                    name="EndDateOffers"
                     onChange={handleChange}
                     defaultValue={date} 
                     placeholder="Дата окончания предложений"
@@ -184,14 +206,19 @@ const CreateAsk = () => {
                     onChange={handleChange}
                     placeholder="Комментарий"
                 />
-                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
+                </Form.Group>
+                <Form.Group>
+                <Form.Label>Контактный телефон</Form.Label>
+                <Form.Control
+                    name="Telefon"
+                    onChange={handleChange}
+                    placeholder="Контактный телефон"
+                />
                 </Form.Group>
                 <Form.Group>
                 <Form.Label>Категории</Form.Label>
                 <InputGroup className="mb-3">
-                                <Form.Control
-                                placeholder="Категории"
-                                />
+                <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
                                 ...
                                 </Button>
@@ -200,9 +227,7 @@ const CreateAsk = () => {
                 <Form.Group>
                 <Form.Label>Регион</Form.Label>
                 <InputGroup className="mb-3">
-                                <Form.Control
-                                placeholder="Регионы"
-                                />
+                <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 ...
                                 </Button>
