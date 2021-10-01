@@ -41,7 +41,7 @@ const Profile =  observer(() => {
             <Container>
             <Row>
                 <Col>
-                <Form onSubmit={handleSubmit}>
+                <Form>
                      <h3>Профаил</h3>
                      <Table striped bordered hover size="sm">
                         <tbody>

@@ -65,6 +65,10 @@ export const publicRoutes = [
     {
         path: MYORDERS,
         Component: MyOrders
+    },
+    {
+        path: PROFILE,
+        Component: Profile
     }
 ]
 
