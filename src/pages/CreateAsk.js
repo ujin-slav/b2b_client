@@ -8,9 +8,9 @@ import {
     Button,
     InputGroup,
     Card,
+    Table,
   } from "react-bootstrap";
 import {upload} from "../http/askAPI";
-import Forgot from './Forgot';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
@@ -144,117 +144,115 @@ const CreateAsk = () => {
 
     return (
         <div>
-           <Container style={{width: 800}}>
-        <Row>
-            <Col>
-            <h1>Создать заявку</h1>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-            <Form onSubmit={onSubmit}>
-                <RegInput value={{Name: "Name", Label: "Название заявки", handleChange, PlaceHolder: "Название заявки",ErrorMessage: ask.formErrors.Name}} />
-                <Form.Group>
-                <Form.Label>Максимальная цена</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="MaxPrice"
-                    onChange={handleChange}
-                    placeholder="Максимальная стоимость"
-                />
-                <span className="errorMessage" style={{color:"red"}}></span>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Максимальный срок поставки (дней)</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="MaxDate"
-                    onChange={handleChange}
-                    placeholder="Максимальный срок поставки (дней)"
-                />
-                <span className="errorMessage" style={{color:"red"}}></span>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Дата окончания предложений</Form.Label>
-                <Form.Control
-                    type="date"
-                    name="EndDateOffers"
-                    onChange={handleChange}
-                    defaultValue={date} 
-                    placeholder="Дата окончания предложений"
-                />
-                <span className="errorMessage" style={{color:"red"}}></span>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Текст заявки</Form.Label>
-                <Form.Control
-                    name="Text"
-                    onChange={handleChange}
-                    placeholder="Текст заявки"
-                    as="textarea"
-                />
-                <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Комментарий</Form.Label>
-                <Form.Control
-                    name="Comment"
-                    onChange={handleChange}
-                    placeholder="Комментарий"
-                />
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Контактный телефон</Form.Label>
-                <Form.Control
-                    name="Telefon"
-                    onChange={handleChange}
-                    placeholder="Контактный телефон"
-                />
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Категории</Form.Label>
-                <InputGroup className="mb-3">
-                <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+          <Container>
+          <Form onSubmit={onSubmit}>
+          <h3>Создать заявку</h3> 
+          <Table striped bordered hover size="sm">
+                        <tbody>
+                            <tr>
+                            <td>Название заявки</td>
+                            <td><Form.Control
+                                  type="text"
+                                  name="Name"
+                                  onChange={handleChange}
+                                  placeholder="Название заявки"
+                              />
+                              <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Name}</span></td>
+                            </tr>
+                            <tr>
+                            <td>Максимальная цена</td>
+                            <td><Form.Control
+                                  type="number"
+                                  name="MaxPrice"
+                                  onChange={handleChange}
+                                  placeholder="Максимальная стоимость"
+                              />
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>Максимальный срок поставки (дней)</td>
+                            <td><Form.Control
+                                  type="number"
+                                  name="MaxDate"
+                                  onChange={handleChange}
+                                  placeholder="Максимальный срок поставки (дней)"
+                              />
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>Дата окончания предложений</td>
+                            <td><Form.Control
+                                  type="date"
+                                  name="EndDateOffers"
+                                  onChange={handleChange}
+                                  defaultValue={date} 
+                                  placeholder="Дата окончания предложений"
+                              />
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>Текст заявки</td>
+                            <td><Form.Control
+                                  name="Text"
+                                  onChange={handleChange}
+                                  placeholder="Текст заявки"
+                                  as="textarea"
+                              />
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>Комментарий</td>
+                            <td><Form.Control
+                                  name="Comment"
+                                  onChange={handleChange}
+                                  placeholder="Комментарий"
+                              /></td>
+                            </tr>
+                            <tr>
+                            <td>Контактный телефон</td>
+                            <td> <Form.Control
+                                name="Telefon"
+                                onChange={handleChange}
+                                placeholder="Контактный телефон"
+                            /></td>
+                            </tr>
+                            <tr>
+                            <td>Категории</td>
+                            <td>
+                            <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
-                                ...
-                                </Button>
-                </InputGroup>
-                </Form.Group>
-                <Form.Group>
-                <Form.Label>Регион</Form.Label>
-                <InputGroup className="mb-3">
-                <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                                Выбор
+                                </Button></td>
+                            </tr>
+                            <tr>
+                            <td>Регионы</td>
+                            <td>
+                            <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
-                                ...
-                                </Button>
-                </InputGroup>
-                </Form.Group>
-                <div className="form-group files">
-                  <label>Файлы </label>
-                  <input type="file"
-                        onChange={onInputChange}
-                        className="form-control"
-                        multiple/>
-                </div>
-                <Button
-                variant="primary"
-                type="submit"
-                className="btn btn-success ml-auto mr-1"
-                >
-                Отправить
-                </Button>
-            </Form>
-            {files.map((a,key)=><div key={key}>{a.name}
-              <button onClick={()=>removeFile(key)}>X</button>
-            </div>
-            )}   
-            </Col>
-        </Row>    
-        </Container> 
+                                Выбор
+                                </Button></td>
+                            </tr>
+                            <tr>
+                            <td>Файлы</td>
+                            <td>
+                            <input type="file"
+                                onChange={onInputChange}
+                                className="form-control"
+                                multiple/> {files.map((a,key)=><div key={key}>{a.name}
+                                <button onClick={()=>removeFile(key)}>X</button>
+                              </div>
+                              )}   </td>
+                            </tr>
+                            
+                        </tbody>
+           </Table>                   
+            <Button
+            variant="primary"
+            type="submit"
+            className="btn btn-success ml-auto mr-1"
+            >
+            Отправить
+            </Button>
         <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 
@@ -270,7 +268,9 @@ const CreateAsk = () => {
                 component={<CategoryTree 
                 checked={checkedCat} expanded={expandedCat} 
                 setChecked={setCheckedCat} setExpanded={setExpandedCat}
-                />}/>
+          />}/>
+          </Form>
+        </Container>
         </div>
     );
 };

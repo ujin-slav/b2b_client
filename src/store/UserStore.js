@@ -53,6 +53,16 @@ export default class UserStore {
         }
     }
 
+    async changeuser(data){
+        try {
+            const response = await AuthService.changeuser(data);
+            //this.setUser(response.data.user); 
+            return response;
+        } catch (error) {
+            console.log("error");
+        }
+    }
+
     async logout() {
         try {
             await AuthService.logout();

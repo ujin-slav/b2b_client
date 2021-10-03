@@ -8,12 +8,13 @@ const Profile =  observer(() => {
     const {user} = useContext(Context);  
     const[profile,setProfile] = useState( {
         data: {
-            name: user.user.name,
-            nameOrg:  user.user.nameOrg,
-            adressOrg: user.user.adressOrg,
-            telefon: user.user.telefon,
-            inn: user.user.inn,
-            fiz: user.user.fiz
+            id:null,
+            name: null,
+            nameOrg:  null,
+            adressOrg: null,
+            telefon: null,
+            inn: null,
+            fiz: null
           },
           formErrors: {
             name: "",
@@ -26,22 +27,35 @@ const Profile =  observer(() => {
       }
     );
 
+    
     const handleChange = (e) =>{
         e.preventDefault();
         const { name, value } = e.target;
         let formErrors = profile.formErrors;
         let data = profile.data
         data[name] = value;
-        
+        console.log(e.target)
         setProfile({ data, formErrors});
     }
 
+    const onSubmit = async (e)=>{
+        e.preventDefault();
+        let formErrors = profile.formErrors;
+        let data = profile.data
+        
+        for (var key in data) {
+            data[key] === null && (data[key] = user.user[key]);
+        }
+        setProfile({ data, formErrors});
+        const result = await user.changeuser(profile);
+    }
+    
     return (
         <div>
             <Container>
             <Row>
                 <Col>
-                <Form>
+                <Form onSubmit={onSubmit}>
                      <h3>Профаил</h3>
                      <Table striped bordered hover size="sm">
                         <tbody>
@@ -84,7 +98,7 @@ const Profile =  observer(() => {
                             <tr>
                             <td>ИНН</td>
                             <td> <Form.Control
-                                    name="adressOrg"
+                                    name="inn"
                                     type="text"
                                     onChange={handleChange}
                                     defaultValue={user.user.inn}
