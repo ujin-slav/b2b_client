@@ -152,7 +152,7 @@ const CardAsk = () => {
                 <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
             </div>)}
             <Card>
-                <Card.Header>Предложения</Card.Header>
+                <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
                     <thead>
                       <tr>
@@ -175,7 +175,7 @@ const CardAsk = () => {
                   </Table>
             </Card>   
             <Card>
-            <Card.Header>Мое предложение</Card.Header>
+            <Card.Header style={{"background":"#282C34", "color":"white"}}>Мое предложение</Card.Header>
             <Card.Body>
                 <Form onSubmit={onSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

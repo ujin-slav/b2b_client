@@ -1,20 +1,41 @@
 import $api from "../http";
 
 export default class AskService {
-    static async fetchAsks() {
-        const result = await $api.get('/getask')
-        return  result;
-    }
 
-    static async fetchOneAsk(id) {
-        const result = await $api.get('/getask', {id})
-        return  result;
-    }
-
-
-    static async upload(id) {
-        const {data} = await $api.post(`/upload`,{id});
-        console.log(data)
+    static async fetchAsks(formData){
+        const {data} = await $api.post(`/getask`,{formData});
         return data
     }
+    
+    static async fetchOneAsk(id){
+        const {data} = await $api.post(`/getoneask`,{id});
+        return data
+    }
+    static async fetchOffers(id){
+        const {data} = await $api.post(`/getoffers`,{id});
+        return data
+    }
+    static async fetchUserOffers(id){
+        const {data} = await $api.post(`/getuseroffers`,{id});
+        return data
+    }
+    static async fetchUser(id){
+        const {data} = await $api.post(`/getuser`,{id});
+        return data
+    }
+    static async upload(formData){
+        const {data} = await $api.post(`/addask`, formData);
+        return data
+    }
+    static async uploadOffer(formData){
+        const {data} = await $api.post(`/addoffer`, formData);
+        return data
+    }
+    static async deleteOffer(id){
+        return $api.post(`/deleteoffer`, {id});
+    }
+    static async deleteAsk(id){
+        return $api.post(`/deleteask`, {id});
+    }
+    
 }

@@ -7,9 +7,14 @@ import { CARDASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
+import ModalAlert from './ModalAlert';
+import AskService from '../services/AskService'
 
 const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
+    const {myalert} = useContext(Context);
+    const [deleteId,setDeleteId] = useState();
+    const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
     let limit = 10;
@@ -23,9 +28,17 @@ const TableAsk = observer(({authorId}) => {
     const fetchComments = async (currentPage) => {
       fetchAsks({limit,page:currentPage}).then((data)=>{
         ask.setAsk(data.docs)
-    })
+    })};
 
-    };
+    const deleteAsk = async () =>{
+      const result = await AskService.deleteAsk(deleteId);
+      if (result.status===200){
+        myalert.setMessage("Успешно"); 
+      } else {
+        myalert.setMessage(result.data.message);
+      }
+      console.log(result);
+    }
 
     const handlePageClick = async (data) => {
       let currentPage = data.selected + 1;
@@ -44,6 +57,7 @@ const TableAsk = observer(({authorId}) => {
             <th>Категории товара</th>
             <th>Максимальная цена</th>
             <th>Окончание предложений</th>
+            <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
@@ -56,6 +70,11 @@ const TableAsk = observer(({authorId}) => {
             <td></td>
             <td>{item.Price}</td>
             <td>{item.EndDateOffers}</td>
+            <td></td>
+            <td><button onClick={(item)=>{
+              setModalActive(true);
+              setDeleteId(item._id)
+            }}>Удалить</button></td>
           </tr>
         )}  
         </tbody>
@@ -79,6 +98,9 @@ const TableAsk = observer(({authorId}) => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
+          <ModalAlert header="Вы действительно хотите удалить" 
+              active={modalActive} 
+              setActive={setModalActive} funRes={deleteAsk}/>
      </div> 
     );
 });

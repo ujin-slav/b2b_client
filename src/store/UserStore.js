@@ -56,7 +56,9 @@ export default class UserStore {
     async changeuser(data){
         try {
             const response = await AuthService.changeuser(data);
-            //this.setUser(response.data.user); 
+            if(response.status===200){
+                await this.checkAuth()
+            }
             return response;
         } catch (error) {
             console.log("error");

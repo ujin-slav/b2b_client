@@ -6,6 +6,7 @@ import {observer} from "mobx-react-lite";
 const Profile =  observer(() => {
 
     const {user} = useContext(Context);  
+    const {myalert} = useContext(Context);
     const[profile,setProfile] = useState( {
         data: {
             id:null,
@@ -29,12 +30,19 @@ const Profile =  observer(() => {
 
     
     const handleChange = (e) =>{
-        e.preventDefault();
         const { name, value } = e.target;
         let formErrors = profile.formErrors;
         let data = profile.data
         data[name] = value;
-        console.log(e.target)
+        setProfile({ data, formErrors});
+    }
+
+    const handleChecked = (e) =>{
+        const { name, checked } = e.target;
+        let formErrors = profile.formErrors;
+        let data = profile.data
+        data[name] = checked;
+        console.log(checked)
         setProfile({ data, formErrors});
     }
 
@@ -48,6 +56,11 @@ const Profile =  observer(() => {
         }
         setProfile({ data, formErrors});
         const result = await user.changeuser(profile);
+        if (result.status===200){
+            myalert.setMessage("Данные успешно сохранены"); 
+        } else {
+            myalert.setMessage(result.data.message);
+        }
     }
     
     return (
@@ -73,8 +86,8 @@ const Profile =  observer(() => {
                             <td><Form.Check
                                     name="fiz"
                                     type="checkbox"
-                                    onChange={handleChange}
-                                    defaultValue={user.user.fiz}
+                                    onChange={handleChecked}
+                                    defaultChecked={user.user.fiz}
                                 />  </td>
                             </tr>
                             <tr>
