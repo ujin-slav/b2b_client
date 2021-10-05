@@ -10,11 +10,14 @@ import AlertCustom from './components/AlertCustom';
 function App() {
   const {user} = useContext(Context);
 
+
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      user.checkAuth()
-    }
-  }, [user])
+    (async () => {
+      if (localStorage.getItem('token')) {
+        await user.checkAuth()
+      }
+    })();
+  }, []);
 
   return (
     <BrowserRouter>

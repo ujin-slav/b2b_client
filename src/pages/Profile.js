@@ -27,7 +27,6 @@ const Profile =  observer(() => {
           }
       }
     );
-
     
     const handleChange = (e) =>{
         const { name, value } = e.target;
