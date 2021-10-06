@@ -8,6 +8,7 @@ import Reset from "../pages/Reset";
 import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
 import MyOffers from "../pages/MyOffers";
+import ModifyAsk from "../pages/ModifyAsk";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -21,6 +22,7 @@ export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
 export const MYOFFERS = '/myoffers'
+export const MODIFYASK = '/modifyask'
 
 export const authRoutes = [
     {
@@ -73,6 +75,10 @@ export const publicRoutes = [
     {
         path: MYOFFERS,
         Component: MyOffers
+    },
+    {
+        path: MODIFYASK + '/:id',
+        Component: ModifyAsk
     }
 ]
 

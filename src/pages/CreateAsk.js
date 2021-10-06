@@ -85,8 +85,8 @@ const CreateAsk = () => {
         data.append("EndDateOffers", ask.data.EndDateOffers)
         data.append("Comment", ask.data.Comment)
         data.append("Text", ask.data.Text)
-        data.append("Category", ask.data.Category)
-        data.append("Region", ask.data.Region)
+        data.append("Category", JSON.stringify(checkedCat))
+        data.append("Region", JSON.stringify(checkedRegion))
         data.append("Date", new Date())
         const result = await upload(data)
         if(result.ask){

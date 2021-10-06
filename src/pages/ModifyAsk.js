@@ -1,4 +1,4 @@
-import React,{useState,useRef,useContext} from 'react';
+import React,{useState,useRef,useContext,useEffect} from 'react';
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -11,6 +11,7 @@ import {
     Table,
   } from "react-bootstrap";
 import {upload} from "../http/askAPI";
+import {useParams} from 'react-router-dom';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
@@ -18,6 +19,8 @@ import {Context} from "../index";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import AskService from '../services/AskService';
+import ModalAlert from '../components/ModalAlert';
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -69,7 +72,22 @@ const ModifyAsk = (askId) => {
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const [modalActive,setModalActive] = useState(false);
+    const [deleteId,setDeleteId] = useState();
     const {myalert} = useContext(Context);
+    const {id} = useParams();
+
+    useEffect(() => {
+      AskService.fetchOneAsk(id).then((result)=>{
+        let formErrors = ask.formErrors;
+        let data = Object.assign(ask.data, result);
+        setCheckedRegion(result.Region);
+        setCheckedCat(result.Category);
+        setAsk({ data, formErrors});  
+        setFiles(result.Files);
+        console.log(files)
+      })
+    },[]);
 
     const onSubmit = async(e) => {
       e.preventDefault();
@@ -132,9 +150,7 @@ const ModifyAsk = (askId) => {
     };
     
     const removeFile = (id) => {
-      console.log(id);
-      const newFiles = files.filter((item,index,array)=>index!==id);
-      setFiles(newFiles);
+      console.log(deleteId);
     }
 
     var curr = new Date();
@@ -153,6 +169,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   type="text"
                                   name="Name"
+                                  defaultValue={ask.data.Name}
                                   onChange={handleChange}
                                   placeholder="Название заявки"
                               />
@@ -163,6 +180,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   type="number"
                                   name="MaxPrice"
+                                  defaultValue={ask.data.MaxPrice}
                                   onChange={handleChange}
                                   placeholder="Максимальная стоимость"
                               />
@@ -173,6 +191,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   type="number"
                                   name="MaxDate"
+                                  defaultValue={ask.data.MaxDate}
                                   onChange={handleChange}
                                   placeholder="Максимальный срок поставки (дней)"
                               />
@@ -183,8 +202,8 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   type="date"
                                   name="EndDateOffers"
+                                  defaultValue={ask.data.EndDateOffers}
                                   onChange={handleChange}
-                                  defaultValue={date} 
                                   placeholder="Дата окончания предложений"
                               />
                             </td>
@@ -194,6 +213,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   name="Text"
                                   onChange={handleChange}
+                                  defaultValue={ask.data.Text}
                                   placeholder="Текст заявки"
                                   as="textarea"
                               />
@@ -204,6 +224,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   name="Comment"
                                   onChange={handleChange}
+                                  defaultValue={ask.data.Comment}
                                   placeholder="Комментарий"
                               /></td>
                             </tr>
@@ -212,6 +233,7 @@ const ModifyAsk = (askId) => {
                             <td> <Form.Control
                                 name="Telefon"
                                 onChange={handleChange}
+                                defaultValue={ask.data.Telefon}
                                 placeholder="Контактный телефон"
                             /></td>
                             </tr>
@@ -237,8 +259,11 @@ const ModifyAsk = (askId) => {
                             <input type="file"
                                 onChange={onInputChange}
                                 className="form-control"
-                                multiple/> {files.map((a,key)=><div key={key}>{a.name}
-                                <button onClick={()=>removeFile(key)}>X</button>
+                                multiple/> {files.map((a,key)=><div key={key}>{a.originalname}
+                                <button onClick={()=>{
+                                  setModalActive(true)
+                                  setDeleteId(a.filename);                                 
+                                  }}>X</button>
                               </div>
                               )}   </td>
                             </tr>
@@ -270,6 +295,9 @@ const ModifyAsk = (askId) => {
           />}/>
           </Form>
         </Container>
+        <ModalAlert header="Вы действительно хотите удалить фаил безвозвратно?" 
+              active={modalActive} 
+              setActive={setModalActive} funRes={removeFile}/>
         </div>
     );
 };

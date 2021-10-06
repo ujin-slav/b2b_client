@@ -3,7 +3,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { CARDASK } from '../utils/routes';
+import { CARDASK, MODIFYASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
@@ -84,8 +84,7 @@ const TableAsk = observer(() => {
             }} /><Pen color="green" style={{"margin-left":"15px","width": "25px", "height": "25px"}}
             onClick={(e)=>{
                 e.stopPropagation();
-                setModalActive(true);
-                setDeleteId(item._id)
+                history.push(MODIFYASK + '/' + item._id)
         }} /></td>
           </tr>
         )}  
