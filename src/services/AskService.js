@@ -37,5 +37,8 @@ export default class AskService {
     static async deleteAsk(id){
         return $api.post(`/deleteask`, {id});
     }
+    static async deleteFile(path){
+        return $api.post(`/deletefile`, {path});
+    }
     
 }

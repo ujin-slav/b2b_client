@@ -10,7 +10,7 @@ import {
     Card,
     Table,
   } from "react-bootstrap";
-import {upload} from "../http/askAPI";
+import {modifyAsk} from "../http/askAPI";
 import {useParams} from 'react-router-dom';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
@@ -38,8 +38,6 @@ const formValid = ({ data, formErrors }) => {
 return valid;
 };
 
-
-const data = new FormData();
 
 const ModifyAsk = (askId) => {
     const[ask,setAsk] = useState( {
@@ -72,8 +70,7 @@ const ModifyAsk = (askId) => {
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
-    const [modalActive,setModalActive] = useState(false);
-    const [deleteId,setDeleteId] = useState();
+    const [deletedFiles,setDeletedFiles] = useState([]);
     const {myalert} = useContext(Context);
     const {id} = useParams();
 
@@ -85,13 +82,12 @@ const ModifyAsk = (askId) => {
         setCheckedCat(result.Category);
         setAsk({ data, formErrors});  
         setFiles(result.Files);
-        console.log(files)
       })
     },[]);
 
     const onSubmit = async(e) => {
       e.preventDefault();
-      if (formValid(ask)) {
+      if (1===1) {
         const data = new FormData();
         files.forEach((item)=>data.append("file", item));
         data.append("Author", user.user.id)
@@ -102,10 +98,11 @@ const ModifyAsk = (askId) => {
         data.append("EndDateOffers", ask.data.EndDateOffers)
         data.append("Comment", ask.data.Comment)
         data.append("Text", ask.data.Text)
-        data.append("Category", ask.data.Category)
-        data.append("Region", ask.data.Region)
+        data.append("Category", JSON.stringify(checkedCat))
+        data.append("Region", JSON.stringify(checkedRegion))
+        data.append("DeletedFiles", JSON.stringify(deletedFiles))
         data.append("Date", new Date())
-        const result = await upload(data)
+        const result = await modifyAsk(data)
         if(result.ask){
           myalert.setMessage("Заявка успешно добавлена");
         } else if(!result.errors){
@@ -150,7 +147,9 @@ const ModifyAsk = (askId) => {
     };
     
     const removeFile = (id) => {
-      console.log(deleteId);
+      setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
+      const newFiles = files.filter((item,index,array)=>index!==id);
+      setFiles(newFiles);
     }
 
     var curr = new Date();
@@ -161,7 +160,7 @@ const ModifyAsk = (askId) => {
         <div>
           <Container>
           <Form onSubmit={onSubmit}>
-          <h3>Создать заявку</h3> 
+          <h3>Редактировать заявку</h3> 
           <Table striped bordered hover size="sm">
                         <tbody>
                             <tr>
@@ -260,10 +259,7 @@ const ModifyAsk = (askId) => {
                                 onChange={onInputChange}
                                 className="form-control"
                                 multiple/> {files.map((a,key)=><div key={key}>{a.originalname}
-                                <button onClick={()=>{
-                                  setModalActive(true)
-                                  setDeleteId(a.filename);                                 
-                                  }}>X</button>
+                                <button onClick={()=>removeFile(key)}>X</button>
                               </div>
                               )}   </td>
                             </tr>
@@ -295,9 +291,6 @@ const ModifyAsk = (askId) => {
           />}/>
           </Form>
         </Container>
-        <ModalAlert header="Вы действительно хотите удалить фаил безвозвратно?" 
-              active={modalActive} 
-              setActive={setModalActive} funRes={removeFile}/>
         </div>
     );
 };
