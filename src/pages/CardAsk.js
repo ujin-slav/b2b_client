@@ -93,6 +93,10 @@ const CardAsk = () => {
                      <Table striped bordered hover size="sm">
                         <tbody>
                             <tr>
+                            <td>Автор</td>
+                            <td>{ask?.Author}</td>
+                            </tr>
+                            <tr>
                             <td>Название</td>
                             <td>{ask?.Name}</td>
                             </tr>
@@ -101,56 +105,27 @@ const CardAsk = () => {
                             <td>{ask?.Status}</td>
                             </tr>
                             <tr>
-                            <td>Начальная цена</td>
-                            <td>{ask?.Price}</td>
-                            </tr>
-                            <tr>
-                            <td>Имя контактного лица</td>
+                            <td>Контактные данные</td>
                             <td>{ask?.FIO}</td>
-                            </tr>
-                            <tr>
-                            <td>Телефон контактного лица</td>
-                            <td>{ask?.Telefon}</td>
-                            </tr>
-                            <tr>
-                            <td>Телефон контактного лица</td>
-                            <td>{ask?.Telefon}</td>
-                            </tr>
-                            <tr>
-                            <td>Поставка до:</td>
-                            <td>{ask?.DeliveryTime}</td>
-                            </tr>
-                            <tr>
-                            <td>Поставка до</td>
-                            <td>{ask?.DeliveryTime}</td>
-                            </tr>
-                            <tr>
-                            <td>Место поставки</td>
-                            <td>{ask?.DeliveryAddress}</td>
-                            </tr>
-                            <tr>
-                            <td>Условия оплаты</td>
-                            <td>{ask?.TermsPayments}</td>
                             </tr>
                             <tr>
                             <td>Время окончания предложений</td>
                             <td>{ask?.EndDateOffers}</td>
                             </tr>
                             <tr>
-                            <td>Комментарий</td>
-                            <td>{ask?.Comment}</td>
-                            </tr>
-                            <tr>
                             <td>Текст заявки</td>
                             <td>{ask?.Text}</td>
+                            </tr>
+                            <tr>
+                            <td>Файлы зяявки</td>
+                            <td> {ask?.Files?.map((item)=><div>
+                              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                          </div>)}</td>
                             </tr>
                         </tbody>
                     </Table>
                 </Col>
             </Row>
-            {ask?.Files?.map((item)=><div>
-                <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-            </div>)}
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
@@ -208,7 +183,6 @@ const CardAsk = () => {
                 </Form>
             </Card.Body>
             </Card>
-
         </Container>
     );
 };

@@ -41,7 +41,6 @@ const TableAsk = observer(({authorId}) => {
             <th>ИНН заказчика</th>
             <th>Регионы</th>
             <th>Категории товара</th>
-            <th>Максимальная цена</th>
             <th>Окончание предложений</th>
           </tr>
         </thead>
@@ -53,7 +52,6 @@ const TableAsk = observer(({authorId}) => {
             <td>{item.Status}</td>
             <td></td>
             <td></td>
-            <td>{item.Price}</td>
             <td>{item.EndDateOffers}</td>
             <td></td>
           </tr>

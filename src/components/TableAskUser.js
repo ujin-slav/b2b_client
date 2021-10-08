@@ -57,10 +57,8 @@ const TableAsk = observer(() => {
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
-            <th>ИНН заказчика</th>
             <th>Регионы</th>
             <th>Категории товара</th>
-            <th>Максимальная цена</th>
             <th>Окончание предложений</th>
             <th>Удалить</th>
           </tr>
@@ -72,8 +70,6 @@ const TableAsk = observer(() => {
             <td>{item.Name}</td>
             <td>{item.Status}</td>
             <td></td>
-            <td></td>
-            <td>{item.Price}</td>
             <td>{item.EndDateOffers}</td>
             <td></td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}

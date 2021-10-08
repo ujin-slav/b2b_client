@@ -44,9 +44,7 @@ const ModifyAsk = (askId) => {
         data: {
           Author: "",
           Name: "",
-          MaxPrice: "",
           Telefon: "",
-          MaxDate: "",
           EndDateOffers: "",
           Comment: "",
           Text: null,
@@ -55,9 +53,6 @@ const ModifyAsk = (askId) => {
         },
         formErrors: {
           Name: "",
-          MaxPrice: "",
-          MaxDate: "",
-          DateExp: "",
           Text: "",
         }
       }
@@ -90,21 +85,21 @@ const ModifyAsk = (askId) => {
       if (1===1) {
         const data = new FormData();
         files.forEach((item)=>data.append("file", item));
+        data.append("id", id)
         data.append("Author", user.user.id)
         data.append("Name", ask.data.Name)
-        data.append("MaxPrice", ask.data.MaxPrice)
         data.append("Telefon", ask.data.Telefon)
-        data.append("MaxDate", ask.data.MaxDate)
         data.append("EndDateOffers", ask.data.EndDateOffers)
-        data.append("Comment", ask.data.Comment)
         data.append("Text", ask.data.Text)
         data.append("Category", JSON.stringify(checkedCat))
         data.append("Region", JSON.stringify(checkedRegion))
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
         data.append("Date", new Date())
         const result = await modifyAsk(data)
-        if(result.ask){
-          myalert.setMessage("Заявка успешно добавлена");
+        //window.location.reload();
+        console.log(result);
+        if(result.ok===1){
+          myalert.setMessage("Заявка успешно изменена");
         } else if(!result.errors){
           myalert.setMessage(result.errors?.message);
         }
@@ -175,28 +170,6 @@ const ModifyAsk = (askId) => {
                               <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Name}</span></td>
                             </tr>
                             <tr>
-                            <td>Максимальная цена</td>
-                            <td><Form.Control
-                                  type="number"
-                                  name="MaxPrice"
-                                  defaultValue={ask.data.MaxPrice}
-                                  onChange={handleChange}
-                                  placeholder="Максимальная стоимость"
-                              />
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>Максимальный срок поставки (дней)</td>
-                            <td><Form.Control
-                                  type="number"
-                                  name="MaxDate"
-                                  defaultValue={ask.data.MaxDate}
-                                  onChange={handleChange}
-                                  placeholder="Максимальный срок поставки (дней)"
-                              />
-                            </td>
-                            </tr>
-                            <tr>
                             <td>Дата окончания предложений</td>
                             <td><Form.Control
                                   type="date"
@@ -219,16 +192,7 @@ const ModifyAsk = (askId) => {
                             </td>
                             </tr>
                             <tr>
-                            <td>Комментарий</td>
-                            <td><Form.Control
-                                  name="Comment"
-                                  onChange={handleChange}
-                                  defaultValue={ask.data.Comment}
-                                  placeholder="Комментарий"
-                              /></td>
-                            </tr>
-                            <tr>
-                            <td>Контактный телефон</td>
+                            <td>Контактные данные</td>
                             <td> <Form.Control
                                 name="Telefon"
                                 onChange={handleChange}
@@ -258,7 +222,7 @@ const ModifyAsk = (askId) => {
                             <input type="file"
                                 onChange={onInputChange}
                                 className="form-control"
-                                multiple/> {files.map((a,key)=><div key={key}>{a.originalname}
+                                multiple/> {files.map((a,key)=><div key={key}>{a.name||a.originalname}
                                 <button onClick={()=>removeFile(key)}>X</button>
                               </div>
                               )}   </td>
