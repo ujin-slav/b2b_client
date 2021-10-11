@@ -18,7 +18,7 @@ const TableOffer = () => {
       AskService.fetchUserOffers(user.user.id).then((data)=>{
             setOffers(data);
         })
-    },[offers]);
+    },[]);
 
     const deleteOffer = async () =>{
       const result = await AskService.deleteOffer(deleteId);

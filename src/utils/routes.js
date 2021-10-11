@@ -9,6 +9,7 @@ import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
 import MyOffers from "../pages/MyOffers";
 import ModifyAsk from "../pages/ModifyAsk";
+import CatOrg from "../pages/CatOrg";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -23,6 +24,7 @@ export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
 export const MYOFFERS = '/myoffers'
 export const MODIFYASK = '/modifyask'
+export const CATORG = '/catorg'
 
 export const authRoutes = [
     {
@@ -79,6 +81,10 @@ export const publicRoutes = [
     {
         path: MODIFYASK + '/:id',
         Component: ModifyAsk
+    },
+    {
+        path: CATORG,
+        Component: CatOrg
     }
 ]
 

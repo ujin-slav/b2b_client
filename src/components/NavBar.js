@@ -1,7 +1,7 @@
 import React, {useContext,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,CATORG} from "../utils/routes";
 import {useHistory,NavLink  } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -31,6 +31,7 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>history.push(CREATEASK)} style={{color: 'white'}}>Создать заявку</Nav.Link>
                     <Nav.Link onClick={()=>history.push(MYORDERS)} style={{color: 'white'}}>Мои заявки</Nav.Link>
                     <Nav.Link onClick={()=>history.push(MYOFFERS)} style={{color: 'white'}}>Мои предложения</Nav.Link>
+                    <Nav.Link onClick={()=>history.push(CATORG)} style={{color: 'white'}}>Справочник организаций</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">
