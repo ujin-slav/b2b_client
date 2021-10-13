@@ -58,12 +58,25 @@ const CatOrg = () => {
 
     return (
         <div>
-            
             <Container>
-            <input type="text" onChange={(e)=>handleSearch(e)} />
-            <div class="row gy-3">
-                {org.map((item)=><CardOrg item={item}/>)}
-             </div>
+                <Row>
+                    <Col>
+                    <Form.Group className="mx-auto my-2">
+                        <Form.Label>Поиск:</Form.Label>
+                        <Form.Control
+                            onChange={handleSearch}
+                            placeholder="Начните набирать ИНН или название организации"
+                        />
+                    </Form.Group>
+                    </Col>
+                </Row>
+            <Row>
+                <Col className="mx-auto my-2">
+                <div className="row gy-3">
+                    {org.map((item)=><CardOrg item={item}/>)}
+                </div>
+                </Col>
+             </Row>
              </Container>
         </div>
     );
