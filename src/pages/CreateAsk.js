@@ -12,6 +12,7 @@ import {
   } from "react-bootstrap";
 import {upload} from "../http/askAPI";
 import ModalCT from '../components/ModalCT';
+import EmailList from '../components/EmailList'
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
 import {Context} from "../index";
@@ -61,10 +62,12 @@ const CreateAsk = () => {
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
     const [modalActiveCat,setModalActiveCat] = useState(false)
+    const [modalActiveMember,setModalActiveMember] = useState(false)
     const [checkedRegion,setCheckedRegion] = useState([]);
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const [checkedEmail,setCheckedEmail] =  useState([]);
     const {myalert} = useContext(Context);
 
     const onSubmit = async(e) => {
@@ -164,6 +167,18 @@ const CreateAsk = () => {
                             </td>
                             </tr>
                             <tr>
+                            <td>Ограничить участников выбранными</td>
+                            <td><Form.Control
+                                  name="Members"
+                                  defaultValue={checkedEmail.map((item)=>item)}
+                                  placeholder="Ограничить участников выбранными"
+                              />
+                               <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
+                                Выбор
+                              </Button>
+                            </td>                      
+                            </tr>
+                            <tr>
                             <td>Текст заявки</td>
                             <td><Form.Control
                                   name="Text"
@@ -234,6 +249,12 @@ const CreateAsk = () => {
                 checked={checkedCat} expanded={expandedCat} 
                 setChecked={setCheckedCat} setExpanded={setExpandedCat}
           />}/>
+          <ModalCT 
+                header="Участники" 
+                active={modalActiveMember}  
+                component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
+                setActive={setModalActiveMember} 
+          />
           </Form>
         </Container>
         </div>

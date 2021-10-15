@@ -5,11 +5,12 @@ import {
     Col,
     Form,
     Button,
-    Spinner,
+    Table,
     Alert,
     Card,
     InputGroup
   } from "react-bootstrap";
+  import { XCircle } from 'react-bootstrap-icons';
   import {Context} from "../index";
   import {observer} from "mobx-react-lite";
   import ContrService from '../services/ContrService';
@@ -23,6 +24,7 @@ const MyContr = observer(() => {
     const [listCont,setListContragent] =  useState([]);
     const [error, setError] = useState();
     const {user} = useContext(Context);  
+    const {myalert} = useContext(Context);
     const [fetching,setFetching] = useState(true);
 
     useEffect(() => {
@@ -39,11 +41,16 @@ const MyContr = observer(() => {
     })
     }
 
-    const handleClick = () => {
+    const handleClick = async() => {
         if(emailRegex.test(contragent)){
-            ContrService.addContr({email:contragent,userid:user.user.id})
-            setListContragent(((oldItems) => [...oldItems, contragent]));
-            setError("")
+            const result = await ContrService.addContr({email:contragent,userid:user.user.id})
+            console.log(result)
+            if (result.errors){
+                setError(result.message)
+            } else {
+                setListContragent(((oldItems) => [...oldItems, contragent]));
+                setError("")
+            }
         } else {
             setError("Неверный e-mail")
         }    
@@ -82,18 +89,25 @@ const MyContr = observer(() => {
                 </Row>
             <Row>
                 <Col className="mx-auto my-2">
-                <div className="row gy-3">
-                    {listCont.map((item,index)=><div key={index}>   
-                        <InputGroup>
-                            <Card>
-                                <Card.Body>{item}</Card.Body>
-                            </Card>
-                            <Button variant="outline-secondary" id="button-addon2" onClick={()=>deleteContr(item)}>
-                                    -
-                            </Button>
-                        </InputGroup>
-                    </div>)}   
-                </div>
+                <Table striped bordered hover>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>E-mail</th>
+                        <th>Удалить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {listCont.map((item,index)=>
+                    <tr>
+                        <td>{index+1}</td>
+                        <td>{item}</td>
+                        <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
+                            onClick={(e)=>{deleteContr(item)}} /></td>
+                    </tr>
+                    )}  
+                    </tbody>
+                    </Table>
                 </Col>
              </Row>
              </Container>
