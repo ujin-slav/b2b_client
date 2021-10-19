@@ -4,6 +4,7 @@ import { fetchOneAsk, fetchOffers, fetchUser} from '../http/askAPI';
 import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
 import {uploadOffer} from "../http/askAPI";
 import {Context} from "../index";
+import Question from '../components/Question';
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -117,7 +118,7 @@ const CardAsk = () => {
                             <td>{ask?.Text}</td>
                             </tr>
                             <tr>
-                            <td>Файлы зяявки</td>
+                            <td>Файлы заявки</td>
                             <td> {ask?.Files?.map((item)=><div>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
                           </div>)}</td>
@@ -127,6 +128,10 @@ const CardAsk = () => {
                 </Col>
             </Row>
             <Card>
+                <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
+                <Question offers={offers} author={ask?.Author}/>
+            </Card>   
+            <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
                     <thead>
@@ -135,15 +140,19 @@ const CardAsk = () => {
                         <th>Автор</th>
                         <th>Цена</th>
                         <th>Сообщение</th>
+                        <th>Файлы</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {offers?.map((item)=>
-                        <tr>
-                          <td>{item.Item}</td>
+                      {offers?.map((item,index)=>
+                        <tr key={index}>
+                          <td>{index+1}</td>
                           <td>{item.Author}</td>
                           <td>{item.Price}</td>
                           <td>{item.Text}</td>
+                          <td>{item.Files?.map((item)=><div>
+                              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                          </div>)}</td>
                         </tr>
                       )}
                     </tbody>
@@ -164,7 +173,7 @@ const CardAsk = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                     <div className="form-group files">
-                    <label>Файлы </label>
+                    <label>Файлы(будут храниться не более 30 дней)</label>
                     <input type="file"
                             onChange={onInputChange}
                             className="form-control"

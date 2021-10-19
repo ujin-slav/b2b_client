@@ -213,7 +213,7 @@ const CreateAsk = () => {
                                 </Button></td>
                             </tr>
                             <tr>
-                            <td>Файлы</td>
+                            <td>Файлы(будут храниться не более 30 дней)</td>
                             <td>
                             <input type="file"
                                 onChange={onInputChange}
