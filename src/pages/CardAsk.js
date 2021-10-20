@@ -129,7 +129,10 @@ const CardAsk = () => {
             </Row>
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
-                <Question offers={offers} author={ask?.Author}/>
+                <Question offers={offers} 
+                          author={ask?.Author} 
+                          id={id} 
+                          user={user}/>
             </Card>   
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
