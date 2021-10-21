@@ -119,7 +119,7 @@ const CardAsk = () => {
                             </tr>
                             <tr>
                             <td>Файлы заявки</td>
-                            <td> {ask?.Files?.map((item)=><div>
+                            <td> {ask?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
                           </div>)}</td>
                             </tr>
@@ -153,7 +153,7 @@ const CardAsk = () => {
                           <td>{item.Author}</td>
                           <td>{item.Price}</td>
                           <td>{item.Text}</td>
-                          <td>{item.Files?.map((item)=><div>
+                          <td>{item.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
                           </div>)}</td>
                         </tr>
