@@ -1,7 +1,8 @@
 import React, {useState,
             useContext,
             useRef,
-            useEffect} from "react";
+            useEffect,
+            createRef} from "react";
 import { Form,
         InputGroup,
         Button,
@@ -10,6 +11,7 @@ import { Form,
      } from "react-bootstrap";
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index"; 
+import AnswerCard from "../components/AnswerCard"
 
   
 const Question = ({...props})=>{
@@ -17,6 +19,7 @@ const Question = ({...props})=>{
         author,
         user,
         id} = props   
+
     const [text,setText] = useState('')
     const [dest,setDest] = useState();
     const [quest,setQuest] = useState([]);
@@ -24,9 +27,10 @@ const Question = ({...props})=>{
     const inputEl = useRef(null);
 
     useEffect(() => {
-        QuestService.fetchQuest(id).then((data)=>{
-            setQuest(data.data)    
-            console.log(quest)
+        QuestService.fetchQuest(id).then((response)=>{
+            if(response.status===200){
+                setQuest(response.data)
+            }                
         })
     },[]);
 
@@ -87,13 +91,19 @@ const Question = ({...props})=>{
             <Card.Text className="m-3">
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
             </Card.Text>    
-                <ListGroup variant="flush" >
-                    <ListGroup.Item style={{fontSize:"12px"}} className="p-1">
-                    <a href="javascript:void(0)"> Ответить</a></ListGroup.Item>
-                </ListGroup>
+                    <AnswerCard user={user} 
+                                item={item}
+                                id={id}
+                                />
             </Card>
-        </div>)}
-                        
+                {item.Answer.map((item)=>
+                    <Card className="pl-2">
+                        <Card.Text className="m-2">
+                            {item}
+                        </Card.Text>
+                    </Card>  
+                )}       
+        </div>)}                     
         </div>
     );
     }
