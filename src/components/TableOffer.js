@@ -5,6 +5,7 @@ import {Table} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
+import { XCircle} from 'react-bootstrap-icons';
 
 const TableOffer = () => {
 
@@ -52,9 +53,9 @@ const TableOffer = () => {
             <td>{item.Price}</td>
             <td>{item.Text}</td>
             <td>{item.File}</td>
-            <td><button onClick={()=>{
+            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}} onClick={()=>{
               setModalActive(true);
-              setDeleteId(item._id)}}>Удалить</button></td>
+              setDeleteId(item._id)}}/></td>
           </tr>
         )}  
         </tbody>

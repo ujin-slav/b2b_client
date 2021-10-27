@@ -11,6 +11,7 @@ import MyOffers from "../pages/MyOffers";
 import ModifyAsk from "../pages/ModifyAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
+import Chat from "../pages/Chat";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -27,6 +28,7 @@ export const MYOFFERS = '/myoffers'
 export const MODIFYASK = '/modifyask'
 export const CATORG = '/catorg'
 export const MYCONTR = '/mycontr'
+export const CHAT = '/chat'
 
 export const authRoutes = [
     {
@@ -91,6 +93,10 @@ export const publicRoutes = [
     {
         path: MYCONTR,
         Component: MyContr
+    },
+    {
+        path: CHAT,
+        Component: Chat
     }
 ]
 

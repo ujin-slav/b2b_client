@@ -9,7 +9,7 @@ import QuestService from '../services/QuestService';
 import {Context} from "../index"; 
 
 const AnswerCard = ({...props}) => {
-    const{user,id,item} = props
+    const{user,id,item,setFetchAnswer} = props
     const inputEl = useRef(null);
     const [textAnswer,setTextAnswer] = useState('')
     const [visible,setVisible] =  useState(false)
@@ -30,6 +30,8 @@ const AnswerCard = ({...props}) => {
             myalert.setMessage(result.data.message);
         } else {
             inputEl.current.value = "";
+            setVisible(false)
+            setFetchAnswer(true)
         }
 
     }

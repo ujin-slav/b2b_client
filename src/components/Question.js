@@ -12,9 +12,10 @@ import { Form,
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index"; 
 import AnswerCard from "../components/AnswerCard"
-
+import { ArrowReturnRight,XCircle} from 'react-bootstrap-icons';
+import {observer} from "mobx-react-lite";
   
-const Question = ({...props})=>{
+const Question = observer(({...props})=>{
     const {offers,
         author,
         user,
@@ -22,6 +23,8 @@ const Question = ({...props})=>{
 
     const [text,setText] = useState('')
     const [dest,setDest] = useState();
+    const [fetch,setFetch] = useState(false);
+    const [fetchAnswer,setFetchAnswer] = useState(false)
     const [quest,setQuest] = useState([]);
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
@@ -30,9 +33,11 @@ const Question = ({...props})=>{
         QuestService.fetchQuest(id).then((response)=>{
             if(response.status===200){
                 setQuest(response.data)
+                setFetch(false)
+                setFetchAnswer(false)
             }                
         })
-    },[]);
+    },[fetch,fetchAnswer]);
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
@@ -48,6 +53,7 @@ const Question = ({...props})=>{
             myalert.setMessage(result.data.message);
         } else {
             inputEl.current.value="";
+            setFetch(true)
         }
     }
 
@@ -76,7 +82,7 @@ const Question = ({...props})=>{
                     onChange={(e)=>setText(e.target.value)}
             />
         </Form>
-        {quest?.map((item,index)=>
+        {quest.map((item,index)=>
         <div key={index}>
             <Card>
             <Card.Header className="p-1"><div style={{fontSize:"12px"}}>
@@ -94,18 +100,22 @@ const Question = ({...props})=>{
                     <AnswerCard user={user} 
                                 item={item}
                                 id={id}
+                                setFetchAnswer={setFetchAnswer}
                                 />
             </Card>
                 {item.Answer.map((item)=>
-                    <Card className="pl-2">
-                        <Card.Text className="m-2">
-                            {item}
+                    <Card className="ms-5">
+                        <Card.Text>
+                        <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item}
+                        <span style={{"float": "right"}}>
+                            <XCircle color="red" style={{"width": "25px", "height": "25px"}}/>
+                        </span>
                         </Card.Text>
                     </Card>  
                 )}       
         </div>)}                     
         </div>
     );
-    }
+    })
   
 export default Question;
