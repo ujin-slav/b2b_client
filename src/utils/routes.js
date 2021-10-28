@@ -12,6 +12,8 @@ import ModifyAsk from "../pages/ModifyAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
 import Chat from "../pages/Chat";
+import ChatPage from "../pages/ChatPage";
+
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -96,7 +98,7 @@ export const publicRoutes = [
     },
     {
         path: CHAT,
-        Component: Chat
+        Component: ChatPage
     }
 ]
 
