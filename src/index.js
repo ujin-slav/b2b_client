@@ -18,7 +18,7 @@ ReactDOM.render(
     myalert: new AlertStore(),
     quests: new QuestStore()
     }}>
-    <App />
+    <App/>
   </Context.Provider>,
   document.getElementById('root')
 );

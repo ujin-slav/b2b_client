@@ -52,6 +52,7 @@ const ChatPage = () => {
                     </div>
                     </Col>
                     <Col className="col-9">
+                        <div className="chat">
                         <div className="messageBox">
                             {messageList.map((messageContent) => {
                                 return (
@@ -60,6 +61,7 @@ const ChatPage = () => {
                                 </div>    
                                 );
                             })}
+                        </div>
                         </div>
                         <InputGroup className="mt-3">
                                 <Form.Control as="textarea" 
