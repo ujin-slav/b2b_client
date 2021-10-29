@@ -25,24 +25,22 @@ const ChatPage = () => {
       const messageData = {
         room: "room",
         author: "username",
+        ID: "11111",
         message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
+        time: new Date(Date.now()).toString()
         };
 
       await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
         }
     };
 
     useEffect(() => {
-        socket.on("receive_message", (data) => {
+        socket.emit("join_room", "room");
+        socket.on("receive_message", (data) => { 
         setMessageList((list) => [...list, data]);
         });
-    }, []);
+    }, [socket]);
 
     return (
             <Container fluid>
@@ -54,11 +52,16 @@ const ChatPage = () => {
                     <Col className="col-9">
                         <div className="chat">
                         <div className="messageBox">
-                            {messageList.map((messageContent) => {
+                            {messageList.map((messageContent, index) => {
                                 return (
-                                <div className="messageItem">    
-                                    {messageContent.message}
-                                </div>    
+                                <div key={index}>    
+                                    <div className="messageItem">    
+                                            {messageContent.message}
+                                        <div className="messageDate">    
+                                            {messageContent.time}
+                                        </div> 
+                                    </div>    
+                                </div> 
                                 );
                             })}
                         </div>

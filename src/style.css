@@ -79,7 +79,7 @@ table {
     background-color:#0d6efd;
     color:aliceblue;
     border-radius:20px;
-    padding:10px 10px 10px 36px;
+    padding:10px 10px 10px 10px;
     margin:10px;
 }
 
@@ -108,4 +108,8 @@ table {
   direction: rtl;
   background: url(949.jpg);
   background-attachment: fixed;
+}
+
+.messageDate {
+  font-size:x-small;
 }
