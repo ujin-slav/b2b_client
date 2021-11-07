@@ -80,7 +80,36 @@ table {
     color:aliceblue;
     border-radius:20px;
     padding:10px 10px 10px 10px;
-    margin:10px;
+    margin:10px 0px 10px 10px;
+}
+
+.messageItemRecevier {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  position: relative;
+  display: block;
+  transform: rotate(180deg);
+
+  background-color:#dad6c3 ;
+  color:black;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
+  margin:10px 0px 10px 10px;
+}
+
+.avatar {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  position: relative;
+  display: block;
+  transform: rotate(180deg);
+
+  background-color:#77e78f ;
+  color:black;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
 }
 
 .userBox{
@@ -112,4 +141,36 @@ table {
 
 .messageDate {
   font-size:x-small;
+}
+
+.userCard {
+  margin:10px;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
+  font-size: 15px;
+  background-color:#FFF4A8 !important;
+}
+
+.userCardChange {
+  margin:10px;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
+  font-size: 15px;
+  background-color:#a2ebfd !important;
+}
+.messageTable{
+  background-color: rgba(0, 0, 0, 0.0) !important;
+  border-spacing: 0em 0em
+}
+.unread{
+  position:relative;
+  left: 200%;
+  font-size: 20px;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
+  background-color:lightsalmon !important;
+}
+
+.waiting{
+  text-align: center;
 }

@@ -11166,6 +11166,11 @@
     "parseuri" "0.0.6"
     "socket.io-parser" "~4.1.1"
 
+"socket.io-file-client@^2.0.2":
+  "integrity" "sha512-IoQUfkJaFAlFvf/CbrZa4HMwMCszWf8xt5fT9okcmhOLyKVV+rjtZr8E+tiOENIiDjnR1Y99ud/+Iv2vtXrUow=="
+  "resolved" "https://registry.npmjs.org/socket.io-file-client/-/socket.io-file-client-2.0.2.tgz"
+  "version" "2.0.2"
+
 "socket.io-parser@~4.1.1":
   "integrity" "sha512-USQVLSkDWE5nbcY760ExdKaJxCE65kcsG/8k5FDGZVVxpD1pA7hABYXYkCUvxUuYYh/+uQw0N/fvBzfT8o07KA=="
   "resolved" "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-4.1.1.tgz"

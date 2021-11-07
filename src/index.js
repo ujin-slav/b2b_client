@@ -7,6 +7,7 @@ import AskUserStore from './store/AskUserStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AlertStore from './store/AlertStore';
 import QuestStore from './store/QuestStore';
+import ChatStore from './store/ChatStore';
 
 export const Context  = createContext(null);
 
@@ -16,7 +17,8 @@ ReactDOM.render(
     ask: new AskStore(),
     askUser: new AskUserStore(),
     myalert: new AlertStore(),
-    quests: new QuestStore()
+    quests: new QuestStore(),
+    chat: new ChatStore()
     }}>
     <App/>
   </Context.Provider>,

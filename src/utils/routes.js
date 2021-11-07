@@ -11,7 +11,6 @@ import MyOffers from "../pages/MyOffers";
 import ModifyAsk from "../pages/ModifyAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
-import Chat from "../pages/Chat";
 import ChatPage from "../pages/ChatPage";
 
 
