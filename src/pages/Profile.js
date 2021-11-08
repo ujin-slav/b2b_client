@@ -2,6 +2,12 @@ import {React, useEffect,useContext,useState} from 'react';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
+import RegionTree from '../components/RegionTree';
+import CategoryTree from '../components/CategoryTree';
+import ModalCT from '../components/ModalCT';
+import {getCategoryName} from '../utils/Convert'
+import { regionNodes } from '../config/Region';
+import { categoryNodes } from '../config/Category';
 
 const Profile =  observer(() => {
 
@@ -27,6 +33,13 @@ const Profile =  observer(() => {
           }
       }
     );
+
+    const [modalActiveReg,setModalActiveReg] = useState(false)
+    const [modalActiveCat,setModalActiveCat] = useState(false)
+    const [checkedRegion,setCheckedRegion] = useState([]);
+    const [expandedRegion,setExpandedRegion] = useState([]);
+    const [checkedCat,setCheckedCat] = useState([]);
+    const [expandedCat,setExpandedCat] = useState([]);
     
     const handleChange = (e) =>{
         const { name, value } = e.target;
@@ -81,15 +94,6 @@ const Profile =  observer(() => {
                                 />  </td>
                             </tr>
                             <tr>
-                            <td>Физическое лицо</td>
-                            <td><Form.Check
-                                    name="fiz"
-                                    type="checkbox"
-                                    onChange={handleChecked}
-                                    defaultChecked={user.user.fiz}
-                                />  </td>
-                            </tr>
-                            <tr>
                             <td>Название организации</td>
                             <td> <Form.Control
                                     name="nameOrg"
@@ -127,6 +131,22 @@ const Profile =  observer(() => {
                                 />  
                             </td>
                             </tr>
+                            <tr>
+                            <td>Категории</td>
+                            <td>
+                            <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                Выбор
+                                </Button></td>
+                            </tr>
+                            <tr>
+                            <td>Регионы</td>
+                            <td>
+                            <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                Выбор
+                                </Button></td>
+                            </tr>
                         </tbody>
                     </Table>
                     <Button
@@ -140,6 +160,22 @@ const Profile =  observer(() => {
                 </Col>
             </Row>
         </Container>
+        <ModalCT 
+                header="Регионы" 
+                active={modalActiveReg} 
+                setActive={setModalActiveReg} 
+                component={<RegionTree 
+                checked={checkedRegion} expanded={expandedRegion} 
+                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
+           <ModalCT 
+                header="Категории" 
+                active={modalActiveCat} 
+                setActive={setModalActiveCat} 
+                component={<CategoryTree 
+                checked={checkedCat} expanded={expandedCat} 
+                setChecked={setCheckedCat} setExpanded={setExpandedCat}
+          />}/>       
         </div>
     );
 });

@@ -7,12 +7,18 @@ import {
   Button,
   Spinner,
   Alert,
+  Card
 } from "react-bootstrap";
 import {Context} from "../index";
 import RegInput from "../components/RegInput";
 import {B2B_ROUTE} from "../utils/routes";
 import {useHistory} from 'react-router-dom';
-
+import ModalCT from '../components/ModalCT';
+import RegionTree from '../components/RegionTree';
+import CategoryTree from '../components/CategoryTree';
+import {getCategoryName} from '../utils/Convert'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -64,6 +70,13 @@ const RegistrationForm = () => {
       }
     );
       const [checked, setChecked] = useState(false);
+
+      const [modalActiveReg,setModalActiveReg] = useState(false)
+      const [modalActiveCat,setModalActiveCat] = useState(false)
+      const [checkedRegion,setCheckedRegion] = useState([]);
+      const [expandedRegion,setExpandedRegion] = useState([]);
+      const [checkedCat,setCheckedCat] = useState([]);
+      const [expandedCat,setExpandedCat] = useState([]);
  
       const handleChecked = () => {
           let data = userReg.data
@@ -155,19 +168,26 @@ const RegistrationForm = () => {
         <Row>
             <Col>
             <Form onSubmit={handleSubmit}>
-                <Form.Check type="checkbox" label="Я частное лицо" checked={checked} onChange={handleChecked}/>
                 <RegInput value={{Name: "name", Label: "Имя", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
-                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />   
-                {!checked ? 
-                <div>           
+                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />             
                 <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.nameOrg}} />
                 <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.inn}} />
                 <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: userReg.formErrors.adressOrg}} />
-                </div> 
-                : 
-                <div></div>
-                }
                 <RegInput value={{Name: "telefon", Label: "Контактный телефон", handleChange, PlaceHolder: "Контактный телефон", ErrorMessage: userReg.formErrors.telefon}} />
+                <Form.Group>
+                <Form.Label>Регионы</Form.Label>
+                <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                Выбор
+                                </Button> 
+                </Form.Group>  
+                <Form.Group>         
+                <Form.Label>Категории</Form.Label>
+                <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                Выбор
+                                </Button>
+                </Form.Group>
                 <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password}} />
                 <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword}} />
                 <Button
@@ -181,6 +201,22 @@ const RegistrationForm = () => {
             </Form>
             </Col>
         </Row>    
+        <ModalCT 
+                header="Регионы" 
+                active={modalActiveReg} 
+                setActive={setModalActiveReg} 
+                component={<RegionTree 
+                checked={checkedRegion} expanded={expandedRegion} 
+                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
+           <ModalCT 
+                header="Категории" 
+                active={modalActiveCat} 
+                setActive={setModalActiveCat} 
+                component={<CategoryTree 
+                checked={checkedCat} expanded={expandedCat} 
+                setChecked={setCheckedCat} setExpanded={setExpandedCat}
+          />}/>       
         </Container>
     );
 };

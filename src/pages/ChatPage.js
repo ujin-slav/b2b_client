@@ -73,7 +73,9 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         return () => {
-            socket.current.disconnect();
+            if(socket.current){
+               socket.current.disconnect(); 
+            }
         };
     }, []);   
 

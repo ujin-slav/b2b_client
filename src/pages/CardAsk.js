@@ -5,6 +5,7 @@ import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
 import {uploadOffer} from "../http/askAPI";
 import {Context} from "../index";
 import Question from '../components/Question';
+import GoogleDocsViewer from "react-google-docs-viewer";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -195,6 +196,11 @@ const CardAsk = () => {
                 </Form>
             </Card.Body>
             </Card>
+            <GoogleDocsViewer
+        width="600px"
+        height="780px"
+        fileUrl="https://disk.yandex.ru/d/g9ncsDazGberMg"
+      />
         </Container>
     );
 };
