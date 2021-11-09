@@ -7,6 +7,7 @@ import { CARDASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
+import dateFormat, { masks } from "dateformat";
 
 const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
@@ -21,6 +22,7 @@ const TableAsk = observer(({authorId}) => {
             setpageCount(data.totalPages);
         })
       },[]);
+
     const fetchComments = async (currentPage) => {
       fetchAsks({limit,page:currentPage}).then((data)=>{
         ask.setAsk(data.docs)
@@ -45,15 +47,15 @@ const TableAsk = observer(({authorId}) => {
           </tr>
         </thead>
         <tbody>
-        {ask?.getAsk().map((item)=>
-          <tr onClick={()=>history.push(CARDASK + '/' + item._id)}>
-            <td>1</td>
+        {ask?.getAsk().map((item,index)=>
+          <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
+            <td>{index+1}</td>
             <td>{item.Name}</td>
             <td>{item.Status}</td>
-            <td></td>
-            <td></td>
-            <td>{item.EndDateOffers}</td>
-            <td></td>
+            <td>{item.INN}</td>
+            <td>{item.Region}</td>
+            <td>{item.Category}</td>
+            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
           </tr>
         )}  
         </tbody>

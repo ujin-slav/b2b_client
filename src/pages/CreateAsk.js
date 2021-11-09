@@ -19,6 +19,7 @@ import {Context} from "../index";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import "../style.css";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -40,13 +41,16 @@ return valid;
 const data = new FormData();
 
 const CreateAsk = () => {
+    var curr = new Date();
+    curr.setDate(curr.getDate() + 3);
+    var date = curr.toISOString().substr(0,10);
     const[ask,setAsk] = useState( {
         data: {
           Author: "",
           Name: "",
           MaxPrice: "",
           Telefon: "",
-          EndDateOffers: "",
+          EndDateOffers: date,
           Text: null,
           Category: "",
           Region: "",
@@ -133,10 +137,6 @@ const CreateAsk = () => {
       const newFiles = files.filter((item,index,array)=>index!==id);
       setFiles(newFiles);
     }
-
-    var curr = new Date();
-    curr.setDate(curr.getDate() + 3);
-    var date = curr.toISOString().substr(0,10);
 
     return (
         <div>

@@ -174,3 +174,9 @@ table {
 .waiting{
   text-align: center;
 }
+
+.eye {
+  padding:0px 0px 0px 5px;
+  width: 30px;
+  height: 30px;
+}

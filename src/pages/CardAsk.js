@@ -6,6 +6,9 @@ import {uploadOffer} from "../http/askAPI";
 import {Context} from "../index";
 import Question from '../components/Question';
 import GoogleDocsViewer from "react-google-docs-viewer";
+import dateFormat, { masks } from "dateformat";
+import {Eye} from 'react-bootstrap-icons';
+import "../style.css";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -40,11 +43,16 @@ const CardAsk = () => {
       });
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
+    const [author, setAuthor] = useState();
     const {id} = useParams();
 
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
+            console.log(data)
+            fetchUser(data.Author).then((data)=>{
+              setAuthor(data)
+            })
         })
         fetchOffers(id).then((data)=>{
             setOffers(data);
@@ -96,7 +104,7 @@ const CardAsk = () => {
                         <tbody>
                             <tr>
                             <td>Автор</td>
-                            <td>{ask?.Author}</td>
+                            <td>{author?.name}</td>
                             </tr>
                             <tr>
                             <td>Название</td>
@@ -104,15 +112,15 @@ const CardAsk = () => {
                             </tr>
                             <tr>
                             <td>Статус</td>
-                            <td>{ask?.Status}</td>
+                            <td>{Date.parse(ask?.EndDateOffers) > new Date().getTime() ? "Активная" : "Истек срок"}</td>
                             </tr>
                             <tr>
                             <td>Контактные данные</td>
-                            <td>{ask?.FIO}</td>
+                            <td>{author?.telefon}</td>
                             </tr>
                             <tr>
                             <td>Время окончания предложений</td>
-                            <td>{ask?.EndDateOffers}</td>
+                            <td>{dateFormat(ask?.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
                             </tr>
                             <tr>
                             <td>Текст заявки</td>
@@ -122,6 +130,8 @@ const CardAsk = () => {
                             <td>Файлы заявки</td>
                             <td> {ask?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}</td>
                             </tr>
                         </tbody>
@@ -196,11 +206,6 @@ const CardAsk = () => {
                 </Form>
             </Card.Body>
             </Card>
-            <GoogleDocsViewer
-        width="600px"
-        height="780px"
-        fileUrl="https://disk.yandex.ru/d/g9ncsDazGberMg"
-      />
         </Container>
     );
 };
