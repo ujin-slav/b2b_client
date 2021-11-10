@@ -4,10 +4,14 @@ import {observer} from "mobx-react-lite";
 import {Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK } from '../utils/routes';
-import { fetchAsks } from "../http/askAPI";
+import { fetchAsks,fetchUser } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import dateFormat, { masks } from "dateformat";
+import {getCategoryName} from '../utils/Convert'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
+import { CircleFill } from 'react-bootstrap-icons';
 
 const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
@@ -20,6 +24,7 @@ const TableAsk = observer(({authorId}) => {
         fetchAsks({authorId,limit,page:1}).then((data)=>{
             ask.setAsk(data.docs)
             setpageCount(data.totalPages);
+            console.log(data)
         })
       },[]);
 
@@ -46,18 +51,40 @@ const TableAsk = observer(({authorId}) => {
             <th>Окончание предложений</th>
           </tr>
         </thead>
-        <tbody>
-        {ask?.getAsk().map((item,index)=>
+        <tbody className="tableAsk">
+        {ask?.getAsk().map((item,index)=>{
+          console.log(getCategoryName(item.Category, categoryNodes))
+          return (
           <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
             <td>{index+1}</td>
             <td>{item.Name}</td>
-            <td>{item.Status}</td>
-            <td>{item.INN}</td>
-            <td>{item.Region}</td>
-            <td>{item.Category}</td>
+            {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+            <td className="tdGreen">
+            <CircleFill color="green" style={{"width": "25px", "height": "25px"}}/>
+            Активная
+            </td>
+            :
+            <td className="tdRed">
+            <CircleFill color="red" style={{"width": "25px", "height": "25px"}}/>
+            Истек срок
+            </td>
+            }
+            <td>{item.Author.inn}</td>
+            <td className="categoryColumn">
+                {getCategoryName(item.Region, regionNodes).join(", ").length>50 ?
+                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 50)}...`
+                 :
+                 getCategoryName(item.Region, regionNodes).join(", ").substring(0, 50)
+                 }</td>
+            <td className="categoryColumn">
+                {getCategoryName(item.Category, categoryNodes).join(", ").length>50 ?
+                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 50)}...`
+                 :
+                 getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 50)
+                 }</td>
             <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
-          </tr>
-        )}  
+          </tr>)
+        })}  
         </tbody>
         </Table>
         <ReactPaginate
