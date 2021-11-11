@@ -77,6 +77,8 @@ const ModifyAsk = (askId) => {
         setCheckedCat(result.Category);
         setAsk({ data, formErrors});  
         setFiles(result.Files);
+
+        console.log(ask.data);
       })
     },[]);
 
@@ -147,13 +149,17 @@ const ModifyAsk = (askId) => {
       setFiles(newFiles);
     }
 
-    var curr = new Date();
-    curr.setDate(curr.getDate() + 3);
-    var date = curr.toISOString().substr(0,10);
+  
+    const getDate =(date)=>{
+      if(date){
+          var curr = new Date(Date.parse(date));
+          return curr.toISOString().substr(0,10);
+      }
+    }
 
     return (
         <div>
-          <Container>
+           <Container style={{width: "70%"}}>
           <Form onSubmit={onSubmit}>
           <h3>Редактировать заявку</h3> 
           <Table striped bordered hover size="sm">
@@ -174,7 +180,7 @@ const ModifyAsk = (askId) => {
                             <td><Form.Control
                                   type="date"
                                   name="EndDateOffers"
-                                  defaultValue={ask.data.EndDateOffers}
+                                  defaultValue={getDate(ask.data.EndDateOffers)}
                                   onChange={handleChange}
                                   placeholder="Дата окончания предложений"
                               />
@@ -203,7 +209,7 @@ const ModifyAsk = (askId) => {
                             <tr>
                             <td>Категории</td>
                             <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
                                 Выбор
                                 </Button></td>
@@ -211,7 +217,7 @@ const ModifyAsk = (askId) => {
                             <tr>
                             <td>Регионы</td>
                             <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
                                 </Button></td>

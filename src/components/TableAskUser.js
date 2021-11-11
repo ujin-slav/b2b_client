@@ -10,6 +10,7 @@ import ReactPaginate from "react-paginate";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
 import { XCircle, Pen } from 'react-bootstrap-icons';
+import dateFormat, { masks } from "dateformat";
 
 const TableAsk = observer(() => {
     const {askUser} = useContext(Context);
@@ -28,7 +29,7 @@ const TableAsk = observer(() => {
                 setpageCount(data.totalPages);
             })
         }
-      },[user.user.id, askUser.arrayAsks]);
+      },[user.user]);
 
     const fetchPage = async (currentPage) => {
       fetchAsks({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
@@ -57,21 +58,35 @@ const TableAsk = observer(() => {
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
-            <th>Регионы</th>
-            <th>Категории товара</th>
+            <th>Текст</th>
             <th>Окончание предложений</th>
             <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
-        {askUser?.getAsk().map((item)=>
-          <tr onClick={()=>history.push(CARDASK + '/' + item._id)}>
-            <td>1</td>
+        {askUser?.getAsk().map((item, index)=>
+          <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
+            <td>{index+1}</td>
             <td>{item.Name}</td>
-            <td>{item.Status}</td>
-            <td></td>
-            <td>{item.EndDateOffers}</td>
-            <td></td>
+            <td>
+            {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+            <td className="tdGreen">
+            Активная
+            </td>
+            :
+            <td className="tdRed">
+            Истек срок
+            </td>
+            }
+            </td>
+            <td className="tdText">
+              {item.Text.length > 50 ? 
+              `${item.Text.substring(0,400)}...`
+              :
+              item.Text
+              }
+            </td>
+            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
                 onClick={(e)=>{
                     e.stopPropagation();

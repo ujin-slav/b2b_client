@@ -60,12 +60,10 @@ const TableAsk = observer(({authorId}) => {
             <td>{item.Name}</td>
             {Date.parse(item.EndDateOffers) > new Date().getTime() ?
             <td className="tdGreen">
-            <CircleFill color="green" style={{"width": "25px", "height": "25px"}}/>
             Активная
             </td>
             :
             <td className="tdRed">
-            <CircleFill color="red" style={{"width": "25px", "height": "25px"}}/>
             Истек срок
             </td>
             }
@@ -74,13 +72,13 @@ const TableAsk = observer(({authorId}) => {
                 {getCategoryName(item.Region, regionNodes).join(", ").length>50 ?
                 `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 50)}...`
                  :
-                 getCategoryName(item.Region, regionNodes).join(", ").substring(0, 50)
+                 getCategoryName(item.Region, regionNodes).join(", ")
                  }</td>
             <td className="categoryColumn">
                 {getCategoryName(item.Category, categoryNodes).join(", ").length>50 ?
                 `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 50)}...`
                  :
-                 getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 50)
+                 getCategoryName(item.Category, categoryNodes).join(", ")
                  }</td>
             <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
           </tr>)

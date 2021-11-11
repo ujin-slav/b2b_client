@@ -1,4 +1,4 @@
-import React,{useState,useRef,useContext} from 'react';
+import React,{useState,useRef,useContext,useEffect} from 'react';
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -73,6 +73,15 @@ const CreateAsk = () => {
     const [expandedCat,setExpandedCat] = useState([]);
     const [checkedEmail,setCheckedEmail] =  useState([]);
     const {myalert} = useContext(Context);
+
+    useEffect(() => {
+      if(user.user.category){
+          setCheckedCat(Object.values(user.user.category))
+      }
+      if(user.user.region){
+          setCheckedRegion(Object.values(user.user.region))
+      }
+    },[user.user])
 
     const onSubmit = async(e) => {
       e.preventDefault();
@@ -193,13 +202,14 @@ const CreateAsk = () => {
                             <td> <Form.Control
                                 name="Telefon"
                                 onChange={handleChange}
+                                defaultValue={user.user.telefon}
                                 placeholder="Контактный телефон"
                             /></td>
                             </tr>
                             <tr>
                             <td>Категории</td>
                             <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
                                 Выбор
                                 </Button></td>
@@ -207,7 +217,7 @@ const CreateAsk = () => {
                             <tr>
                             <td>Регионы</td>
                             <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
                                 </Button></td>

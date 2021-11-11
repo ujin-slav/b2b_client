@@ -21,7 +21,9 @@ const Profile =  observer(() => {
             adressOrg: null,
             telefon: null,
             inn: null,
-            fiz: null
+            fiz: null,
+            region: null,
+            category: null
           },
           formErrors: {
             name: "",
@@ -33,6 +35,15 @@ const Profile =  observer(() => {
           }
       }
     );
+
+    useEffect(() => {
+        if(user.user.category){
+            setCheckedCat(Object.values(user.user.category))
+        }
+        if(user.user.region){
+            setCheckedRegion(Object.values(user.user.region))
+        }
+      },[user.user]);
 
     const [modalActiveReg,setModalActiveReg] = useState(false)
     const [modalActiveCat,setModalActiveCat] = useState(false)
@@ -49,15 +60,6 @@ const Profile =  observer(() => {
         setProfile({ data, formErrors});
     }
 
-    const handleChecked = (e) =>{
-        const { name, checked } = e.target;
-        let formErrors = profile.formErrors;
-        let data = profile.data
-        data[name] = checked;
-        console.log(checked)
-        setProfile({ data, formErrors});
-    }
-
     const onSubmit = async (e)=>{
         e.preventDefault();
         let formErrors = profile.formErrors;
@@ -66,7 +68,10 @@ const Profile =  observer(() => {
         for (var key in data) {
             data[key] === null && (data[key] = user.user[key]);
         }
+        data["category"] = JSON.stringify(checkedCat);
+        data["region"] = JSON.stringify(checkedRegion);
         setProfile({ data, formErrors});
+        console.log(data)
         const result = await user.changeuser(profile);
         if (result.status===200){
             myalert.setMessage("Данные успешно сохранены"); 
@@ -77,7 +82,7 @@ const Profile =  observer(() => {
     
     return (
         <div>
-            <Container>
+            <Container style={{width: "70%"}}>
             <Row>
                 <Col>
                 <Form onSubmit={onSubmit}>
@@ -134,7 +139,7 @@ const Profile =  observer(() => {
                             <tr>
                             <td>Категории</td>
                             <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
                                 Выбор
                                 </Button></td>
@@ -142,7 +147,7 @@ const Profile =  observer(() => {
                             <tr>
                             <td>Регионы</td>
                             <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
                                 </Button></td>

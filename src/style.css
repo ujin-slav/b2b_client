@@ -190,9 +190,15 @@ table {
 }
 
 td.tdGreen{
-  
+  color:green;
+  width: 5%;
 }
 
 td.tdRed{
-  
+  color:red;
+  width: 5%;
+}
+
+.tdText{
+  width: 50% !important;
 }
