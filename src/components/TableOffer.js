@@ -6,23 +6,39 @@ import {Context} from "../index";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
 import { XCircle} from 'react-bootstrap-icons';
+import ReactPaginate from "react-paginate";
+import {observer} from "mobx-react-lite";
 
-const TableOffer = () => {
+const TableOffer = observer(() => {
 
+    const {offerUser} = useContext(Context);
     const [modalActive,setModalActive] = useState(false);
     const [deleteId,setDeleteId] = useState();
     const [offers, setOffers] = useState();
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
+    const [pageCount, setpageCount] = useState(0);
+    let limit = 10;
 
     useEffect(() => {
-      AskService.fetchUserOffers(user.user.id).then((data)=>{
-            setOffers(data);
+      AskService.fetchUserOffers({authorId:user.user.id, limit,page:1}).then((data)=>{
+            offerUser.setOffer(data.docs);
+            setpageCount(data.totalPages);
+            console.log(data)
         })
     },[]);
 
+    const fetchPage = async (currentPage) => {
+      AskService.fetchUserOffers({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
+        offerUser.setOffer(data.docs);
+    })
+    };
+
     const deleteOffer = async () =>{
       const result = await AskService.deleteOffer(deleteId);
+      offerUser.setOffer(
+        offerUser.getOffer().filter(item=>item._id!==deleteId)
+      )
       if (result.status===200){
         myalert.setMessage("Успешно"); 
       } else {
@@ -31,6 +47,10 @@ const TableOffer = () => {
       console.log(result);
     }
 
+    const handlePageClick = async (data) => {
+      let currentPage = data.selected + 1;
+      await fetchPage(currentPage);
+    };
 
     return (
         <div>
@@ -38,7 +58,8 @@ const TableOffer = () => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Закупка</th>
+            <th>Автор закупки</th>
+            <th>Текст закупки</th>
             <th>Цена</th>
             <th>Сообщение</th>
             <th>Фаилы</th>
@@ -46,13 +67,14 @@ const TableOffer = () => {
           </tr>
         </thead>
         <tbody>
-        {offers?.map((item)=>
-          <tr>
-            <td>1</td>
-            <td>{item.Ask}</td>
+        {offerUser.getOffer().map((item,index)=>
+          <tr key={index}>
+            <td>{index+1}</td>
+            <td>{item.Ask.Author.name}</td>
+            <td>{item.Ask.Text}</td>
             <td>{item.Price}</td>
             <td>{item.Text}</td>
-            <td>{item.File}</td>
+            <td></td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}} onClick={()=>{
               setModalActive(true);
               setDeleteId(item._id)}}/></td>
@@ -60,11 +82,30 @@ const TableOffer = () => {
         )}  
         </tbody>
       </Table> 
+      <ReactPaginate
+            previousLabel={"предыдущий"}
+            nextLabel={"следующий"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
       <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteOffer}/>
     </div>
     );
-};
+});
 
 export default TableOffer;

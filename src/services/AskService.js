@@ -15,8 +15,8 @@ export default class AskService {
         const {data} = await $api.post(`/getoffers`,{id});
         return data
     }
-    static async fetchUserOffers(id){
-        const {data} = await $api.post(`/getuseroffers`,{id});
+    static async fetchUserOffers(formData){
+        const {data} = await $api.post(`/getuseroffers`,formData);
         return data
     }
     static async fetchUser(id){

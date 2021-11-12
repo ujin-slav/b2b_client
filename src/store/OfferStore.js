@@ -14,7 +14,7 @@ export default class OfferStore {
     }
 
     setOffer(array){
-        this.arrayOffer = array; 
+        this.arrayOffers = array; 
     }
 
     getOffer(){

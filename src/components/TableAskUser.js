@@ -86,7 +86,7 @@ const TableAsk = observer(() => {
               item.Text
               }
             </td>
-            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
+            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy")}</td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
                 onClick={(e)=>{
                     e.stopPropagation();
