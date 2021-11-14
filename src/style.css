@@ -76,7 +76,6 @@ table {
     display: block;
     transform: rotate(180deg);
 
-    background-color:#0d6efd;
     color:aliceblue;
     border-radius:20px;
     padding:10px 10px 10px 10px;
@@ -201,4 +200,23 @@ td.tdRed{
 
 .tdText{
   width: 50% !important;
+}
+
+
+.nav-link{
+  font-size: 25px;
+  font-family: American Retro;
+  color:white !important;
+}
+.nav-link.generalLink{
+  color:#a2ebfd   !important;
+}
+.nav-link:hover{
+  color:yellow !important;
+  font-weight:bold !important;
+}
+
+.active{
+  color:yellow !important;
+  font-weight:bold !important;
 }
