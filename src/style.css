@@ -1,3 +1,8 @@
+ @font-face {
+  font-family: American Retro; /* Гарнитура шрифта */
+  src: url(American_Retro.eot); /* Для IE5-8 */
+  src: local(American_Retro), url(American_Retro.ttf); /* Для остальных браузеров */
+ }
 
 table {
   background-color: white  !important;

@@ -35,6 +35,7 @@ const Question = observer(({...props})=>{
                 setQuest(response.data)
                 setFetch(false)
                 setFetchAnswer(false)
+                console.log(quest)
             }                
         })
     },[fetch,fetchAnswer]);
@@ -46,7 +47,7 @@ const Question = observer(({...props})=>{
             Text: text,
             Author:user.user.id,
             Ask: id,
-            Destination:dest 
+            Destination:dest ?? author?._id
         }
         const result = await QuestService.addQuest(data)
         if(result.data?.errors){
@@ -66,7 +67,7 @@ const Question = observer(({...props})=>{
                     as="select" 
                     onChange={(e)=>setDest(e.target.value)}        
                 >       
-                        <option value={author}>Автору: {author}</option>
+                        <option value={author?._id}>Автору: {author?.name}</option>
                         {offers?.map((item,index)=>
                         <option key={index} value={item.AuthorID}>{item.Author}</option>
                         )}
@@ -96,12 +97,16 @@ const Question = observer(({...props})=>{
             </Card.Header>
             <Card.Text className="m-3">
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
-            </Card.Text>    
+            </Card.Text>
+            {item.Destination===user.user.id ?     
                     <AnswerCard user={user} 
                                 item={item}
                                 id={id}
                                 setFetchAnswer={setFetchAnswer}
                                 />
+            :
+            <div></div>                    
+            }
             </Card>
                 {item.Answer.map((item)=>
                     <Card className="ms-5">

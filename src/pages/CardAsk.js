@@ -9,6 +9,7 @@ import GoogleDocsViewer from "react-google-docs-viewer";
 import dateFormat, { masks } from "dateformat";
 import {Eye} from 'react-bootstrap-icons';
 import "../style.css";
+import waiting from "../waiting.gif";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -43,16 +44,12 @@ const CardAsk = () => {
       });
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
-    const [author, setAuthor] = useState();
     const {id} = useParams();
 
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
             console.log(data)
-            fetchUser(data.Author).then((data)=>{
-              setAuthor(data)
-            })
         })
         fetchOffers(id).then((data)=>{
             setOffers(data);
@@ -96,6 +93,14 @@ const CardAsk = () => {
       setOffer({data,formErrors});
     }  
 
+    if(user===undefined || ask===undefined){
+      return(
+        <p className="waiting">
+            <img height="320" src={waiting}/>
+        </p>
+    )
+    }
+
     return (
         <Container>
             <Row>
@@ -104,7 +109,7 @@ const CardAsk = () => {
                         <tbody>
                             <tr>
                             <td>Автор</td>
-                            <td>{author?.name}</td>
+                            <td>{ask?.Author?.name}</td>
                             </tr>
                             <tr>
                             <td>Название</td>
@@ -116,7 +121,7 @@ const CardAsk = () => {
                             </tr>
                             <tr>
                             <td>Контактные данные</td>
-                            <td>{author?.telefon}</td>
+                            <td>{ask?.Author?.telefon}</td>
                             </tr>
                             <tr>
                             <td>Время окончания предложений</td>
@@ -166,6 +171,8 @@ const CardAsk = () => {
                           <td>{item.Text}</td>
                           <td>{item.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}</td>
                         </tr>
                       )}

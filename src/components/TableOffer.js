@@ -8,6 +8,7 @@ import AskService from '../services/AskService'
 import { XCircle} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
+import {Eye} from 'react-bootstrap-icons';
 
 const TableOffer = observer(() => {
 
@@ -70,11 +71,26 @@ const TableOffer = observer(() => {
         {offerUser.getOffer().map((item,index)=>
           <tr key={index}>
             <td>{index+1}</td>
-            <td>{item.Ask.Author.name}</td>
-            <td>{item.Ask.Text}</td>
+            <td>
+            <div>{item.Ask.Author.name}</div> 
+            <div>{item.Ask.Author.nameOrg}</div>
+            </td>
+            <td className="tdText">
+            {item.Text.length > 50 ? 
+              `${item.Ask.Text.substring(0,400)}...`
+              :
+              item.Ask.Text
+            }
+            </td>
             <td>{item.Price}</td>
             <td>{item.Text}</td>
-            <td></td>
+            <td>
+            {item?.Files?.map((item,index)=><div key={index}>
+                              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
+                          </div>)}
+            </td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}} onClick={()=>{
               setModalActive(true);
               setDeleteId(item._id)}}/></td>
