@@ -35,7 +35,7 @@ const Question = observer(({...props})=>{
                 setQuest(response.data)
                 setFetch(false)
                 setFetchAnswer(false)
-                console.log(quest)
+                console.log(response.data)
             }                
         })
     },[fetch,fetchAnswer]);
@@ -83,22 +83,23 @@ const Question = observer(({...props})=>{
                     onChange={(e)=>setText(e.target.value)}
             />
         </Form>
-        {quest.map((item,index)=>
+        {quest?.map((item,index)=>
         <div key={index}>
             <Card>
             <Card.Header className="p-1"><div style={{fontSize:"12px"}}>
+            <XCircle color="red" className="xcircleQuest"/>    
                         <span style={{fontWeight:"bold"}}>Автор: </span>
                             {item.Author}
                         </div> 
                         <div style={{fontSize:"12px"}}>
                         <span style={{fontWeight:"bold"}}>Кому: </span>
-                            {item.Destination}
-                        </div>
+                            {item.Destination?.name}                        
+                        </div>               
             </Card.Header>
             <Card.Text className="m-3">
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
             </Card.Text>
-            {item.Destination===user.user.id ?     
+            {item.Destination?._id===user.user.id ?     
                     <AnswerCard user={user} 
                                 item={item}
                                 id={id}
