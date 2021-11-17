@@ -8,4 +8,7 @@ export default class MessageService {
     static fetchQuest(id){
         return $api.post('/getquest',{id});
     }
+    static delQuest(id){
+        return $api.post('/delquest',{id});
+    }
 }

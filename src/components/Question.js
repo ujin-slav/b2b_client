@@ -58,6 +58,17 @@ const Question = observer(({...props})=>{
         }
     }
 
+    const delQuest = async (item) => {
+        console.log(item)
+        const result = await QuestService.delQuest(item.ID);
+        if (result.status===200){
+            myalert.setMessage("Успешно"); 
+          } else {
+            myalert.setMessage(result.data.message);
+          }
+        setFetch(true)
+    }
+
     return (
         <div>
         <Form onSubmit={handleSubmit}>    
@@ -87,9 +98,10 @@ const Question = observer(({...props})=>{
         <div key={index}>
             <Card>
             <Card.Header className="p-1"><div style={{fontSize:"12px"}}>
-            <XCircle color="red" className="xcircleQuest"/>    
+            {item.Author?._id===user.user.id ?
+            <XCircle color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>}            
                         <span style={{fontWeight:"bold"}}>Автор: </span>
-                            {item.Author}
+                            {item.Author.name}
                         </div> 
                         <div style={{fontSize:"12px"}}>
                         <span style={{fontWeight:"bold"}}>Кому: </span>
