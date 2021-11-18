@@ -1,7 +1,7 @@
-import React, {useContext,useEffect,useState} from 'react';
+import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,CATORG, MYCONTR,CHAT} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,CATORG, MYCONTR,CHAT,QUEST} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -14,9 +14,16 @@ const NavBar = observer(() => {
     const {myalert} = useContext(Context);
     const currentRoute = useHistory().location.pathname.toLowerCase();
     const [active,setActive]=useState();
+    const [countquest,setCountQuest]=useState();
+    const {socket} =  useContext(Context)
+    let socketRef = useRef(null);
 
     useEffect(() => {
-        console.log(currentRoute)
+        socketRef.current = socket.getSocket();
+        socketRef.current.on("unread_quest", (data) => {   
+            // setCountQuest(data);
+            console.log(data)
+        });
       },[history]);
 
     const activeLink=(route)=>{
@@ -45,6 +52,7 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(CATORG)}className={active===CATORG ? "active" : ""}>Справочник организаций</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>Чат</Nav.Link>
+                    <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>{countquest}Вопрос-ответ</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">

@@ -9,6 +9,7 @@ import AlertStore from './store/AlertStore';
 import QuestStore from './store/QuestStore';
 import ChatStore from './store/ChatStore';
 import OfferStore from './store/OfferStore';
+import SocketStore from './store/SocketStore';
 
 export const Context  = createContext(null);
 
@@ -20,7 +21,8 @@ ReactDOM.render(
     offerUser: new OfferStore(),
     myalert: new AlertStore(),
     quests: new QuestStore(),
-    chat: new ChatStore()
+    chat: new ChatStore(),
+    socket: new SocketStore()
     }}>
     <App/>
   </Context.Provider>,

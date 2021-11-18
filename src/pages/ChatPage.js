@@ -18,7 +18,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import waiting from "../waiting.gif";
-import SocketIOFileClient from 'socket.io-file-client';
+import socketRefIOFileClient from 'socket.io-file-client';
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
@@ -29,11 +29,13 @@ const ChatPage = observer(() => {
     const [recevierName, setRecevierName] = useState();
     const {user} = useContext(Context);
     const {chat} = useContext(Context);
+    const {socket} =  useContext(Context)
     const data = new FormData();
+    
 
     const inputEl = useRef(null);
     const fileInput = useRef(null);
-    let socket = useRef(null);
+    let socketRef = useRef(null);
     let uploader = useRef(null);
 
     const sendMessage = async () => {
@@ -44,7 +46,7 @@ const ChatPage = observer(() => {
         Text: currentMessage,
         Date: new Date()
         };
-      await socket.current.emit("send_message", messageData);
+      await socketRef.current.emit("send_message", messageData);
       setMessageList(old=>[...old,messageData])
       setCurrentMessage("");
       inputEl.current.value = "";
@@ -53,18 +55,18 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        socket.current = io(`http://localhost:5000?userId=${user.user.id}`);
-        uploader.current = new SocketIOFileClient(socket.current);
-        socket.current.on("receive_message", (data) => {   
+        socketRef.current = socket.getSocket();
+        uploader.current = socket.getUploader();
+        socketRef.current.on("receive_message", (data) => {   
             setMessageList(data);
         });
-        socket.current.on("new_message", (data) => {   
+        socketRef.current.on("new_message", (data) => {   
             newMessage(data);
         })
-        socket.current.on("unread_message", (data) => {  
+        socketRef.current.on("unread_message", (data) => {  
             setUnread(data);
         })
-        socket.current.emit("get_unread"); 
+        socketRef.current.emit("get_unread"); 
         localStorage.setItem('userId', user.user.id);
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "");
@@ -73,8 +75,8 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         return () => {
-            if(socket.current){
-               socket.current.disconnect(); 
+            if(socketRef.current){
+               socketRef.current.disconnect(); 
             }
         };
     }, []);   
@@ -85,9 +87,9 @@ const ChatPage = observer(() => {
             RecevierId:localStorage.getItem('recevier')
         }
         if(data.Author===localStorage.getItem('recevier')||data.Recevier===user.user.id){
-            socket.current.emit("get_message", getMessage); 
+            socketRef.current.emit("get_message", getMessage); 
         } else {
-            socket.current.emit("get_unread");  
+            socketRef.current.emit("get_unread");  
         }
     }
     
@@ -108,7 +110,7 @@ const ChatPage = observer(() => {
         localStorage.setItem('recevierName', name);
         setRecevier(iD)
         setRecevierName(name)
-        socket.current.emit("get_message", data);
+        socketRef.current.emit("get_message", data);
         const index = unread.findIndex(item=>item.ID===iD)
         if(index!==-1){
             const newUnread = unread;
@@ -133,7 +135,7 @@ const ChatPage = observer(() => {
             )    
         }
     }
-    if (!socket.current){
+    if (!socketRef.current){
         return(
             <p className="waiting">
                 <img height="320" src={waiting}/>
@@ -151,7 +153,7 @@ const ChatPage = observer(() => {
         });
     };
     const deleteMessage = (messageContent) => {
-        socket.current.emit("delete_message", messageContent._id);
+        socketRef.current.emit("delete_message", messageContent._id);
         setMessageList(messageList.filter(item=>item._id!==messageContent._id))
     }
     return (

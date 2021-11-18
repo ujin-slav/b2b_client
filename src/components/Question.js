@@ -30,7 +30,7 @@ const Question = observer(({...props})=>{
     const inputEl = useRef(null);
 
     useEffect(() => {
-        QuestService.fetchQuest(id).then((response)=>{
+        QuestService.fetchQuest({id,userId:user.user.id}).then((response)=>{
             if(response.status===200){
                 setQuest(response.data)
                 setFetch(false)

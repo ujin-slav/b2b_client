@@ -12,7 +12,7 @@ import ModifyAsk from "../pages/ModifyAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
 import ChatPage from "../pages/ChatPage";
-
+import Quest from "../pages/Quest";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -30,6 +30,7 @@ export const MODIFYASK = '/modifyask'
 export const CATORG = '/catorg'
 export const MYCONTR = '/mycontr'
 export const CHAT = '/chat'
+export const QUEST = '/quest'
 
 export const authRoutes = [
     {
@@ -98,6 +99,10 @@ export const publicRoutes = [
     {
         path: CHAT,
         Component: ChatPage
+    },
+    {
+        path: QUEST,
+        Component: Quest
     }
 ]
 
