@@ -6,6 +6,8 @@ import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
 import profileLogo from '../profile.png'
+import SocketIOFileClient from 'socket.io-file-client';
+import io from "socket.io-client";
 
 const NavBar = observer(() => {
 
@@ -17,14 +19,24 @@ const NavBar = observer(() => {
     const [countquest,setCountQuest]=useState();
     const {socket} =  useContext(Context)
     let socketRef = useRef(null);
+    let uploader = useRef(null);
 
     useEffect(() => {
+        socket.setSocket(io(`http://localhost:5000?userId=${user.user.id}`));
+        socket.setUploader(new SocketIOFileClient(socket.getSocket()));
         socketRef.current = socket.getSocket();
         socketRef.current.on("unread_quest", (data) => {   
-            // setCountQuest(data);
-            console.log(data)
+            console.log(data);
         });
-      },[history]);
+      },[]);
+
+      useEffect(() => {
+        return () => {
+            if(socketRef.current){
+               socketRef.current.disconnect(); 
+            }
+        };
+    }, []);   
 
     const activeLink=(route)=>{
         history.push(route);
