@@ -168,11 +168,14 @@ table {
 }
 .unread{
   position:relative;
-  left: 200%;
-  font-size: 20px;
-  border-radius:20px;
-  padding:10px 10px 10px 10px;
-  background-color:lightsalmon !important;
+  left: 150%;
+  font-size: 30px;
+  width: 40px;
+  border-radius:50%;
+  color:white;
+  padding:0px 0px 0px 10px;
+  font-family: American Retro;
+  background-color:red !important;
 }
 
 .waiting{
@@ -232,4 +235,21 @@ td.tdRed{
   right:0;
   width: 20px;
   height: 20px;
+}
+
+.parentAnswer > div {
+  display: inline-block;
+}
+
+.answer{
+  display: inline-block;
+}
+
+.countQuest{
+  background: red;
+  width:40px;
+  padding-left: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
 }

@@ -1,7 +1,7 @@
 import $api from "../http";
 
 
-export default class MessageService {
+export default class QuestService {
     static addQuest(data){
         return $api.post('/addquest',data);
     }
@@ -10,5 +10,8 @@ export default class MessageService {
     }
     static delQuest(id){
         return $api.post('/delquest',{id});
+    }
+    static getUnreadQuest(id){
+        return $api.post('/getunreadquest',{id});
     }
 }

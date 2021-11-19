@@ -16,6 +16,7 @@ function App() {
       if (localStorage.getItem('token')) {
         await user.checkAuth()
       }
+      localStorage.setItem('userId', user.user.id);
     })();
   }, []);
 
