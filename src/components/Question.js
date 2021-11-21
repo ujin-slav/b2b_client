@@ -14,6 +14,7 @@ import {Context} from "../index";
 import AnswerCard from "../components/AnswerCard"
 import { ArrowReturnRight,XCircle} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
+import {SocketContext} from "../App";
   
 const Question = observer(({...props})=>{
     const {offers,
@@ -28,7 +29,7 @@ const Question = observer(({...props})=>{
     const [quest,setQuest] = useState([]);
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
-    const {socket} =  useContext(Context)
+    const {socket} =  useContext(SocketContext)
     let socketRef = useRef(null);
     
     useEffect(() => {
@@ -40,7 +41,6 @@ const Question = observer(({...props})=>{
                 console.log(response.data)
             }                
         })
-        socketRef.current = socket.getSocket();
     },[fetch,fetchAnswer]);
 
     const handleSubmit=async(e)=>{
@@ -58,13 +58,13 @@ const Question = observer(({...props})=>{
         } else {
             inputEl.current.value="";
             setFetch(true)
-            socketRef.current.emit("unread_quest", {id:data.Destination});
+            socket.emit("unread_quest", {id:data.Destination});
         }
     }
 
     const delQuest = async (item) => {
         console.log(item)
-        socketRef.current.emit("unread_quest", item.ID);
+        socket.emit("unread_quest", item.ID);
         const result = await QuestService.delQuest(item.ID);
         if (result.status===200){
             myalert.setMessage("Успешно"); 

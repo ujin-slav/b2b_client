@@ -15,10 +15,11 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import UserService from '../services/UserService';
 import "../style.css";
 import {Context} from "../index";
+import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import waiting from "../waiting.gif";
-import socketRefIOFileClient from 'socket.io-file-client';
+import SocketIOFileClient from 'socket.io-file-client';
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
@@ -28,9 +29,7 @@ const ChatPage = observer(() => {
     const [recevier, setRecevier] = useState();
     const [recevierName, setRecevierName] = useState();
     const {user} = useContext(Context);
-    const {chat} = useContext(Context);
-    const {socket} =  useContext(Context)
-    const data = new FormData();
+    const {socket} =  useContext(SocketContext)
     
 
     const inputEl = useRef(null);
@@ -46,7 +45,7 @@ const ChatPage = observer(() => {
         Text: currentMessage,
         Date: new Date()
         };
-      await socketRef.current.emit("send_message", messageData);
+      await socket.emit("send_message", messageData);
       setMessageList(old=>[...old,messageData])
       setCurrentMessage("");
       inputEl.current.value = "";
@@ -55,41 +54,33 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        socketRef.current = socket.getSocket();
-        uploader.current = socket.getUploader();
-        socketRef.current.on("receive_message", (data) => {   
+        uploader  = new SocketIOFileClient(socket)
+        socket.on("receive_message", (data) => {   
             setMessageList(data);
         });
-        socketRef.current.on("new_message", (data) => {   
+        socket.on("new_message", (data) => {   
             newMessage(data);
         })
-        socketRef.current.on("unread_message", (data) => {  
+        socket.on("unread_message", (data) => {  
             setUnread(data);
         })
-        socketRef.current.emit("get_unread"); 
-        localStorage.setItem('userId', user.user.id);
+        socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
-        localStorage.setItem('recevierName', "");
+        localStorage.setItem('recevierName', "")
     }    
     }, [user.user]);
-
-    useEffect(() => {
-        return () => {
-            if(socketRef.current){
-               socketRef.current.disconnect(); 
-            }
-        };
-    }, []);   
 
     const newMessage =(data)=>{
         const getMessage = {
             UserId: user.user.id,
             RecevierId:localStorage.getItem('recevier')
         }
-        if(data.Author===localStorage.getItem('recevier')||data.Recevier===user.user.id){
-            socketRef.current.emit("get_message", getMessage); 
+        if(data.Author===localStorage.getItem('recevier')||data.Author===user.user.id){
+            socket.emit("get_message", getMessage); 
+            console.log("get")
         } else {
-            socketRef.current.emit("get_unread");  
+            socket.emit("get_unread");  
+            console.log("unread")
         }
     }
     
@@ -108,9 +99,10 @@ const ChatPage = observer(() => {
         }
         localStorage.setItem('recevier', iD);
         localStorage.setItem('recevierName', name);
+        console.log(data)
         setRecevier(iD)
         setRecevierName(name)
-        socketRef.current.emit("get_message", data);
+        socket.emit("get_message", data);
         const index = unread.findIndex(item=>item.ID===iD)
         if(index!==-1){
             const newUnread = unread;
@@ -135,7 +127,7 @@ const ChatPage = observer(() => {
             )    
         }
     }
-    if (!socketRef.current){
+    if (!socket){
         return(
             <p className="waiting">
                 <img height="320" src={waiting}/>
@@ -153,7 +145,7 @@ const ChatPage = observer(() => {
         });
     };
     const deleteMessage = (messageContent) => {
-        socketRef.current.emit("delete_message", messageContent._id);
+        socket.emit("delete_message", messageContent._id);
         setMessageList(messageList.filter(item=>item._id!==messageContent._id))
     }
     return (
@@ -165,20 +157,12 @@ const ChatPage = observer(() => {
                             if(item._id!==user.user.id){ 
                             return(<div key={index} className={item._id===recevier?"userCardChange":"userCard"} 
                              onClick={(e)=>handleRecevier(item._id,item.name)}>
-                                <table className="messageTable">
-                                <tbody>
-                                    <tr>
-                                        <td>
+                                <div className="messageTable">
                                             <div>{item.name}</div>
                                             <div>{item.nameOrg}</div>
                                             <div>{item.email}</div>
-                                        </td>
-                                        <td>
                                             {searchUnread(item._id)}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                </table>
+                                </div>
                             </div>)}
                         })}
                     </div>

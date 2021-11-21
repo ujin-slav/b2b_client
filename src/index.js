@@ -21,8 +21,7 @@ ReactDOM.render(
     offerUser: new OfferStore(),
     myalert: new AlertStore(),
     quests: new QuestStore(),
-    chat: new ChatStore(),
-    socket: new SocketStore()
+    chat: new SocketStore()
     }}>
     <App/>
   </Context.Provider>,

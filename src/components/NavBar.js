@@ -1,5 +1,6 @@
 import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
+import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
 import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,CATORG, MYCONTR,CHAT,QUEST} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
@@ -18,35 +19,19 @@ const NavBar = observer(() => {
     const currentRoute = useHistory().location.pathname.toLowerCase();
     const [active,setActive]=useState();
     const [countquest,setCountQuest]=useState();
-    const {socket} =  useContext(Context)
-    let socketRef = useRef(null);
-    let uploader = useRef(null);
+    const [countchat,setCountChat]=useState([]);
+    const {socket} =  useContext(SocketContext)
 
     useEffect(() => {
-        socket.setSocket(io(`http://localhost:5000?userId=${localStorage.getItem('userId')}`));
-        socket.setUploader(new SocketIOFileClient(socket.getSocket()));
-        socketRef.current = socket.getSocket();
         QuestService.getUnreadQuest(user.user.id).then((response)=>{
             if(response.status===200){
                 setCountQuest(response.data)
             }                
         })
-        socketRef.current.on("get_unread_quest", () => {   
-            QuestService.getUnreadQuest(user.user.id).then((response)=>{
-                if(response.status===200){
-                    setCountQuest(response.data)
-                }                
-            })
+        socket.on("unread_message", (data) => {   
+            setCountChat(data)
         });
       },[]);
-
-      useEffect(() => {
-        return () => {
-            if(socketRef.current){
-               socketRef.current.disconnect(); 
-            }
-        };
-    }, []);   
 
     const activeLink=(route)=>{
         history.push(route);
@@ -73,7 +58,12 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(CATORG)}className={active===CATORG ? "active" : ""}>Справочник организаций</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>Чат</Nav.Link>
+                    <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
+                    <div className="parentAnswer">
+                           <div>Сообщения</div>
+                           <div className="countQuest">{countchat.length}</div>
+                        </div>
+                    </Nav.Link>
                     <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>
                         <div className="parentAnswer">
                            <div>Вопрос-ответ</div>

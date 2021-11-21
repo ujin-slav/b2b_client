@@ -81,8 +81,8 @@ table {
     display: block;
     transform: rotate(180deg);
 
-    color:aliceblue;
-    border-radius:20px;
+    background-color:rgb(116, 187, 248) !important;
+    border-radius:20px 20px 20px 0px;
     padding:10px 10px 10px 10px;
     margin:10px 0px 10px 10px;
 }
@@ -97,7 +97,7 @@ table {
 
   background-color:#dad6c3 ;
   color:black;
-  border-radius:20px;
+  border-radius:20px 0px 20px 0px;
   padding:10px 10px 10px 10px;
   margin:10px 0px 10px 10px;
 }
@@ -148,6 +148,7 @@ table {
 }
 
 .userCard {
+  position: relative;
   margin:10px;
   border-radius:20px;
   padding:10px 10px 10px 10px;
@@ -156,6 +157,7 @@ table {
 }
 
 .userCardChange {
+  position: relative;
   margin:10px;
   border-radius:20px;
   padding:10px 10px 10px 10px;
@@ -163,15 +165,17 @@ table {
   background-color:#a2ebfd !important;
 }
 .messageTable{
+  position: relative;
   background-color: rgba(0, 0, 0, 0.0) !important;
   border-spacing: 0em 0em
 }
 .unread{
-  position:relative;
-  left: 150%;
+  position: absolute;
+  right:0;
+  top:0;
   font-size: 30px;
   width: 40px;
-  border-radius:50%;
+  border-radius: 0px 20px 0px 20px;
   color:white;
   padding:0px 0px 0px 10px;
   font-family: American Retro;
@@ -212,7 +216,7 @@ td.tdRed{
 
 
 .nav-link{
-  font-size: 25px;
+  font-size: 23px;
   font-family: American Retro;
   color:white !important;
 }
@@ -247,7 +251,7 @@ td.tdRed{
 
 .countQuest{
   background: red;
-  width:40px;
+  width:30px;
   padding-left: 10px;
   border-radius: 50%;
   display: inline-block;

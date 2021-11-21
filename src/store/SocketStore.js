@@ -1,21 +1,17 @@
+import { makeAutoObservable } from "mobx";
 export default class SocketStore {
-    socket;
-    uploader;
+    recevier;
+    recevierName;
 
-    setSocket(socket){
-        this.socket = socket; 
+    constructor(){
+        makeAutoObservable(this);
     }
 
-    setUploader(uploader){
-        this.uploader = uploader; 
+    setRecevier(recevier){
+        this.recevier = recevier; 
     }
 
-    getSocket(){
-        return this.socket;
+    setRecevierName(recevierName){
+        this.recevierName = recevierName; 
     }
-
-    getUploader(){
-        return this.uploader;
-    }
-
 }
