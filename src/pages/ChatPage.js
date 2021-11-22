@@ -26,8 +26,8 @@ const ChatPage = observer(() => {
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
     const [users, setUsers] = useState([]);
-    const [recevier, setRecevier] = useState();
-    const [recevierName, setRecevierName] = useState();
+    const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
+    const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
     const {user} = useContext(Context);
     const {socket} =  useContext(SocketContext)
     
@@ -54,7 +54,7 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        uploader  = new SocketIOFileClient(socket)
+        uploader.current  = new SocketIOFileClient(socket)
         socket.on("receive_message", (data) => {   
             setMessageList(data);
         });
@@ -64,6 +64,18 @@ const ChatPage = observer(() => {
         socket.on("unread_message", (data) => {  
             setUnread(data);
         })
+        socket.on("delete_message", (data) => {  
+            newMessage(data);
+        })
+        socket.on("new_file_message", (name) => {  
+            const messageData = {
+                Author: user.user.id,
+                Recevier: recevier, 
+                File: name,
+                Date: new Date()
+                };
+                setMessageList(old=>[...old,messageData])
+        })
         socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "")
@@ -72,15 +84,16 @@ const ChatPage = observer(() => {
 
     const newMessage =(data)=>{
         const getMessage = {
+            No:2,
             UserId: user.user.id,
             RecevierId:localStorage.getItem('recevier')
         }
-        if(data.Author===localStorage.getItem('recevier')||data.Author===user.user.id){
-            socket.emit("get_message", getMessage); 
-            console.log("get")
+        if(data.Author===localStorage.getItem('recevier')||data.Author===recevier){
+            if(getMessage.RecevierId!==''){
+                socket.emit("get_message", getMessage); 
+            }    
         } else {
             socket.emit("get_unread");  
-            console.log("unread")
         }
     }
     
@@ -94,6 +107,7 @@ const ChatPage = observer(() => {
 
     const handleRecevier =(iD,name)=>{
         const data = {
+            No:3,
             UserId: user.user.id,
             RecevierId: iD
         }
@@ -136,6 +150,9 @@ const ChatPage = observer(() => {
     }
 
     const onInputChange = (e) => {
+        if(localStorage.getItem('recevier')===""){
+            e.preventDefault();
+        }
         uploader.current.upload(document.getElementById("myInput"), {
             data:{
                 Author: user.user.id,
@@ -145,9 +162,18 @@ const ChatPage = observer(() => {
         });
     };
     const deleteMessage = (messageContent) => {
-        socket.emit("delete_message", messageContent._id);
+        socket.emit("delete_message", {...messageContent,iD:user.user.id});
         setMessageList(messageList.filter(item=>item._id!==messageContent._id))
     }
+
+    const getAvatar=(author)=>{
+        if(author===user.user.id){
+            return user.user.name.match(/\b(\w)/g)
+        } else {
+            return recevierName.match(/\b(\w)/g)
+        }
+    }
+
     return (
             <Container fluid>
                 <Row className="overflow-auto">
@@ -157,12 +183,10 @@ const ChatPage = observer(() => {
                             if(item._id!==user.user.id){ 
                             return(<div key={index} className={item._id===recevier?"userCardChange":"userCard"} 
                              onClick={(e)=>handleRecevier(item._id,item.name)}>
-                                <div className="messageTable">
                                             <div>{item.name}</div>
                                             <div>{item.nameOrg}</div>
                                             <div>{item.email}</div>
                                             {searchUnread(item._id)}
-                                </div>
                             </div>)}
                         })}
                     </div>
@@ -177,11 +201,11 @@ const ChatPage = observer(() => {
                                     <table className="messageTable">
                                     <tbody>
                                         <tr>
-                                            <td><div className="avatar">
-                                            {messageContent.Author===localStorage.getItem('userId')?user.user.name.match(/\b(\w)/g):recevierName.match(/\b(\w)/g)}    
+                                            <td><div className="avatar"> 
+                                            {getAvatar(messageContent.Author)}  
                                             </div></td>
                                             <td>
-                                            <div className={messageContent.Author===localStorage.getItem('userId')?"messageItem":"messageItemRecevier"}> 
+                                            <div className={messageContent.Author===user.user.id?"messageItem":"messageItemRecevier"}> 
                                             {messageContent.File ?  
                                             <img height="240" src={process.env.REACT_APP_API_URL + `download/` + messageContent.File}></img>
                                             :
