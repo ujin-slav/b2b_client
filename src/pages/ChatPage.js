@@ -79,8 +79,16 @@ const ChatPage = observer(() => {
         socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "")
+  
     }    
     }, [user.user]);
+
+    useEffect(() => {
+        document.getElementById("myInput").addEventListener("change",e=>upload())
+        return function(){
+            document.removeEventListener('myInput',upload());
+        }
+        }, []);   
 
     const newMessage =(data)=>{
         const getMessage = {
@@ -149,10 +157,7 @@ const ChatPage = observer(() => {
         )
     }
 
-    const onInputChange = (e) => {
-        if(localStorage.getItem('recevier')===""){
-            e.preventDefault();
-        }
+    const upload = (e) => {
         uploader.current.upload(document.getElementById("myInput"), {
             data:{
                 Author: user.user.id,
@@ -231,7 +236,7 @@ const ChatPage = observer(() => {
                         <InputGroup className="mt-3">
                                 <label htmlFor="myInput">
                                 <Paperclip type="file" color="blue" 
-                                    onClick={onInputChange}
+
                                     style={{"width": "50px",
                                     "height": "50px"}}/>
                                 </label>
