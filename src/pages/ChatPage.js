@@ -29,12 +29,13 @@ const ChatPage = observer(() => {
     const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
     const {user} = useContext(Context);
+    const {chat} = useContext(Context);
     const {socket} =  useContext(SocketContext)
     
 
     const inputEl = useRef(null);
     const fileInput = useRef(null);
-    let socketRef = useRef(null);
+    let formUpload = useRef(null);
     let uploader = useRef(null);
 
     const sendMessage = async () => {
@@ -62,41 +63,27 @@ const ChatPage = observer(() => {
             newMessage(data);
         })
         socket.on("unread_message", (data) => {  
-            setUnread(data);
+            //setUnread(data);
+            chat.setUnread(data);
         })
         socket.on("delete_message", (data) => {  
             newMessage(data);
-        })
-        socket.on("new_file_message", (name) => {  
-            const messageData = {
-                Author: user.user.id,
-                Recevier: recevier, 
-                File: name,
-                Date: new Date()
-                };
-                setMessageList(old=>[...old,messageData])
         })
         socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "")
   
     }    
-    }, [user.user]);
-
-    useEffect(() => {
-        document.getElementById("myInput").addEventListener("change",e=>upload())
-        return function(){
-            document.removeEventListener('myInput',upload());
-        }
-        }, []);   
+    }, [user.user]); 
 
     const newMessage =(data)=>{
+        console.log(data)
         const getMessage = {
             No:2,
             UserId: user.user.id,
             RecevierId:localStorage.getItem('recevier')
         }
-        if(data.Author===localStorage.getItem('recevier')||data.Author===recevier){
+        if(data.Author===localStorage.getItem('recevier')||data.Author===user.user.id){
             if(getMessage.RecevierId!==''){
                 socket.emit("get_message", getMessage); 
             }    
@@ -121,7 +108,6 @@ const ChatPage = observer(() => {
         }
         localStorage.setItem('recevier', iD);
         localStorage.setItem('recevierName', name);
-        console.log(data)
         setRecevier(iD)
         setRecevierName(name)
         socket.emit("get_message", data);
@@ -158,17 +144,19 @@ const ChatPage = observer(() => {
     }
 
     const upload = (e) => {
+        //console.log(e.target.files);
+        if(localStorage.getItem('userId')!==""&&localStorage.getItem('userId')!==""){
         uploader.current.upload(document.getElementById("myInput"), {
             data:{
-                Author: user.user.id,
-                Recevier: recevier, 
+                Author: localStorage.getItem('userId'),
+                Recevier: localStorage.getItem('recevier'), 
                 Date: new Date()
                 }
-        });
+        })};
     };
     const deleteMessage = (messageContent) => {
+        console.log(messageContent);
         socket.emit("delete_message", {...messageContent,iD:user.user.id});
-        setMessageList(messageList.filter(item=>item._id!==messageContent._id))
     }
 
     const getAvatar=(author)=>{
@@ -235,13 +223,13 @@ const ChatPage = observer(() => {
                         </div>
                         <InputGroup className="mt-3">
                                 <label htmlFor="myInput">
-                                <Paperclip type="file" color="blue" 
-
+                                <Paperclip type="file" color="blue"
                                     style={{"width": "50px",
                                     "height": "50px"}}/>
                                 </label>
                                 <input id="myInput" type="file"
-                                ref={fileInput}
+                                ref={fileInput}   
+                                onChange={upload}                         
                                 accept="image/*"
                                 style={{display:'none'}}
                                 className="form-control"/>
