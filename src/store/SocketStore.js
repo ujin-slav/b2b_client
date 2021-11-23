@@ -1,17 +1,16 @@
 import { makeAutoObservable } from "mobx";
 export default class SocketStore {
-    recevier;
-    recevierName;
+    unread
 
     constructor(){
         makeAutoObservable(this);
     }
 
-    setRecevier(recevier){
-        this.recevier = recevier; 
+    setUnread(unread){
+        this.unread = unread; 
     }
 
-    setRecevierName(recevierName){
-        this.recevierName = recevierName; 
+    getUnread(unread){
+        return unread; 
     }
 }
