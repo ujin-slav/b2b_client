@@ -32,6 +32,9 @@ const NavBar = observer(() => {
         socket.on("unread_message", (data) => {   
             chat.setUnread(data)
         });
+        socket.on("get_unread_quest", (data) => {   
+            chat.setQuestUnread(data)
+        });
       },[]);
 
     const activeLink=(route)=>{
@@ -80,7 +83,7 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>
                         <div className="parentAnswer">
                            <div>Вопрос-ответ</div>
-                           <div className="countQuest">{countquest}</div>
+                           <div className="countQuest">{chat.questUnread > 0 ? chat.questUnread : "" }</div>
                         </div>
                     </Nav.Link>
                 </Nav>
