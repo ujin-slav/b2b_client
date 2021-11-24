@@ -30,7 +30,6 @@ const Question = observer(({...props})=>{
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
     const {socket} =  useContext(SocketContext)
-    let socketRef = useRef(null);
     
     useEffect(() => {
         QuestService.fetchQuest({id,userId:user.user.id}).then((response)=>{

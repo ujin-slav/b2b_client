@@ -72,7 +72,10 @@ const ChatPage = observer(() => {
         socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "")
-  
+        return ()=>{
+            localStorage.setItem('recevier', "");
+            localStorage.setItem('recevierName', "")
+        }
     }    
     }, [user.user]); 
 
@@ -111,17 +114,17 @@ const ChatPage = observer(() => {
         setRecevier(iD)
         setRecevierName(name)
         socket.emit("get_message", data);
-        const index = unread.findIndex(item=>item.ID===iD)
+        const index = chat.unread.findIndex(item=>item.ID===iD)
         if(index!==-1){
-            const newUnread = unread;
+            const newUnread = chat.unread;
             newUnread[index]={ID:iD,count:0}
-            setUnread(newUnread)
+            chat.setUnread(newUnread)
         }
     }
 
     const searchUnread =(id)=>{
         let result = 0
-        unread.map((item)=>{
+        chat.unread.map((item)=>{
             if(item.ID===id){
                 result = item.count;
             }

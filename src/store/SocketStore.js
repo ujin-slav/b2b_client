@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 export default class SocketStore {
-    unread
+    unread = [];
+    questUnread = 0;
 
     constructor(){
         makeAutoObservable(this);
@@ -12,5 +13,13 @@ export default class SocketStore {
 
     getUnread(unread){
         return unread; 
+    }
+
+    setQuestUnread(questUnread){
+        this.questUnread = questUnread; 
+    }
+
+    getQuestUnread(questUnread){
+        return questUnread; 
     }
 }

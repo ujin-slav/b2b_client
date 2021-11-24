@@ -21,6 +21,7 @@ const NavBar = observer(() => {
     const [countquest,setCountQuest]=useState();
     const [countchat,setCountChat]=useState([]);
     const {socket} =  useContext(SocketContext)
+    const {chat} = useContext(Context);
 
     useEffect(() => {
         QuestService.getUnreadQuest(user.user.id).then((response)=>{
@@ -29,7 +30,7 @@ const NavBar = observer(() => {
             }                
         })
         socket.on("unread_message", (data) => {   
-            setCountChat(data)
+            chat.setUnread(data)
         });
       },[]);
 
@@ -37,6 +38,18 @@ const NavBar = observer(() => {
         history.push(route);
         setActive(route);
     }  
+
+    const sumUnread=()=>{
+        let sum=0;
+        if(chat.unread.length>0){
+            chat.unread.map(item=>sum=sum+item.count);
+        } 
+        if(sum>0){
+            return sum;
+        }else{
+            return "";
+        }
+    }
     
     return (
         <div>
@@ -61,7 +74,7 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">
                            <div>Сообщения</div>
-                           <div className="countQuest">{countchat.length}</div>
+                           <div className="countQuest">{sumUnread()}</div>
                         </div>
                     </Nav.Link>
                     <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>
