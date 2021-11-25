@@ -1,4 +1,4 @@
-import React, {useContext,useEffect,useState,useRef} from 'react';
+import React, {useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
@@ -20,7 +20,6 @@ const NavBar = observer(() => {
     const [active,setActive]=useState();
     const [countquest,setCountQuest]=useState();
     const [countchat,setCountChat]=useState([]);
-    const {socket} =  useContext(SocketContext)
     const {chat} = useContext(Context);
 
     useEffect(() => {
@@ -29,13 +28,18 @@ const NavBar = observer(() => {
                 setCountQuest(response.data)
             }                
         })
-        socket.on("unread_message", (data) => {   
-            chat.setUnread(data)
-        });
-        socket.on("get_unread_quest", (data) => {   
-            chat.setQuestUnread(data)
-        });
       },[]);
+
+    useEffect(() => {
+        if(chat.connected){
+            chat.socket.on("unread_message", (data) => {   
+                chat.setUnread(data)
+            });
+            chat.socket.on("get_unread_quest", (data) => {   
+                chat.setQuestUnread(data)
+            });
+        }
+      },[chat.connected]);
 
     const activeLink=(route)=>{
         history.push(route);
@@ -44,14 +48,18 @@ const NavBar = observer(() => {
 
     const sumUnread=()=>{
         let sum=0;
-        if(chat.unread.length>0){
-            chat.unread.map(item=>sum=sum+item.count);
-        } 
-        if(sum>0){
-            return sum;
+        if(chat.getUnread()){
+            if(chat.unread.length>0){
+                chat.unread.map(item=>sum=sum+item.count);
+            } 
+            if(sum>0){
+                return sum;
+            }else{
+                return "";
+            }
         }else{
-            return "";
-        }
+            return ""
+        }    
     }
     
     return (

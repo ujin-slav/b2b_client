@@ -1,4 +1,4 @@
-import React,{useEffect, useContext,createContext} from 'react';
+import React,{useEffect, useContext,createContext,useRef} from 'react';
 import {BrowserRouter } from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
@@ -10,14 +10,23 @@ import io from "socket.io-client";
 
 export const SocketContext  = createContext(null);
 
-function App() {
+const App = ()=> {
   const {user} = useContext(Context);
-  const socket = io(`http://localhost:5000?userId=${localStorage.getItem('userId')}`)
+  const {chat} = useContext(Context);
+  var socket;
 
   useEffect(() => {
     (async () => {
       if (localStorage.getItem('token')) {
-        await user.checkAuth()
+        const response = await user.checkAuth()
+        if(response){
+          chat.socket = io.connect(`http://localhost:5000`,{
+            query: {token:response.data.accessToken}
+          })
+          chat.socket.on("connect", () => {
+            chat.connected = true;
+          });
+        }
       }
       localStorage.setItem('userId', user.user.id);
     })();
@@ -32,9 +41,9 @@ function App() {
     }, []);   
 
   return (
-    <SocketContext.Provider value={{socket}}>
+    <SocketContext.Provider>
       <BrowserRouter>
-        <NavBar />
+        <NavBar/>
         <AlertCustom/>
         <AppRouter/>
       </BrowserRouter>

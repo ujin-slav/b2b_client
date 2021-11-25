@@ -30,8 +30,6 @@ const ChatPage = observer(() => {
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
     const {user} = useContext(Context);
     const {chat} = useContext(Context);
-    const {socket} =  useContext(SocketContext)
-    
 
     const inputEl = useRef(null);
     const fileInput = useRef(null);
@@ -46,7 +44,7 @@ const ChatPage = observer(() => {
         Text: currentMessage,
         Date: new Date()
         };
-      await socket.emit("send_message", messageData);
+      await chat.socket.emit("send_message", messageData);
       setMessageList(old=>[...old,messageData])
       setCurrentMessage("");
       inputEl.current.value = "";
@@ -55,21 +53,21 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        uploader.current  = new SocketIOFileClient(socket)
-        socket.on("receive_message", (data) => {   
+        //uploader.current  = new SocketIOFileClient(chat.socket)
+        chat.socket.on("receive_message", (data) => {   
             setMessageList(data);
         });
-        socket.on("new_message", (data) => {   
+        chat.socket.on("new_message", (data) => {   
             newMessage(data);
         })
-        socket.on("unread_message", (data) => {  
+        chat.socket.on("unread_message", (data) => {  
             //setUnread(data);
             chat.setUnread(data);
         })
-        socket.on("delete_message", (data) => {  
+        chat.socket.on("delete_message", (data) => {  
             newMessage(data);
         })
-        socket.emit("get_unread"); 
+        chat.socket.emit("get_unread"); 
         localStorage.setItem('recevier', "");
         localStorage.setItem('recevierName', "")
         return ()=>{
@@ -88,10 +86,10 @@ const ChatPage = observer(() => {
         }
         if(data.Author===localStorage.getItem('recevier')||data.Author===user.user.id){
             if(getMessage.RecevierId!==''){
-                socket.emit("get_message", getMessage); 
+                chat.socket.emit("get_message", getMessage); 
             }    
         } else {
-            socket.emit("get_unread");  
+            chat.socket.emit("get_unread");  
         }
     }
     
@@ -113,17 +111,20 @@ const ChatPage = observer(() => {
         localStorage.setItem('recevierName', name);
         setRecevier(iD)
         setRecevierName(name)
-        socket.emit("get_message", data);
-        const index = chat.unread.findIndex(item=>item.ID===iD)
-        if(index!==-1){
-            const newUnread = chat.unread;
-            newUnread[index]={ID:iD,count:0}
-            chat.setUnread(newUnread)
-        }
+        chat.socket.emit("get_message", data);
+        if(chat.getUnread()){
+            const index = chat.unread.findIndex(item=>item.ID===iD)
+            if(index!==-1){
+                const newUnread = chat.unread;
+                newUnread[index]={ID:iD,count:0}
+                chat.setUnread(newUnread)
+            }
+        }    
     }
 
     const searchUnread =(id)=>{
         let result = 0
+        if(chat.getUnread()){
         chat.unread.map((item)=>{
             if(item.ID===id){
                 result = item.count;
@@ -137,8 +138,11 @@ const ChatPage = observer(() => {
                 <div></div>
             )    
         }
+        }else{
+            return (<div></div>)
+        }
     }
-    if (!socket){
+    if (chat.connected===false){
         return(
             <p className="waiting">
                 <img height="320" src={waiting}/>
@@ -159,7 +163,7 @@ const ChatPage = observer(() => {
     };
     const deleteMessage = (messageContent) => {
         console.log(messageContent);
-        socket.emit("delete_message", {...messageContent,iD:user.user.id});
+        chat.socket.emit("delete_message", {...messageContent,iD:user.user.id});
     }
 
     const getAvatar=(author)=>{

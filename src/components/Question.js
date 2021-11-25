@@ -29,7 +29,7 @@ const Question = observer(({...props})=>{
     const [quest,setQuest] = useState([]);
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
-    const {socket} =  useContext(SocketContext)
+    const {chat} =  useContext(Context)
     
     useEffect(() => {
         QuestService.fetchQuest({id,userId:user.user.id}).then((response)=>{
@@ -57,13 +57,13 @@ const Question = observer(({...props})=>{
         } else {
             inputEl.current.value="";
             setFetch(true)
-            socket.emit("unread_quest", {id:data.Destination});
+            chat.socket.emit("unread_quest", {id:data.Destination});
         }
     }
 
     const delQuest = async (item) => {
         console.log(item)
-        socket.emit("unread_quest", item.ID);
+        chat.socket.emit("unread_quest", item.ID);
         const result = await QuestService.delQuest(item.ID);
         if (result.status===200){
             myalert.setMessage("Успешно"); 
