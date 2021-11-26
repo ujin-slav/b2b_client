@@ -30,37 +30,23 @@ const NavBar = observer(() => {
         })
       },[]);
 
-    useEffect(() => {
-        if(chat.connected){
-            chat.socket.on("unread_message", (data) => {   
-                chat.setUnread(data)
-            });
-            chat.socket.on("get_unread_quest", (data) => {   
-                chat.setQuestUnread(data)
-            });
-        }
-      },[chat.connected]);
-
     const activeLink=(route)=>{
         history.push(route);
         setActive(route);
     }  
 
     const sumUnread=()=>{
+        console.log(chat.unread.length)
         let sum=0;
-        if(chat.getUnread()){
-            if(chat.unread.length>0){
-                chat.unread.map(item=>sum=sum+item.count);
-            } 
-            if(sum>0){
-                return sum;
-            }else{
-                return "";
-            }
+        if(chat.unread.length>0){
+            chat.unread.map(item=>sum=sum+item.count);
+        } 
+        if(sum>0){
+            return sum;
         }else{
-            return ""
-        }    
-    }
+            return "";
+        }
+}
     
     return (
         <div>

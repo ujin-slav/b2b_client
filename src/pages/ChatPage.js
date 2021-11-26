@@ -9,7 +9,8 @@ import {
     Card,
     ListGroup,
   } from "react-bootstrap";
-  import {Envelope,Paperclip,X} from 'react-bootstrap-icons';
+import {Envelope,Paperclip,X} from 'react-bootstrap-icons';
+import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import io from "socket.io-client";
 import ScrollToBottom from "react-scroll-to-bottom";
 import UserService from '../services/UserService';
@@ -20,6 +21,7 @@ import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import waiting from "../waiting.gif";
 import SocketIOFileClient from 'socket.io-file-client';
+import {LOGIN_ROUTE} from "../utils/routes";
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
@@ -30,6 +32,7 @@ const ChatPage = observer(() => {
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
     const {user} = useContext(Context);
     const {chat} = useContext(Context);
+    const history = useHistory();
 
     const inputEl = useRef(null);
     const fileInput = useRef(null);
@@ -68,11 +71,11 @@ const ChatPage = observer(() => {
             newMessage(data);
         })
         chat.socket.emit("get_unread"); 
-        localStorage.setItem('recevier', "");
-        localStorage.setItem('recevierName', "")
+        localStorage.removeItem('recevier');
+        localStorage.removeItem('recevierName')
         return ()=>{
-            localStorage.setItem('recevier', "");
-            localStorage.setItem('recevierName', "")
+            localStorage.removeItem('recevier');
+            localStorage.removeItem('recevierName')
         }
     }    
     }, [user.user]); 
@@ -141,6 +144,9 @@ const ChatPage = observer(() => {
         }else{
             return (<div></div>)
         }
+    }
+    if (!user.isAuth){
+        history.push(LOGIN_ROUTE)
     }
     if (chat.connected===false){
         return(

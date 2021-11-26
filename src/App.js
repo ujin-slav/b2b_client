@@ -18,27 +18,11 @@ const App = ()=> {
   useEffect(() => {
     (async () => {
       if (localStorage.getItem('token')) {
-        const response = await user.checkAuth()
-        if(response){
-          chat.socket = io.connect(`http://localhost:5000`,{
-            query: {token:response.data.accessToken}
-          })
-          chat.socket.on("connect", () => {
-            chat.connected = true;
-          });
-        }
+        await user.checkAuth()
       }
       localStorage.setItem('userId', user.user.id);
     })();
   }, []);
-
-  useEffect(() => {
-    return () => {
-        if(socket){
-           socket.disconnect(); 
-        }
-        };
-    }, []);   
 
   return (
     <SocketContext.Provider>

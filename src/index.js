@@ -12,16 +12,17 @@ import OfferStore from './store/OfferStore';
 import SocketStore from './store/SocketStore';
 
 export const Context  = createContext(null);
+const chat = new SocketStore();
 
 ReactDOM.render(
   <Context.Provider value={{
-    user: new UserStore(),
+    chat,
+    user: new UserStore(chat),
     ask: new AskStore(),
     askUser: new AskUserStore(),
     offerUser: new OfferStore(),
     myalert: new AlertStore(),
-    quests: new QuestStore(),
-    chat: new SocketStore()
+    quests: new QuestStore()
     }}>
     <App/>
   </Context.Provider>,

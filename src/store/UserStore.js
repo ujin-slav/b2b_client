@@ -7,9 +7,11 @@ export default class UserStore {
     user = {};
     isAuth = false;
     isLoading = false;
+    chat;
 
-    constructor(){
+    constructor(chat){
         makeAutoObservable(this);
+        this.chat = chat;
     }
 
     setAuth(bool){
@@ -32,6 +34,7 @@ export default class UserStore {
                this.setAuth(true);
                this.setUser(response.data.user); 
             }   
+            this.chat.connect(response.data.accessToken)
             return response;
         } catch (error) {
             console.log(error);
@@ -68,6 +71,7 @@ export default class UserStore {
     async logout() {
         try {
             await AuthService.logout();
+            this.chat.disconnect()
             localStorage.removeItem('token');
             this.setAuth(false);
             this.setUser({});
@@ -113,7 +117,7 @@ export default class UserStore {
             localStorage.setItem('token', response.data.accesstoken)
             this.setAuth(true);
             this.setUser(response.data.user);
-            return response;
+            this.chat.connect(response.data.accessToken)
         } catch (error) {
             console.log(error)
         }finally{
