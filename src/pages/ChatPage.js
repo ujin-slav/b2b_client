@@ -127,7 +127,6 @@ const ChatPage = observer(() => {
 
     const searchUnread =(id)=>{
         let result = 0
-        if(chat.getUnread()){
         chat.unread.map((item)=>{
             if(item.ID===id){
                 result = item.count;
@@ -140,9 +139,6 @@ const ChatPage = observer(() => {
             return (
                 <div></div>
             )    
-        }
-        }else{
-            return (<div></div>)
         }
     }
     if (!user.isAuth){

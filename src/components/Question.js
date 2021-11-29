@@ -38,6 +38,7 @@ const Question = observer(({...props})=>{
                 setFetch(false)
                 setFetchAnswer(false)
                 console.log(response.data)
+                chat.socket.emit("unread_quest", {id:user.user.id});
             }                
         })
     },[fetch,fetchAnswer]);

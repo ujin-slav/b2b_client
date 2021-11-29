@@ -8,6 +8,9 @@ export default class QuestService {
     static fetchQuest(data){
         return $api.post('/getquest',data);
     }
+    static fetchQuestUser(data){
+        return $api.post('/getquestuser',data);
+    }
     static delQuest(id){
         return $api.post('/delquest',{id});
     }
