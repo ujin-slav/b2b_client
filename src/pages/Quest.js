@@ -2,6 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index";
 import ReactPaginate from "react-paginate";
+import {Table} from "react-bootstrap";
 
 const Quest = () => {
     const {user} = useContext(Context);
@@ -14,6 +15,7 @@ const Quest = () => {
             if(response.status===200){
                 setQuest(response.data.docs)
                 setpageCount(response.data.totalPages);
+                console.log(response.data.docs)
             }                
         })
     },[]);
@@ -31,7 +33,26 @@ const Quest = () => {
 
     return (
         <div>
-            {quest.map(item=><div>{item.Text}</div>)}
+             <Table striped bordered hover>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Время</th>
+                    <th>Статус</th>
+                    <th>Автор вопроса</th>
+                    <th>Текст</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+               </Table> 
             <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
