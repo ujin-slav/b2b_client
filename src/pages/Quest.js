@@ -1,13 +1,17 @@
 import React,{useState,useEffect,useContext} from 'react';
+import {useHistory} from 'react-router-dom';
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index";
 import ReactPaginate from "react-paginate";
 import {Table} from "react-bootstrap";
+import dateFormat, { masks } from "dateformat";
+import { CARDASK } from '../utils/routes';
 
 const Quest = () => {
     const {user} = useContext(Context);
     const [quest,setQuest] = useState([]);  
     const [pageCount, setpageCount] = useState(0);
+    const history = useHistory();
     let limit = 10;
 
     useEffect(() => {
@@ -38,19 +42,26 @@ const Quest = () => {
                 <tr>
                     <th>#</th>
                     <th>Время</th>
-                    <th>Статус</th>
+                    <th>Ответ</th>
                     <th>Автор вопроса</th>
                     <th>Текст</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                     {quest.map((item,index)=>
+                    <tr key={index} onClick={()=>history.push(CARDASK + '/' + item.Ask)}>
+                        <td>{index+1}</td>
+                        <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                        <td>{item.Status===null ? 
+                        <div style={{color:"red"}}>Нет</div> 
+                        : item.Status.Text}</td>
+                        <td>
+                            <div>{item.Author.name}</div>
+                            <div>{item.Author.nameOrg}</div>
+                        </td>
+                        <td>{item.Text}</td>
                     </tr>
+                    )}
                 </tbody>
                </Table> 
             <ReactPaginate
