@@ -42,23 +42,23 @@ const Quest = () => {
                 <tr>
                     <th>#</th>
                     <th>Время</th>
-                    <th>Ответ</th>
                     <th>Автор вопроса</th>
+                    <th>Ответ</th>
                     <th>Текст</th>
                 </tr>
                 </thead>
                 <tbody>
                      {quest.map((item,index)=>
                     <tr key={index} onClick={()=>history.push(CARDASK + '/' + item.Ask)}>
-                        <td>{index+1}</td>
-                        <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-                        <td>{item.Status===null ? 
-                        <div style={{color:"red"}}>Нет</div> 
-                        : item.Status.Text}</td>
-                        <td>
+                        <td style={{width:"5%"}}>{index+1}</td>
+                        <td style={{width:"10%"}}>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                        <td style={{width:"10%"}}>
                             <div>{item.Author.name}</div>
                             <div>{item.Author.nameOrg}</div>
                         </td>
+                        <td>{item.Status===null ? 
+                        <div style={{color:"red"}}>Нет</div> 
+                        : item.Status.Text}</td>
                         <td>{item.Text}</td>
                     </tr>
                     )}

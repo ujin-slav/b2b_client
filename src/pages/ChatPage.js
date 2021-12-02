@@ -58,7 +58,7 @@ const ChatPage = observer(() => {
         if (user.user.id!==undefined) {
         //uploader.current  = new SocketIOFileClient(chat.socket)
         chat.socket.on("receive_message", (data) => {   
-            setMessageList(data);
+            setMessageList(data.docs);
         });
         chat.socket.on("new_message", (data) => {   
             newMessage(data);
