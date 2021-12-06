@@ -3,29 +3,33 @@ import {useHistory} from 'react-router-dom';
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index";
 import ReactPaginate from "react-paginate";
-import {Table} from "react-bootstrap";
+import {    Form,
+            InputGroup,
+            Button,
+            Table
+            } from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import { CARDASK } from '../utils/routes';
 
 const Quest = () => {
     const {user} = useContext(Context);
-    const [quest,setQuest] = useState([]);  
+    const [quest,setQuest] = useState([]); 
+    const [search,setSearch] = useState(1)
     const [pageCount, setpageCount] = useState(0);
     const history = useHistory();
     let limit = 10;
 
     useEffect(() => {
-        QuestService.fetchQuestUser({userId:user.user.id, limit,page:1}).then((response)=>{
+        QuestService.fetchQuestUser({dest:"1",userId:user.user.id, limit,page:1}).then((response)=>{
             if(response.status===200){
                 setQuest(response.data.docs)
                 setpageCount(response.data.totalPages);
-                console.log(response.data.docs)
             }                
         })
     },[]);
 
     const fetchPage = async (currentPage) => {
-        QuestService.fetchQuestUser({authorId:user.user.id,limit,page:currentPage}).then((response)=>{
+        QuestService.fetchQuestUser({dest:search,userId:user.user.id,limit,page:currentPage}).then((response)=>{
             setQuest(response.data.docs);
       })
       };
@@ -35,8 +39,28 @@ const Quest = () => {
         await fetchPage(currentPage);
       };
 
+    const changeDest = (value) => {
+        setSearch(value)
+        QuestService.fetchQuestUser({dest:value,userId:user.user.id, limit,page:1}).then((response)=>{
+            if(response.status===200){
+                setQuest(response.data.docs)
+                setpageCount(response.data.totalPages);
+            }                
+        })
+    }  
+
     return (
         <div>
+            <InputGroup> 
+            <Form.Label className="px-3 mt-2">Кому:</Form.Label>
+                <Form.Control
+                    as="select" 
+                    onChange={(e)=>changeDest(e.target.value)}        
+                >       
+                        <option value="1">Вопросы для меня</option>
+                        <option value="2">Вопросы от меня</option>
+                </Form.Control> 
+            </InputGroup>
              <Table striped bordered hover>
                 <thead>
                 <tr>

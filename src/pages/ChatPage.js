@@ -25,6 +25,8 @@ import {LOGIN_ROUTE} from "../utils/routes";
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
+    const [currentPage,setCurrentPage] = useState(2);
+    const [totalDocs,setTotalDocs] = useState(0);
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
     const [users, setUsers] = useState([]);
@@ -60,6 +62,9 @@ const ChatPage = observer(() => {
         chat.socket.on("receive_message", (data) => {   
             setMessageList(data.docs);
         });
+        chat.socket.on("receive_message_history", (data) => {   
+            setMessageList([...messageList,...data.docs]);
+        });
         chat.socket.on("new_message", (data) => {   
             newMessage(data);
         })
@@ -73,12 +78,27 @@ const ChatPage = observer(() => {
         chat.socket.emit("get_unread"); 
         localStorage.removeItem('recevier');
         localStorage.removeItem('recevierName')
+        document.getElementById("chat").addEventListener('scroll',scrollHandler);
         return ()=>{
             localStorage.removeItem('recevier');
             localStorage.removeItem('recevierName')
         }
     }    
     }, [user.user]); 
+
+    const scrollHandler = (e,list) =>{
+        const getMessage = {
+            No:2,
+            UserId: user.user.id,
+            RecevierId:localStorage.getItem('recevier')
+        }
+        
+        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
+            chat.socket.emit("get_message", {...getMessage,page:currentPage,limit:10,history:true}); 
+            document.getElementById("chat").scrollTop = document.getElementById("chat").scrollTop - 1000
+            setCurrentPage(prevState=>prevState + 1)
+        }    
+    }
 
     const newMessage =(data)=>{
         console.log(data)
@@ -89,7 +109,7 @@ const ChatPage = observer(() => {
         }
         if(data.Author===localStorage.getItem('recevier')||data.Author===user.user.id){
             if(getMessage.RecevierId!==''){
-                chat.socket.emit("get_message", getMessage); 
+                chat.socket.emit("get_message", {...getMessage,page:1,limit:10,history:false}); 
             }    
         } else {
             chat.socket.emit("get_unread");  
@@ -114,7 +134,7 @@ const ChatPage = observer(() => {
         localStorage.setItem('recevierName', name);
         setRecevier(iD)
         setRecevierName(name)
-        chat.socket.emit("get_message", data);
+        chat.socket.emit("get_message", {...data,page:1,limit:10,history:false});
         if(chat.getUnread()){
             const index = chat.unread.findIndex(item=>item.ID===iD)
             if(index!==-1){
@@ -194,7 +214,7 @@ const ChatPage = observer(() => {
                     </div>
                     </Col>
                     <Col className="col-9">
-                        <div className="chat">
+                        <div className="chat" id="chat">
                         <div className="messageBox">
                             {messageList.map((messageContent, index) => {
                                 if(recevierName){
