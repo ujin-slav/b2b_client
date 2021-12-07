@@ -6,6 +6,8 @@ export default class SocketStore {
     questUnread = 0;
     connected = false;
     socket;
+    limit = 20;
+    totalDocs;
 
     constructor(){
         makeAutoObservable(this);
@@ -33,6 +35,14 @@ export default class SocketStore {
 
     getQuestUnread(questUnread){
         return questUnread; 
+    }
+
+    setLimit(num){
+        this.limit = num
+    }
+    
+    setTotalDocs(num){
+        this.totalDocs = num
     }
 
     connect(token){

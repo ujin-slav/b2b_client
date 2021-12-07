@@ -25,8 +25,6 @@ import {LOGIN_ROUTE} from "../utils/routes";
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
-    const [currentPage,setCurrentPage] = useState(2);
-    const [totalDocs,setTotalDocs] = useState(0);
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
     const [users, setUsers] = useState([]);
@@ -59,11 +57,9 @@ const ChatPage = observer(() => {
     useEffect(() => {
         if (user.user.id!==undefined) {
         //uploader.current  = new SocketIOFileClient(chat.socket)
-        chat.socket.on("receive_message", (data) => {   
+        chat.socket.on("receive_message", (data) => {  
+            chat.setTotalDocs(data.totalDocs)
             setMessageList(data.docs);
-        });
-        chat.socket.on("receive_message_history", (data) => {   
-            setMessageList([...messageList,...data.docs]);
         });
         chat.socket.on("new_message", (data) => {   
             newMessage(data);
@@ -92,11 +88,14 @@ const ChatPage = observer(() => {
             UserId: user.user.id,
             RecevierId:localStorage.getItem('recevier')
         }
-        
+        console.log(chat.limit)
+        console.log(chat.totalDocs)
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
-            chat.socket.emit("get_message", {...getMessage,page:currentPage,limit:10,history:true}); 
-            document.getElementById("chat").scrollTop = document.getElementById("chat").scrollTop - 1000
-            setCurrentPage(prevState=>prevState + 1)
+            if(chat.limit<chat.totalDocs){
+                chat.socket.emit("get_message", {...getMessage,page:1,limit:chat.limit}); 
+                document.getElementById("chat").scrollTop = document.getElementById("chat").scrollTop - 1000
+                chat.setLimit(chat.limit + 10)
+            }
         }    
     }
 
@@ -160,9 +159,6 @@ const ChatPage = observer(() => {
                 <div></div>
             )    
         }
-    }
-    if (!user.isAuth){
-        history.push(LOGIN_ROUTE)
     }
     if (chat.connected===false){
         return(
