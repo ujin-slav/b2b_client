@@ -28,6 +28,7 @@ const ChatPage = observer(() => {
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
     const messageBox = useRef(null)
+    const userBox = useRef(null)
     const [users, setUsers] = useState([]);
     const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
@@ -67,8 +68,17 @@ const ChatPage = observer(() => {
             newMessage(data);
         })
         chat.socket.on("unread_message", (data) => {  
-            //setUnread(data);
-            chat.setUnread(data);
+            if(chat.unread){
+                const index = data.findIndex(item=>item.ID===localStorage.getItem('recevier'))
+                if(index!==-1){
+                    const newUnread = data;
+                    newUnread[index]={ID:data.ID,count:0}
+                    chat.setUnread(newUnread)
+                } else {
+                    chat.setUnread(data);
+                }
+            }    
+            
         })
         chat.socket.on("delete_message", (data) => {  
             newMessage(data);
@@ -87,6 +97,9 @@ const ChatPage = observer(() => {
         if (messageBox && messageBox.current) {
             messageBox.current.addEventListener('scroll',scrollHandler,false);
         }
+        if (userBox && userBox.current) {
+            userBox.current.addEventListener('scroll',scrollHandlerUser,false);
+        }
       })
 
     const scrollHandler = (e,list) =>{
@@ -95,13 +108,20 @@ const ChatPage = observer(() => {
             UserId: user.user.id,
             RecevierId:localStorage.getItem('recevier')
         }
-        console.log(chat.limit)
-        console.log(chat.totalDocs)
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
             if(chat.limit<chat.totalDocs){
                 chat.socket.emit("get_message", {...getMessage,page:1,limit:chat.limit}); 
                 document.getElementById("chat").scrollTop = document.getElementById("chat").scrollTop - 1000
                 chat.setLimit(chat.limit + 10)
+            }
+        }    
+    }
+
+    const scrollHandlerUser = (e) =>{
+        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
+            if(chat.limitUser<chat.totalDocsUser){
+                console.log(e.target.scrollTop)
+                console.log(chat.totalDocsUser)
             }
         }    
     }
@@ -125,7 +145,8 @@ const ChatPage = observer(() => {
     useEffect(() => {
         UserService.fetchUsers().then((response)=>{
             if(response.status===200){
-                setUsers(response.data)
+                chat.totalDocsUser = response.data.totalDocs
+                setUsers(response.data.docs)
             }            
         })
     }, []);
@@ -142,7 +163,7 @@ const ChatPage = observer(() => {
         setRecevier(iD)
         setRecevierName(name)
         chat.socket.emit("get_message", {...data,limit:10});
-        if(chat.getUnread()){
+        if(chat.unread){
             const index = chat.unread.findIndex(item=>item.ID===iD)
             if(index!==-1){
                 const newUnread = chat.unread;
@@ -204,8 +225,8 @@ const ChatPage = observer(() => {
             <Container fluid>
                 <Row className="overflow-auto">
                     <Col className="col-3"> 
-                    <div className="userBox">
-                        {users.map((item,index)=>{
+                    <div className="userBox" ref={userBox}>
+                        {users?.map((item,index)=>{
                             if(item._id!==user.user.id){ 
                             return(<div key={index} className={item._id===recevier?"userCardChange":"userCard"} 
                              onClick={(e)=>handleRecevier(item._id,item.name)}>

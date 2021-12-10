@@ -36,7 +36,6 @@ const NavBar = observer(() => {
     }  
 
     const sumUnread=()=>{
-        console.log(chat.unread.length)
         let sum=0;
         if(chat.unread.length>0){
             chat.unread.map(item=>sum=sum+item.count);

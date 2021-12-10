@@ -7,7 +7,9 @@ export default class SocketStore {
     connected = false;
     socket;
     limit = 20;
+    limitUser = 8;
     totalDocs;
+    totalDocsUser
 
     constructor(){
         makeAutoObservable(this);

@@ -63,9 +63,19 @@ const Question = observer(({...props})=>{
     }
 
     const delQuest = async (item) => {
-        console.log(item)
         chat.socket.emit("unread_quest", item.ID);
         const result = await QuestService.delQuest(item.ID);
+        if (result.status===200){
+            myalert.setMessage("Успешно"); 
+          } else {
+            myalert.setMessage(result.data.message);
+          }
+        setFetch(true)
+    }
+
+    const delAnswer = async (item) => {
+        console.log(item)
+        const result = await QuestService.delAnswer(item._id);
         if (result.status===200){
             myalert.setMessage("Успешно"); 
           } else {
@@ -129,9 +139,9 @@ const Question = observer(({...props})=>{
                 {item.Answer.map((item)=>
                     <Card className="ms-5">
                         <Card.Text>
-                        <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item}
+                        <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                         <span style={{"float": "right"}}>
-                            <XCircle color="red" style={{"width": "25px", "height": "25px"}}/>
+                            <XCircle color="red" onClick={e=>delAnswer(item)}/>
                         </span>
                         </Card.Text>
                     </Card>  
