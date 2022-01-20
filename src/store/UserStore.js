@@ -8,6 +8,7 @@ export default class UserStore {
     isAuth = false;
     isLoading = false;
     chat;
+    errorString = "";
 
     constructor(chat){
         makeAutoObservable(this);
@@ -104,6 +105,7 @@ export default class UserStore {
             if (response.data.result===true){
                 this.errorString = "На ваш email отправлена ссылка для изменения пароля";
             }
+            return response;
         } catch (e) {
             console.log(e);
         }

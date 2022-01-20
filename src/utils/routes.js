@@ -13,6 +13,7 @@ import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
 import ChatPage from "../pages/ChatPage";
 import Quest from "../pages/Quest";
+import OrgInfo from "../pages/OrgInfo";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -31,6 +32,7 @@ export const CATORG = '/catorg'
 export const MYCONTR = '/mycontr'
 export const CHAT = '/chat'
 export const QUEST = '/quest'
+export const ORGINFO = '/orginfo'
 
 export const authRoutes = [
     {
@@ -103,6 +105,10 @@ export const publicRoutes = [
     {
         path: QUEST,
         Component: Quest
+    },
+    {
+        path: ORGINFO,
+        Component: OrgInfo
     }
 ]
 
