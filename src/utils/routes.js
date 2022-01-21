@@ -36,13 +36,6 @@ export const ORGINFO = '/orginfo'
 
 export const authRoutes = [
     {
-        path: CREATEASK,
-        Component: CreateAsk
-    }
-]
-
-export const publicRoutes = [
-    {
         path: LOGIN_ROUTE,
         Component: Auth
     },
@@ -105,6 +98,73 @@ export const publicRoutes = [
     {
         path: QUEST,
         Component: Quest
+    },
+    {
+        path: ORGINFO +  '/:id',
+        Component: OrgInfo
+    }
+]
+
+export const publicRoutes = [
+    {
+        path: LOGIN_ROUTE,
+        Component: Auth
+    },
+    {
+        path: REGISTRATION_ROUTE,
+        Component: Registration
+    },
+    {
+        path: B2B_ROUTE,
+        Component: B2B
+    },
+    {
+        path: RESET + "/:token",
+        Component: Reset
+    },
+    {
+        path: FORGOT,
+        Component: Forgot
+    },
+    {
+        path: CARDASK + '/:id',
+        Component: CardAsk
+    },
+    {
+        path: CREATEASK,
+        Component: Auth
+    },
+    {
+        path: MYORDERS,
+        Component: Auth
+    },
+    {
+        path: PROFILE,
+        Component: Auth
+    },
+    {
+        path: MYOFFERS,
+        Component: Auth
+    },
+    {
+        path: MODIFYASK + '/:id',
+        Component: Auth
+    },
+    {
+        path: CATORG,
+        Component: CatOrg
+    },
+    {
+        path: MYCONTR,
+        Component: Auth
+    },
+    {
+        path: CHAT,
+        Component: Auth
+    },
+    {
+        path: QUEST,
+        Component: Auth
     },
     {
         path: ORGINFO,

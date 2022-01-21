@@ -18,8 +18,8 @@ const Reset = observer(() => {
 
     const savePassword = async ()=> {
         try {
-            await {user}.reset(token,password);
-            console.log("1")
+            let result = await user.reset(token,password)
+            console.log(result)
           } catch (error) {
           }
     }

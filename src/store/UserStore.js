@@ -85,12 +85,12 @@ export default class UserStore {
         try {
             const response = await AuthService.reset(token, password);
             if (response.data.tokenIncorrect===true){
-                this.errorString = "Неверный токен";
+                this.errorString = "Неверный токен, перейдите снова по ссылке забыл пароль.";
             }
             if (response.data.result===true){
-                this.errorString = "Пароль изменен, войдите использую новый пароль";
+                this.errorString = "Пароль изменен, войдите используя новый пароль";
             }
-            console.log(response);
+            return response
         } catch (e) {
             console.log(e);
         }

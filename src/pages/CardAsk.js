@@ -10,6 +10,8 @@ import dateFormat, { masks } from "dateformat";
 import {Eye} from 'react-bootstrap-icons';
 import "../style.css";
 import waiting from "../waiting.gif";
+import {useHistory} from 'react-router-dom';
+import {ORGINFO} from "../utils/routes";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -30,6 +32,7 @@ const formValid = ({ data, formErrors }) => {
 
 const data = new FormData();
 const CardAsk = () => {
+    const history = useHistory();
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState();
     const {user} = useContext(Context);  
@@ -49,7 +52,6 @@ const CardAsk = () => {
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
-            console.log(data)
         })
         fetchOffers(id).then((data)=>{
             setOffers(data);
@@ -109,7 +111,7 @@ const CardAsk = () => {
                         <tbody>
                             <tr>
                             <td>Автор</td>
-                            <td>{ask?.Author?.name}</td>
+                            <td onClick={()=>history.push(ORGINFO + '/' + ask?.Author?._id)}>{ask?.Author?.name}</td>
                             </tr>
                             <tr>
                             <td>Название</td>

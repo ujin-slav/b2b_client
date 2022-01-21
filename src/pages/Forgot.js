@@ -16,10 +16,7 @@ const Forgot = observer(() => {
 
     const sendMail = async ()=> {
         try {
-            let result = await user.forgot(email);
-            if (result.data.result===true) {
-                setInterval(()=> history.push(B2B_ROUTE),3000)
-            }
+            await user.forgot(email);
           } catch (error) {
             console.log(error)
           }

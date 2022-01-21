@@ -7,6 +7,7 @@ import {Card, Button, Form, Container, Row} from "react-bootstrap";
 import {useHistory,NavLink} from 'react-router-dom';
 import {B2B_ROUTE} from "../utils/routes";
 import {REGISTRATION_ROUTE} from "../utils/routes";
+import waiting from "../waiting.gif";
 
 const App = observer(() => {
   const history = useHistory();
@@ -23,7 +24,9 @@ const App = observer(() => {
   }, [user])
 
   if (user.isLoading){
-    return <h1>Загрузка</h1>
+    return  <p className="waiting">
+              <img height="320" src={waiting}/>
+            </p>
   }
 
   const login = async ()=> {

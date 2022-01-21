@@ -89,20 +89,24 @@ const Question = observer(({...props})=>{
     return (
         <div>
         <Form onSubmit={handleSubmit}>    
-            <InputGroup> 
-            <Form.Label className="px-3 mt-2">Кому:</Form.Label>
-                <Form.Control
-                    as="select" 
-                    onChange={(e)=>setDest(e.target.value)}        
-                >       
-                        <option value={author?._id}>Автору: {author?.name}</option>
-                        {offers?.map((item,index)=>
-                        <option key={index} value={item.AuthorID}>{item.Author}</option>
-                        )}
-                </Form.Control>
-                <Button type="submit">Отправить
-                </Button> 
-            </InputGroup>
+            {user.isAuth === true ?
+                <InputGroup> 
+                <Form.Label className="px-3 mt-2">Кому:</Form.Label>
+                    <Form.Control
+                        as="select" 
+                        onChange={(e)=>setDest(e.target.value)}        
+                    >       
+                            <option value={author?._id}>Автору: {author?.name}</option>
+                            {offers?.map((item,index)=>
+                            <option key={index} value={item.AuthorID}>{item.Author}</option>
+                            )}
+                    </Form.Control>
+                    <Button type="submit">Отправить
+                    </Button> 
+                </InputGroup>
+            :
+            <div></div> 
+            }    
             <Form.Control
                     name="Text"
                     placeholder="Текст сообщения"
@@ -118,7 +122,7 @@ const Question = observer(({...props})=>{
             {item.Author?._id===user.user.id ?
             <XCircle color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>}            
                         <span style={{fontWeight:"bold"}}>Автор: </span>
-                            {item.Author.name}
+                            {item.Author?.name}
                         </div> 
                         <div style={{fontSize:"12px"}}>
                         <span style={{fontWeight:"bold"}}>Кому: </span>
