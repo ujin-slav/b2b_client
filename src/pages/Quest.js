@@ -77,8 +77,8 @@ const Quest = () => {
                         <td style={{width:"5%"}}>{index+1}</td>
                         <td style={{width:"10%"}}>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
                         <td style={{width:"10%"}}>
-                            <div>{item.Author.name}</div>
-                            <div>{item.Author.nameOrg}</div>
+                            <div>{item.Author?.name}</div>
+                            <div>{item.Author?.nameOrg}</div>
                         </td>
                         <td>{item.Status===null ? 
                         <div style={{color:"red"}}>Нет</div> 

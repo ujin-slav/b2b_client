@@ -111,7 +111,9 @@ const CardAsk = () => {
                         <tbody>
                             <tr>
                             <td>Автор</td>
-                            <td onClick={()=>history.push(ORGINFO + '/' + ask?.Author?._id)}>{ask?.Author?.name}</td>
+                            <td>
+                              <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + ask?.Author?._id)}>
+                                {ask?.Author?.name}</a></td>
                             </tr>
                             <tr>
                             <td>Название</td>
