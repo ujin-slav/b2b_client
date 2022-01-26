@@ -121,7 +121,7 @@ const ChatPage = observer(() => {
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
             if(chat.limitUser<chat.totalDocsUser){
                 console.log(e.target.scrollTop)
-                console.log(chat.totalDocsUser)
+                console.log(chat)
             }
         }    
     }

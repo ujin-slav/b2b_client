@@ -97,9 +97,9 @@ const Question = observer(({...props})=>{
                         onChange={(e)=>setDest(e.target.value)}        
                     >       
                             <option value={author?._id}>Автору: {author?.name}</option>
-                            {offers?.map((item,index)=>
+                            {/* {offers?.map((item,index)=>
                             <option key={index} value={item.AuthorID}>{item.Author}</option>
-                            )}
+                            )} */}
                     </Form.Control>
                     <Button type="submit">Отправить
                     </Button> 
