@@ -2,7 +2,7 @@ import $api from "../http";
 
 
 export default class UserService {
-    static fetchUsers(){
-        return $api.post('/getusers',{limit:8, page:1});
+    static fetchUsers(limit,page){
+        return $api.post('/getusers',{limit, page});
     }
 }
