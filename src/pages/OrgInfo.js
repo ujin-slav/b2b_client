@@ -22,7 +22,7 @@ const OrgInfo = () => {
             <Row>
                 <Col>
                 <Form>
-                     <h3>Профаил</h3>
+                     <h3>Реквизиты организации</h3>
                      <Table striped bordered hover size="sm">
                         <tbody>
                             <tr>

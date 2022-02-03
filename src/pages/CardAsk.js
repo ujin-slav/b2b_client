@@ -12,6 +12,8 @@ import "../style.css";
 import waiting from "../waiting.gif";
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
+import ModalCT from '../components/ModalCT';
+import MessageBox from '../components/MessageBox'
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -35,6 +37,7 @@ const CardAsk = () => {
     const history = useHistory();
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState();
+    const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const {user} = useContext(Context);  
     const [offer, setOffer] = useState({
         data: {
@@ -113,7 +116,16 @@ const CardAsk = () => {
                             <td>Автор</td>
                             <td>
                               <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + ask?.Author?._id)}>
-                                {ask?.Author?.name}</a></td>
+                                {ask?.Author?.name}</a><span style={{marginLeft:"10px"}}></span>
+                                {user.user.id === ask?.Author._id ? 
+                                <div></div> 
+                                : 
+                                  <Button style={{fontSize:"13px",padding:"2px"}} 
+                                    onClick={()=>setModalActiveMessage(true)}>
+                                    Написать сообщение
+                                  </Button>
+                                }
+                                </td>
                             </tr>
                             <tr>
                             <td>Название</td>
@@ -216,8 +228,15 @@ const CardAsk = () => {
                 </Form.Group>
                 </Form>
             </Card.Body>
-            </Card>
+            </Card>       
+        <ModalCT 
+                  header="Сообщение" 
+                  active={modalActiveMessage}
+                  component={<MessageBox author={ask?.Author} setActive={setModalActiveMessage}/>}
+                  setActive={setModalActiveMessage}   
+        />
         </Container>
+
     );
 };
 

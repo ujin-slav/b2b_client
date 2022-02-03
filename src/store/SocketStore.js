@@ -10,6 +10,8 @@ export default class SocketStore {
     limitUser = 8;
     totalDocs;
     totalDocsUser
+    totalPageUser
+    currentPageUser
 
     constructor(){
         makeAutoObservable(this);

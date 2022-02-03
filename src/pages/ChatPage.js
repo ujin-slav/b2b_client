@@ -120,11 +120,13 @@ const ChatPage = observer(() => {
 
     const scrollHandlerUser = (e) =>{
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
-            if(chat.limitUser<chat.totalDocsUser){
-                UserService.fetchUsers(8,userPage).then((response)=>{
+            if(chat.currentPageUser<chat.totalPageUser){
+                chat.currentPageUser = chat.currentPageUser + 1
+                UserService.fetchUsers(8,userPage+1).then((response)=>{
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
-                        setUsers(response.data.docs)
+                        setUsers(old=>[...old,...response.data.docs])  
+                        console.log("user page: " + userPage + " " + chat.totalPageUser)
                     }            
                 })
             }
@@ -150,7 +152,8 @@ const ChatPage = observer(() => {
     useEffect(() => {
         UserService.fetchUsers(8,userPage).then((response)=>{
             if(response.status===200){
-                chat.totalDocsUser = response.data.totalDocs
+                chat.totalPageUser = response.data.totalPages
+                chat.currentPageUser = response.data.page
                 setUsers(response.data.docs)
             }            
         })
