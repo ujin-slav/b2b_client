@@ -4,7 +4,7 @@ import {observer} from "mobx-react-lite";
 import {Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK } from '../utils/routes';
-import { fetchAsks,fetchUser } from "../http/askAPI";
+import { fetchFilterAsks,fetchUser } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import dateFormat, { masks } from "dateformat";
@@ -21,15 +21,14 @@ const TableAsk = observer(({authorId}) => {
     let limit = 10;
 
     useEffect(() => {
-        fetchAsks({authorId,limit,page:1}).then((data)=>{
+        fetchFilterAsks({filter:ask.categoryFilter,limit,page:1}).then((data)=>{
             ask.setAsk(data.docs)
             setpageCount(data.totalPages);
-            console.log(data)
         })
-      },[]);
+      },[ask.categoryFilter]);
 
     const fetchComments = async (currentPage) => {
-      fetchAsks({limit,page:currentPage}).then((data)=>{
+      fetchFilterAsks({limit,page:currentPage}).then((data)=>{
         ask.setAsk(data.docs)
     })};
 

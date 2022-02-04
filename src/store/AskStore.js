@@ -4,6 +4,7 @@ import { makeAutoObservable } from "mobx";
 export default class AskStore {
     isLoading = false;
     arrayAsks = [];
+    categoryFilter = []
 
     constructor(){
         makeAutoObservable(this);

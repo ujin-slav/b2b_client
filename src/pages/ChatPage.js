@@ -122,7 +122,7 @@ const ChatPage = observer(() => {
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
             if(chat.currentPageUser<chat.totalPageUser){
                 chat.currentPageUser = chat.currentPageUser + 1
-                UserService.fetchUsers(8,userPage+1).then((response)=>{
+                UserService.fetchUsers(8,userPage+1,user.user.id).then((response)=>{
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
                         setUsers(old=>[...old,...response.data.docs])  
@@ -150,16 +150,19 @@ const ChatPage = observer(() => {
     }
     
     useEffect(() => {
-        UserService.fetchUsers(8,userPage).then((response)=>{
-            if(response.status===200){
-                chat.totalPageUser = response.data.totalPages
-                chat.currentPageUser = response.data.page
-                setUsers(response.data.docs)
-            }            
-        })
-    }, []);
+        if(user.user.id!==undefined){
+            UserService.fetchUsers(8,userPage,user.user.id).then((response)=>{
+                if(response.status===200){
+                    chat.totalPageUser = response.data.totalPages
+                    chat.currentPageUser = response.data.page
+                    setUsers(response.data.docs)
+                }            
+            })
+    }
+    }, [user.user]);
 
     const handleRecevier =(iD,name)=>{
+        console.log(iD,name)
         const data = {
             No:3,
             UserId: user.user.id,
@@ -235,14 +238,13 @@ const ChatPage = observer(() => {
                     <Col className="col-3"> 
                     <div className="userBox" ref={userBox}>
                         {users?.map((item,index)=>{
-                            if(item._id!==user.user.id){ 
-                            return(<div key={index} className={item._id===recevier?"userCardChange":"userCard"} 
-                             onClick={(e)=>handleRecevier(item._id,item.name)}>
-                                            <div>{item.name}</div>
-                                            <div>{item.nameOrg}</div>
-                                            <div>{item.email}</div>
-                                            {searchUnread(item._id)}
-                            </div>)}
+                            return(<div key={index} className={item.contact._id===recevier?"userCardChange":"userCard"} 
+                             onClick={(e)=>handleRecevier(item.contact._id,item.contact.name)}>
+                                            <div>{item.contact.name}</div>
+                                            <div>{item.contact.nameOrg}</div>
+                                            <div>{item.contact.email}</div>
+                                            {searchUnread(item.contact._id)}
+                            </div>)
                         })}
                     </div>
                     </Col>
