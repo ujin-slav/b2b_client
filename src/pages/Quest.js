@@ -6,7 +6,8 @@ import ReactPaginate from "react-paginate";
 import {    Form,
             InputGroup,
             Button,
-            Table
+            Table,
+            Container
             } from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import { CARDASK } from '../utils/routes';
@@ -50,8 +51,8 @@ const Quest = () => {
     }  
 
     return (
-        <div>
-            <InputGroup> 
+        <Container className="mx-auto my-4">
+            <InputGroup className="mx-auto my-4"> 
             <Form.Label className="px-3 mt-2">Кому:</Form.Label>
                 <Form.Control
                     as="select" 
@@ -107,7 +108,7 @@ const Quest = () => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
-        </div>
+        </Container>
     );
 };
 

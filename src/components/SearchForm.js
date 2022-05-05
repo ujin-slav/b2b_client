@@ -30,8 +30,9 @@ const SearchForm = () => {
     const [expandedCat,setExpandedCat] = useState([]);
 
     useEffect(() => {
-        ask.categoryFilter = checkedCat
-    },[checkedCat]);
+        ask.categoryFilter = checkedCat;
+        ask.regionFilter = checkedRegion;
+    },[checkedCat,checkedRegion]);
 
     return (
         <div>

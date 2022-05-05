@@ -1,7 +1,7 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table} from "react-bootstrap";
+import {Table,Container} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK, MODIFYASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
@@ -51,7 +51,7 @@ const TableAsk = observer(() => {
       await fetchPage(currentPage);
     };
     return (
-      <div>
+      <Container className="mx-auto my-4">
         <Table striped bordered hover>
         <thead>
           <tr>
@@ -123,7 +123,7 @@ const TableAsk = observer(() => {
           <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteAsk}/>
-     </div> 
+     </Container> 
     );
 });
 

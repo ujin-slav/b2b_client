@@ -82,11 +82,10 @@ const Profile =  observer(() => {
     
     return (
         <div>
-            <Container style={{width: "70%"}}>
+            <Container style={{width: "70%"}} className="mx-auto my-4">
             <Row>
                 <Col>
                 <Form onSubmit={onSubmit}>
-                     <h3>Профаил</h3>
                      <Table striped bordered hover size="sm">
                         <tbody>
                             <tr>

@@ -6,5 +6,10 @@ export default class OrgService {
         const {data} = await $api.post(`/getorg`,{page,limit,search});
         return data
     }
+
+    static async getOrgCat(page,limit,search){
+        const {data} = await $api.post(`/getorgcat`,{page,limit,search});
+        return data
+    }
     
 }

@@ -5,6 +5,7 @@ export default class AskStore {
     isLoading = false;
     arrayAsks = [];
     categoryFilter = []
+    regionFilter = []
 
     constructor(){
         makeAutoObservable(this);

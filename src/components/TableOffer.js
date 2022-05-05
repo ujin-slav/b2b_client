@@ -1,7 +1,7 @@
 import React,{useEffect,useState,useContext} from 'react';
 import {fetchUserOffers} from '../http/askAPI';
 import { fetchOffers } from '../http/askAPI';
-import {Table} from "react-bootstrap";
+import {Table, Container} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
@@ -54,8 +54,8 @@ const TableOffer = observer(() => {
     };
 
     return (
-        <div>
-         <Table striped bordered hover>
+      <Container className="mx-auto my-4">
+         <Table striped bordered hover size="sm">
         <thead>
           <tr>
             <th>#</th>
@@ -120,7 +120,7 @@ const TableOffer = observer(() => {
       <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteOffer}/>
-    </div>
+    </Container>
     );
 });
 

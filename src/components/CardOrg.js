@@ -23,7 +23,7 @@ const CardOrg = ({item}) => {
     const Telefon = ({item}) => {
         return(
             <div>
-                {item.Telefon.length > 200 ?
+                {item.Telefon?.length > 200 ?
                 <div>
                     <span style={boldStyle}> Телефон: </span>
                         {readMoreTelefon ? item.Telefon : `${item.Telefon.substring(0, 200)}...`}
@@ -42,7 +42,7 @@ const CardOrg = ({item}) => {
     const Email = ({item}) => {
         return(
             <div>
-                {item.Telefon.length > 200 ?
+                {item.email?.length > 200 ?
                 <div>
                     <span style={boldStyle}> E-mail: </span>
                         {readMoreEmail ? item.email : `${item.email.substring(0, 200)}...`}
@@ -68,7 +68,7 @@ const CardOrg = ({item}) => {
             <span style={boldStyle}> КПП: </span>{item.KPP}</div>
             <div><span style={boldStyle}> Адрес: </span>{item.Address}</div>
             <div><span style={boldStyle}> ФИО рук-ля: </span>{item.Surname} {item.Name} {item.Patron}</div>
-            <div><span style={boldStyle}> Категория: </span>{item.Category}</div>
+            <div><span style={boldStyle}> Категория: </span>{item?.Category}</div>
             <Telefon item={item} />
             <Email item={item}/>
             <div><span style={boldStyle}> ОКПО: </span>{item.OKPO}</div>

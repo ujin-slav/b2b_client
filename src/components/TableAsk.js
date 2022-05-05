@@ -21,7 +21,7 @@ const TableAsk = observer(({authorId}) => {
     let limit = 10;
 
     useEffect(() => {
-        fetchFilterAsks({filter:ask.categoryFilter,limit,page:1}).then((data)=>{
+        fetchFilterAsks({filterCat:ask.categoryFilter,filterRegion:ask.regionFilter,limit,page:1}).then((data)=>{
             ask.setAsk(data.docs)
             setpageCount(data.totalPages);
         })

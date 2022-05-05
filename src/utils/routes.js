@@ -14,6 +14,7 @@ import MyContr from "../pages/MyContr";
 import ChatPage from "../pages/ChatPage";
 import Quest from "../pages/Quest";
 import OrgInfo from "../pages/OrgInfo";
+import Test from "../pages/Test";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -33,6 +34,7 @@ export const MYCONTR = '/mycontr'
 export const CHAT = '/chat'
 export const QUEST = '/quest'
 export const ORGINFO = '/orginfo'
+export const TEST = '/test'
 
 export const authRoutes = [
     {
@@ -169,6 +171,10 @@ export const publicRoutes = [
     {
         path: ORGINFO,
         Component: OrgInfo
+    },
+    {
+        path: TEST,
+        Component: Test
     }
 ]
 
