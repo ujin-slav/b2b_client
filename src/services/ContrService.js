@@ -2,8 +2,8 @@ import $api from "../http";
 
 export default class ContrService {
 
-    static async addContr({email,userid}){
-        const {data} = await $api.post(`/addcontr`,{email,userid});
+    static async addContr({email,userid,name}){
+        const {data} = await $api.post(`/addcontr`,{email,name,userid});
         return data
     }
     

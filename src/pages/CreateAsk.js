@@ -176,15 +176,36 @@ const CreateAsk = () => {
                             </td>
                             </tr>
                             <tr>
-                            <td>Ограничить участников выбранными</td>
-                            <td><Form.Control
+                            <td>Участники торгов</td>
+                            <td>
+                              <div style={{"text-indent": "30px", "color":"blue"}}> В данном поле вы можете указать кто из ваших контрагентов будет участвовать в торгах, вы можете 
+                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.</div>
+                              <div style={{"text-indent": "30px"}}> Также вы можете поставить галочку разослать приглашение на участие в торгах от имени нашего сервиса.</div> 
+                              <div style={{"text-indent": "30px"}}>
+                                Но самым надежным способом будет если вы отправите приглашение на участие скопировав ссылку из раздела мои заявки.
+                                </div>  
+                              <Form.Control
                                   name="Members"
                                   defaultValue={checkedEmail.map((item)=>item)}
-                                  placeholder="Ограничить участников выбранными"
+                                  placeholder="Участники"
                               />
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
+                              <InputGroup>
+                                <Form.Check
+                                      name="email"
+                                      type="checkbox">
+                                </Form.Check>
+                                Ограничить выбранными участниками                    
+                              </InputGroup>
+                              <InputGroup>
+                              <Form.Check
+                                    name="email"
+                                    type="checkbox">
+                              </Form.Check>
+                                Разослать приглашение на участие 
+                              </InputGroup>
                             </td>                      
                             </tr>
                             <tr>

@@ -28,7 +28,8 @@ const EmailList = ({checked,setChecked}) => {
             data.map((item)=>{
                 emailArray.push(item.Email)
             })
-            setListContragent(emailArray);
+            console.log(data)
+            setListContragent(data);
     })
     }
 
@@ -37,27 +38,31 @@ const EmailList = ({checked,setChecked}) => {
     }
 
     const filterEmail=(item)=>{
-        return item.toLowerCase().indexOf(emailSearch.toLowerCase()) > -1;
+        let tempEmail = item.Email
+        let tempName =  item.Name
+        return tempEmail.toLowerCase().indexOf(emailSearch.toLowerCase()) > -1 || 
+        tempName.toLowerCase().indexOf(emailSearch.toLowerCase()) > -1
     }
 
     const checkedHandler=(e,item)=>{
         if(e.target.checked){
-            setChecked([...checked, item]);
+            setChecked([...checked, item.Email]);
         }else{
-            setChecked(checked.filter(el => el !== item));
+            setChecked(checked.filter(el => el !== item.Email));
         }
     }
 
     return (
         <div>
               <Form.Control
-                            placeholder="Введите e-mail контрагента"
+                            placeholder="Введите имя или e-mail контрагента"
                             onChange={(e)=>handleControl(e)}
             />
             <Table striped bordered hover>
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>Имя</th>
                     <th>E-mail</th>
                     <th>Выбрать</th>
                 </tr>
@@ -66,7 +71,8 @@ const EmailList = ({checked,setChecked}) => {
                 {listCont.filter(filterEmail).map((item,index)=>
                 <tr key={index}>
                     <td>{index+1}</td>
-                    <td>{item}</td>
+                    <td>{item.Name}</td>
+                    <td>{item.Email}</td>
                     <td><Form.Check
                                     name="email"
                                     type="checkbox"
