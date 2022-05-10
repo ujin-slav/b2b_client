@@ -1,4 +1,7 @@
 import React,{useState,useRef,useContext,useEffect} from 'react';
+import DatePicker, { registerLocale } from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css";
+import ru from "date-fns/locale/ru"
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -38,29 +41,13 @@ return valid;
 };
 
 
-const data = new FormData();
-
 const CreateAsk = () => {
     var curr = new Date();
-    curr.setDate(curr.getDate() + 3);
-    var date = curr.toISOString().substr(0,10);
-    const[ask,setAsk] = useState( {
-        data: {
-          Author: "",
-          Name: "",
-          MaxPrice: "",
-          Telefon: "",
-          EndDateOffers: date,
-          Text: null,
-          Category: "",
-          Region: "",
-        },
-        formErrors: {
-          Name: "",
-          Text: "",
-        }
-      }
-    );
+    //curr.setDate(curr.getDate() + 3);
+    //var date = curr.toISOString().substr(0,10);
+    var date = curr.setDate(curr.getDate() + 3);
+    registerLocale("ru", ru)
+
     const {user} = useContext(Context);  
     const [loading, setLoading] = useState(false)
     const [files, setFiles] = useState([])
@@ -72,7 +59,29 @@ const CreateAsk = () => {
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
     const [checkedEmail,setCheckedEmail] =  useState([]);
+    const [startDate, setStartDate] = useState(date);
     const {myalert} = useContext(Context);
+
+    const[ask,setAsk] = useState( {
+      data: {
+        Author: "",
+        Name: "",
+        MaxPrice: "",
+        Telefon: "",
+        EndDateOffers: startDate,
+        Text: null,
+        Category: "",
+        Region: "",
+        Private:false,
+        Send:false,
+        Party:""
+      },
+      formErrors: {
+        Name: "",
+        Text: "",
+      }
+    }
+    );
 
     useEffect(() => {
       if(user.user.category){
@@ -97,6 +106,9 @@ const CreateAsk = () => {
         data.append("Category", JSON.stringify(checkedCat))
         data.append("Region", JSON.stringify(checkedRegion))
         data.append("Date", new Date())
+        data.append("Private", ask.data.Private)
+        data.append("Send", ask.data.Send)
+        data.append("Party", ask.data.Party)
         const result = await upload(data)
         if(result.ask){
           myalert.setMessage("Заявка успешно добавлена");
@@ -128,6 +140,7 @@ const CreateAsk = () => {
         default:
           break;
       }
+      console.log(data)
       setAsk({ data, formErrors});
     }
 
@@ -140,6 +153,7 @@ const CreateAsk = () => {
         }
       }
     };
+    
     
     const removeFile = (id) => {
       console.log(id);
@@ -166,13 +180,16 @@ const CreateAsk = () => {
                             </tr>
                             <tr>
                             <td>Дата окончания предложений</td>
-                            <td><Form.Control
-                                  type="date"
+                            <td>
+                               <DatePicker
+                                  locale="ru"
+                                  selected={startDate}
                                   name="EndDateOffers"
-                                  onChange={handleChange}
-                                  defaultValue={date} 
-                                  placeholder="Дата окончания предложений"
-                              />
+                                  timeInputLabel="Время:"
+                                  dateFormat="dd/MM/yyyy HH:mm"
+                                  onChange={(date) => {setStartDate(date);ask.data.EndDateOffers=date}}
+                                  showTimeInput
+                                />
                             </td>
                             </tr>
                             <tr>
@@ -185,9 +202,10 @@ const CreateAsk = () => {
                                 Но самым надежным способом будет если вы отправите приглашение на участие скопировав ссылку из раздела мои заявки.
                                 </div>  
                               <Form.Control
-                                  name="Members"
+                                  name="Party"
                                   defaultValue={checkedEmail.map((item)=>item)}
                                   placeholder="Участники"
+                                  onChange={handleChange}
                               />
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
@@ -195,14 +213,16 @@ const CreateAsk = () => {
                               <InputGroup>
                                 <Form.Check
                                       name="email"
-                                      type="checkbox">
+                                      type="checkbox"
+                                      onChange={()=>{ask.data.Private=!ask.data.Private}}>
                                 </Form.Check>
                                 Ограничить выбранными участниками                    
                               </InputGroup>
                               <InputGroup>
                               <Form.Check
                                     name="email"
-                                    type="checkbox">
+                                    type="checkbox"
+                                    onChange={()=>{ask.data.Send=!ask.data.Send}}>
                               </Form.Check>
                                 Разослать приглашение на участие 
                               </InputGroup>
