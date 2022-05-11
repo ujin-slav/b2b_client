@@ -23,6 +23,7 @@ const TableAsk = observer(({authorId}) => {
     useEffect(() => {
         fetchFilterAsks({filterCat:ask.categoryFilter,filterRegion:ask.regionFilter,limit,page:1}).then((data)=>{
             ask.setAsk(data.docs)
+            console.log(data.docs)
             setpageCount(data.totalPages);
         })
       },[ask.categoryFilter]);
@@ -39,12 +40,24 @@ const TableAsk = observer(({authorId}) => {
     return (
       <div>
         <Table striped bordered hover>
+            <col style={{"width":"3%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"5%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"35%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"10%"}}/>
+          	<col style={{"width":"5%"}}/>
         <thead>
           <tr>
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
-            <th>ИНН заказчика</th>
+            <th>
+              ИНН\
+              <div>имя орг.</div>
+            </th>
+            <th>Текст</th>
             <th>Регионы</th>
             <th>Категории товара</th>
             <th>Окончание предложений</th>
@@ -52,7 +65,6 @@ const TableAsk = observer(({authorId}) => {
         </thead>
         <tbody className="tableAsk">
         {ask?.getAsk().map((item,index)=>{
-          console.log(getCategoryName(item.Category, categoryNodes))
           return (
           <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
             <td>{index+1}</td>
@@ -66,16 +78,24 @@ const TableAsk = observer(({authorId}) => {
             Истек срок
             </td>
             }
-            <td>{item.Author.inn}</td>
+            <td>{item.Author.inn}
+                <div>{item.Author.nameOrg}</div>
+            </td>
+            <td>
+            {item.Text.length>50 ?
+                `${item.Text.substring(0, 100)}...`
+                 :
+                 item.Text
+                 }</td>
             <td className="categoryColumn">
-                {getCategoryName(item.Region, regionNodes).join(", ").length>50 ?
-                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 50)}...`
+                {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
                  :
                  getCategoryName(item.Region, regionNodes).join(", ")
                  }</td>
             <td className="categoryColumn">
-                {getCategoryName(item.Category, categoryNodes).join(", ").length>50 ?
-                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 50)}...`
+                {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
                  :
                  getCategoryName(item.Category, categoryNodes).join(", ")
                  }</td>

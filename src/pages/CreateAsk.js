@@ -60,6 +60,7 @@ const CreateAsk = () => {
     const [expandedCat,setExpandedCat] = useState([]);
     const [checkedEmail,setCheckedEmail] =  useState([]);
     const [startDate, setStartDate] = useState(date);
+    const [fileSize, setFileSize] = useState(0);
     const {myalert} = useContext(Context);
 
     const[ask,setAsk] = useState( {
@@ -74,6 +75,8 @@ const CreateAsk = () => {
         Region: "",
         Private:false,
         Send:false,
+        Hiden:false,
+        Comment:"",
         Party:""
       },
       formErrors: {
@@ -107,6 +110,8 @@ const CreateAsk = () => {
         data.append("Region", JSON.stringify(checkedRegion))
         data.append("Date", new Date())
         data.append("Private", ask.data.Private)
+        data.append("Hiden", ask.data.Hiden)
+        data.append("Comment", ask.data.Comment)
         data.append("Send", ask.data.Send)
         data.append("Party", ask.data.Party)
         const result = await upload(data)
@@ -145,18 +150,28 @@ const CreateAsk = () => {
     }
 
     const onInputChange = (e) => {
-      for(let i = 0; i < e.target.files.length; i++) { 
-        try{
-        setFiles(((oldItems) => [...oldItems, e.target.files[i]]));
-        }catch(e){
-          console.log(e)
+      if(files.length+e.target.files.length<6){
+        for(let i = 0; i < e.target.files.length; i++) { 
+          try{
+            if(fileSize + e.target.files[i].size < 5242880){
+              setFileSize(fileSize + e.target.files[i].size)
+              setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
+              console.log(fileSize)
+            } else {
+              myalert.setMessage("Превышен размер файлов");
+            }  
+          }catch(e){
+            console.log(e)
+          }
         }
+      }else{
+        myalert.setMessage("Превышено количество файлов");
       }
     };
     
     
     const removeFile = (id) => {
-      console.log(id);
+      setFileSize(fileSize - files[id].size)
       const newFiles = files.filter((item,index,array)=>index!==id);
       setFiles(newFiles);
     }
@@ -167,6 +182,8 @@ const CreateAsk = () => {
           <Form onSubmit={onSubmit}>
           <h3>Создать заявку</h3> 
           <Table striped bordered hover size="sm">
+            <col style={{"width":"15%"}}/>
+          	<col style={{"width":"85%"}}/>
                         <tbody>
                             <tr>
                             <td>Название заявки</td>
@@ -212,19 +229,27 @@ const CreateAsk = () => {
                               </Button>
                               <InputGroup>
                                 <Form.Check
-                                      name="email"
+                                      name="Private"
                                       type="checkbox"
                                       onChange={()=>{ask.data.Private=!ask.data.Private}}>
                                 </Form.Check>
-                                Ограничить выбранными участниками                    
+                                Ограничить выбранными участниками.                    
                               </InputGroup>
                               <InputGroup>
                               <Form.Check
-                                    name="email"
+                                    name="Send"
                                     type="checkbox"
                                     onChange={()=>{ask.data.Send=!ask.data.Send}}>
                               </Form.Check>
-                                Разослать приглашение на участие 
+                                Разослать приглашение на участие.
+                              </InputGroup>
+                              <InputGroup>
+                              <Form.Check
+                                    name="Hiden"
+                                    type="checkbox"
+                                    onChange={()=>{ask.data.Hiden=!ask.data.Hiden}}>
+                              </Form.Check>
+                                Скрыть возможность участников видеть предложения друг друга. 
                               </InputGroup>
                             </td>                      
                             </tr>
@@ -264,7 +289,7 @@ const CreateAsk = () => {
                                 </Button></td>
                             </tr>
                             <tr>
-                            <td>Файлы(будут храниться не более 30 дней)</td>
+                            <td>Файлы(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
                             <td>
                             <input type="file"
                                 onChange={onInputChange}
@@ -273,6 +298,21 @@ const CreateAsk = () => {
                                 <button onClick={()=>removeFile(key)}>X</button>
                               </div>
                               )}   </td>
+                            </tr>
+                            <tr>
+                            <td>Комментарий</td>
+                            <td>
+                            <div style={{"color":"blue"}}>
+                              Комментарий будет виден только вам в разделе мои закупки,
+                               в нем например вы можете указать с какой целью производится закупка. 
+                              </div>
+                              <Form.Control
+                                  name="Comment"
+                                  onChange={handleChange}
+                                  placeholder="Комментарий"
+                                  as="textarea"
+                              />
+                            </td>
                             </tr>
                             
                         </tbody>
