@@ -113,7 +113,7 @@ const CreateAsk = () => {
         data.append("Hiden", ask.data.Hiden)
         data.append("Comment", ask.data.Comment)
         data.append("Send", ask.data.Send)
-        data.append("Party", ask.data.Party)
+        data.append("Party", JSON.stringify(checkedEmail))
         const result = await upload(data)
         if(result.ask){
           myalert.setMessage("Заявка успешно добавлена");
@@ -220,9 +220,12 @@ const CreateAsk = () => {
                                 </div>  
                               <Form.Control
                                   name="Party"
-                                  defaultValue={checkedEmail.map((item)=>item)}
+                                  defaultValue={checkedEmail.map((item)=>
+                                    "(" + item.Name + ") " + item.Email
+                                    )}
                                   placeholder="Участники"
                                   onChange={handleChange}
+                                  disabled={true}
                               />
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор

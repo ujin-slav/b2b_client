@@ -1,4 +1,7 @@
 import React,{useState,useRef,useContext,useEffect} from 'react';
+import DatePicker, { registerLocale } from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css";
+import ru from "date-fns/locale/ru"
 import RegInput from "../components/RegInput";
 import {
     Container,
@@ -41,36 +44,51 @@ return valid;
 
 
 const ModifyAsk = (askId) => {
-    const[ask,setAsk] = useState( {
-        data: {
-          Author: "",
-          Name: "",
-          Telefon: "",
-          EndDateOffers: "",
-          Comment: "",
-          Text: null,
-          Category: "",
-          Region: "",
-        },
-        formErrors: {
-          Name: "",
-          Text: "",
-        }
-      }
-    );
-    const {user} = useContext(Context);  
-    const [files, setFiles] = useState([])
-    const [modalActiveReg,setModalActiveReg] = useState(false)
-    const [modalActiveCat,setModalActiveCat] = useState(false)
-    const [checkedRegion,setCheckedRegion] = useState([]);
-    const [expandedRegion,setExpandedRegion] = useState([]);
-    const [checkedCat,setCheckedCat] = useState([]);
-    const [expandedCat,setExpandedCat] = useState([]);
-    const [deletedFiles,setDeletedFiles] = useState([]);
-    const {myalert} = useContext(Context);
-    const [checkedEmail,setCheckedEmail] =  useState([]);
-     const [modalActiveMember,setModalActiveMember] = useState(false)
-    const {id} = useParams();
+
+  var curr = new Date();
+    //curr.setDate(curr.getDate() + 3);
+    //var date = curr.toISOString().substr(0,10);
+    var date = curr.setDate(curr.getDate() + 3);
+  registerLocale("ru", ru)
+
+  const {user} = useContext(Context);  
+  const [files, setFiles] = useState([])
+  const [modalActiveReg,setModalActiveReg] = useState(false)
+  const [modalActiveCat,setModalActiveCat] = useState(false)
+  const [checkedRegion,setCheckedRegion] = useState([]);
+  const [expandedRegion,setExpandedRegion] = useState([]);
+  const [checkedCat,setCheckedCat] = useState([]);
+  const [expandedCat,setExpandedCat] = useState([]);
+  const [deletedFiles,setDeletedFiles] = useState([]);
+  const {myalert} = useContext(Context);
+  const [checkedEmail,setCheckedEmail] =  useState([]);
+  const [startDate, setStartDate] = useState(date);
+  const [fileSize, setFileSize] = useState(0);
+   const [modalActiveMember,setModalActiveMember] = useState(false)
+  const {id} = useParams();
+
+  const[ask,setAsk] = useState( {
+    data: {
+      Author: "",
+      Name: "",
+      MaxPrice: "",
+      Telefon: "",
+      EndDateOffers: startDate,
+      Text: null,
+      Category: "",
+      Region: "",
+      Private:false,
+      Send:false,
+      Hiden:false,
+      Comment:"",
+      Party:""
+    },
+    formErrors: {
+      Name: "",
+      Text: "",
+    }
+  }
+  );
 
     useEffect(() => {
       AskService.fetchOneAsk(id).then((result)=>{
@@ -80,29 +98,34 @@ const ModifyAsk = (askId) => {
         setCheckedCat(result.Category);
         setAsk({ data, formErrors});  
         setFiles(result.Files);
-
-        console.log(ask.data);
+        setCheckedEmail(result.Party)
+        ask.data.MaxPrice=0
       })
     },[]);
 
     const onSubmit = async(e) => {
       e.preventDefault();
-      if (1===1) {
+      console.log(id)
+      if (formValid(ask)) {
         const data = new FormData();
         files.forEach((item)=>data.append("file", item));
-        data.append("id", id)
+        data.append("Id", id)
         data.append("Author", user.user.id)
         data.append("Name", ask.data.Name)
+        data.append("MaxPrice", ask.data.MaxPrice)
         data.append("Telefon", ask.data.Telefon)
         data.append("EndDateOffers", ask.data.EndDateOffers)
         data.append("Text", ask.data.Text)
         data.append("Category", JSON.stringify(checkedCat))
         data.append("Region", JSON.stringify(checkedRegion))
-        data.append("DeletedFiles", JSON.stringify(deletedFiles))
         data.append("Date", new Date())
+        data.append("Private", ask.data.Private)
+        data.append("Hiden", ask.data.Hiden)
+        data.append("Comment", ask.data.Comment)
+        data.append("DeletedFiles", JSON.stringify(deletedFiles))
+        data.append("Send", ask.data.Send)
+        data.append("Party", JSON.stringify(checkedEmail))
         const result = await modifyAsk(data)
-        //window.location.reload();
-        console.log(result);
         if(result.ok===1){
           myalert.setMessage("Заявка успешно изменена");
         } else if(!result.errors){
@@ -137,17 +160,28 @@ const ModifyAsk = (askId) => {
     }
 
     const onInputChange = (e) => {
-      for(let i = 0; i < e.target.files.length; i++) { 
-        try{
-        setFiles(((oldItems) => [...oldItems, e.target.files[i]]));
-        }catch(e){
-          console.log(e)
+      if(files.length+e.target.files.length<6){
+        for(let i = 0; i < e.target.files.length; i++) { 
+          try{
+            if(fileSize + e.target.files[i].size < 5242880){
+              setFileSize(fileSize + e.target.files[i].size)
+              setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
+              console.log(fileSize)
+            } else {
+              myalert.setMessage("Превышен размер файлов");
+            }  
+          }catch(e){
+            console.log(e)
+          }
         }
+      }else{
+        myalert.setMessage("Превышено количество файлов");
       }
     };
     
     const removeFile = (id) => {
       setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
+      setFileSize(fileSize - files[id].size)
       const newFiles = files.filter((item,index,array)=>index!==id);
       setFiles(newFiles);
     }
@@ -180,25 +214,54 @@ const ModifyAsk = (askId) => {
                             </tr>
                             <tr>
                             <td>Дата окончания предложений</td>
-                            <td><Form.Control
-                                  type="date"
+                            <td><DatePicker
+                                  locale="ru"
+                                  selected={startDate}
                                   name="EndDateOffers"
-                                  defaultValue={getDate(ask.data.EndDateOffers)}
-                                  onChange={handleChange}
-                                  placeholder="Дата окончания предложений"
-                              />
+                                  timeInputLabel="Время:"
+                                  dateFormat="dd/MM/yyyy HH:mm"
+                                  onChange={(date) => {setStartDate(date);ask.data.EndDateOffers=date}}
+                                  showTimeInput
+                                />
                             </td>
                             </tr>
                             <tr>
-                            <td>Ограничить участников выбранными</td>
-                            <td><Form.Control
-                                  name="Members"
-                                  defaultValue={checkedEmail.map((item)=>item)}
-                                  placeholder="Ограничить участников выбранными"
+                            <td>Участники торгов</td>
+                            <td>
+                              <div style={{"text-indent": "30px", "color":"blue"}}> В данном поле вы можете указать кто из ваших контрагентов будет участвовать в торгах, вы можете 
+                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.</div>
+                              <div style={{"text-indent": "30px"}}> Также вы можете поставить галочку разослать приглашение на участие в торгах от имени нашего сервиса.</div> 
+                              <div style={{"text-indent": "30px"}}>
+                                Но самым надежным способом будет если вы отправите приглашение на участие скопировав ссылку из раздела мои заявки.
+                                </div>  
+                                <Form.Control
+                                  name="Party"
+                                  defaultValue={checkedEmail.map((item)=>
+                                    "(" + item.Name + ") " + item.Email
+                                    )}
+                                  placeholder="Участники"
+                                  onChange={handleChange}
+                                  disabled={true}
                               />
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
+                              <InputGroup>
+                                <Form.Check
+                                      name="Private"
+                                      type="checkbox"
+                                      onChange={()=>{ask.data.Private=!ask.data.Private}}>
+                                </Form.Check>
+                                Ограничить выбранными участниками.                    
+                              </InputGroup>
+                              <InputGroup>
+                              <Form.Check
+                                    name="Hiden"
+                                    type="checkbox"
+                                    onChange={()=>{ask.data.Hiden=!ask.data.Hiden}}>
+                              </Form.Check>
+                                Скрыть возможность участников видеть предложения друг друга. 
+                              </InputGroup>
                             </td>                      
                             </tr>
                             <tr>
@@ -247,6 +310,22 @@ const ModifyAsk = (askId) => {
                                 <button onClick={()=>removeFile(key)}>X</button>
                               </div>
                               )}   </td>
+                            </tr>
+                            <tr>
+                            <td>Комментарий</td>
+                            <td>
+                            <div style={{"color":"blue"}}>
+                              Комментарий будет виден только вам в разделе мои закупки,
+                               в нем например вы можете указать с какой целью производится закупка. 
+                              </div>
+                              <Form.Control
+                                  name="Comment"
+                                  onChange={handleChange}
+                                  defaultValue={ask.data.Comment}
+                                  placeholder="Комментарий"
+                                  as="textarea"
+                              />
+                            </td>
                             </tr>
                             
                         </tbody>
