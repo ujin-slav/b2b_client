@@ -32,11 +32,12 @@ const formValid = ({ data, formErrors }) => {
   };
   
 
-const data = new FormData();
 const CardAsk = () => {
     const history = useHistory();
+    const {myalert} = useContext(Context);
     const [ask, setAsk] = useState();
-    const [offers, setOffers] = useState();
+    const [offers, setOffers] = useState([{}]);
+    const [fileSize, setFileSize] = useState(0);
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const {user} = useContext(Context);  
     const [offer, setOffer] = useState({
@@ -56,21 +57,28 @@ const CardAsk = () => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
         })
-        fetchOffers(id).then((data)=>{
-            setOffers(data);
+        fetchOffers(id).then((data)=>{ 
+          setOffers(data);
         })
       },[]);
 
     const onSubmit = e => {
+        e.preventDefault();
         if (formValid(offer)) {
+          const data = new FormData();
             files.forEach((item)=>data.append("file", item));
             data.append("Price", offer.data.Price);
             data.append("Text", offer.data.Text)
             data.append("Ask", id)
             data.append("UserId", user.user.id)
             setLoading(true)
-            uploadOffer(data).then((response)=>{});      
+            uploadOffer(data).then((response)=>{
+              fetchOffers(id).then((data)=>{ 
+                setOffers(data);
+              })
+            });      
             setLoading(false)  
+
         }
       };  
       const removeFile = (id) => {
@@ -79,15 +87,26 @@ const CardAsk = () => {
         setFiles(newFiles);
       }
 
-    const onInputChange = (e) => {
-        for(let i = 0; i < e.target.files.length; i++) { 
-          try{
-          setFiles(((oldItems) => [...oldItems, e.target.files[i]]));
-          }catch(e){
-            console.log(e)
+      const onInputChange = (e) => {
+        if(files.length+e.target.files.length<6){
+          for(let i = 0; i < e.target.files.length; i++) { 
+            try{
+              if(fileSize + e.target.files[i].size < 5242880){
+                setFileSize(fileSize + e.target.files[i].size)
+                setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
+                console.log(fileSize)
+              } else {
+                myalert.setMessage("Превышен размер файлов");
+              }  
+            }catch(e){
+              console.log(e)
+            }
           }
+        }else{
+          myalert.setMessage("Превышено количество файлов");
         }
       };
+
     const handleChange = e => {
       e.preventDefault();
       const { name, value } = e.target;
@@ -162,6 +181,12 @@ const CardAsk = () => {
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
+                  <col style={{"width":"3%"}}/>
+                  <col style={{"width":"15%"}}/>
+                  <col style={{"width":"5%"}}/>
+                  <col style={{"width":"30%"}}/>
+                  <col style={{"width":"40%"}}/>
+                  <col style={{"width":"5%"}}/>
                     <thead>
                       <tr>
                         <th>#</th>
@@ -169,13 +194,18 @@ const CardAsk = () => {
                         <th>Цена</th>
                         <th>Сообщение</th>
                         <th>Файлы</th>
+                        <th>Дата</th>
                       </tr>
                     </thead>
                     <tbody>
                       {offers?.map((item,index)=>
                         <tr key={index}>
                           <td>{index+1}</td>
-                          <td>{item.Author}</td>
+                          <td>
+                            <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
+                              {item.AuthorName} 
+                            <div>{item.AuthorOrg}</div></a>
+                          </td>
                           <td>{item.Price}</td>
                           <td>{item.Text}</td>
                           <td>{item.Files?.map((item,index)=><div key={index}>
@@ -183,6 +213,7 @@ const CardAsk = () => {
                               <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
                               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}</td>
+                          <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
                         </tr>
                       )}
                     </tbody>
@@ -201,7 +232,7 @@ const CardAsk = () => {
                 <Form onSubmit={onSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                     <Form.Label>Цена</Form.Label>
-                    <Form.Control type="number" placeholder="Цена" name="Price" onChange={handleChange}/>
+                    <Form.Control type="number" placeholder="Цена" name="Price" step=".01" onChange={handleChange}/>
                 </Form.Group>
                 <span className="errorMessage" style={{color:"red"}}>{offer.formErrors.Price}</span>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
@@ -210,7 +241,7 @@ const CardAsk = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                     <div className="form-group files">
-                    <label>Файлы(будут храниться не более 30 дней)</label>
+                    <label>Файлы(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</label>
                     <input type="file"
                             onChange={onInputChange}
                             className="form-control"

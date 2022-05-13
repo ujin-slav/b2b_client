@@ -9,6 +9,7 @@ import { XCircle} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
 import {Eye} from 'react-bootstrap-icons';
+import dateFormat, { masks } from "dateformat";
 
 const TableOffer = observer(() => {
 
@@ -59,11 +60,12 @@ const TableOffer = observer(() => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Автор закупки</th>
-            <th>Текст закупки</th>
-            <th>Цена</th>
+            <th>Автор</th>
+            <th>Текст</th>
             <th>Сообщение</th>
+            <th>Цена</th>
             <th>Фаилы</th>
+            <th>Дата</th>
             <th>Удалить</th>
           </tr>
         </thead>
@@ -82,8 +84,8 @@ const TableOffer = observer(() => {
               item.Ask.Text
             }
             </td>
-            <td>{item.Price}</td>
             <td>{item.Text}</td>
+            <td>{item.Price}</td>
             <td>
             {item?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
@@ -91,6 +93,7 @@ const TableOffer = observer(() => {
                               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}
             </td>
+            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}} onClick={()=>{
               setModalActive(true);
               setDeleteId(item._id)}}/></td>
