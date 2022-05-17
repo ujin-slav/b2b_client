@@ -169,7 +169,7 @@ export const publicRoutes = [
         Component: Auth
     },
     {
-        path: ORGINFO,
+        path: ORGINFO +  '/:id',
         Component: OrgInfo
     },
     {

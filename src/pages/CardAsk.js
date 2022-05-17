@@ -136,7 +136,7 @@ const CardAsk = () => {
                             <td>
                               <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + ask?.Author?._id)}>
                                 {ask?.Author?.name}</a><span style={{marginLeft:"10px"}}></span>
-                                {user.user.id === ask?.Author._id ? 
+                                {(user.user.id === ask?.Author._id) || user.isAuth == false  ? 
                                 <div></div> 
                                 : 
                                   <Button style={{fontSize:"13px",padding:"2px"}} 

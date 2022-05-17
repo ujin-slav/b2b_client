@@ -17,9 +17,9 @@ const App = observer(() => {
   const [password,setPassword] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-        user.checkAuth()
-    }
+    // if (localStorage.getItem('token')) {
+    //     user.checkAuth()
+    // }
     user.errorString = "";
   }, [user])
 
