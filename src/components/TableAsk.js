@@ -18,6 +18,7 @@ const TableAsk = observer(({authorId}) => {
     const {myalert} = useContext(Context);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
+    const {user} = useContext(Context);
     let limit = 10;
 
     useEffect(() => {
@@ -37,6 +38,27 @@ const TableAsk = observer(({authorId}) => {
       let currentPage = data.selected + 1;
       await fetchComments(currentPage);
     };
+
+    const checkAccess = (item) => {
+      if(item.Private){
+        if(item.Author?._id===user.user.id){
+          return true
+        }
+        if(item.Party?.findIndex(el => el.Email === user.user.email)===-1){
+          return false
+        }
+      }  
+      return true
+    }
+
+    const redirect = (item)=>{
+      if(checkAccess(item)){
+        history.push(CARDASK + '/' + item._id)
+      } else {
+        myalert.setMessage("Пользователь ограничил участников");
+      }
+    }
+
     return (
       <div>
         <Table striped bordered hover>
@@ -65,8 +87,32 @@ const TableAsk = observer(({authorId}) => {
         </thead>
         <tbody className="tableAsk">
         {ask?.getAsk().map((item,index)=>{
+          if(!checkAccess(item)){
+            return (
+                <tr key={index} onClick={()=>redirect(item)}>
+                  <td>{index+1}</td>
+                  <td className="blurry-text">Название</td>
+                  {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                  <td className="tdGreen">
+                  Активная
+                  </td>
+                  :
+                  <td className="tdRed">
+                  Истек срок
+                  </td>
+                  }
+                  <td className="blurry-text">8888888888
+                      <div className="blurry-text">Организация</div>
+                  </td>
+                  <td className="blurry-text">Заявка</td>
+                  <td className="blurry-text">Регионы</td>
+                  <td className="blurry-text">Категории</td>
+                  <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
+                </tr>)
+          }
+
           return (
-          <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
+          <tr key={index} onClick={()=>redirect(item)}>
             <td>{index+1}</td>
             <td>{item.Name}</td>
             {Date.parse(item.EndDateOffers) > new Date().getTime() ?

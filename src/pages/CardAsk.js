@@ -13,6 +13,7 @@ import waiting from "../waiting.gif";
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
+import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
 
 const formValid = ({ data, formErrors }) => {
@@ -32,7 +33,7 @@ const formValid = ({ data, formErrors }) => {
   };
   
 
-const CardAsk = () => {
+const CardAsk = observer(() => {
     const history = useHistory();
     const {myalert} = useContext(Context);
     const [ask, setAsk] = useState();
@@ -56,6 +57,7 @@ const CardAsk = () => {
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
+            console.log(data)
         })
         fetchOffers(id).then((data)=>{ 
           setOffers(data);
@@ -115,7 +117,22 @@ const CardAsk = () => {
       data[name] = value;
       formErrors.Price = e.target.value <= 0 ? "Должно быть больше 0" : "";
       setOffer({data,formErrors});
-    }  
+    } 
+    
+    const checkAccess = () =>{
+      if(user.isAuth==false){
+        return false
+      }
+      if(Date.parse(ask?.EndDateOffers) < new Date().getTime()){
+        return false
+      }
+      if(ask?.Private){
+        if(ask?.Party?.findIndex(el => el.Email === user.user.email)===-1){
+          return false
+        }
+      }  
+      return true
+    }
 
     if(user===undefined || ask===undefined){
       return(
@@ -152,7 +169,15 @@ const CardAsk = () => {
                             </tr>
                             <tr>
                             <td>Статус</td>
-                            <td>{Date.parse(ask?.EndDateOffers) > new Date().getTime() ? "Активная" : "Истек срок"}</td>
+                            <td>{Date.parse(ask?.EndDateOffers) > new Date().getTime() ?
+                                      <td className="tdGreen">
+                                      Активная
+                                      </td>
+                                      :
+                                      <td className="tdRed">
+                                      Истек срок
+                                      </td>
+                                      }</td>
                             </tr>
                             <tr>
                             <td>Контактные данные</td>
@@ -219,13 +244,18 @@ const CardAsk = () => {
                     </tbody>
                   </Table>
             </Card>   
+            { checkAccess()  ? 
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
                 <Question offers={offers} 
                           author={ask?.Author} 
                           id={id} 
                           user={user}/>
-            </Card>   
+            </Card>
+                    :
+                    <div></div> 
+            }
+            { checkAccess()  ?       
             <Card>
             <Card.Header style={{"background":"#282C34", "color":"white"}}>Мое предложение</Card.Header>
             <Card.Body>
@@ -259,7 +289,11 @@ const CardAsk = () => {
                 </Form.Group>
                 </Form>
             </Card.Body>
-            </Card>       
+            </Card>
+                          :
+                          <div></div> 
+                        
+            }       
         <ModalCT 
                   header="Сообщение" 
                   active={modalActiveMessage}
@@ -269,6 +303,6 @@ const CardAsk = () => {
         </Container>
 
     );
-};
+});
 
 export default CardAsk;
