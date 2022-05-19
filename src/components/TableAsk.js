@@ -12,6 +12,7 @@ import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import { CircleFill } from 'react-bootstrap-icons';
+import {checkAccessAsk} from '../utils/CheckAccessAsk'
 
 const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
@@ -39,20 +40,8 @@ const TableAsk = observer(({authorId}) => {
       await fetchComments(currentPage);
     };
 
-    const checkAccess = (item) => {
-      if(item.Private){
-        if(item.Author?._id===user.user.id){
-          return true
-        }
-        if(item.Party?.findIndex(el => el.Email === user.user.email)===-1){
-          return false
-        }
-      }  
-      return true
-    }
-
     const redirect = (item)=>{
-      if(checkAccess(item)){
+      if(checkAccessAsk(user,item).Open){
         history.push(CARDASK + '/' + item._id)
       } else {
         myalert.setMessage("Пользователь ограничил участников");
@@ -87,7 +76,7 @@ const TableAsk = observer(({authorId}) => {
         </thead>
         <tbody className="tableAsk">
         {ask?.getAsk().map((item,index)=>{
-          if(!checkAccess(item)){
+          if(!checkAccessAsk(user,item).Open){
             return (
                 <tr key={index} onClick={()=>redirect(item)}>
                   <td>{index+1}</td>

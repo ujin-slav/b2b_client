@@ -61,7 +61,7 @@ const TableAsk = observer(() => {
             <th>Текст</th>
             <th>Окончание предложений</th>
             <th>Комментарий</th>
-            <th>Удалить</th>
+            <th>Удалить/Редакт.</th>
           </tr>
         </thead>
         <tbody>

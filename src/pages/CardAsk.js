@@ -15,6 +15,7 @@ import {ORGINFO} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
 import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
+import { checkAccessAsk } from '../utils/CheckAccessAsk';
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -118,22 +119,7 @@ const CardAsk = observer(() => {
       formErrors.Price = e.target.value <= 0 ? "Должно быть больше 0" : "";
       setOffer({data,formErrors});
     } 
-    
-    const checkAccess = () =>{
-      if(user.isAuth==false){
-        return false
-      }
-      if(Date.parse(ask?.EndDateOffers) < new Date().getTime()){
-        return false
-      }
-      if(ask?.Private){
-        if(ask?.Party?.findIndex(el => el.Email === user.user.email)===-1){
-          return false
-        }
-      }  
-      return true
-    }
-
+  
     if(user===undefined || ask===undefined){
       return(
         <p className="waiting">
@@ -244,18 +230,14 @@ const CardAsk = observer(() => {
                     </tbody>
                   </Table>
             </Card>   
-            { checkAccess()  ? 
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
-                <Question offers={offers} 
+                <Question ask={ask} 
                           author={ask?.Author} 
                           id={id} 
                           user={user}/>
             </Card>
-                    :
-                    <div></div> 
-            }
-            { checkAccess()  ?       
+            { checkAccessAsk(user,ask).AddOffer  ?       
             <Card>
             <Card.Header style={{"background":"#282C34", "color":"white"}}>Мое предложение</Card.Header>
             <Card.Body>

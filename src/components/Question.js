@@ -15,9 +15,10 @@ import AnswerCard from "../components/AnswerCard"
 import { ArrowReturnRight,XCircle} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
 import {SocketContext} from "../App";
+import { checkAccessAsk } from "../utils/CheckAccessAsk";
   
 const Question = observer(({...props})=>{
-    const {offers,
+    const {ask,
         author,
         user,
         id} = props   
@@ -88,6 +89,7 @@ const Question = observer(({...props})=>{
 
     return (
         <div>
+        {checkAccessAsk(user,ask).AddQuestAsk ?
         <Form onSubmit={handleSubmit}>    
             {user.isAuth === true ?
                 <InputGroup> 
@@ -115,19 +117,22 @@ const Question = observer(({...props})=>{
                     onChange={(e)=>setText(e.target.value)}
             />
         </Form>
+        :
+        <div></div>
+            }
         {quest?.map((item,index)=>
         <div key={index}>
             <Card>
             <Card.Header className="p-1"><div style={{fontSize:"12px"}}>
             {item.Author?._id===user.user.id ?
-            <XCircle color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>}            
-                        <span style={{fontWeight:"bold"}}>Автор: </span>
+            <XCircle color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>} 
+                        </div>            
+                        {/* <span style={{fontWeight:"bold"}}>Автор: </span>
                             {item.Author?.name}
-                        </div> 
                         <div style={{fontSize:"12px"}}>
                         <span style={{fontWeight:"bold"}}>Кому: </span>
                             {item.Destination?.name}                        
-                        </div>               
+                        </div>                */}
             </Card.Header>
             <Card.Text className="m-3">
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
