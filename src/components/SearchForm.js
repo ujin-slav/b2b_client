@@ -19,6 +19,7 @@ import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {Context} from "../index";
+import {Search} from 'react-bootstrap-icons';
 
 const SearchForm = () => {
     const {ask} = useContext(Context);
@@ -40,12 +41,22 @@ const SearchForm = () => {
                 <Form>
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Наименование закупки</Form.Label>
-                            <Form.Control type="nameOrder" placeholder="Наименование" />
+                    <Form.Label>Наименование закупки</Form.Label>
+                            <InputGroup className="mb-3">
+                                <Form.Control type="nameOrder" placeholder="Наименование" />
+                                <Button variant="outline-secondary" id="button-addon2">
+                                    <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                                </Button>
+                            </InputGroup>
                     </Form.Group>
                     <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Наименование или ИНН заказчика</Form.Label>
-                            <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" />
+                    <Form.Label>Наименование или ИНН заказчика</Form.Label>
+                            <InputGroup className="mb-3">
+                                <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" />
+                                <Button variant="outline-secondary" id="button-addon2">
+                                    <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                                </Button>
+                            </InputGroup>
                     </Form.Group>
                     </Row>   
                     <Row>
