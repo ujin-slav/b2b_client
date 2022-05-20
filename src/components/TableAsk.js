@@ -23,15 +23,20 @@ const TableAsk = observer(({authorId}) => {
     let limit = 10;
 
     useEffect(() => {
-        fetchFilterAsks({filterCat:ask.categoryFilter,filterRegion:ask.regionFilter,limit,page:1}).then((data)=>{
-            ask.setAsk(data.docs)
-            console.log(data.docs)
-            setpageCount(data.totalPages);
+        fetchFilterAsks({
+          filterCat:ask.categoryFilter,
+          filterRegion:ask.regionFilter,
+          limit,page:1}).then((data)=>{
+          ask.setAsk(data.docs)
+          setpageCount(data.totalPages);
         })
       },[ask.categoryFilter]);
 
     const fetchComments = async (currentPage) => {
-      fetchFilterAsks({limit,page:currentPage}).then((data)=>{
+      fetchFilterAsks({
+        filterCat:ask.categoryFilter,
+        filterRegion:ask.regionFilter,
+        limit,page:currentPage}).then((data)=>{
         ask.setAsk(data.docs)
     })};
 
