@@ -51,8 +51,8 @@ const TableAsk = observer(() => {
       await fetchPage(currentPage);
     };
     return (
-      <Container className="mx-auto my-4">
-        <Table striped bordered hover>
+      <div>
+        <Table striped hover>
         <thead>
           <tr>
             <th>#</th>
@@ -125,7 +125,7 @@ const TableAsk = observer(() => {
           <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteAsk}/>
-     </Container> 
+     </div> 
     );
 });
 

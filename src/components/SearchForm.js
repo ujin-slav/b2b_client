@@ -41,16 +41,14 @@ const SearchForm = () => {
                 <Form>
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Наименование закупки</Form.Label>
                             <InputGroup className="mb-3">
-                                <Form.Control type="nameOrder" placeholder="Наименование" />
+                                <Form.Control type="nameOrder" placeholder="Наименование или текст закупки" />
                                 <Button variant="outline-secondary" id="button-addon2">
                                     <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                                 </Button>
                             </InputGroup>
                     </Form.Group>
                     <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Наименование или ИНН заказчика</Form.Label>
                             <InputGroup className="mb-3">
                                 <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" />
                                 <Button variant="outline-secondary" id="button-addon2">
@@ -61,7 +59,6 @@ const SearchForm = () => {
                     </Row>   
                     <Row>
                     <Form.Group as={Col} controlId="Tree">
-                            <Form.Label>Классификатор</Form.Label>
                             <InputGroup className="mb-3">
                                 <Form.Control
                                 placeholder="Классификатор"
@@ -73,7 +70,6 @@ const SearchForm = () => {
                             </InputGroup>
                     </Form.Group>
                     <Form.Group as={Col} controlId="Tree">
-                            <Form.Label>Регионы</Form.Label>
                               <InputGroup className="mb-3">
                                 <Form.Control
                                 placeholder="Регионы"

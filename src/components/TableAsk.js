@@ -26,16 +26,20 @@ const TableAsk = observer(({authorId}) => {
         fetchFilterAsks({
           filterCat:ask.categoryFilter,
           filterRegion:ask.regionFilter,
+          searchText:ask.searchText,
+          searchInn:ask.searchInn,
           limit,page:1}).then((data)=>{
           ask.setAsk(data.docs)
           setpageCount(data.totalPages);
         })
-      },[ask.categoryFilter]);
+      },[ask.categoryFilter,ask.regionFilter]);
 
     const fetchComments = async (currentPage) => {
       fetchFilterAsks({
         filterCat:ask.categoryFilter,
         filterRegion:ask.regionFilter,
+        searchText:ask.searchText,
+        searchInn:ask.searchInn,
         limit,page:currentPage}).then((data)=>{
         ask.setAsk(data.docs)
     })};
