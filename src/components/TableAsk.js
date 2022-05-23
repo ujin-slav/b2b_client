@@ -32,7 +32,7 @@ const TableAsk = observer(({authorId}) => {
           ask.setAsk(data.docs)
           setpageCount(data.totalPages);
         })
-      },[ask.categoryFilter,ask.regionFilter]);
+      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn]);
 
     const fetchComments = async (currentPage) => {
       fetchFilterAsks({

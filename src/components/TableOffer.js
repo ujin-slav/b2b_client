@@ -55,8 +55,8 @@ const TableOffer = observer(() => {
     };
 
     return (
-      <Container className="mx-auto my-4">
-         <Table striped bordered hover size="sm">
+      <div>
+       <Table striped hover>
         <thead>
           <tr>
             <th>#</th>
@@ -123,7 +123,7 @@ const TableOffer = observer(() => {
       <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteOffer}/>
-    </Container>
+    </div>
     );
 });
 

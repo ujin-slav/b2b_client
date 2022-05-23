@@ -2,7 +2,7 @@ import React, {useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,CATORG, MYCONTR,CHAT,QUEST} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -66,7 +66,6 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(CATORG)}className={active===CATORG ? "active" : ""}>Справочник организаций</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">
                            <div>Сообщения</div>
@@ -79,6 +78,7 @@ const NavBar = observer(() => {
                            <div className="countQuest">{chat.questUnread > 0 ? chat.questUnread : "" }</div>
                         </div>
                     </Nav.Link>
+                    <Nav.Link onClick={()=>activeLink(HELP)}className={active===HELP ? "active" : ""}>Помощь</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">

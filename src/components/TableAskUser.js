@@ -9,7 +9,7 @@ import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
-import { XCircle, Pen } from 'react-bootstrap-icons';
+import { XCircle, Pen,Link45deg } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 
 const TableAsk = observer(() => {
@@ -61,7 +61,7 @@ const TableAsk = observer(() => {
             <th>Текст</th>
             <th>Окончание предложений</th>
             <th>Комментарий</th>
-            <th>Удалить/Редакт.</th>
+            <th>Уд./Ре./Ко.</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +98,9 @@ const TableAsk = observer(() => {
             onClick={(e)=>{
                 e.stopPropagation();
                 history.push(MODIFYASK + '/' + item._id)
-        }} /></td>
+        }} />
+            <Link45deg style={{"margin-left":"15px","width": "25px", "height": "25px"}} />
+        </td>
           </tr>
         )}  
         </tbody>

@@ -186,14 +186,6 @@ const ModifyAsk = (askId) => {
       setFiles(newFiles);
     }
 
-  
-    const getDate =(date)=>{
-      if(date){
-          var curr = new Date(Date.parse(date));
-          return curr.toISOString().substr(0,10);
-      }
-    }
-
     return (
         <div>
            <Container style={{width: "70%"}}>

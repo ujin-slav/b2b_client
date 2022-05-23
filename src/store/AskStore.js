@@ -25,4 +25,12 @@ export default class AskStore {
         return this.arrayAsks;
     }
 
+    setSearchText(Text){
+        this.searchText = Text; 
+    }
+
+    setSearchInn(Inn){
+        this.searchInn = Inn; 
+    }
+
 }

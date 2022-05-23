@@ -29,6 +29,8 @@ const SearchForm = () => {
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const [searchText,setSearchText] = useState("");
+    const [searchInn,setSearchInn] = useState("");
 
     useEffect(() => {
         ask.categoryFilter = checkedCat;
@@ -42,16 +44,18 @@ const SearchForm = () => {
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">
                             <InputGroup className="mb-3">
-                                <Form.Control type="nameOrder" placeholder="Наименование или текст закупки" />
-                                <Button variant="outline-secondary" id="button-addon2">
+                                <Form.Control type="nameOrder" placeholder="Наименование или текст закупки" 
+                                    onChange={(e)=>setSearchText(e.target.value)}/>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>ask.setSearchText(searchText)}>
                                     <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                                 </Button>
                             </InputGroup>
                     </Form.Group>
                     <Form.Group as={Col} controlId="formGridEmail">
                             <InputGroup className="mb-3">
-                                <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" />
-                                <Button variant="outline-secondary" id="button-addon2">
+                                <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" 
+                                    onChange={(e)=>setSearchInn(e.target.value)}/>
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>ask.setSearchInn(searchInn)}>
                                     <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                                 </Button>
                             </InputGroup>

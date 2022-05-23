@@ -51,7 +51,7 @@ const Quest = () => {
     }  
 
     return (
-        <Container className="mx-auto my-4">
+        <div>
             <InputGroup className="mx-auto my-4"> 
             <Form.Label className="px-3 mt-2">Кому:</Form.Label>
                 <Form.Control
@@ -62,7 +62,7 @@ const Quest = () => {
                         <option value="2">Вопросы от меня</option>
                 </Form.Control> 
             </InputGroup>
-             <Table striped bordered hover>
+             <Table striped hover>
                 <thead>
                 <tr>
                     <th>#</th>
@@ -108,7 +108,7 @@ const Quest = () => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
-        </Container>
+        </div>
     );
 };
 

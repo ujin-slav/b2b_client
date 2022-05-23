@@ -19,6 +19,7 @@ import CategoryTree from '../components/CategoryTree';
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import Captcha from "demos-react-captcha";
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -65,12 +66,12 @@ const RegistrationForm = () => {
           telefon: "",
           Inn: "",
           password: "",
-          confirmPassword: ""
+          confirmPassword: "",
         }
       }
     );
       const [checked, setChecked] = useState(false);
-
+      const [captcha, setCaptcha] = useState(false);
       const [modalActiveReg,setModalActiveReg] = useState(false)
       const [modalActiveCat,setModalActiveCat] = useState(false)
       const [checkedRegion,setCheckedRegion] = useState([]);
@@ -89,22 +90,27 @@ const RegistrationForm = () => {
 
     const handleSubmit = async e => {
       e.preventDefault(); 
-        if (formValid(userReg)) {
-            const result = await user.registration(userReg.data);
-            if(result.data?.errors){
-              myalert.setMessage(result.data.message);
-            } 
-            if(result.data?.user){
-              myalert.setMessage(<div>
-                  <div>Пользователь "{result.data?.user.email}" успешно добавлен.</div>
-                  <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
-              </div>
-              );
-              history.push(B2B_ROUTE);
-            }
+      if(captcha){
+          if (formValid(userReg)) {
+              const result = await user.registration(userReg.data);
+              if(result.data?.errors){
+                myalert.setMessage(result.data.message);
+              } 
+              if(result.data?.user){
+                myalert.setMessage(<div>
+                    <div>Пользователь "{result.data?.user.email}" успешно добавлен.</div>
+                    <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
+                </div>
+                );
+                history.push(B2B_ROUTE);
+              }
+          } else {
+            console.error("FORM INVALID");
+          }
         } else {
+          myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
           console.error("FORM INVALID");
-        }
+        }    
     };
 
     const handleChange = e => {
@@ -153,6 +159,12 @@ const RegistrationForm = () => {
         }
         setuserReg({ data, formErrors});
     };
+
+    const handleChangeCaptcha = (value) => {
+        if(value){
+          setCaptcha(true)
+        }
+    }
     
     return (
     <Container style={{width: 800}}>
@@ -190,6 +202,9 @@ const RegistrationForm = () => {
                 </Form.Group>
                 <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password}} />
                 <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword}} />
+                <div style={{"margin":"20px 0px 20px 0px"}}>
+                  <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>
+                </div>  
                 <Button
                 variant="primary"
                 type="submit"
