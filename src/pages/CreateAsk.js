@@ -22,6 +22,7 @@ import {Context} from "../index";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import {observer} from "mobx-react-lite";
 import "../style.css";
 
 const formValid = ({ data, formErrors }) => {
@@ -41,7 +42,7 @@ return valid;
 };
 
 
-const CreateAsk = () => {
+const CreateAsk = observer(() => {
     var curr = new Date();
     //curr.setDate(curr.getDate() + 3);
     //var date = curr.toISOString().substr(0,10);
@@ -325,7 +326,7 @@ const CreateAsk = () => {
             type="submit"
             className="btn btn-success ml-auto mr-1"
             >
-            Отправить
+            Создать
             </Button>
         <ModalCT 
                 header="Регионы" 
@@ -353,6 +354,6 @@ const CreateAsk = () => {
         </Container>
         </div>
     );
-};
+});
 
 export default CreateAsk;

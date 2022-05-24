@@ -327,7 +327,7 @@ const ModifyAsk = (askId) => {
             type="submit"
             className="btn btn-success ml-auto mr-1"
             >
-            Отправить
+            Сохранить
             </Button>
         <ModalCT 
                 header="Регионы" 

@@ -242,7 +242,6 @@ const ChatPage = observer(() => {
                              onClick={(e)=>handleRecevier(item.contact._id,item.contact.name)}>
                                             <div>{item.contact.name}</div>
                                             <div>{item.contact.nameOrg}</div>
-                                            <div>{item.contact.email}</div>
                                             {searchUnread(item.contact._id)}
                             </div>)
                         })}

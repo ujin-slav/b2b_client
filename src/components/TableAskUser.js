@@ -99,7 +99,12 @@ const TableAsk = observer(() => {
                 e.stopPropagation();
                 history.push(MODIFYASK + '/' + item._id)
         }} />
-            <Link45deg style={{"margin-left":"15px","width": "25px", "height": "25px"}} />
+            <Link45deg style={{"margin-left":"15px","width": "25px", "height": "25px"}} 
+              onClick={(e)=>{
+                e.stopPropagation();
+                navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
+                myalert.setMessage("Ссылка скопирована");
+              }}/>
         </td>
           </tr>
         )}  
