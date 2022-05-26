@@ -12,7 +12,7 @@ import {
 
 const RegInput = ({value}) => {
     
-    const {Name, Label, handleChange, PlaceHolder,ErrorMessage} = value; 
+    const {Name, Label, handleChange, PlaceHolder,ErrorMessage,Type} = value; 
     
     return (
         <div>
@@ -22,6 +22,7 @@ const RegInput = ({value}) => {
                     name={Name}
                     onChange={handleChange}
                     placeholder={PlaceHolder}
+                    type={Type}
                 />
                 <span className="errorMessage" style={{color:"red"}}>{ErrorMessage}</span>
                 </Form.Group>

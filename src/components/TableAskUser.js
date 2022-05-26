@@ -52,7 +52,14 @@ const TableAsk = observer(() => {
     };
     return (
       <div>
-        <Table striped hover>
+        <Table striped hover  className="tableAsk">
+            <col style={{"width":"3%"}}/>
+          	<col style={{"width":"5%"}}/>
+            <col style={{"width":"5%"}}/>
+          	<col style={{"width":"5%"}}/>
+            <col style={{"width":"25%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"10%"}}/>
         <thead>
           <tr>
             <th>#</th>

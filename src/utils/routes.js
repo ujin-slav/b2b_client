@@ -106,6 +106,10 @@ export const authRoutes = [
     {
         path: ORGINFO +  '/:id',
         Component: OrgInfo
+    },
+    {
+        path: "*",
+        Component: B2B
     }
 ]
 
@@ -177,6 +181,10 @@ export const publicRoutes = [
     {
         path: HELP,
         Component: Help
+    },
+    {
+        path: "*",
+        Component: B2B
     },
     {
         path: TEST,

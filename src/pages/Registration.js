@@ -24,6 +24,10 @@ import Captcha from "demos-react-captcha";
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 );
+
+const passwordRegex = RegExp(
+  "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,40})"
+);
   
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -147,8 +151,10 @@ const RegistrationForm = () => {
               : "неверный email";
             break;
           case "password":
-            formErrors.password =
-              value.length < 6 ? "минимум 6 символов" : "";
+            formErrors.password = passwordRegex.test(value)
+              ? ""
+              : "Пароль слишком слабый. Пароль должен иметь 8-40 латинских символов,содержать не менее одной цифры" +
+              ", хотя бы одну строчную букву, хотя бы одну заглавную букву.";
             break;
           case "confirmPassword":
             formErrors.confirmPassword =
@@ -200,8 +206,8 @@ const RegistrationForm = () => {
                                 Выбор
                                 </Button>
                 </Form.Group>
-                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password}} />
-                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword}} />
+                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password, Type:"password"}} />
+                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword, Type:"password"}} />
                 <div style={{"margin":"20px 0px 20px 0px"}}>
                   <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>
                 </div>  

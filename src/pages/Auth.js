@@ -59,6 +59,7 @@ const App = observer(() => {
               />
               <Form.Control
                   className="mt-3"
+                  type="password"
                   placeholder="Введите ваш пароль..."
                   onChange={(e)=>setPassword(e.target.value)}
               />

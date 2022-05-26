@@ -59,12 +59,12 @@ const TableAsk = observer(({authorId}) => {
 
     return (
       <div>
-        <Table striped bordered hover>
+        <Table striped bordered hover className="tableAsk">
             <col style={{"width":"3%"}}/>
-          	<col style={{"width":"10%"}}/>
+          	<col style={{"width":"5%"}}/>
             <col style={{"width":"5%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"35%"}}/>
+          	<col style={{"width":"5%"}}/>
+            <col style={{"width":"25%"}}/>
           	<col style={{"width":"10%"}}/>
             <col style={{"width":"10%"}}/>
           	<col style={{"width":"5%"}}/>
@@ -112,7 +112,11 @@ const TableAsk = observer(({authorId}) => {
           return (
           <tr key={index} onClick={()=>redirect(item)}>
             <td>{index+1}</td>
-            <td>{item.Name}</td>
+            <td>{item.Name.length>15 ?
+                `${item.Name.substring(0, 15)}...`
+                 :
+                 item.Name
+                 }</td>
             {Date.parse(item.EndDateOffers) > new Date().getTime() ?
             <td className="tdGreen">
             Активная
