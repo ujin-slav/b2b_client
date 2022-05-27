@@ -2,7 +2,7 @@ import React, {useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST, ABOUT} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, Alert } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -79,6 +79,7 @@ const NavBar = observer(() => {
                         </div>
                     </Nav.Link>
                     <Nav.Link onClick={()=>activeLink(HELP)}className={active===HELP ? "active" : ""}>Помощь</Nav.Link>
+                    <Nav.Link onClick={()=>activeLink(ABOUT)}className={active===ABOUT ? "active" : ""}>О сервисе</Nav.Link>
                 </Nav>
             </div>
             <NavLink to="/profile">

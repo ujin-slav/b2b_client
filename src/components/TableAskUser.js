@@ -56,18 +56,18 @@ const TableAsk = observer(() => {
             <col style={{"width":"3%"}}/>
           	<col style={{"width":"5%"}}/>
             <col style={{"width":"5%"}}/>
+          	<col style={{"width":"25%"}}/>
+            <col style={{"width":"15%"}}/>
           	<col style={{"width":"5%"}}/>
-            <col style={{"width":"25%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"10%"}}/>
+            <col style={{"width":"6%"}}/>
         <thead>
           <tr>
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
             <th>Текст</th>
-            <th>Окончание предложений</th>
             <th>Комментарий</th>
+            <th>Окончание предложений</th>
             <th>Уд./Ре./Ко.</th>
           </tr>
         </thead>
@@ -75,7 +75,11 @@ const TableAsk = observer(() => {
         {askUser?.getAsk().map((item, index)=>
           <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
             <td>{index+1}</td>
-            <td>{item.Name}</td>
+            <td>{item.Name.length>15 ?
+                `${item.Name.substring(0, 15)}...`
+                 :
+                 item.Name
+                 }</td>
             <td>
             {Date.parse(item.EndDateOffers) > new Date().getTime() ?
             <td className="tdGreen">
@@ -88,14 +92,18 @@ const TableAsk = observer(() => {
             }
             </td>
             <td className="tdText">
-              {item.Text.length > 50 ? 
-              `${item.Text.substring(0,400)}...`
+              {item.Text.length > 30 ? 
+              `${item.Text.substring(0,30)}...`
               :
               item.Text
               }
             </td>
+            <td>{item.Comment.length > 30 ? 
+              `${item.Comment.substring(0,30)}...`
+              :
+              item.Comment
+              }</td>
             <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy")}</td>
-            <td>{item.Comment}</td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
                 onClick={(e)=>{
                     e.stopPropagation();

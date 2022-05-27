@@ -60,10 +60,10 @@ const TableAsk = observer(({authorId}) => {
     return (
       <div>
         <Table striped bordered hover className="tableAsk">
-            <col style={{"width":"3%"}}/>
+            <col style={{"width":"2%"}}/>
           	<col style={{"width":"5%"}}/>
             <col style={{"width":"5%"}}/>
-          	<col style={{"width":"5%"}}/>
+          	<col style={{"width":"6%"}}/>
             <col style={{"width":"25%"}}/>
           	<col style={{"width":"10%"}}/>
             <col style={{"width":"10%"}}/>
@@ -73,10 +73,7 @@ const TableAsk = observer(({authorId}) => {
             <th>#</th>
             <th>Название</th>
             <th>Статус</th>
-            <th>
-              ИНН\
-              <div>имя орг.</div>
-            </th>
+            <th>Организация</th>
             <th>Текст</th>
             <th>Регионы</th>
             <th>Категории товара</th>
@@ -131,7 +128,7 @@ const TableAsk = observer(({authorId}) => {
             </td>
             <td>
             {item.Text.length>50 ?
-                `${item.Text.substring(0, 100)}...`
+                `${item.Text.substring(0, 50)}...`
                  :
                  item.Text
                  }</td>

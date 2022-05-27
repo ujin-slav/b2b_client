@@ -59,7 +59,7 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        //uploader.current  = new SocketIOFileClient(chat.socket)
+        uploader.current  = new SocketIOFileClient(chat.socket)
         chat.socket.on("receive_message", (data) => {  
             chat.setTotalDocs(data.totalDocs)
             const reversed = data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});

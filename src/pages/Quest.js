@@ -62,7 +62,12 @@ const Quest = () => {
                         <option value="2">Вопросы от меня</option>
                 </Form.Control> 
             </InputGroup>
-             <Table striped hover>
+             <Table striped hover className="tableAsk">
+                    <col style={{"width":"1%"}}/>
+                    <col style={{"width":"3%"}}/>
+                    <col style={{"width":"5%"}}/>
+                    <col style={{"width":"2%"}}/>
+                    <col style={{"width":"20%"}}/>
                 <thead>
                 <tr>
                     <th>#</th>
@@ -84,7 +89,11 @@ const Quest = () => {
                         <td>{item.Status===null ? 
                         <div style={{color:"red"}}>Нет</div> 
                         : item.Status.Text}</td>
-                        <td>{item.Text}</td>
+                        <td>{item.Text.length>100 ?
+                                `${item.Text.substring(0, 100)}...`
+                                :
+                                item.Text
+                                }</td>
                     </tr>
                     )}
                 </tbody>

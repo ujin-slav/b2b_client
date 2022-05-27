@@ -56,7 +56,15 @@ const TableOffer = observer(() => {
 
     return (
       <div>
-       <Table striped hover>
+       <Table striped hover  className="tableAsk">
+            <col style={{"width":"3%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"25%"}}/>
+          	<col style={{"width":"20%"}}/>
+            <col style={{"width":"7%"}}/>
+          	<col style={{"width":"15%"}}/>
+            <col style={{"width":"7%"}}/>
+            <col style={{"width":"5%"}}/>
         <thead>
           <tr>
             <th>#</th>
@@ -78,13 +86,17 @@ const TableOffer = observer(() => {
             <div>{item.Ask.Author.nameOrg}</div>
             </td>
             <td className="tdText">
-            {item.Text.length > 50 ? 
-              `${item.Ask.Text.substring(0,400)}...`
+            {item.Ask.Text.length > 50 ? 
+              `${item.Ask.Text.substring(0,50)}...`
               :
               item.Ask.Text
             }
             </td>
-            <td>{item.Text}</td>
+            <td>{item.Text.length > 30 ? 
+              `${item.Text.substring(0,30)}...`
+              :
+              item.Text
+              }</td>
             <td>{item.Price}</td>
             <td>
             {item?.Files?.map((item,index)=><div key={index}>
