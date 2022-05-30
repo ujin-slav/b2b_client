@@ -226,9 +226,9 @@ const ChatPage = observer(() => {
 
     const getAvatar=(author)=>{
         if(author===user.user.id){
-            return user.user.name.match(/\b(\w)/g)
+            return user.user.name.match(/[A-Z]|[А-Я]/g)
         } else {
-            return recevierName.match(/\b(\w)/g)
+            return recevierName.match(/[A-Z]|[А-Я]/g)
         }
     }
 
@@ -258,7 +258,7 @@ const ChatPage = observer(() => {
                                     <tbody>
                                         <tr>
                                             <td><div className="avatar"> 
-                                            {getAvatar(messageContent.Author)}  
+                                            {getAvatar(messageContent.Author)} 
                                             </div></td>
                                             <td>
                                             <div className={messageContent.Author===user.user.id?"messageItem":"messageItemRecevier"}> 
@@ -267,7 +267,7 @@ const ChatPage = observer(() => {
                                             :
                                             <div></div>
                                             }
-                                            {messageContent.Text} 
+                                            <div>{messageContent.Text}</div> 
                                         <div className="messageDate">
                                         <X color="red" 
                                          style={{"width": "20px",

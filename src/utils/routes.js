@@ -114,6 +114,10 @@ export const authRoutes = [
         Component: About
     },
     {
+        path: HELP,
+        Component: Help
+    },
+    {
         path: "*",
         Component: B2B
     }

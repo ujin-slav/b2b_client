@@ -23,6 +23,7 @@ import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {observer} from "mobx-react-lite";
+import Captcha from "demos-react-captcha";
 import "../style.css";
 
 const formValid = ({ data, formErrors }) => {
@@ -50,6 +51,7 @@ const CreateAsk = observer(() => {
     registerLocale("ru", ru)
 
     const {user} = useContext(Context);  
+    const [captcha, setCaptcha] = useState(false);
     const [loading, setLoading] = useState(false)
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -98,32 +100,37 @@ const CreateAsk = observer(() => {
 
     const onSubmit = async(e) => {
       e.preventDefault();
-      if (formValid(ask)) {
-        const data = new FormData();
-        files.forEach((item)=>data.append("file", item));
-        data.append("Author", user.user.id)
-        data.append("Name", ask.data.Name)
-        data.append("MaxPrice", ask.data.MaxPrice)
-        data.append("Telefon", ask.data.Telefon)
-        data.append("EndDateOffers", ask.data.EndDateOffers)
-        data.append("Text", ask.data.Text)
-        data.append("Category", JSON.stringify(checkedCat))
-        data.append("Region", JSON.stringify(checkedRegion))
-        data.append("Date", new Date())
-        data.append("Private", ask.data.Private)
-        data.append("Hiden", ask.data.Hiden)
-        data.append("Comment", ask.data.Comment)
-        data.append("Send", ask.data.Send)
-        data.append("Party", JSON.stringify(checkedEmail))
-        const result = await upload(data)
-        if(result.ask){
-          myalert.setMessage("Заявка успешно добавлена");
-        } else if(!result.errors){
-          myalert.setMessage(result.errors?.message);
+      if(captcha){
+        if (formValid(ask)) {
+          const data = new FormData();
+          files.forEach((item)=>data.append("file", item));
+          data.append("Author", user.user.id)
+          data.append("Name", ask.data.Name)
+          data.append("MaxPrice", ask.data.MaxPrice)
+          data.append("Telefon", ask.data.Telefon)
+          data.append("EndDateOffers", ask.data.EndDateOffers)
+          data.append("Text", ask.data.Text)
+          data.append("Category", JSON.stringify(checkedCat))
+          data.append("Region", JSON.stringify(checkedRegion))
+          data.append("Date", new Date())
+          data.append("Private", ask.data.Private)
+          data.append("Hiden", ask.data.Hiden)
+          data.append("Comment", ask.data.Comment)
+          data.append("Send", ask.data.Send)
+          data.append("Party", JSON.stringify(checkedEmail))
+          const result = await upload(data)
+          if(result.ask){
+            myalert.setMessage("Заявка успешно добавлена");
+          } else if(!result.errors){
+            myalert.setMessage(result.errors?.message);
+          }
+        } else {
+          console.error("FORM INVALID");
+          myalert.setMessage("Не заполнено поле текст заявки");
         }
-      } else {
+      }else{
         console.error("FORM INVALID");
-        myalert.setMessage("Не заполнено поле текст заявки");
+        myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
       }
     };
 
@@ -176,6 +183,11 @@ const CreateAsk = observer(() => {
       const newFiles = files.filter((item,index,array)=>index!==id);
       setFiles(newFiles);
     }
+    const handleChangeCaptcha = (value) => {
+      if(value){
+        setCaptcha(true)
+      }
+  }
 
     return (
         <div>
@@ -320,7 +332,8 @@ const CreateAsk = observer(() => {
                             </tr>
                             
                         </tbody>
-           </Table>                   
+           </Table>   
+           <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
             <Button
             variant="primary"
             type="submit"

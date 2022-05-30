@@ -80,6 +80,7 @@ table {
     position: relative;
     display: block;
     transform: rotate(180deg);
+    direction: ltr;
 
     background-color:rgb(116, 187, 248) !important;
     border-radius:20px 20px 20px 0px;
@@ -93,7 +94,9 @@ table {
   width: fit-content;
   position: relative;
   display: block;
+  -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
+ direction: ltr;
 
   background-color:#dad6c3 ;
   color:black;
@@ -137,6 +140,7 @@ table {
 .chat {
   height:70vh;
   overflow-y: scroll;
+  -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
   direction: rtl;
   background: url(949.jpg);
