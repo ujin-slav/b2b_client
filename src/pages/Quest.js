@@ -11,23 +11,26 @@ import {    Form,
             } from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import { CARDASK } from '../utils/routes';
+import {observer} from "mobx-react-lite";
 
-const Quest = () => {
+const Quest = observer(() => {
     const {user} = useContext(Context);
     const [quest,setQuest] = useState([]); 
     const [search,setSearch] = useState(1)
+    const [currentPage,setCurrentPage] = useState(1)
     const [pageCount, setpageCount] = useState(0);
     const history = useHistory();
+    const {chat} = useContext(Context);
     let limit = 10;
 
     useEffect(() => {
-        QuestService.fetchQuestUser({dest:"1",userId:user.user.id, limit,page:1}).then((response)=>{
+        QuestService.fetchQuestUser({dest:"1",userId:user.user.id, limit,page:currentPage}).then((response)=>{
             if(response.status===200){
                 setQuest(response.data.docs)
                 setpageCount(response.data.totalPages);
             }                
         })
-    },[]);
+    },[chat.questUnread]);
 
     const fetchPage = async (currentPage) => {
         QuestService.fetchQuestUser({dest:search,userId:user.user.id,limit,page:currentPage}).then((response)=>{
@@ -36,7 +39,7 @@ const Quest = () => {
       };
 
     const handlePageClick = async (data) => {
-        let currentPage = data.selected + 1;
+        setCurrentPage(data.selected + 1);
         await fetchPage(currentPage);
       };
 
@@ -66,8 +69,8 @@ const Quest = () => {
                     <col style={{"width":"1%"}}/>
                     <col style={{"width":"3%"}}/>
                     <col style={{"width":"5%"}}/>
-                    <col style={{"width":"2%"}}/>
-                    <col style={{"width":"20%"}}/>
+                    <col style={{"width":"15%"}}/>
+                    <col style={{"width":"15%"}}/>
                 <thead>
                 <tr>
                     <th>#</th>
@@ -78,7 +81,9 @@ const Quest = () => {
                 </tr>
                 </thead>
                 <tbody>
-                     {quest.map((item,index)=>
+                     {quest.map((item,index)=>{
+                         console.log(item)
+                     return(
                     <tr key={index} onClick={()=>history.push(CARDASK + '/' + item.Ask)}>
                         <td style={{width:"5%"}}>{index+1}</td>
                         <td style={{width:"10%"}}>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
@@ -95,7 +100,7 @@ const Quest = () => {
                                 item.Text
                                 }</td>
                     </tr>
-                    )}
+                   )})}
                 </tbody>
                </Table> 
             <ReactPaginate
@@ -119,6 +124,6 @@ const Quest = () => {
           />
         </div>
     );
-};
+});
 
 export default Quest;

@@ -16,6 +16,7 @@ import Quest from "../pages/Quest";
 import OrgInfo from "../pages/OrgInfo";
 import Help from "../pages/Help";
 import About from "../pages/About";
+import Activate from "../pages/Activate";
 import Test from "../pages/Test";
 
 export const ADMIN_ROUTE = '/admin'
@@ -39,6 +40,7 @@ export const ORGINFO = '/orginfo'
 export const HELP = '/help'
 export const ABOUT = '/about'
 export const TEST = '/test'
+export const ACTIVATE = '/activate'
 
 export const authRoutes = [
     {
@@ -118,6 +120,10 @@ export const authRoutes = [
         Component: Help
     },
     {
+        path: ACTIVATE +  '/:activationLink',
+        Component: Activate
+    },
+    {
         path: "*",
         Component: B2B
     }
@@ -195,6 +201,10 @@ export const publicRoutes = [
     {
         path: ABOUT,
         Component: About
+    },
+    {
+        path: ACTIVATE +  '/:activationLink',
+        Component: Activate
     },
     {
         path: "*",

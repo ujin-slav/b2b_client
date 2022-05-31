@@ -186,7 +186,7 @@ const RegistrationForm = () => {
         <Row>
             <Col>
             <Form onSubmit={handleSubmit}>
-                <RegInput value={{Name: "name", Label: "Имя", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
+                <RegInput value={{Name: "name", Label: "Имя, фамилия", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
                 <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />             
                 <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.nameOrg}} />
                 <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.inn}} />
@@ -194,14 +194,14 @@ const RegistrationForm = () => {
                 <RegInput value={{Name: "telefon", Label: "Контактный телефон", handleChange, PlaceHolder: "Контактный телефон", ErrorMessage: userReg.formErrors.telefon}} />
                 <Form.Group>
                 <Form.Label>Регионы</Form.Label>
-                <Card body>{getCategoryName(checkedRegion, regionNodes)}</Card>
+                <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
                                 </Button> 
                 </Form.Group>  
                 <Form.Group>         
                 <Form.Label>Категории</Form.Label>
-                <Card body>{getCategoryName(checkedCat, categoryNodes)}</Card>
+                <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
                                 Выбор
                                 </Button>

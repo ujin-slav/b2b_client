@@ -12,7 +12,7 @@ import { Form,
 import QuestService from '../services/QuestService'; 
 import {Context} from "../index"; 
 import AnswerCard from "../components/AnswerCard"
-import { ArrowReturnRight,XCircle} from 'react-bootstrap-icons';
+import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
 import {SocketContext} from "../App";
 import { checkAccessAsk } from "../utils/CheckAccessAsk";
@@ -123,18 +123,9 @@ const Question = observer(({...props})=>{
         {quest?.map((item,index)=>
         <div key={index}>
             <Card>
-            <Card.Header className="p-1"><div style={{fontSize:"12px"}}>
-            {item.Author?._id===user.user.id ?
-            <XCircle color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>} 
-                        </div>            
-                        {/* <span style={{fontWeight:"bold"}}>Автор: </span>
-                            {item.Author?.name}
-                        <div style={{fontSize:"12px"}}>
-                        <span style={{fontWeight:"bold"}}>Кому: </span>
-                            {item.Destination?.name}                        
-                        </div>                */}
-            </Card.Header>
             <Card.Text className="m-3">
+            {item.Author?._id===user.user.id ?
+            <XSquare color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>} 
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
             </Card.Text>
             {item.Destination?._id===user.user.id ?     
@@ -152,7 +143,7 @@ const Question = observer(({...props})=>{
                         <Card.Text>
                         <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                         <span style={{"float": "right"}}>
-                            <XCircle color="red" onClick={e=>delAnswer(item)}/>
+                            <XSquare color="red" onClick={e=>delAnswer(item)}/>
                         </span>
                         </Card.Text>
                     </Card>  
