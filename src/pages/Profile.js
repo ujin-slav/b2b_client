@@ -9,6 +9,19 @@ import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import { categoryNodes } from '../config/Category';
 
+const formValid = ({ data, formErrors }) => {
+    let valid = true;
+    // validate form errors being empty
+    Object.values(formErrors).forEach(val => {
+        val.length > 0 && (valid = false);
+    });
+    // validate the form was filled out
+    Object.values(data).forEach(val => {
+        val === null && (valid = false);
+    });
+    return valid;
+};
+
 const Profile =  observer(() => {
 
     const {user} = useContext(Context);  
@@ -20,18 +33,14 @@ const Profile =  observer(() => {
             nameOrg:  null,
             adressOrg: null,
             telefon: null,
-            inn: null,
-            fiz: null,
-            region: null,
-            category: null
+            inn: null
           },
           formErrors: {
             name: "",
             nameOrg: "",
             adressOrg: "",
             telefon: "",
-            Inn: "",
-            fiz: ""
+            Inn: ""
           }
       }
     );
@@ -57,6 +66,31 @@ const Profile =  observer(() => {
         let formErrors = profile.formErrors;
         let data = profile.data
         data[name] = value;
+
+        switch (name) {
+            case "name":
+              formErrors.name =
+                value.length < 3 ? "минимум 3 символа" : "";
+              break;
+            case "nameOrg":
+              formErrors.nameOrg =
+                value.length < 3 ? "минимум 3 символа" : "";
+              break;  
+            case "inn":
+              formErrors.inn =
+                value.length < 8 ? "неверный инн" : "";
+              break;  
+            case "adressOrg":
+              formErrors.adressOrg =
+                value.length < 3 ? "минимум 3 символа" : "";
+            break;   
+            case "telefon":
+              formErrors.telefon =
+                value.length < 3 ? "минимум 3 символа" : "";
+            break;    
+            default:
+              break;
+            }
         setProfile({ data, formErrors});
     }
 
@@ -68,15 +102,20 @@ const Profile =  observer(() => {
         for (var key in data) {
             data[key] === null && (data[key] = user.user[key]);
         }
-        data["category"] = JSON.stringify(checkedCat);
-        data["region"] = JSON.stringify(checkedRegion);
-        setProfile({ data, formErrors});
-        console.log(data)
-        const result = await user.changeuser(profile);
-        if (result.status===200){
-            myalert.setMessage("Данные успешно сохранены"); 
-        } else {
-            myalert.setMessage(result.data.message);
+        
+        if (formValid(profile)) {
+            data["category"] = JSON.stringify(checkedCat);
+            data["region"] = JSON.stringify(checkedRegion);
+            setProfile({ data, formErrors});
+            console.log(data)
+            const result = await user.changeuser(profile);
+            if (result.status===200){
+                myalert.setMessage("Данные успешно сохранены"); 
+            } else {
+                myalert.setMessage(result.data.message);
+            }
+        }else{
+            myalert.setMessage("Форма заполнена не верно")
         }
     }
     
@@ -95,7 +134,8 @@ const Profile =  observer(() => {
                                     type="text"
                                     onChange={handleChange}
                                     defaultValue={user.user.name}
-                                />  </td>
+                                /> 
+                                <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.name}</span></td>
                             </tr>
                             <tr>
                             <td>Название организации</td>
@@ -104,7 +144,8 @@ const Profile =  observer(() => {
                                     type="text"
                                     onChange={handleChange}
                                     defaultValue={user.user.nameOrg}
-                                />  </td>
+                                /> 
+                                <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.nameOrg}</span></td>
                             </tr>
                             <tr>
                             <td>Адрес организации</td>
@@ -113,7 +154,8 @@ const Profile =  observer(() => {
                                     type="text"
                                     onChange={handleChange}
                                     defaultValue={user.user.adressOrg}
-                                /></td>
+                                />
+                                <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.adressOrg}</span></td>
                             </tr>
                             <tr>
                             <td>ИНН</td>
@@ -122,7 +164,8 @@ const Profile =  observer(() => {
                                     type="text"
                                     onChange={handleChange}
                                     defaultValue={user.user.inn}
-                                /></td>
+                                />
+                                <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.inn}</span></td>
                             </tr>
                             <tr>
                             <td>Контактный телефон</td>
@@ -133,7 +176,7 @@ const Profile =  observer(() => {
                                     onChange={handleChange}
                                     defaultValue={user.user.telefon}
                                 />  
-                            </td>
+                                <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.telefon}</span></td>
                             </tr>
                             <tr>
                             <td>Категории</td>

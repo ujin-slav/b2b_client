@@ -138,17 +138,23 @@ const Question = observer(({...props})=>{
             <div></div>                    
             }
             </Card>
-                {item.Answer.map((item)=>
+                {item.Answer.map((item)=>{
+                    console.log(item)
+                    return(
                     <Card className="ms-5">
                         <Card.Text>
                         <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                         <span style={{"float": "right"}}>
-                            <XSquare color="red" onClick={e=>delAnswer(item)}/>
+                        {item.Author===user.user.id ?
+                                <XSquare color="red" className="xcircleQuest"  onClick={e=>delAnswer(item)} /> : <div></div>} 
                         </span>
                         </Card.Text>
-                    </Card>  
-                )}       
-        </div>)}                     
+                    </Card> 
+                    ) 
+                })}
+                <div style={{"height":"5px","background":"#ECECEC"}}></div>          
+        </div>
+        )}                  
         </div>
     );
     })

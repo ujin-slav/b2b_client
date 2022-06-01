@@ -277,6 +277,7 @@ const CreateAsk = observer(() => {
                                   placeholder="Текст заявки"
                                   as="textarea"
                               />
+                              <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                             </td>
                             </tr>
                             <tr>

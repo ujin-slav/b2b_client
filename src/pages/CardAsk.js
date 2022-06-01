@@ -78,6 +78,7 @@ const CardAsk = observer(() => {
             uploadOffer(data).then((response)=>{
               fetchOffers(id).then((data)=>{ 
                 setOffers(data);
+                myalert.setMessage("Предложение успешно опубликовано.");
               })
             });      
             setLoading(false)  
@@ -128,8 +129,29 @@ const CardAsk = observer(() => {
     )
     }
 
+    const offersRender = (item,index) =>{
+      return(
+        <tr key={index}>
+          <td>{index+1}</td>
+          <td>
+            <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
+              {item.AuthorName} 
+            <div>{item.AuthorOrg}</div></a>
+          </td>
+          <td>{item.Price}</td>
+          <td>{item.Text}</td>
+          <td>{item.Files?.map((item,index)=><div key={index}>
+              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
+          </div>)}</td>
+          <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+        </tr>
+      )
+    }
+
     return (
-        <Container>
+        <Container className="mx-auto my-4">
             <Row>
                 <Col>
                      <Table striped bordered hover size="sm">
@@ -209,24 +231,13 @@ const CardAsk = observer(() => {
                       </tr>
                     </thead>
                     <tbody>
-                      {offers?.map((item,index)=>
-                        <tr key={index}>
-                          <td>{index+1}</td>
-                          <td>
-                            <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
-                              {item.AuthorName} 
-                            <div>{item.AuthorOrg}</div></a>
-                          </td>
-                          <td>{item.Price}</td>
-                          <td>{item.Text}</td>
-                          <td>{item.Files?.map((item,index)=><div key={index}>
-                              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
-                          </div>)}</td>
-                          <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-                        </tr>
-                      )}
+                      {offers?.map((item,index)=>{
+                         if(!ask?.Hiden || user.user.id === ask?.Author._id){
+                          return(offersRender(item,index))
+                        }else if(item.AuthorID===user.user.id){
+                          return(offersRender(item,index))
+                        }
+                      })}
                     </tbody>
                   </Table>
             </Card>   

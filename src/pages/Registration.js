@@ -68,7 +68,7 @@ const RegistrationForm = () => {
           nameOrg: "",
           adressOrg: "",
           telefon: "",
-          Inn: "",
+          inn: "",
           password: "",
           confirmPassword: "",
         }
@@ -96,6 +96,8 @@ const RegistrationForm = () => {
       e.preventDefault(); 
       if(captcha){
           if (formValid(userReg)) {
+              userReg.data["category"] = JSON.stringify(checkedCat);
+              userReg.data["region"] = JSON.stringify(checkedRegion);
               const result = await user.registration(userReg.data);
               if(result.data?.errors){
                 myalert.setMessage(result.data.message);

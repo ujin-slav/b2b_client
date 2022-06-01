@@ -100,6 +100,7 @@ const ModifyAsk = (askId) => {
         setFiles(result.Files);
         setCheckedEmail(result.Party)
         ask.data.MaxPrice=0
+        console.log(result)
       })
     },[]);
 
@@ -242,6 +243,7 @@ const ModifyAsk = (askId) => {
                                 <Form.Check
                                       name="Private"
                                       type="checkbox"
+                                      defaultChecked={ask.data.Private}
                                       onChange={()=>{ask.data.Private=!ask.data.Private}}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
@@ -250,6 +252,7 @@ const ModifyAsk = (askId) => {
                               <Form.Check
                                     name="Hiden"
                                     type="checkbox"
+                                    defaultChecked={ask.data.Hiden}
                                     onChange={()=>{ask.data.Hiden=!ask.data.Hiden}}>
                               </Form.Check>
                                 Скрыть возможность участников видеть предложения друг друга. 
