@@ -2,6 +2,7 @@ import React,{useEffect, useContext,createContext,useRef} from 'react';
 import {BrowserRouter } from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
+import NavBarBurger from "./components/NavBarBurger";
 import {Context} from "./index";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -27,6 +28,7 @@ const App = ()=> {
   return (
     <SocketContext.Provider>
       <BrowserRouter>
+        <NavBarBurger/>
         <NavBar/>
         <AlertCustom/>
         <AppRouter/>

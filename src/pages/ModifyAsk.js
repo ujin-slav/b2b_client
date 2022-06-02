@@ -68,21 +68,7 @@ const ModifyAsk = (askId) => {
   const {id} = useParams();
 
   const[ask,setAsk] = useState( {
-    data: {
-      Author: "",
-      Name: "",
-      MaxPrice: "",
-      Telefon: "",
-      EndDateOffers: startDate,
-      Text: null,
-      Category: "",
-      Region: "",
-      Private:false,
-      Send:false,
-      Hiden:false,
-      Comment:"",
-      Party:""
-    },
+    data: {},
     formErrors: {
       Name: "",
       Text: "",
@@ -187,6 +173,14 @@ const ModifyAsk = (askId) => {
       setFiles(newFiles);
     }
 
+    const handleChecked = (e) =>{
+      const { name, checked } = e.target;
+      let data = ask.data
+      let formErrors = ask.formErrors
+      data[name] = checked
+      setAsk({ data, formErrors});
+    }
+
     return (
         <div>
            <Container style={{width: "70%"}}>
@@ -243,8 +237,8 @@ const ModifyAsk = (askId) => {
                                 <Form.Check
                                       name="Private"
                                       type="checkbox"
-                                      defaultChecked={ask.data.Private}
-                                      onChange={()=>{ask.data.Private=!ask.data.Private}}>
+                                      checked={ask.data.Private}
+                                      onChange={handleChecked}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
                               </InputGroup>
@@ -252,8 +246,8 @@ const ModifyAsk = (askId) => {
                               <Form.Check
                                     name="Hiden"
                                     type="checkbox"
-                                    defaultChecked={ask.data.Hiden}
-                                    onChange={()=>{ask.data.Hiden=!ask.data.Hiden}}>
+                                    checked={ask.data.Hiden}
+                                    onChange={handleChecked}>
                               </Form.Check>
                                 Скрыть возможность участников видеть предложения друг друга. 
                               </InputGroup>
