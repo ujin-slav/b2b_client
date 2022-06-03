@@ -116,7 +116,7 @@ export default class UserStore {
         this.setLoading(true);
         try {
             const response = await axios.get(`${API_URL}/refresh`, {withCredentials:true});
-            localStorage.setItem('token', response.data.accesstoken)
+            localStorage.setItem('token', response.data.accessToken)
             this.setAuth(true);
             this.setUser(response.data.user);
             this.chat.connect(response.data.accessToken)

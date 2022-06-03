@@ -23,7 +23,7 @@ const TableAsk = observer(() => {
     let limit = 10;
 
     useEffect(() => {
-        if(user.user.id){
+        if(user?.user?.id){
             fetchAsks({authorId:user.user.id,limit,page:1}).then((data)=>{
                 askUser.setAsk(data.docs)
                 setpageCount(data.totalPages);
@@ -58,7 +58,7 @@ const TableAsk = observer(() => {
             <col style={{"width":"5%"}}/>
           	<col style={{"width":"25%"}}/>
             <col style={{"width":"15%"}}/>
-          	<col style={{"width":"5%"}}/>
+          	<col style={{"width":"7%"}}/>
             <col style={{"width":"6%"}}/>
         <thead>
           <tr>

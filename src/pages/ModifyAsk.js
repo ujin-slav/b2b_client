@@ -25,6 +25,7 @@ import { regionNodes } from '../config/Region';
 import AskService from '../services/AskService';
 import ModalAlert from '../components/ModalAlert';
 import EmailList from '../components/EmailList'
+import {observer} from "mobx-react-lite";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -43,7 +44,7 @@ return valid;
 };
 
 
-const ModifyAsk = (askId) => {
+const ModifyAsk = observer((askId) => {
 
   var curr = new Date();
     //curr.setDate(curr.getDate() + 3);
@@ -86,7 +87,6 @@ const ModifyAsk = (askId) => {
         setFiles(result.Files);
         setCheckedEmail(result.Party)
         ask.data.MaxPrice=0
-        console.log(result)
       })
     },[]);
 
@@ -113,10 +113,10 @@ const ModifyAsk = (askId) => {
         data.append("Send", ask.data.Send)
         data.append("Party", JSON.stringify(checkedEmail))
         const result = await modifyAsk(data)
-        if(result.ok===1){
-          myalert.setMessage("Заявка успешно изменена");
-        } else if(!result.errors){
-          myalert.setMessage(result.errors?.message);
+        if (result.ok===1){
+          myalert.setMessage("Заявка успешно изменена"); 
+        } else {
+          myalert.setMessage(result?.message);
         }
       } else {
         console.error("FORM INVALID");
@@ -352,6 +352,6 @@ const ModifyAsk = (askId) => {
         </Container>
         </div>
     );
-};
+});
 
 export default ModifyAsk;

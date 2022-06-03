@@ -3,6 +3,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import ru from "date-fns/locale/ru"
 import RegInput from "../components/RegInput";
+import {useHistory} from 'react-router-dom';
 import {
     Container,
     Row,
@@ -25,6 +26,7 @@ import { regionNodes } from '../config/Region';
 import {observer} from "mobx-react-lite";
 import Captcha from "demos-react-captcha";
 import "../style.css";
+import {B2B_ROUTE} from "../utils/routes";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -65,6 +67,7 @@ const CreateAsk = observer(() => {
     const [startDate, setStartDate] = useState(date);
     const [fileSize, setFileSize] = useState(0);
     const {myalert} = useContext(Context);
+    const history = useHistory();
 
     const[ask,setAsk] = useState( {
       data: {
@@ -121,6 +124,7 @@ const CreateAsk = observer(() => {
           const result = await upload(data)
           if(result.ask){
             myalert.setMessage("Заявка успешно добавлена");
+            history.push(B2B_ROUTE)
           } else if(!result.errors){
             myalert.setMessage(result.errors?.message);
           }

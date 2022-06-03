@@ -2,7 +2,7 @@ export const checkAccessAsk = (user,ask) => {
     let askActive = Date.parse(ask?.EndDateOffers) > new Date().getTime() 
     let privateAsk = ask?.Private
 
-    if(user.isAuth===false){
+    if(user?.isAuth===false){
         let result = {
             Open : !privateAsk,
             AddQuestAsk : false,
@@ -10,7 +10,7 @@ export const checkAccessAsk = (user,ask) => {
         }
         return result
     }
-    if(user.user.id===ask?.Author?._id){
+    if(user?.user.id===ask?.Author?._id){
         let result = {
             Open : true,
             AddQuestAsk : false,

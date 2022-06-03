@@ -28,7 +28,6 @@ const App = ()=> {
   return (
     <SocketContext.Provider>
       <BrowserRouter>
-        <NavBarBurger/>
         <NavBar/>
         <AlertCustom/>
         <AppRouter/>
