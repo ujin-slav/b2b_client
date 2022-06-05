@@ -195,10 +195,9 @@ const CreateAsk = observer(() => {
 
     return (
         <div>
-          <Container>
           <Form onSubmit={onSubmit}>
           <h3>Создать заявку</h3> 
-          <Table striped bordered hover size="sm">
+          <Table striped hover  className="createAsk">
             <col style={{"width":"15%"}}/>
           	<col style={{"width":"85%"}}/>
                         <tbody>
@@ -369,7 +368,6 @@ const CreateAsk = observer(() => {
                 setActive={setModalActiveMember} 
           />
           </Form>
-        </Container>
         </div>
     );
 });

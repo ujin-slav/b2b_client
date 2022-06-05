@@ -275,3 +275,6 @@ td.tdRed{
 .tableAsk td {
   word-wrap:break-word
 }
+.createAsk td:first-child {
+  text-align: right;
+}
