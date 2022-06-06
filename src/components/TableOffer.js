@@ -82,22 +82,22 @@ const TableOffer = observer(() => {
           <tr key={index}>
             <td>{index+1}</td>
             <td>
-            <div>{item.Ask.Author.name}</div> 
-            <div>{item.Ask.Author.nameOrg}</div>
+            <div>{item?.Ask?.Author?.name}</div> 
+            <div>{item?.Ask?.Author?.nameOrg}</div>
             </td>
             <td className="tdText">
-            {item.Ask.Text.length > 50 ? 
-              `${item.Ask.Text.substring(0,50)}...`
+            {item?.Ask?.Text?.length > 50 ? 
+              `${item?.Ask?.Text?.substring(0,50)}...`
               :
-              item.Ask.Text
+              item?.Ask?.Text
             }
             </td>
-            <td>{item.Text.length > 30 ? 
-              `${item.Text.substring(0,30)}...`
+            <td>{item?.Text?.length > 30 ? 
+              `${item?.Text?.substring(0,30)}...`
               :
-              item.Text
+              item?.Text
               }</td>
-            <td>{item.Price}</td>
+            <td>{item?.Price}</td>
             <td>
             {item?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>

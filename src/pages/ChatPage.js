@@ -78,6 +78,13 @@ const ChatPage = observer(() => {
                 } else {
                     chat.setUnread(data);
                 }
+                UserService.fetchUsers(8,userPage,user.user.id).then((response)=>{
+                    if(response.status===200){
+                        chat.totalPageUser = response.data.totalPages
+                        chat.currentPageUser = response.data.page
+                        setUsers(response.data.docs)
+                    }            
+                })
             }    
             
         })
@@ -126,7 +133,6 @@ const ChatPage = observer(() => {
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
                         setUsers(old=>[...old,...response.data.docs])  
-                        console.log("user page: " + userPage + " " + chat.totalPageUser)
                     }            
                 })
             }
@@ -134,7 +140,6 @@ const ChatPage = observer(() => {
     }
 
     const newMessage =(data)=>{
-        console.log(data)
         const getMessage = {
             No:2,
             UserId: user.user.id,

@@ -1,15 +1,17 @@
-import React, {useContext,useEffect,useState} from 'react';
+import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
 import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST, ABOUT} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
-import { Button,Navbar,Nav, Alert } from "react-bootstrap";
+import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
 import logo from '../b2blogo.png'
 import profileLogo from '../profile.png'
 import SocketIOFileClient from 'socket.io-file-client';
 import io from "socket.io-client";
 import QuestService from '../services/QuestService'; 
+import faviconNewMessage from '../faviconNewMessage.ico'
+import faviconStd from '../favicon.ico'
 
 const NavBar = observer(() => {
 
@@ -18,6 +20,7 @@ const NavBar = observer(() => {
     const {myalert} = useContext(Context);
     const currentRoute = useHistory().location.pathname.toLowerCase();
     const [active,setActive]=useState();
+    const [blink,setBlink]=useState(false);
     const [countquest,setCountQuest]=useState();
     const [countchat,setCountChat]=useState([]);
     const {chat} = useContext(Context);
@@ -35,18 +38,43 @@ const NavBar = observer(() => {
         setActive(route);
     }  
 
+    const setFavicon=(num)=> {
+            setTimeout(()=>{
+                if(num===1){
+                    const favicon = document.getElementById("favicon");
+                    favicon.href = faviconNewMessage
+                    setFavicon(2)
+                }else{
+                    const favicon = document.getElementById("favicon");
+                    favicon.href = faviconStd
+                    setFavicon(1)
+                }
+            },1000)
+        
+    }
+
     const sumUnread=()=>{
         let sum=0;
         if(chat.unread.length>0){
             chat.unread.map(item=>sum=sum+item.count);
         } 
         if(sum>0){
+            setFavicon(1)
             return sum;
         }else{
             return "";
         }
-}
+    }
     
+    const sumUnreadQuest=()=>{
+        if(chat.questUnread > 0){
+            setFavicon()
+            return chat.questUnread
+        }else{
+            return ""
+        } 
+    }
+
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -63,9 +91,11 @@ const NavBar = observer(() => {
                 <Nav className="me-auto">
                     <Nav.Link onClick={()=>activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(CREATEASK)}className={active===CREATEASK ? "active" : ""}>Создать заявку</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</Nav.Link>
+                    <NavDropdown title="Мои">
+                        <NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</NavDropdown.Item>
+                    </NavDropdown>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">
                            <div>Сообщения</div>
@@ -75,7 +105,7 @@ const NavBar = observer(() => {
                     <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>
                         <div className="parentAnswer">
                            <div>Вопрос-ответ</div>
-                           <div className="countQuest">{chat.questUnread > 0 ? chat.questUnread : "" }</div>
+                           <div className="countQuest">{sumUnreadQuest()}</div>
                         </div>
                     </Nav.Link>
                     <Nav.Link onClick={()=>activeLink(HELP)}className={active===HELP ? "active" : ""}>Помощь</Nav.Link>
