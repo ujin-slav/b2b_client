@@ -12,6 +12,11 @@ export const fetchFilterAsks = async (formData) => {
     return data
 }
 
+export const fetchInvitedAsks = async (formData) => {
+    const {data} = await $api.post(`/getinvitedask`,{formData});
+    return data
+}
+
 export const fetchOneAsk = async (id) => {
     const {data} = await $api.post(`/getoneask`,{id});
     return data

@@ -278,3 +278,7 @@ td.tdRed{
 .createAsk td:first-child {
   text-align: right;
 }
+.yellowtext {
+  color: yellow;
+  font-weight:bold;
+}

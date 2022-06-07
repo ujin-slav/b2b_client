@@ -2,7 +2,7 @@ import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST, ABOUT} from "../utils/routes";
+import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST, ABOUT,INVITED} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -39,17 +39,24 @@ const NavBar = observer(() => {
     }  
 
     const setFavicon=(num)=> {
-            setTimeout(()=>{
-                if(num===1){
-                    const favicon = document.getElementById("favicon");
-                    favicon.href = faviconNewMessage
-                    setFavicon(2)
-                }else{
-                    const favicon = document.getElementById("favicon");
-                    favicon.href = faviconStd
-                    setFavicon(1)
-                }
-            },1000)
+        let sumChat=0;
+        if(chat.unread.length>0){
+            chat.unread.map(item=>sumChat=sumChat+item.count);
+        }
+        if(sumChat===0&&chat.questUnread===0){
+            return
+        } 
+        setTimeout(()=>{
+            if(num===1){
+                const favicon = document.getElementById("favicon");
+                favicon.href = faviconNewMessage
+                setFavicon(2)
+            }else{
+                const favicon = document.getElementById("favicon");
+                favicon.href = faviconStd
+                setFavicon(1)
+            }
+        },1000)
         
     }
 
@@ -75,6 +82,14 @@ const NavBar = observer(() => {
         } 
     }
 
+    const sumInvited=()=>{
+        if(1===1){
+            return 3
+        }else{
+            return ""
+        } 
+    }
+
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -95,6 +110,14 @@ const NavBar = observer(() => {
                         <NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(INVITED)}className={active===INVITED ? "active" : ""}>
+                        <div className="parentAnswer">
+                           <div>Мои приглашения</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'>{sumInvited()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item>
                     </NavDropdown>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">

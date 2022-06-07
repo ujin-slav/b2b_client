@@ -68,6 +68,7 @@ const CreateAsk = observer(() => {
     const [fileSize, setFileSize] = useState(0);
     const {myalert} = useContext(Context);
     const history = useHistory();
+    const {chat} =  useContext(Context)
 
     const[ask,setAsk] = useState( {
       data: {
@@ -122,11 +123,15 @@ const CreateAsk = observer(() => {
           data.append("Send", ask.data.Send)
           data.append("Party", JSON.stringify(checkedEmail))
           const result = await upload(data)
+          chat.socket.emit("unread_invited", {checkedEmail});
           if(result.ask){
             myalert.setMessage("Заявка успешно добавлена");
+            if(checkedEmail.length>0){
+                chat.socket.emit("unread_invited", {checkedEmail});
+            }
             history.push(B2B_ROUTE)
-          } else if(!result.errors){
-            myalert.setMessage(result.errors?.message);
+          } else if(result.errors){
+            myalert.setMessage(result.message);
           }
         } else {
           console.error("FORM INVALID");
@@ -195,6 +200,7 @@ const CreateAsk = observer(() => {
 
     return (
         <div>
+          <Container>
           <Form onSubmit={onSubmit}>
           <h3>Создать заявку</h3> 
           <Table striped hover  className="createAsk">
@@ -368,6 +374,7 @@ const CreateAsk = observer(() => {
                 setActive={setModalActiveMember} 
           />
           </Form>
+          </Container>
         </div>
     );
 });
