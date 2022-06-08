@@ -12,6 +12,7 @@ export default class SocketStore {
     totalDocsUser
     totalPageUser
     currentPageUser
+    invitedUnread
 
     constructor(){
         makeAutoObservable(this);
@@ -36,6 +37,9 @@ export default class SocketStore {
     setQuestUnread(questUnread){
         this.questUnread = questUnread; 
     }
+    setInvitedUnread(invitedUnread){
+        this.invitedUnread = invitedUnread; 
+    }
 
     getQuestUnread(questUnread){
         return questUnread; 
@@ -50,7 +54,7 @@ export default class SocketStore {
     }
 
     connect(token){
-        this.socket = io.connect(`http://localhost:5000`,{
+        this.socket = io.connect(`${process.env.REACT_APP_SOCKET_URL}`,{
             query: {token}
           })
           this.socket.on("connect", () => {
@@ -58,12 +62,15 @@ export default class SocketStore {
             this.socket.emit("get_unread") 
           });
           this.socket.on("unread_message", (data) => {   
-            console.log(data)
             this.setUnread(data)
           });
           this.socket.on("get_unread_quest", (data) => {   
             this.setQuestUnread(data)              
-        });
+          })
+          this.socket.on("get_unread_invited", (data) => {   
+            this.setQuestUnread(data)              
+          }
+        );
     }
 
     disconnect(){

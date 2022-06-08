@@ -123,7 +123,6 @@ const CreateAsk = observer(() => {
           data.append("Send", ask.data.Send)
           data.append("Party", JSON.stringify(checkedEmail))
           const result = await upload(data)
-          chat.socket.emit("unread_invited", {checkedEmail});
           if(result.ask){
             myalert.setMessage("Заявка успешно добавлена");
             if(checkedEmail.length>0){

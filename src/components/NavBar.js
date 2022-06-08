@@ -83,8 +83,8 @@ const NavBar = observer(() => {
     }
 
     const sumInvited=()=>{
-        if(1===1){
-            return 3
+        if(chat.invitedUnread > 0){
+            return chat.invitedUnread
         }else{
             return ""
         } 

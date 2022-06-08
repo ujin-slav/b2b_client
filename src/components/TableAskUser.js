@@ -19,17 +19,19 @@ const TableAsk = observer(() => {
     const [deleteId,setDeleteId] = useState();
     const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
-    const [pageCount, setpageCount] = useState(0);
+    const [pageCount, setpageCount] = useState(0)
+    const [currentPage,setCurrentPage] = useState(1)
+    const [loading,setLoading] = useState(false)
     let limit = 10;
 
     useEffect(() => {
         if(user?.user?.id){
-            fetchAsks({authorId:user.user.id,limit,page:1}).then((data)=>{
+            fetchAsks({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
                 askUser.setAsk(data.docs)
                 setpageCount(data.totalPages);
             })
         }
-      },[user.user]);
+      },[loading]);
 
     const fetchPage = async (currentPage) => {
       fetchAsks({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
@@ -40,6 +42,7 @@ const TableAsk = observer(() => {
       const result = await AskService.deleteAsk(deleteId);
       if (result.status===200){
         myalert.setMessage("Успешно"); 
+        setLoading(!loading)
       } else {
         myalert.setMessage(result.data.message);
       }
@@ -47,8 +50,8 @@ const TableAsk = observer(() => {
     }
 
     const handlePageClick = async (data) => {
-      let currentPage = data.selected + 1;
-      await fetchPage(currentPage);
+      setCurrentPage(data.selected + 1)
+      await fetchPage(data.selected + 1);
     };
     return (
       <div>
@@ -74,7 +77,7 @@ const TableAsk = observer(() => {
         <tbody>
         {askUser?.getAsk().map((item, index)=>
           <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
-            <td>{index+1}</td>
+            <td>{index+1+(currentPage-1)*limit}</td>
             <td>{item.Name.length>15 ?
                 `${item.Name.substring(0, 15)}...`
                  :
@@ -103,7 +106,7 @@ const TableAsk = observer(() => {
               :
               item.Comment
               }</td>
-            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy")}</td>
+            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
             <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
                 onClick={(e)=>{
                     e.stopPropagation();

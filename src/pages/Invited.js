@@ -19,13 +19,14 @@ const Invited = observer(({authorId}) => {
     const {myalert} = useContext(Context);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
+    const [currentPage,setCurrentPage] = useState(1)
     const {user} = useContext(Context);
     let limit = 10;
 
     useEffect(() => {
         fetchInvitedAsks({
           email:user.user.email,
-          limit,page:1}).then((data)=>{
+          limit,page:currentPage}).then((data)=>{
           ask.setAsk(data.docs)
           setpageCount(data.totalPages);
         })
@@ -39,8 +40,8 @@ const Invited = observer(({authorId}) => {
     })};
 
     const handlePageClick = async (data) => {
-      let currentPage = data.selected + 1;
-      await fetchComments(currentPage);
+      setCurrentPage(data.selected + 1);
+      await fetchComments(data.selected + 1);
     };
 
     const redirect = (item)=>{
@@ -74,7 +75,7 @@ const Invited = observer(({authorId}) => {
         {ask?.getAsk()?.map((item,index)=>{
           return (
           <tr key={index} onClick={()=>redirect(item)}>
-            <td>{index+1}</td>
+            <td>{index+1+(currentPage-1)*limit}</td>
             <td>{item.Name.length>15 ?
                 `${item.Name.substring(0, 15)}...`
                  :

@@ -20,6 +20,7 @@ const TableAsk = observer(({authorId}) => {
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
     const {user} = useContext(Context);
+    const [currentPage,setCurrentPage] = useState(1)
     let limit = 10;
 
     useEffect(() => {
@@ -28,7 +29,7 @@ const TableAsk = observer(({authorId}) => {
           filterRegion:ask.regionFilter,
           searchText:ask.searchText,
           searchInn:ask.searchInn,
-          limit,page:1}).then((data)=>{
+          limit,page:currentPage}).then((data)=>{
           ask.setAsk(data.docs)
           setpageCount(data.totalPages);
         })
@@ -45,8 +46,8 @@ const TableAsk = observer(({authorId}) => {
     })};
 
     const handlePageClick = async (data) => {
-      let currentPage = data.selected + 1;
-      await fetchComments(currentPage);
+      setCurrentPage(data.selected + 1)
+      await fetchComments(data.selected + 1);
     };
 
     const redirect = (item)=>{
@@ -85,7 +86,7 @@ const TableAsk = observer(({authorId}) => {
           if(!checkAccessAsk(user,item).Open){
             return (
                 <tr key={index} onClick={()=>redirect(item)}>
-                  <td>{index+1}</td>
+                  <td>{index+1+(currentPage-1)*limit}</td>
                   <td className="blurry-text">Название</td>
                   {Date.parse(item.EndDateOffers) > new Date().getTime() ?
                   <td className="tdGreen">
@@ -108,7 +109,7 @@ const TableAsk = observer(({authorId}) => {
 
           return (
           <tr key={index} onClick={()=>redirect(item)}>
-            <td>{index+1}</td>
+            <td>{index+1+(currentPage-1)*limit}</td>
             <td>{item.Name.length>15 ?
                 `${item.Name.substring(0, 15)}...`
                  :

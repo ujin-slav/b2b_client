@@ -20,15 +20,17 @@ const TableOffer = observer(() => {
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
     const [pageCount, setpageCount] = useState(0);
+    const [currentPage,setCurrentPage] = useState(1)
+    const [loading,setLoading] = useState(false)
     let limit = 10;
 
     useEffect(() => {
-      AskService.fetchUserOffers({authorId:user.user.id, limit,page:1}).then((data)=>{
+      AskService.fetchUserOffers({authorId:user.user.id, limit,page:currentPage}).then((data)=>{
             offerUser.setOffer(data.docs);
             setpageCount(data.totalPages);
             console.log(data)
         })
-    },[]);
+    },[loading]);
 
     const fetchPage = async (currentPage) => {
       AskService.fetchUserOffers({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
@@ -43,6 +45,7 @@ const TableOffer = observer(() => {
       )
       if (result.status===200){
         myalert.setMessage("Успешно"); 
+        setLoading(!loading)
       } else {
         myalert.setMessage(result.data.message);
       }
@@ -50,8 +53,8 @@ const TableOffer = observer(() => {
     }
 
     const handlePageClick = async (data) => {
-      let currentPage = data.selected + 1;
-      await fetchPage(currentPage);
+      setCurrentPage(data.selected + 1)
+      await fetchPage(data.selected + 1);
     };
 
     return (
@@ -80,7 +83,7 @@ const TableOffer = observer(() => {
         <tbody>
         {offerUser.getOffer().map((item,index)=>
           <tr key={index}>
-            <td>{index+1}</td>
+            <td>{index+1+(currentPage-1)*limit}</td>
             <td>
             <div>{item?.Ask?.Author?.name}</div> 
             <div>{item?.Ask?.Author?.nameOrg}</div>
