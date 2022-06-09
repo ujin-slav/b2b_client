@@ -282,3 +282,7 @@ td.tdRed{
   color: yellow;
   font-weight:bold;
 }
+.myNoti{
+  color:white !important;
+  padding-left: 0px !important;
+}

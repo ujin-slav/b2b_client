@@ -4,6 +4,7 @@ import io from "socket.io-client";
 export default class SocketStore {
     unread = [];
     questUnread = 0;
+    invitedUnread = 0;
     connected = false;
     socket;
     limit = 20;
@@ -12,7 +13,6 @@ export default class SocketStore {
     totalDocsUser
     totalPageUser
     currentPageUser
-    invitedUnread
 
     constructor(){
         makeAutoObservable(this);
@@ -32,6 +32,10 @@ export default class SocketStore {
 
     getUnread(unread){
         return unread; 
+    }
+
+    getInvitedUnread(){
+        return this.invitedUnread 
     }
 
     setQuestUnread(questUnread){
@@ -68,7 +72,7 @@ export default class SocketStore {
             this.setQuestUnread(data)              
           })
           this.socket.on("get_unread_invited", (data) => {   
-            this.setQuestUnread(data)              
+            this.setInvitedUnread(data)          
           }
         );
     }

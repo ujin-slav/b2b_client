@@ -65,13 +65,13 @@ const Question = observer(({...props})=>{
     }
 
     const delQuest = async (item) => {
-        chat.socket.emit("unread_quest", item.ID);
         const result = await QuestService.delQuest(item.ID);
         if (result.status===200){
-            myalert.setMessage("Успешно"); 
-          } else {
-            myalert.setMessage(result.data.message);
-          }
+             myalert.setMessage("Успешно");
+               chat.socket.emit("unread_quest", {id:item.Destination._id}); 
+           } else {
+             myalert.setMessage(result.data.message);
+        }
         setFetch(true)
     }
 

@@ -21,14 +21,19 @@ const Invited = observer(({authorId}) => {
     const [pageCount, setpageCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1)
     const {user} = useContext(Context);
+    const {chat} =  useContext(Context)
     let limit = 10;
 
     useEffect(() => {
         fetchInvitedAsks({
           email:user.user.email,
-          limit,page:currentPage}).then((data)=>{
+          limit,
+          page:currentPage,
+          userId:user.user.id
+          }).then((data)=>{
           ask.setAsk(data.docs)
           setpageCount(data.totalPages);
+          chat.socket.emit("get_unread");
         })
       },[]);
 

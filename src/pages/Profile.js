@@ -1,5 +1,5 @@
 import {React, useEffect,useContext,useState} from 'react';
-import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
+import {Card, Table, Col, Container, Row, Lable,Form,Button,InputGroup} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import RegionTree from '../components/RegionTree';
@@ -126,6 +126,8 @@ const Profile =  observer(() => {
                 <Col>
                 <Form onSubmit={onSubmit}>
                      <Table striped bordered hover size="sm">
+                        <col style={{"width":"25%"}}/>
+          	            <col style={{"width":"75%"}}/>
                         <tbody>
                             <tr>
                             <td>Имя</td>
@@ -193,6 +195,44 @@ const Profile =  observer(() => {
                                 <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
                                 </Button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Получать уведомления на email:             
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Новые приглашения на участие                
+                                </td>
+                                <td>
+                                    <Form.Check
+                                        name="Private"
+                                        type="checkbox">
+                                    </Form.Check>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Новые сообщения                
+                                </td>
+                                <td>
+                                    <Form.Check
+                                        name="Private"
+                                        type="checkbox">
+                                    </Form.Check>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Новые вопросы                
+                                </td>
+                                <td>
+                                    <Form.Check
+                                        name="Private"
+                                        type="checkbox">
+                                    </Form.Check>
+                                </td>
                             </tr>
                         </tbody>
                     </Table>

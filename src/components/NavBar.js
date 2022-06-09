@@ -44,6 +44,8 @@ const NavBar = observer(() => {
             chat.unread.map(item=>sumChat=sumChat+item.count);
         }
         if(sumChat===0&&chat.questUnread===0){
+            const favicon = document.getElementById("favicon");
+            favicon.href = faviconStd
             return
         } 
         setTimeout(()=>{
@@ -83,6 +85,7 @@ const NavBar = observer(() => {
     }
 
     const sumInvited=()=>{
+        console.log("sum inv" + chat.invitedUnread )
         if(chat.invitedUnread > 0){
             return chat.invitedUnread
         }else{
@@ -119,6 +122,9 @@ const NavBar = observer(() => {
                         </div>
                         </NavDropdown.Item>
                     </NavDropdown>
+                    <div className="parentAnswer myNoti">
+                           <div className="countQuest">{sumInvited()}</div>
+                        </div>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">
                            <div>Сообщения</div>
