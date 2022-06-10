@@ -33,7 +33,10 @@ const Profile =  observer(() => {
             nameOrg:  null,
             adressOrg: null,
             telefon: null,
-            inn: null
+            inn: null,
+            notiInvited:true,
+            notiMessage:true,
+            notiQuest:true
           },
           formErrors: {
             name: "",
@@ -51,7 +54,13 @@ const Profile =  observer(() => {
         }
         if(user.user.region){
             setCheckedRegion(Object.values(user.user.region))
-        }
+        } 
+        let data = profile.data
+        let formErrors = profile.formErrors
+        data.notiInvited = user.user.notiInvited
+        data.notiMessage = user.user.notiMessage
+        data.notiQuest = user.user.notiQuest
+        setProfile({ data, formErrors});
       },[user.user]);
 
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -107,7 +116,6 @@ const Profile =  observer(() => {
             data["category"] = JSON.stringify(checkedCat);
             data["region"] = JSON.stringify(checkedRegion);
             setProfile({ data, formErrors});
-            console.log(data)
             const result = await user.changeuser(profile);
             if (result.status===200){
                 myalert.setMessage("Данные успешно сохранены"); 
@@ -117,6 +125,14 @@ const Profile =  observer(() => {
         }else{
             myalert.setMessage("Форма заполнена не верно")
         }
+    }
+
+    const handleChecked = (e) =>{
+        const { name, checked } = e.target;
+        let data = profile.data
+        let formErrors = profile.formErrors
+        data[name] = checked
+        setProfile({ data, formErrors});
     }
     
     return (
@@ -207,8 +223,10 @@ const Profile =  observer(() => {
                                 </td>
                                 <td>
                                     <Form.Check
-                                        name="Private"
-                                        type="checkbox">
+                                        name="notiInvited"
+                                        type="checkbox"
+                                        checked={profile.data.notiInvited}
+                                        onChange={handleChecked}>
                                     </Form.Check>
                                 </td>
                             </tr>
@@ -218,8 +236,10 @@ const Profile =  observer(() => {
                                 </td>
                                 <td>
                                     <Form.Check
-                                        name="Private"
-                                        type="checkbox">
+                                        name="notiMessage"
+                                        type="checkbox"
+                                        checked={profile.data.notiMessage}
+                                        onChange={handleChecked}>
                                     </Form.Check>
                                 </td>
                             </tr>
@@ -229,8 +249,10 @@ const Profile =  observer(() => {
                                 </td>
                                 <td>
                                     <Form.Check
-                                        name="Private"
-                                        type="checkbox">
+                                        name="notiQuest"
+                                        type="checkbox"
+                                        checked={profile.data.notiQuest}
+                                        onChange={handleChecked}>
                                     </Form.Check>
                                 </td>
                             </tr>
