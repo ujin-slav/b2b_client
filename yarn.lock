@@ -4560,6 +4560,11 @@
   "resolved" "https://registry.npmjs.org/date-fns/-/date-fns-2.28.0.tgz"
   "version" "2.28.0"
 
+"date-format@^4.0.11":
+  "integrity" "sha512-VS20KRyorrbMCQmpdl2hg5KaOUsda1RbnsJg461FfrcyCUg+pkd0b40BSW4niQyTheww4DBXQnS7HwSrKkipLw=="
+  "resolved" "https://registry.npmjs.org/date-format/-/date-format-4.0.11.tgz"
+  "version" "4.0.11"
+
 "dateformat@^5.0.2":
   "integrity" "sha512-h9vywpuz+ReixnJTwFx5JLtZpS8eLCbRm8shwwKkCKOZA547N6yoMtD3W91Z6+NFZ8wOaZlcaCcK/w+kELhSVg=="
   "resolved" "https://registry.npmjs.org/dateformat/-/dateformat-5.0.2.tgz"
