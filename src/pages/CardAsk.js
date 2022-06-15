@@ -54,6 +54,7 @@ const CardAsk = observer(() => {
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     const {id} = useParams();
+    const {chat} =  useContext(Context)
 
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{

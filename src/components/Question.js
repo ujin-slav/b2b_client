@@ -3,6 +3,7 @@ import React, {useState,
             useRef,
             useEffect,
             createRef} from "react";
+import {useLocation} from "react-router-dom";
 import { Form,
         InputGroup,
         Button,
@@ -31,6 +32,7 @@ const Question = observer(({...props})=>{
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
     const {chat} =  useContext(Context)
+    const location = useLocation();
     
     useEffect(() => {
         QuestService.fetchQuest({id,userId:user.user.id}).then((response)=>{
@@ -38,9 +40,7 @@ const Question = observer(({...props})=>{
                 setQuest(response.data)
                 setFetch(false)
                 setFetchAnswer(false)
-                if(chat.socket){
-                    chat.socket.emit("unread_quest", {id:user.user.id});
-                }
+                chat.socket.emit("unread_quest", {id:user.user.id});
             }                
         })
     },[fetch,fetchAnswer]);
@@ -52,7 +52,8 @@ const Question = observer(({...props})=>{
             Text: text,
             Author:user.user.id,
             Ask: id,
-            Destination:dest ?? author?._id
+            Destination:dest ?? author?._id,
+            Location: location.pathname
         }
         const result = await QuestService.addQuest(data)
         if(result.data?.errors){
@@ -60,7 +61,8 @@ const Question = observer(({...props})=>{
         } else {
             inputEl.current.value="";
             setFetch(true)
-            chat.socket.emit("unread_quest", {id:data.Destination});
+            chat.socket.emit("unread_quest_mail", {data});
+            console.log(result)
         }
     }
 
