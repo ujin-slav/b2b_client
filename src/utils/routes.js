@@ -19,6 +19,7 @@ import About from "../pages/About";
 import Activate from "../pages/Activate";
 import Invited from "../pages/Invited";
 import Test from "../pages/Test";
+import MyPrice from "../pages/Price";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -40,6 +41,7 @@ export const QUEST = '/quest'
 export const ORGINFO = '/orginfo'
 export const HELP = '/help'
 export const ABOUT = '/about'
+export const MYPRICE = '/price'
 export const INVITED = '/invited'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
@@ -130,6 +132,10 @@ export const authRoutes = [
         Component: Invited
     },
     {
+        path: MYPRICE,
+        Component: MyPrice
+    },
+    {
         path: "*",
         Component: B2B
     }
@@ -195,6 +201,10 @@ export const publicRoutes = [
     {
         path: QUEST,
         Component: Auth
+    },
+    {
+        path: MYPRICE,
+        Component: MyPrice
     },
     {
         path: ORGINFO +  '/:id',

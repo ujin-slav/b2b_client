@@ -37,6 +37,10 @@ export const upload = async (formData) => {
     const {data} = await $api.post(`/addask`, formData);
     return data
 }
+export const uploadPrice = async (formData) => {
+    const {data} = await $api.post(`/addprice`, formData);
+    return data
+}
 export const modifyAsk = async (formData) => {
     const {data} = await $api.post(`/modifyask`, formData);
     return data
