@@ -1,4 +1,4 @@
-import React,{useContext,useState,useRef} from 'react';
+import React,{useContext,useState,useRef,useEffect} from 'react';
 import {
     Container,
     Row,
@@ -12,6 +12,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import waiting from "../waiting.gif";
 import * as XLSX from 'xlsx';
+import PriceService from '../services/PriceService'
 
 const make_cols = refstr => {
     let o = [],
@@ -27,7 +28,25 @@ const Price = observer(() => {
     const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]);  
     const [dats,setData] = useState(); 
+    const[currentPage,setCurrentPage] = useState();
+    const[fetching,setFetching] = useState(true);
+    const[totalDocs,setTotalDocs] = useState(0);
+    const[search,setSearch] = useState("");
     const input = useRef(null);
+
+    useEffect(() => {
+        if(user.user.id){
+            if(fetching){
+                if(price.length===0 || price.length<totalDocs) {
+                PriceService.getPrice(currentPage,30,search,user.user.id).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setPrice([...price, ...data.docs]);
+                    setCurrentPage(prevState=>prevState + 1)
+                }).finally(()=>setFetching(false))
+                }
+            }
+        } 
+    },[fetching,user.user]);
 
     const onInputChange = (e) => {
         try{
@@ -130,10 +149,10 @@ const Price = observer(() => {
                     {price?.map((item)=>
                     
                         <tr>
-                            <td>{item[0]}</td>
-                            <td>{item[1]}</td>
-                            <td>{item[2]}</td>
-                            <td>{item[3]}</td>
+                            <td>{item[0]||item.Code}</td>
+                            <td>{item[1]||item.Name}</td>
+                            <td>{item[2]||item.Price}</td>
+                            <td>{item[3]||item.Balance}</td>
                             <td>{item[4]}</td>
                         </tr>
                     )}
