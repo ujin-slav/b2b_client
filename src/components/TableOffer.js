@@ -30,7 +30,7 @@ const TableOffer = observer(() => {
             setpageCount(data.totalPages);
             console.log(data)
         })
-    },[loading]);
+    },[]);
 
     const fetchPage = async (currentPage) => {
       AskService.fetchUserOffers({authorId:user.user.id,limit,page:currentPage}).then((data)=>{

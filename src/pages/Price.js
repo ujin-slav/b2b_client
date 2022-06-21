@@ -5,7 +5,9 @@ import {
     Col,
     Form,
     Button,
-    Table
+    Table,
+    Card,
+
   } from "react-bootstrap";
 import { uploadPrice } from '../http/askAPI';
 import {Context} from "../index";
@@ -13,6 +15,7 @@ import {observer} from "mobx-react-lite";
 import waiting from "../waiting.gif";
 import * as XLSX from 'xlsx';
 import PriceService from '../services/PriceService'
+import ModalAlert from '../components/ModalAlert';
 
 const make_cols = refstr => {
     let o = [],
@@ -23,6 +26,7 @@ const make_cols = refstr => {
 
 const Price = observer(() => {
     const {myalert} = useContext(Context);
+    const [modalActive,setModalActive] = useState(false);
     const [file, setFile] = useState([])
     const {user} = useContext(Context);  
     const [fetch,setFetch] = useState(false); 
@@ -31,14 +35,16 @@ const Price = observer(() => {
     const[currentPage,setCurrentPage] = useState();
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
+    const[help,setHelp] = useState(false);
     const[search,setSearch] = useState("");
     const input = useRef(null);
+    let limit = 30
 
     useEffect(() => {
         if(user.user.id){
             if(fetching){
                 if(price.length===0 || price.length<totalDocs) {
-                PriceService.getPrice(currentPage,30,search,user.user.id).then((data)=>{
+                PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
                     setTotalDocs(data.totalDocs);
                     setPrice([...price, ...data.docs]);
                     setCurrentPage(prevState=>prevState + 1)
@@ -104,6 +110,30 @@ const Price = observer(() => {
             myalert.setMessage("Выберите файл");
         }
       };
+    const clearPrice = async()=>{
+      setFetch(true)
+      const result = await PriceService.clearPrice({org:user.user.id});
+      console.log(result)
+      if (result.ok){
+        myalert.setMessage("Успешно"); 
+      } else {
+        myalert.setMessage(result?.data?.message);
+      }
+      setPrice([])
+      setFetch(false)
+    }  
+
+    const handleSearch = (e) =>{
+        PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).
+            then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setPrice(data.docs);
+                setCurrentPage(prevState=>prevState + 1)
+                setSearch(e.target.value)
+        }).finally(
+            ()=>setFetching(false)
+        )
+    }
 
     return (
         <div>
@@ -122,18 +152,66 @@ const Price = observer(() => {
                                     ref={input}
                                     id="formFile"/>
                             </div>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                className="btn btn-success ml-auto mr-1"
-                            >
-                                Загрузить
-                            </Button>
+                            <Card>
+                                <Card.Header style={{"text-decoration": "underline",
+                                                     "color": "#EC4D3C",
+                                                     "cursor": "pointer"                                            
+                            }} onClick={()=>setHelp(!help)}>Инструкция</Card.Header>
+                                {help ?
+                                <div style={{"padding":"20px"}}>
+                                    Файл прайса можно загрузить в формате Excel *.xls, *xlsx.<br/>
+                                    После выбора файла вы увидите, каким образом будут отображаться данные
+                                    в системе.<br/>
+                                    Если колонки находятся не на своем месте, или строки пустые,
+                                    отредактируйте файл своего<br/>
+                                    прайса согласно образцу:<br/>
+                                    <ul>
+                                    <li>1-я колонка - Артикул (не обязателен)</li>
+                                    <li>2-я колонка - Наименование (обязательно)</li>
+                                    <li>3-я колонка - Цена (не обязательно)</li>
+                                    <li>4-я колонка - Остаток (обязательно)</li>
+                                    </ul>
+                                    Заголовки колонок подписывать не нужно.<br/>
+                                    Если данные отображаются как надо, нажимайте кнопку загрузить,
+                                    предыдущие данные будут <br/>
+                                    затерты новыми. Если в строке отсутствует наименование или остаток,
+                                    строка будет пропущена.<br/>
+                                    <a href={`${process.env.REACT_APP_API_URL}static/sample/price.xls`}>Образец файла.</a><br/>
+                                </div>
+                                :
+                                <div></div>
+                                }
+                            </Card>   
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    className="btn btn-success mt-3"
+                                >
+                                    Загрузить
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    className="btn btn-success mt-3 mx-3"
+                                    onClick={()=>setModalActive(true)}
+                                >
+                                    Удалить данные на сервере
+                                </Button>
                     </Form>
                     </Form.Group>
                     </Col>
                 </Row>
                 <Row>
+                </Row>
+                <Row>
+                    <Col>
+                    <Form.Group className="mx-auto my-2">
+                        <Form.Label>Поиск:</Form.Label>
+                        <Form.Control
+                            onChange={handleSearch}
+                            placeholder="Начните набирать артикул или название продукта"
+                        />
+                    </Form.Group>
+                    </Col>
                 </Row>
              </Container>
              <Table>
@@ -149,15 +227,18 @@ const Price = observer(() => {
                     {price?.map((item)=>
                     
                         <tr>
-                            <td>{item[0]||item.Code}</td>
-                            <td>{item[1]||item.Name}</td>
-                            <td>{item[2]||item.Price}</td>
-                            <td>{item[3]||item.Balance}</td>
+                            <td>{item[0]||item.Code||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[1]||item.Name||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[2]||item.Price||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[3]||item.Balance||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[4]}</td>
                         </tr>
                     )}
                  </tbody>
             </Table>
+            <ModalAlert header="Предыдущие данные будут удалены, продолжить?" 
+              active={modalActive} 
+              setActive={setModalActive} funRes={clearPrice}/>
         </div>
     );
 });

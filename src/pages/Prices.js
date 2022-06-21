@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState,useContext} from 'react';
 import PriceService from '../services/PriceService'
 import {
     Container,
@@ -8,22 +8,26 @@ import {
     Form
   } from "react-bootstrap";
  import CardOrg from '../components/CardOrg'; 
+ import {Context} from "../index";
  import dateFormat, { masks } from "dateformat";
  import {ORGINFO} from "../utils/routes";
  import {useHistory} from 'react-router-dom';
+ import {observer} from "mobx-react-lite";
 
-const Prices = () => {
+const Prices = observer(() => {
+    const {user} = useContext(Context);
     const[price,setPrice] = useState([]);
     const[currentPage,setCurrentPage] = useState();
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const[search,setSearch] = useState("");
     const history = useHistory();
+    let limit = 30
 
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice(currentPage,30,search).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
@@ -48,12 +52,19 @@ const Prices = () => {
     }
 
     const handleSearch = (e) =>{
-        PriceService.getPrice(currentPage,30,e.target.value).then((data)=>{
-            setTotalDocs(data.totalDocs);
-            setPrice(data.docs);
-            setCurrentPage(prevState=>prevState + 1)
-            setSearch(e.target.value)
-        }).finally(()=>setFetching(false))
+        PriceService.getPrice({
+            page:currentPage,
+            limit,
+            search:e.target.value}
+            ).
+            then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setPrice(data.docs);
+                setCurrentPage(prevState=>prevState + 1)
+                setSearch(e.target.value)
+        }).finally(
+            ()=>setFetching(false)
+        )
     }
 
     return (
@@ -101,6 +112,6 @@ const Prices = () => {
             </Container>
         </div>
     );
-};
+});
 
 export default Prices;
