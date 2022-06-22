@@ -54,6 +54,20 @@ const Price = observer(() => {
         } 
     },[fetching,user.user]);
 
+    useEffect(() => {
+        document.addEventListener('scroll',scrollHandler);
+        return function(){
+            document.removeEventListener('scroll',scrollHandler);
+        }
+    },[]);
+
+    const scrollHandler = (e) =>{
+        if((e.target.documentElement.scrollHeight - 
+            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
+                setFetching(true)
+            }
+    }
+
     const onInputChange = (e) => {
         try{
             if(e.target.files[0].size < 5242880){

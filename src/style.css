@@ -286,3 +286,29 @@ td.tdRed{
   color:white !important;
   padding-left: 0px !important;
 }
+.table-responsive{
+  height:400px;  
+  overflow:scroll;
+  border-collapse: separate; 
+}
+ thead tr:nth-child(1) th{
+    border: 0px;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  th:after,
+  th:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+  }
+  th:before {
+    top: 0;
+  }
+  th:after {
+    bottom: 0;
+    border-bottom: 1px solid black;
+  }

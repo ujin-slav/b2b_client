@@ -2,6 +2,7 @@ import Auth from "../pages/Auth";
 import B2B from "../pages/B2b"
 import CardAsk from "../pages/CardAsk";
 import CreateAsk from "../pages/CreateAsk";
+import CreatePriceAsk from "../pages/CreatePriceAsk";
 import Forgot from "../pages/Forgot";
 import Registration from "../pages/Registration";
 import Reset from "../pages/Reset";
@@ -30,6 +31,7 @@ export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CREATEASK = '/createask'
+export const CREATEPRICEASK = '/createpriceask'
 export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
@@ -76,6 +78,10 @@ export const authRoutes = [
     {
         path: CREATEASK,
         Component: CreateAsk
+    },
+    {
+        path: CREATEPRICEASK,
+        Component: CreatePriceAsk
     },
     {
         path: DOWNLOAD,
