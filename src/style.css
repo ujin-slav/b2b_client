@@ -312,3 +312,7 @@ td.tdRed{
     bottom: 0;
     border-bottom: 1px solid black;
   }
+  .container-priceask{
+    background-color: rgba(255, 255, 190, 0.432);
+    align-items: center;
+  }

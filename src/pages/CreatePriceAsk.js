@@ -9,6 +9,7 @@ const CreatePriceAsk = () => {
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
+    const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
@@ -53,41 +54,34 @@ const CreatePriceAsk = () => {
         )
     }
     
-    const addToResult=(e)=>{
-        e = e || window.event;
-        var data = [];
-        var target = e.srcElement || e.target;
-        while (target && target.nodeName !== "TR") {
-            target = target.parentNode;
-        }
-        if (target) {
-            var cells = target.getElementsByTagName("td");
-            for (var i = 0; i < cells.length; i++) {
-                data.push(cells[i].innerHTML);
+    const addToResult=(e,item)=>{
+        let searchResult = false
+        result.map((el,index)=>{
+            if(el._id===item._id){
+                searchResult = true
+                result[index].Count = result[index].Count + 1
+                return
             }
+        })
+        if(searchResult){
+            setResult([...result])   
+        }else{
+            item.Count=1
+            setResult([...result, item])  
         }
-        setResult([...result, data])
+        setSumTotal(sumTotal + item.Price)
     }
-    const delFromResult=(e)=>{
-        e = e || window.event;
-        var data = [];
-        var target = e.srcElement || e.target;
-        while (target && target.nodeName !== "TR") {
-            target = target.parentNode;
-        }
-        if (target) {
-            var cells = target.getElementsByTagName("td");
-            for (var i = 0; i < cells.length; i++) {
-                data.push(cells[i].innerHTML);
-            }
-        }
-        setResult([...result, data])
+
+    const delFromResult=(index)=>{
+        setSumTotal(sumTotal - result[index].Price*result[index].Count)
+        const newResult = result.filter((_,itemIndex) => index !== itemIndex)
+        setResult(newResult)
     }
 
 
     return (
-        <Container>
-            <Row>
+        <div class="container-priceask">
+            <div style={{"padding":"10px"}}>
             <Form.Group className="mx-auto my-2">
                 <Form.Label>Поиск:</Form.Label>
                 <Form.Control
@@ -108,7 +102,7 @@ const CreatePriceAsk = () => {
                 </thead>
                     <tbody>
                         {price?.map((item,index)=>
-                            <tr key={index} onClick={addToResult}>
+                            <tr key={index} onClick={(e)=>addToResult(e,item)}>
                                 <td>{item?.Code}</td>
                                 <td>{item?.Name}</td>
                                 <td>{item?.Price}</td>
@@ -119,9 +113,8 @@ const CreatePriceAsk = () => {
                     </tbody>
                 </Table>
             </div>
-            </Row>
-            <hr style={{"border": "none","background-color": "black","height": "5px"}}/>
-            <Row>
+            </div>
+            <div div style={{"padding":"10px"}}>
             <div class="table-responsive">
                 <Table  class="table table-hover">
                 <thead>
@@ -131,25 +124,39 @@ const CreatePriceAsk = () => {
                         <th>Цена</th>
                         <th>Кол-во</th>
                         <th>Сумма</th>
+                        <th>Del</th>
                     </tr>
                     </thead>
                     <tbody>
                         {result?.map((item,index)=>
                             <tr key={index}>
-                                <td>{item[0]}</td>
-                                <td>{item[1]}</td>
-                                <td>{item[2]}</td>
-                                <td>{item[3]}</td>
+                                <td>{item.Code}</td>
+                                <td>{item.Name}</td>
+                                <td>{item.Price}</td>
+                                <td style={{"width": "100px","padding":"3px"}}>
+                                    <Form.Control 
+                                        value={item.Count}
+                                    />
+                                </td>
+                                <td>{item.Count*item.Price}</td>
                                 <td><XCircle color="red" 
                                 style={{"width": "25px", "height": "20px"}} 
-                                onClick={delFromResult}/></td>
+                                onClick={()=>delFromResult(index)}/></td>
                             </tr>
                         )}
                     </tbody>
                 </Table>
             </div>
-            </Row>
-        </Container>
+            <hr style={{"border": "none","background-color": "black","height": "5px"}}/>
+                <div style={{
+                    "text-align":"right",
+                    "font-size":"130%",
+                    }}>
+                    Сумма итого:<span style={{"font-weight":"500"}}>  {sumTotal}</span>
+                    <div>Всего наименований: {result.length}</div>
+                    </div>
+            </div>
+        </div>
     );
 };
 
