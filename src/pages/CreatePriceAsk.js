@@ -81,7 +81,8 @@ const CreatePriceAsk = () => {
 
     return (
         <div class="container-priceask">
-            <div style={{"padding":"10px"}}>
+        <div class="container-priceask-center">   
+            <div>
             <Form.Group className="mx-auto my-2">
                 <Form.Label>Поиск:</Form.Label>
                 <Form.Control
@@ -114,7 +115,7 @@ const CreatePriceAsk = () => {
                 </Table>
             </div>
             </div>
-            <div div style={{"padding":"10px"}}>
+            <div class="border-price">
             <div class="table-responsive">
                 <Table  class="table table-hover">
                 <thead>
@@ -156,6 +157,7 @@ const CreatePriceAsk = () => {
                     <div>Всего наименований: {result.length}</div>
                     </div>
             </div>
+        </div>
         </div>
     );
 };

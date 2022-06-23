@@ -207,6 +207,10 @@ export const publicRoutes = [
         Component: Auth
     },
     {
+        path: CREATEPRICEASK,
+        Component: CreatePriceAsk
+    },
+    {
         path: CHAT,
         Component: Auth
     },

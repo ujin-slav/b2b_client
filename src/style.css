@@ -313,6 +313,15 @@ td.tdRed{
     border-bottom: 1px solid black;
   }
   .container-priceask{
-    background-color: rgba(255, 255, 190, 0.432);
-    align-items: center;
+    /*  background-color: rgba(255, 255, 190, 0.432); */
+  }
+  .container-priceask-center{
+    width: 70%; 
+    margin: 0 auto; 
+  }
+  .border-price {
+    border:1px solid rgb(0, 0, 0);
+    border-radius: 20px 20px 20px 20px;
+    margin-top: 30px;
+    padding-top: 15px;
   }
