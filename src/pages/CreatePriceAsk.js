@@ -1,11 +1,14 @@
-import React,{useState,useEffect,useParams} from 'react';
+import React,{useState,useEffect,useParams,useContext} from 'react';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
+import { fetchUser} from '../http/askAPI';
+import {Context} from "../index";
 
 const CreatePriceAsk = () => {
     //const {id} = useParams();
+    const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
@@ -14,6 +17,7 @@ const CreatePriceAsk = () => {
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
     const[search,setSearch] = useState("");
+    const {myalert} = useContext(Context);
     let limit = 30
 
     useEffect(() => {
@@ -29,6 +33,9 @@ const CreatePriceAsk = () => {
     },[fetching]);
 
     useEffect(() => {
+        fetchUser("619e4028315b602a6439ff05").then((data)=>{
+            setRecevier(data)
+        })
         document.addEventListener('scroll',scrollHandler);
         return function(){
             document.removeEventListener('scroll',scrollHandler);
@@ -78,11 +85,36 @@ const CreatePriceAsk = () => {
         setResult(newResult)
     }
 
+    const changeInput=(e,item)=>{
+        let totalSum = 0
+        result.map((el,index)=>{
+            if(el._id===item._id){
+                result[index].Count = e.target.value
+            }
+            totalSum = totalSum + result[index].Count * result[index].Price
+        })
+        setSumTotal(totalSum)
+        setResult([...result]) 
+    }
+
+    const saveOrder=async()=>{
+        const res = await PriceService.saveAsk({doc:result})
+        if (res.ok){
+            myalert.setMessage("Успешно"); 
+        } else {
+            myalert.setMessage(res?.data?.message);
+        }
+    }
 
     return (
         <div class="container-priceask">
         <div class="container-priceask-center">   
             <div>
+            <Form.Group className="mx-auto my-2">
+                <Form.Label>Получатель: {recevier?.name}, {recevier?.nameOrg},
+                    ИНН: {recevier?.inn}
+                </Form.Label>
+            </Form.Group> 
             <Form.Group className="mx-auto my-2">
                 <Form.Label>Поиск:</Form.Label>
                 <Form.Control
@@ -136,7 +168,9 @@ const CreatePriceAsk = () => {
                                 <td>{item.Price}</td>
                                 <td style={{"width": "100px","padding":"3px"}}>
                                     <Form.Control 
-                                        value={item.Count}
+                                        defaultValue={item.Count}
+                                        type="number"
+                                        onChange={(e)=>changeInput(e,item)}
                                     />
                                 </td>
                                 <td>{item.Count*item.Price}</td>
@@ -149,14 +183,26 @@ const CreatePriceAsk = () => {
                 </Table>
             </div>
             <hr style={{"border": "none","background-color": "black","height": "5px"}}/>
-                <div style={{
-                    "text-align":"right",
-                    "font-size":"130%",
-                    }}>
+                <div class="total-sum">
                     Сумма итого:<span style={{"font-weight":"500"}}>  {sumTotal}</span>
                     <div>Всего наименований: {result.length}</div>
                     </div>
             </div>
+            <div  style={{"text-align": "right"}}>
+            <Button
+                variant="primary"
+                className="btn mx-3 mt-3"
+                onClick={saveOrder}
+                >
+                Записать
+            </Button>
+            <Button
+                variant="primary"
+                className="btn btn-success mt-3"
+                >
+                Отправить поставщику
+            </Button>
+        </div>
         </div>
         </div>
     );

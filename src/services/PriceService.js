@@ -11,5 +11,10 @@ export default class PriceService {
         const {data} = await $api.post(`/clearprice`,formData);
         return data
     }
+
+    static async saveAsk(formData){
+        const {data} = await $api.post(`/saveask`,formData);
+        return data
+    }
     
 }

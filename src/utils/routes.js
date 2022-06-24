@@ -8,6 +8,7 @@ import Registration from "../pages/Registration";
 import Reset from "../pages/Reset";
 import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
+import MyOrdersPrice from "../pages/MyOrdersPrice";
 import MyOffers from "../pages/MyOffers";
 import ModifyAsk from "../pages/ModifyAsk";
 import CatOrg from "../pages/CatOrg";
@@ -35,6 +36,7 @@ export const CREATEPRICEASK = '/createpriceask'
 export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
+export const MYORDERSPRICE = '/myordersprice'
 export const MYOFFERS = '/myoffers'
 export const MODIFYASK = '/modifyask'
 export const CATORG = '/catorg'
@@ -90,6 +92,10 @@ export const authRoutes = [
     {
         path: MYORDERS,
         Component: MyOrders
+    },
+    {
+        path: MYORDERSPRICE,
+        Component: MyOrdersPrice
     },
     {
         path: PROFILE,
