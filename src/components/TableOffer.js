@@ -28,7 +28,6 @@ const TableOffer = observer(() => {
       AskService.fetchUserOffers({authorId:user.user.id, limit,page:currentPage}).then((data)=>{
             offerUser.setOffer(data.docs);
             setpageCount(data.totalPages);
-            console.log(data)
         })
     },[]);
 

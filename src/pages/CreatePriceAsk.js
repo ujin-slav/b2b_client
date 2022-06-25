@@ -16,8 +16,10 @@ const CreatePriceAsk = () => {
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
+    const[comment,setComment] = useState("");
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
+    const {user} = useContext(Context);
     let limit = 30
 
     useEffect(() => {
@@ -98,7 +100,12 @@ const CreatePriceAsk = () => {
     }
 
     const saveOrder=async()=>{
-        const res = await PriceService.saveAsk({doc:result})
+        const res = await PriceService.saveAsk(
+            {Table:result,
+            To:"619e4028315b602a6439ff05",
+            Comment:comment,
+            Author:user.user.id,
+        })
         if (res.ok){
             myalert.setMessage("Успешно"); 
         } else {
@@ -189,6 +196,12 @@ const CreatePriceAsk = () => {
                     </div>
             </div>
             <div  style={{"text-align": "right"}}>
+            <Form.Group className="mx-auto my-2">
+                <Form.Control
+                    onChange={(e)=>setComment(e.target.value)}
+                    placeholder="Комментарий"
+                />
+            </Form.Group>
             <Button
                 variant="primary"
                 className="btn mx-3 mt-3"
