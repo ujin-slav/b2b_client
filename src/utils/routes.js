@@ -11,6 +11,7 @@ import MyOrders from "../pages/MyOrders";
 import MyOrdersPrice from "../pages/MyOrdersPrice";
 import MyOffers from "../pages/MyOffers";
 import ModifyAsk from "../pages/ModifyAsk";
+import ModifyPriceAsk from "../pages/ModifyPriceAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
 import ChatPage from "../pages/ChatPage";
@@ -39,6 +40,7 @@ export const MYORDERS = '/myorders'
 export const MYORDERSPRICE = '/myordersprice'
 export const MYOFFERS = '/myoffers'
 export const MODIFYASK = '/modifyask'
+export const MODIFYPRICEASK = '/modifypriceask'
 export const CATORG = '/catorg'
 export const MYCONTR = '/mycontr'
 export const CHAT = '/chat'
@@ -108,6 +110,10 @@ export const authRoutes = [
     {
         path: MODIFYASK + '/:id',
         Component: ModifyAsk
+    },
+    {
+        path: MODIFYPRICEASK + '/:id',
+        Component: ModifyPriceAsk
     },
     {
         path: CATORG,

@@ -54,6 +54,7 @@ const App = observer(() => {
           <Form className="d-flex flex-column">
               <Form.Control
                   className="mt-3"
+                  autocomplete="username"
                   type="email"
                   placeholder="Введите ваш email..."
                   onChange={(e)=>setEmail(e.target.value)}

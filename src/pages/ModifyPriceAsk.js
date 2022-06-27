@@ -1,16 +1,20 @@
-import React,{useState,useEffect,useParams,useContext} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
+import {useParams} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
+import { MYORDERSPRICE } from '../utils/routes';
 
 const CreatePriceAsk = () => {
-    //const {id} = useParams();
+    const {id} = useParams();
     const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
+    const history = useHistory();
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
@@ -23,21 +27,27 @@ const CreatePriceAsk = () => {
     let limit = 30
 
     useEffect(() => {
-        if(fetching){
-            if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:"619e4028315b602a6439ff05"}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice([...price, ...data.docs]);
-                setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>setFetching(false))
-            }
-        }
-    },[fetching]);
+        PriceService.getAskPriceId(id).then((data)=>{
+            setResult(data.Table)
+            setRecevier(data.To)
+            setSumTotal(data.Sum)
+            setComment(data.Comment)
+        })
+    },[]);
 
     useEffect(() => {
-        fetchUser("619e4028315b602a6439ff05").then((data)=>{
-            setRecevier(data)
-        })
+        if(fetching && recevier){
+            if(price.length===0 || price.length<totalDocs) {
+                PriceService.getPrice({page:currentPage,limit,search,org:recevier?._id}).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setPrice([...price, ...data.docs]);
+                    setCurrentPage(prevState=>prevState + 1)
+                }).finally(()=>setFetching(false)) 
+            }
+        }
+    },[fetching,recevier]);
+
+    useEffect(() => {
         document.addEventListener('scroll',scrollHandler);
         return function(){
             document.removeEventListener('scroll',scrollHandler);
@@ -52,7 +62,7 @@ const CreatePriceAsk = () => {
     }
 
     const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:"619e4028315b602a6439ff05"}).
+        PriceService.getPrice({page:currentPage,limit,search,org:recevier?._id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -100,9 +110,10 @@ const CreatePriceAsk = () => {
     }
 
     const saveOrder=async()=>{
-        const res = await PriceService.saveAsk(
+        const res = await PriceService.updatePriceAsk(
             {Table:result,
-            To:"619e4028315b602a6439ff05",
+            id,
+            To:recevier?._id,
             Comment:comment,
             Author:user.user.id,
             Sum:sumTotal,
@@ -110,6 +121,7 @@ const CreatePriceAsk = () => {
         })
         if (res.status===200){
             myalert.setMessage("Успешно"); 
+            history.push(MYORDERSPRICE)
         } else {
             myalert.setMessage(res?.data?.message);
         }

@@ -3,7 +3,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {Table,Container} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { CARDASK, MODIFYASK } from '../utils/routes';
+import { MODIFYPRICEASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
@@ -40,42 +40,54 @@ const MyOrdersPrice = () => {
         })
     };
 
-    const deleteAsk = async () =>{
-      const result = await AskService.deleteAsk(deleteId);
+    const deletePriceAsk = async () =>{
+      const result = await PriceService.deletePriceAsk(deleteId);
       if (result.status===200){
         myalert.setMessage("Успешно"); 
         setLoading(!loading)
       } else {
         myalert.setMessage(result.data.message);
       }
-       console.log(user.user.id);
     }
 
     const handlePageClick = async (data) => {
       setCurrentPage(data.selected + 1)
       await fetchPage(data.selected + 1);
     };
+
     return (
       <div>
-          gfff
         <Table striped hover  className="tableAsk">
         <thead>
           <tr>
             <th>#</th>
             <th>Кому</th>
-            <th>Позиции</th>
+            <th>Сумма</th>
             <th>Комментарий</th>
-            <th>Уд./Ре.</th>
+            <th>Отправлен</th>
+            <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
         {askPriceUser?.map((item, index)=>
-          <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
+          <tr key={index}  onClick={()=>history.push(MODIFYPRICEASK + '/' + item._id)}>
             <td>{index+1+(currentPage-1)*limit}</td>
+            <td>{item?.To?.name} {item?.To?.nameOrg}</td>
+            <td>{item?.Sum}</td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td> {item?.Sent ?
+                    <div style={{"color":"green"}}>
+                    Да
+                    </div>
+                    :
+                    <div  style={{"color":"red"}}>
+                    Нет</div>
+                    }</td>
+            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
+            onClick={()=>{
+              setModalActive(true)
+              setDeleteId(item._id)}}/>
+            </td>
           </tr>
         )}  
         </tbody>
@@ -101,7 +113,7 @@ const MyOrdersPrice = () => {
           />
           <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
-              setActive={setModalActive} funRes={deleteAsk}/>
+              setActive={setModalActive} funRes={deletePriceAsk}/>
      </div> 
     );
 };
