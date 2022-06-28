@@ -1,6 +1,7 @@
 import Auth from "../pages/Auth";
 import B2B from "../pages/B2b"
 import CardAsk from "../pages/CardAsk";
+import CardPriceAsk from "../pages/CardPriceAsk";
 import CreateAsk from "../pages/CreateAsk";
 import CreatePriceAsk from "../pages/CreatePriceAsk";
 import Forgot from "../pages/Forgot";
@@ -21,6 +22,7 @@ import Help from "../pages/Help";
 import About from "../pages/About";
 import Activate from "../pages/Activate";
 import Invited from "../pages/Invited";
+import InvitedPrice from "../pages/InvitedPrice";
 import Test from "../pages/Test";
 import MyPrice from "../pages/Price";
 import Price from "../pages/Prices";
@@ -32,6 +34,7 @@ export const FORGOT = '/forgot'
 export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
+export const CARDPRICEASK = '/cardpriceask'
 export const CREATEASK = '/createask'
 export const CREATEPRICEASK = '/createpriceask'
 export const DOWNLOAD = '/download'
@@ -51,6 +54,7 @@ export const ABOUT = '/about'
 export const MYPRICE = '/price'
 export const PRICE = '/prices'
 export const INVITED = '/invited'
+export const INVITEDPRICE = '/invitedprice'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
 
@@ -80,11 +84,15 @@ export const authRoutes = [
         Component: CardAsk
     },
     {
+        path: CARDPRICEASK + '/:id',
+        Component: CardPriceAsk
+    },
+    {
         path: CREATEASK,
         Component: CreateAsk
     },
     {
-        path: CREATEPRICEASK,
+        path: CREATEPRICEASK + '/:idorg/:idprod',
         Component: CreatePriceAsk
     },
     {
@@ -150,6 +158,10 @@ export const authRoutes = [
     {
         path: INVITED,
         Component: Invited
+    },
+    {
+        path: INVITEDPRICE,
+        Component: InvitedPrice
     },
     {
         path: MYPRICE,

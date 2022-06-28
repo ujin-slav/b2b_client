@@ -1,4 +1,5 @@
-import React,{useState,useEffect,useParams,useContext} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
+import {useParams} from 'react-router-dom';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
@@ -7,7 +8,7 @@ import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
 
 const CreatePriceAsk = () => {
-    //const {id} = useParams();
+    const {idorg,idprod} = useParams();
     const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
@@ -25,17 +26,22 @@ const CreatePriceAsk = () => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:"619e4028315b602a6439ff05"}).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
+            if(idprod){
+                PriceService.getPriceUnit(idprod).then((data)=>{
+                    addToResult(null,data)
+                })
             }
+        }
         }
     },[fetching]);
 
     useEffect(() => {
-        fetchUser("619e4028315b602a6439ff05").then((data)=>{
+        fetchUser(idorg).then((data)=>{
             setRecevier(data)
         })
         document.addEventListener('scroll',scrollHandler);
@@ -52,7 +58,7 @@ const CreatePriceAsk = () => {
     }
 
     const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:"619e4028315b602a6439ff05"}).
+        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -102,7 +108,7 @@ const CreatePriceAsk = () => {
     const saveOrder=async()=>{
         const res = await PriceService.saveAsk(
             {Table:result,
-            To:"619e4028315b602a6439ff05",
+            To:idorg,
             Comment:comment,
             Author:user.user.id,
             Sum:sumTotal,

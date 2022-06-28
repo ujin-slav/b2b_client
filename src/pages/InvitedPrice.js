@@ -13,7 +13,7 @@ import { XCircle, Pen,Link45deg } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 
-const MyOrdersPrice = () => {
+const InvitedPriceAsk =  observer(() => {
     const {user} = useContext(Context);
     const [askPriceUser, setAskPriceUser] = useState()
     const {myalert} = useContext(Context);
@@ -30,9 +30,10 @@ const MyOrdersPrice = () => {
             PriceService.getAskPrice({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
                 setAskPriceUser(data.docs)
                 setpageCount(data.totalPages);
-            })
+                console.log(data)
+              })
         }
-      },[loading]);
+      },[user.user,loading]);
 
     const fetchPage = async (currentPage) => {
        PriceService.getAskPrice({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
@@ -61,39 +62,21 @@ const MyOrdersPrice = () => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Кому</th>
+            <th>От кого</th>
             <th>Сумма</th>
             <th>Комментарий</th>
-            <th>Отправлен</th>
-            <th>Удалить</th>
+            <th>Дата</th>
           </tr>
         </thead>
         <tbody>
         {askPriceUser?.map((item, index)=>
           <tr key={index}  
-            onClick={()=>item?.Sent ?
-              history.push(CARDPRICEASK + '/' + item._id)
-              :
-              history.push(MODIFYPRICEASK + '/' + item._id)
-            }
-          >
+            onClick={()=>history.push(CARDPRICEASK + '/' + item._id)}>
             <td>{index+1+(currentPage-1)*limit}</td>
-            <td>{item?.To?.name} {item?.To?.nameOrg}</td>
+            <td>{item?.Author?.name} {item?.Author?.nameOrg}</td>
             <td>{item?.Sum}</td>
-            <td></td>
-            <td> {item?.Sent ?
-                    <div style={{"color":"green"}}>
-                    Да
-                    </div>
-                    :
-                    <div  style={{"color":"red"}}>
-                    Нет</div>
-                    }</td>
-            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
-            onClick={()=>{
-              setModalActive(true)
-              setDeleteId(item._id)}}/>
-            </td>
+            <td>{item?.Comment}</td>
+            <td>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</td>
           </tr>
         )}  
         </tbody>
@@ -122,6 +105,6 @@ const MyOrdersPrice = () => {
               setActive={setModalActive} funRes={deletePriceAsk}/>
      </div> 
     );
-};
+});
 
-export default MyOrdersPrice;
+export default InvitedPriceAsk;

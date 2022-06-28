@@ -18,6 +18,7 @@ const CreatePriceAsk = () => {
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
+    const [sent,setSent] = useState(false); 
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
     const[comment,setComment] = useState("");
@@ -32,6 +33,7 @@ const CreatePriceAsk = () => {
             setRecevier(data.To)
             setSumTotal(data.Sum)
             setComment(data.Comment)
+            setSent(data.Sent)
         })
     },[]);
 
@@ -118,6 +120,24 @@ const CreatePriceAsk = () => {
             Author:user.user.id,
             Sum:sumTotal,
             Sent:false
+        })
+        if (res.status===200){
+            myalert.setMessage("Успешно"); 
+            history.push(MYORDERSPRICE)
+        } else {
+            myalert.setMessage(res?.data?.message);
+        }
+    }
+
+    const sendOrder=async()=>{
+        const res = await PriceService.updatePriceAsk(
+            {Table:result,
+            id,
+            To:recevier?._id,
+            Comment:comment,
+            Author:user.user.id,
+            Sum:sumTotal,
+            Sent:true
         })
         if (res.status===200){
             myalert.setMessage("Успешно"); 
@@ -216,19 +236,26 @@ const CreatePriceAsk = () => {
                     placeholder="Комментарий"
                 />
             </Form.Group>
-            <Button
-                variant="primary"
-                className="btn mx-3 mt-3"
-                onClick={saveOrder}
-                >
-                Записать
-            </Button>
-            <Button
-                variant="primary"
-                className="btn btn-success mt-3"
-                >
-                Отправить поставщику
-            </Button>
+            {!sent ?
+            <div>
+                <Button
+                    variant="primary"
+                    className="btn mx-3 mt-3"
+                    onClick={saveOrder}
+                    >
+                    Записать
+                </Button>
+                <Button
+                    variant="primary"
+                    className="btn btn-success mt-3"
+                    onClick={sendOrder}
+                    >
+                    Отправить поставщику
+                </Button>
+            </div>
+            :
+            <div></div>
+            }
         </div>
         </div>
         </div>

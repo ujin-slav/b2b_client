@@ -2,7 +2,21 @@ import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
-import {LOGIN_ROUTE,CREATEASK, MYORDERS, MYOFFERS,B2B_ROUTE,HELP, MYCONTR,CHAT,QUEST, ABOUT,INVITED,MYPRICE,MYORDERSPRICE, PRICE} from "../utils/routes";
+import {LOGIN_ROUTE,
+        CREATEASK, 
+        MYORDERS, 
+        MYOFFERS,
+        B2B_ROUTE,
+        HELP,
+        MYCONTR,
+        CHAT,
+        QUEST, 
+        ABOUT,
+        INVITED,
+        MYPRICE,
+        MYORDERSPRICE, 
+        PRICE, 
+        INVITEDPRICE} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -118,6 +132,14 @@ const NavBar = observer(() => {
                            <div>Мои приглашения</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvited()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={active===INVITEDPRICE ? "active" : ""}>
+                        <div className="parentAnswer">
+                           <div>Мне заказали</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'></div>
                            </div>
                         </div>
                         </NavDropdown.Item>

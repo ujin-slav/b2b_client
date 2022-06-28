@@ -5,14 +5,21 @@ import {
     Table,
     Row,
     Col,
-    Form
+    Form,
+    InputGroup,
+    Button
   } from "react-bootstrap";
  import CardOrg from '../components/CardOrg'; 
  import {Context} from "../index";
  import dateFormat, { masks } from "dateformat";
- import {ORGINFO} from "../utils/routes";
+ import {ORGINFO,CREATEPRICEASK} from "../utils/routes";
  import {useHistory} from 'react-router-dom';
  import {observer} from "mobx-react-lite";
+ import {getCategoryName} from '../utils/Convert'
+ import RegionTree from '../components/RegionTree';
+ import { regionNodes } from '../config/Region';
+ import ModalCT from '../components/ModalCT';
+ import { Cart4} from 'react-bootstrap-icons';
 
 const Prices = observer(() => {
     const {user} = useContext(Context);
@@ -20,6 +27,9 @@ const Prices = observer(() => {
     const[currentPage,setCurrentPage] = useState();
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
+    const [checkedRegion,setCheckedRegion] = useState([]);
+    const [expandedRegion,setExpandedRegion] = useState([]);
+    const [modalActiveReg, setModalActiveReg] = useState(false);
     const[search,setSearch] = useState("");
     const history = useHistory();
     let limit = 30
@@ -72,12 +82,20 @@ const Prices = observer(() => {
             <Container>
             <Row>
                     <Col>
-                    <Form.Group className="mx-auto my-2">
-                        <Form.Label>Поиск:</Form.Label>
+                    <Form.Group className="mx-auto my-2 mt-3">
                         <Form.Control
                             onChange={handleSearch}
                             placeholder="Начните набирать артикул или название продукта"
                         />
+                        <InputGroup className="mb-3 mt-3">
+                                <Form.Control
+                                placeholder="Регионы"
+                                value={getCategoryName(checkedRegion, regionNodes).join(", ")}
+                                />
+                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                ...
+                                </Button>
+                        </InputGroup>
                     </Form.Group>
                     </Col>
             </Row>
@@ -91,6 +109,7 @@ const Prices = observer(() => {
                     <th>Остаток</th>
                     <th>Организация</th>
                     <th>Дата</th>
+                    <th>+</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -103,13 +122,24 @@ const Prices = observer(() => {
                             <td>{item?.Balance}</td>
                             <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
                                 {item?.User?.nameOrg}</a></td>
-                            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                            <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                            <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                            onClick={()=>history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)}
+                            /></td>
                         </tr>
                     )}
                  </tbody>
             </Table>
             </Row>
             </Container>
+            <ModalCT 
+                header="Регионы" 
+                active={modalActiveReg} 
+                setActive={setModalActiveReg} 
+                component={<RegionTree 
+                checked={checkedRegion} expanded={expandedRegion} 
+                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
         </div>
     );
 });

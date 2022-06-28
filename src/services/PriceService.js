@@ -6,7 +6,10 @@ export default class PriceService {
         const {data} = await $api.post(`/getprice`,formData);
         return data
     }
-
+    static async getPriceUnit(id){
+        const {data} = await $api.post(`/getpriceunit`,{id});
+        return data
+    }
     static async clearPrice(formData){
         const {data} = await $api.post(`/clearprice`,formData);
         return data
