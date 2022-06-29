@@ -135,16 +135,16 @@ const NavBar = observer(() => {
                            </div>
                         </div>
                         </NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={active===MYPRICE ? "active" : ""}>Мой прайс</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={active===INVITEDPRICE ? "active" : ""}>
                         <div className="parentAnswer">
-                           <div>Мне заказали</div>
+                           <div>Мне заказали по прайсу</div>
                            <div className="countQuest">
                                <div className='yellowtext'></div>
                            </div>
                         </div>
                         </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={active===MYPRICE ? "active" : ""}>Мой прайс</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Мой прайс заявки</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Я заказывал по прайсу</NavDropdown.Item>
                     </NavDropdown>
                     <div className="parentAnswer myNoti">
                            <div className="countQuest">{sumInvited()}</div>

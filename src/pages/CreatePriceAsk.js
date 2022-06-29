@@ -207,7 +207,8 @@ const CreatePriceAsk = () => {
             <Form.Group className="mx-auto my-2">
                 <Form.Control
                     onChange={(e)=>setComment(e.target.value)}
-                    placeholder="Комментарий"
+                    placeholder="Комментарий к заказу"
+                    as="textarea"
                 />
             </Form.Group>
             <Button

@@ -41,7 +41,6 @@ const Prices = observer(() => {
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
-                console.log(data)
             }).finally(()=>setFetching(false))
             }
         }  

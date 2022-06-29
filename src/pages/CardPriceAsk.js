@@ -12,6 +12,7 @@ const CardPriceAsk = () => {
     
     const {id} = useParams();
     const [recevier, setRecevier] = useState();
+    const [author, setAuthor] = useState();
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
@@ -27,6 +28,7 @@ const CardPriceAsk = () => {
             setComment(data.Comment)
             setSent(data.Sent)
             setDateDoc(data.Date)
+            setAuthor(data.Author)
         })
     },[]);
 
@@ -36,13 +38,19 @@ const CardPriceAsk = () => {
         <div class="container-priceask">
         <div class="container-priceask-center"> 
             <Form.Group className="mx-auto my-2">
-                <Form.Label>Получатель: {recevier?.name}, {recevier?.nameOrg},
-                    ИНН: {recevier?.inn}
+                <Form.Label><span class="boldtext">Автор:</span> {author?.name}, {author?.nameOrg}
+                </Form.Label>
+            </Form.Group>   
+            <Form.Group className="mx-auto my-2">
+                <Form.Label><span class="boldtext">Получатель:</span>{recevier?.name}, {recevier?.nameOrg}
                 </Form.Label>
             </Form.Group>   
             <Form.Group className="mx-auto my-2">
                 <Form.Label>
-                    Дата документа: {dateFormat(dateDoc, "dd/mm/yyyy HH:MM:ss")}
+                <span class="boldtext">
+                    Дата документа: 
+                </span>  
+                    {dateFormat(dateDoc, "dd/mm/yyyy HH:MM:ss")}
                 </Form.Label>
             </Form.Group>  
             <div class="border-price">
@@ -84,8 +92,9 @@ const CardPriceAsk = () => {
             <div  style={{"text-align": "right"}}>
             <Form.Group className="mx-auto my-2">
                 <Form.Control
-                    onChange={(e)=>setComment(e.target.value)}
+                    value={comment}
                     placeholder="Комментарий"
+                    as="textarea"
                 />
             </Form.Group>
         </div>

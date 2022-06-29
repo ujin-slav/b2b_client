@@ -58,6 +58,12 @@ const MyOrdersPrice = () => {
     return (
       <div>
         <Table striped hover  className="tableAsk">
+            <col style={{"width":"3%"}}/>
+          	<col style={{"width":"10%"}}/>
+            <col style={{"width":"5%"}}/>
+          	<col style={{"width":"15%"}}/>
+            <col style={{"width":"5%"}}/>
+            <col style={{"width":"5%"}}/>
         <thead>
           <tr>
             <th>#</th>
