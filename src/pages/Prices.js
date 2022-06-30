@@ -123,7 +123,13 @@ const Prices = observer(() => {
                                 {item?.User?.nameOrg}</a></td>
                             <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                             <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
-                            onClick={()=>history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)}
+                            onClick={()=>{
+                                if(user.isAuth){
+                                    history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                }else{
+                                    history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                }
+                            }}
                             /></td>
                         </tr>
                     )}
