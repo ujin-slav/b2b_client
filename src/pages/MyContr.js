@@ -97,8 +97,8 @@ const MyContr = observer(() => {
         }       
         
     }
-    const handleSearch = async(item)=>{
-        ContrService.getUserList({search,limit,page:currentPage}).then((data)=>{
+    const handleSearch = async(e)=>{
+        ContrService.getUserList({search:e.target.value,limit,page:currentPage}).then((data)=>{
             setListUser(data.docs)
             setpageCount(data.totalPages)
         })
@@ -106,57 +106,11 @@ const MyContr = observer(() => {
 
     return (
         <div>
-            <Container>
-                <Row>
-                    <Col>
-                    <Row>
-                        Участники системы 
-                    <Form.Control
-                        onChange={handleSearch}
-                        placeholder="Начните набирать артикул или название продукта"
-                    />
-                    <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Имя</th>
-                        <th>E-mail</th>
-                        <th>Добавить</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {listUser?.map((item,index)=>
-                    <tr>
-                        <td style={{"width":"10%"}}>{index+1}</td>
-                        <td style={{"width":"50%"}}>{item.name}</td>
-                        <td>{item.email}</td>
-                        <td><PlusCircle color="#0D55FD" style={{"width": "25px", "height": "25px"}}
-                            onClick={(e)=>{addContr(item)}} /></td>
-                    </tr>
-                    )}  
-                    </tbody>
-                    </Table>   
-                    </Row>
-                    <ReactPaginate
-                            previousLabel={"предыдущий"}
-                            nextLabel={"следующий"}
-                            breakLabel={"..."}
-                            pageCount={pageCount}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handlePageClick}
-                            containerClassName={"pagination justify-content-center"}
-                            pageClassName={"page-item"}
-                            pageLinkClassName={"page-link"}
-                            previousClassName={"page-item"}
-                            previousLinkClassName={"page-link"}
-                            nextClassName={"page-item"}
-                            nextLinkClassName={"page-link"}
-                            breakClassName={"page-item"}
-                            breakLinkClassName={"page-link"}
-                            activeClassName={"active"}
-                        />
-                    <Form.Group className="mx-auto my-2">
+            <Container className="mx-auto my-4">
+            <Row>
+            <Col>   <div  className="mb-2">
+                        Мои контрагенты
+                    </div>
                     <InputGroup className="mb-3">
                     <Form.Control
                             placeholder="Введите имя контрагента"
@@ -173,11 +127,6 @@ const MyContr = observer(() => {
                         </Button>
                     </InputGroup>
                         <span className="errorMessage" style={{color:"red"}}>{error}</span>    
-                    </Form.Group>
-                    </Col>
-                </Row>
-            <Row>
-                <Col className="mx-auto my-2">
                 <Table striped bordered hover>
                     <thead>
                     <tr>
@@ -200,7 +149,56 @@ const MyContr = observer(() => {
                     </tbody>
                 </Table>
                 </Col>
-             </Row>
+                <Col >
+                    <div  className="mb-2">
+                        Участники системы 
+                    </div>
+                    <Form.Control
+                        onChange={handleSearch}
+                        placeholder="Начните набирать инн или название фирмы"
+                    />
+                    <Table striped bordered hover>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Имя</th>
+                        <th>Организация</th>
+                        <th>Добавить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {listUser?.map((item,index)=>
+                    <tr>
+                        <td style={{"width":"10%"}}>{index+1}</td>
+                        <td style={{"width":"50%"}}>{item.name}</td>
+                        <td>{item.nameOrg}</td>
+                        <td><PlusCircle color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                            onClick={(e)=>{addContr(item)}} /></td>
+                    </tr>
+                    )}  
+                    </tbody>
+                    </Table>   
+                    <ReactPaginate
+                            previousLabel={"предыдущий"}
+                            nextLabel={"следующий"}
+                            breakLabel={"..."}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination justify-content-center"}
+                            pageClassName={"page-item"}
+                            pageLinkClassName={"page-link"}
+                            previousClassName={"page-item"}
+                            previousLinkClassName={"page-link"}
+                            nextClassName={"page-item"}
+                            nextLinkClassName={"page-link"}
+                            breakClassName={"page-item"}
+                            breakLinkClassName={"page-link"}
+                            activeClassName={"active"}
+                        />
+                    </Col>
+                </Row>
              </Container>
         </div>
     );

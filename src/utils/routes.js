@@ -4,6 +4,7 @@ import CardAsk from "../pages/CardAsk";
 import CardPriceAsk from "../pages/CardPriceAsk";
 import CreateAsk from "../pages/CreateAsk";
 import CreatePriceAsk from "../pages/CreatePriceAsk";
+import CreatePriceAskFiz from "../pages/CreatePriceAskFiz";
 import Forgot from "../pages/Forgot";
 import Registration from "../pages/Registration";
 import Reset from "../pages/Reset";
@@ -37,6 +38,7 @@ export const CARDASK = '/cardask'
 export const CARDPRICEASK = '/cardpriceask'
 export const CREATEASK = '/createask'
 export const CREATEPRICEASK = '/createpriceask'
+export const CREATEPRICEASKFIZ = '/createpriceaskfiz'
 export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
@@ -94,6 +96,10 @@ export const authRoutes = [
     {
         path: CREATEPRICEASK + '/:idorg/:idprod',
         Component: CreatePriceAsk
+    },
+    {
+        path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
+        Component: CreatePriceAskFiz
     },
     {
         path: DOWNLOAD,
