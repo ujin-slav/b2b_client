@@ -112,7 +112,8 @@ const CreatePriceAsk = () => {
             Comment:comment,
             Author:user.user.id,
             Sum:sumTotal,
-            Sent:false
+            Sent:false,
+            FIZ:false
         })
         if (res.status===200){
             myalert.setMessage("Успешно"); 

@@ -241,6 +241,10 @@ export const publicRoutes = [
         Component: CreatePriceAsk
     },
     {
+        path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
+        Component: CreatePriceAskFiz
+    },
+    {
         path: CHAT,
         Component: Auth
     },

@@ -1,16 +1,39 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
-import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
+import {Card, Table, Col, Container, Row, InputGroup,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
+import Captcha from "demos-react-captcha";
 
-const CreatePriceAsk = () => {
+const emailRegex = RegExp(
+    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+);
+
+const formValid = ({ data, formErrors }) => {
+    let valid = true;
+  
+    // validate form errors being empty
+    Object.values(formErrors).forEach(val => {
+        val.length > 0 && (valid = false);
+    });
+  
+    // validate the form was filled out
+    Object.values(data).forEach(val => {
+        val === null && (valid = false);
+  });
+  
+  return valid;
+  };
+  
+
+const CreatePriceAskFiz = () => {
     const {idorg,idprod} = useParams();
     const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
+    const [captcha, setCaptcha] = useState(false);
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
@@ -21,6 +44,18 @@ const CreatePriceAsk = () => {
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
+    const[priceAsk,setPriceAsk] = useState( {
+        data: {
+          Name: null,
+          Email: null,
+          Telefon:""
+        },
+        formErrors: {
+          Name: "",
+          Email: "",
+        }
+      }
+      );
     let limit = 30
 
     useEffect(() => {
@@ -106,32 +141,66 @@ const CreatePriceAsk = () => {
     }
 
     const saveOrder=async()=>{
-        const res = await PriceService.saveAsk(
-            {Table:result,
-            To:idorg,
-            Comment:comment,
-            Author:user.user.id,
-            Sum:sumTotal,
-            Sent:false
-        })
-        if (res.status===200){
-            myalert.setMessage("Успешно"); 
-        } else {
-            myalert.setMessage(res?.data?.message);
+        if (formValid(priceAsk)) {
+            const res = await PriceService.saveAsk(
+                {Table:result,
+                To:idorg,
+                Comment:comment,
+                Sum:sumTotal,
+                Sent:false,
+                FIZ:true,
+                NameFiz:priceAsk.data.Name,
+                EmailFiz:priceAsk.data.Email,
+                TelefonFiz:priceAsk.data.Telefon,
+            })
+            if (res.status===200){
+                myalert.setMessage("Успешно"); 
+            } else {
+                myalert.setMessage(res?.data?.message);
+            }
+        }else{
+            myalert.setMessage("Не заполнены поля формы");
         }
     }
+
+    const handleChange = e => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        let formErrors = priceAsk.formErrors;
+        let data = priceAsk.data
+        data[name] = value;
+        console.log(name)
+        
+        switch (name) {
+          case "name":
+            formErrors.Name =
+              value.length < 3 ? "минимум 3 символа" : "";
+            break;   
+          case "email":
+                formErrors.Email = emailRegex.test(value)
+                  ? ""
+                  : "неверный email";
+            break;
+          default:
+            break;
+        }
+        setPriceAsk({ data, formErrors});
+      }
+      const handleChangeCaptcha = (value) => {
+        if(value){
+          setCaptcha(true)
+        }
+      }
 
     return (
         <div class="container-priceask">
         <div class="container-priceask-center">   
             <div>
             <Form.Group className="mx-auto my-2">
-                <Form.Label>Получатель: {recevier?.name}, {recevier?.nameOrg},
-                    ИНН: {recevier?.inn}
+                <Form.Label><span class="boldtext">Получатель:</span> {recevier?.name}, {recevier?.nameOrg}
                 </Form.Label>
             </Form.Group> 
             <Form.Group className="mx-auto my-2">
-                <Form.Label>Поиск:</Form.Label>
                 <Form.Control
                     onChange={handleSearch}
                     placeholder="Начните набирать артикул или название продукта"
@@ -203,7 +272,6 @@ const CreatePriceAsk = () => {
                     <div>Всего наименований: {result.length}</div>
                     </div>
             </div>
-            <div  style={{"text-align": "right"}}>
             <Form.Group className="mx-auto my-2">
                 <Form.Control
                     onChange={(e)=>setComment(e.target.value)}
@@ -211,14 +279,31 @@ const CreatePriceAsk = () => {
                     as="textarea"
                 />
             </Form.Group>
+            <div  style={{"text-align": "right"}}>
+            <Form.Label><span class="boldtext">Ваши контактные данные:</span></Form.Label>
+            <div class="mb-3 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Имя</label>
+                <div class="col-sm-10">
+                <Form.Control type="text" name="name" placeholder="Обязательно" onChange={handleChange}/>
+                <span className="errorMessage" style={{color:"red"}}>{priceAsk.formErrors.Name}</span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="inputPassword" class="col-sm-2 col-form-label">E-mail</label>
+                <div class="col-sm-10">
+                <Form.Control type="text" name="email" placeholder="Обязательно" onChange={handleChange}/>
+                <span className="errorMessage" style={{color:"red"}}>{priceAsk.formErrors.Email}</span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="inputPassword" class="col-sm-2 col-form-label">Телефон</label>
+                <div class="col-sm-10">
+                <Form.Control type="telefon"/>
+                </div>
+            </div>
+            <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>     
             <Button
-                variant="primary"
-                className="btn mx-3 mt-3"
                 onClick={saveOrder}
-                >
-                Записать
-            </Button>
-            <Button
                 variant="primary"
                 className="btn btn-success mt-3"
                 >
@@ -230,4 +315,4 @@ const CreatePriceAsk = () => {
     );
 };
 
-export default CreatePriceAsk;
+export default CreatePriceAskFiz;

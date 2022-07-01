@@ -12,7 +12,7 @@ import {
  import CardOrg from '../components/CardOrg'; 
  import {Context} from "../index";
  import dateFormat, { masks } from "dateformat";
- import {ORGINFO,CREATEPRICEASK} from "../utils/routes";
+ import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
  import {useHistory} from 'react-router-dom';
  import {observer} from "mobx-react-lite";
  import {getCategoryName} from '../utils/Convert'
@@ -127,7 +127,7 @@ const Prices = observer(() => {
                                 if(user.isAuth){
                                     history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
                                 }else{
-                                    history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                    history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
                                 }
                             }}
                             /></td>
