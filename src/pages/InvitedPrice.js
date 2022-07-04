@@ -27,7 +27,7 @@ const InvitedPriceAsk =  observer(() => {
 
     useEffect(() => {
         if(user?.user?.id){
-            PriceService.getAskPrice({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
+            PriceService.getAskPrice({to:user.user.id,limit,page:currentPage}).then((data)=>{
                 setAskPriceUser(data.docs)
                 setpageCount(data.totalPages);
                 console.log(data)
@@ -78,7 +78,13 @@ const InvitedPriceAsk =  observer(() => {
           <tr key={index}  
             onClick={()=>history.push(CARDPRICEASK + '/' + item._id)}>
             <td>{index+1+(currentPage-1)*limit}</td>
-            <td>{item?.Author?.name} {item?.Author?.nameOrg}</td>
+            <td>
+            {item?.FIZ ? 
+            `${item?.NameFiz + " " + item?.EmailFiz}`
+            :
+            `${item?.Author?.name + " " + item?.Author?.nameOrg}`
+            }
+            </td>
             <td>{item?.Sum}</td>
             <td>{item?.Comment}</td>
             <td>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</td>

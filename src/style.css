@@ -334,3 +334,6 @@ td.tdRed{
   .boldtext{
     font-weight:bold;
   }
+  .right{
+    float: right;
+  }

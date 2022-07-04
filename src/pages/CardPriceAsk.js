@@ -8,6 +8,8 @@ import {Context} from "../index";
 import {useParams} from 'react-router-dom';
 import {useHistory} from 'react-router-dom';
 import { MYORDERSPRICE } from '../utils/routes';
+import * as XLSX from 'xlsx';
+
 const CardPriceAsk = () => {
     
     const {id} = useParams();
@@ -17,6 +19,14 @@ const CardPriceAsk = () => {
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
     const [dateDoc,setDateDoc] = useState()
+    const [fiz,setFiz] = useState(
+        {
+            FIZ:false,
+            NameFiz:"",
+            EmailFiz:"",
+            TelefonFiz:""
+        }
+    )
     const [sent,setSent] = useState(false); 
     const[comment,setComment] = useState("");
 
@@ -29,20 +39,47 @@ const CardPriceAsk = () => {
             setSent(data.Sent)
             setDateDoc(data.Date)
             setAuthor(data.Author)
+            setFiz(
+                {
+                    FIZ:data.FIZ,
+                    NameFiz:data.NameFiz,
+                    EmailFiz:data.EmailFiz,
+                    TelefonFiz:data.TelefonFiz
+                }
+            )
         })
     },[]);
 
-   
+    const saveToFile = () => {
+        
+        const fileName = 'test.xlsx';
+
+		const ws = XLSX.utils.json_to_sheet(result);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'test');
+
+		XLSX.writeFile(wb, fileName);
+    }
 
     return (
         <div class="container-priceask">
         <div class="container-priceask-center"> 
             <Form.Group className="mx-auto my-2">
-                <Form.Label><span class="boldtext">Автор:</span> {author?.name}, {author?.nameOrg}
+                <Form.Label><span className="boldtext">Автор:</span> 
+                <span className="mx-2">
+                    {fiz.FIZ ? 
+                    `${fiz.NameFiz + ", " + fiz.EmailFiz + ", " +  fiz.TelefonFiz}`
+                    :
+                    `${author?.name + ", " + author?.nameOrg}`
+                    }
+                </span>
                 </Form.Label>
             </Form.Group>   
             <Form.Group className="mx-auto my-2">
-                <Form.Label><span class="boldtext">Получатель:</span>{recevier?.name}, {recevier?.nameOrg}
+                <Form.Label><span class="boldtext">Получатель:</span>
+                <span className="mx-2">
+                    {recevier?.name}, {recevier?.nameOrg}
+                </span>
                 </Form.Label>
             </Form.Group>   
             <Form.Group className="mx-auto my-2">
@@ -50,9 +87,23 @@ const CardPriceAsk = () => {
                 <span class="boldtext">
                     Дата документа: 
                 </span>  
+                <span className="mx-2">
                     {dateFormat(dateDoc, "dd/mm/yyyy HH:MM:ss")}
+                </span>
                 </Form.Label>
-            </Form.Group>  
+            </Form.Group>
+            <div class="mb-3 row">
+                <label for="inputPassword" class="col-sm-2 col-form-label boldtext">
+                    Комментарий к заказу
+                </label>
+                <div class="col-sm-10">
+                    <Form.Control
+                        value={comment}
+                        placeholder="Комментарий"
+                        as="textarea"
+                    />
+                </div>
+            </div>
             <div class="border-price">
             <div class="table-responsive">
                 <Table  class="table table-hover">
@@ -90,14 +141,14 @@ const CardPriceAsk = () => {
                     </div>
             </div>
             <div  style={{"text-align": "right"}}>
-            <Form.Group className="mx-auto my-2">
-                <Form.Control
-                    value={comment}
-                    placeholder="Комментарий"
-                    as="textarea"
-                />
-            </Form.Group>
         </div>
+        <Button
+            variant="primary"
+            className="btn btn-success mt-3 mx-3"
+            onClick={()=>saveToFile()}
+        >
+            Сохранить
+        </Button>
         </div>
         </div>
     );

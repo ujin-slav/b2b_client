@@ -46,13 +46,13 @@ const CreatePriceAskFiz = () => {
     const {user} = useContext(Context);
     const[priceAsk,setPriceAsk] = useState( {
         data: {
-          Name: null,
-          Email: null,
-          Telefon:""
+          name: null,
+          email: null,
+          telefon:""
         },
         formErrors: {
-          Name: "",
-          Email: "",
+          name: "",
+          email: "",
         }
       }
       );
@@ -149,9 +149,9 @@ const CreatePriceAskFiz = () => {
                 Sum:sumTotal,
                 Sent:false,
                 FIZ:true,
-                NameFiz:priceAsk.data.Name,
-                EmailFiz:priceAsk.data.Email,
-                TelefonFiz:priceAsk.data.Telefon,
+                NameFiz:priceAsk.data.name,
+                EmailFiz:priceAsk.data.email,
+                TelefonFiz:priceAsk.data.telefon,
             })
             if (res.status===200){
                 myalert.setMessage("Успешно"); 
@@ -160,6 +160,7 @@ const CreatePriceAskFiz = () => {
             }
         }else{
             myalert.setMessage("Не заполнены поля формы");
+            console.log(priceAsk)
         }
     }
 
@@ -279,7 +280,7 @@ const CreatePriceAskFiz = () => {
                     as="textarea"
                 />
             </Form.Group>
-            <div  style={{"text-align": "right"}}>
+            <div>
             <Form.Label><span class="boldtext">Ваши контактные данные:</span></Form.Label>
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Имя</label>
@@ -298,18 +299,21 @@ const CreatePriceAskFiz = () => {
             <div class="mb-3 row">
                 <label for="inputPassword" class="col-sm-2 col-form-label">Телефон</label>
                 <div class="col-sm-10">
-                <Form.Control type="telefon"/>
+                <Form.Control type="text" name="telefon" onChange={handleChange}/>
                 </div>
             </div>
-            <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>     
-            <Button
-                onClick={saveOrder}
-                variant="primary"
-                className="btn btn-success mt-3"
-                >
-                Отправить поставщику
-            </Button>
         </div>
+        <div class="right">
+                <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>     
+                <Button
+                    onClick={saveOrder}
+                    variant="primary"
+                    style={{"float": "right"}}
+                    className="btn btn-success mt-3"
+                    >
+                    Отправить поставщику
+                </Button>
+            </div>
         </div>
         </div>
     );
