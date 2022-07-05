@@ -25,6 +25,7 @@ const MessageBox = ({author,setActive}) => {
             Text: currentMessage,
             Date: new Date()
             };
+        console.log(author)
           await chat.socket.emit("send_message", messageData);
           setCurrentMessage("");
           inputEl.current.value = "";

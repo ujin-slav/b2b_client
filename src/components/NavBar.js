@@ -13,9 +13,10 @@ import {LOGIN_ROUTE,
         QUEST, 
         ABOUT,
         INVITED,
-        MYPRICE,
+        UPLOADPRICE,
         MYORDERSPRICE, 
-        PRICE, 
+        MYPRICE,
+        PRICES, 
         INVITEDPRICE} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
@@ -135,6 +136,7 @@ const NavBar = observer(() => {
                            </div>
                         </div>
                         </NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={active===UPLOADPRICE ? "active" : ""}>Загрузить прайс</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={active===MYPRICE ? "active" : ""}>Мой прайс</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={active===INVITEDPRICE ? "active" : ""}>
                         <div className="parentAnswer">
@@ -161,7 +163,7 @@ const NavBar = observer(() => {
                            <div className="countQuest">{sumUnreadQuest()}</div>
                         </div>
                     </Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(PRICE)}className={active===PRICE ? "active" : ""}>Прайс</Nav.Link>
+                    <Nav.Link onClick={()=>activeLink(PRICES)}className={active===PRICES ? "active" : ""}>Прайс</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(HELP)}className={active===HELP ? "active" : ""}>Помощь</Nav.Link>
                     <Nav.Link onClick={()=>activeLink(ABOUT)}className={active===ABOUT ? "active" : ""}>О сервисе</Nav.Link>
                 </Nav>

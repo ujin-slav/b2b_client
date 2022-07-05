@@ -24,7 +24,8 @@ const make_cols = refstr => {
     return o;
 };
 
-const Price = observer(() => {
+const UploadPrice = observer(() => {
+
     const {myalert} = useContext(Context);
     const [modalActive,setModalActive] = useState(false);
     const [file, setFile] = useState([])
@@ -41,32 +42,32 @@ const Price = observer(() => {
     let limit = 30
 
     useEffect(() => {
-        if(user.user.id){
-            if(fetching){
-                if(price.length===0 || price.length<totalDocs) {
-                PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
-                    setTotalDocs(data.totalDocs);
-                    setPrice([...price, ...data.docs]);
-                    setCurrentPage(prevState=>prevState + 1)
-                }).finally(()=>setFetching(false))
-                }
-            }
-        } 
+        // if(user.user.id){
+        //     if(fetching){
+        //         if(price.length===0 || price.length<totalDocs) {
+        //         PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
+        //             setTotalDocs(data.totalDocs);
+        //             setPrice([...price, ...data.docs]);
+        //             setCurrentPage(prevState=>prevState + 1)
+        //         }).finally(()=>setFetching(false))
+        //         }
+        //     }
+        // } 
     },[fetching,user.user]);
 
     useEffect(() => {
-        document.addEventListener('scroll',scrollHandler);
-        return function(){
-            document.removeEventListener('scroll',scrollHandler);
-        }
+        // document.addEventListener('scroll',scrollHandler);
+        // return function(){
+        //     document.removeEventListener('scroll',scrollHandler);
+        // }
     },[]);
 
-    const scrollHandler = (e) =>{
-        if((e.target.documentElement.scrollHeight - 
-            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setFetching(true)
-            }
-    }
+    // const scrollHandler = (e) =>{
+    //     if((e.target.documentElement.scrollHeight - 
+    //         (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
+    //             setFetching(true)
+    //         }
+    // }
 
     const onInputChange = (e) => {
         try{
@@ -218,13 +219,13 @@ const Price = observer(() => {
                 </Row>
                 <Row>
                     <Col>
-                    <Form.Group className="mx-auto my-2">
+                    {/* <Form.Group className="mx-auto my-2">
                         <Form.Label>Поиск:</Form.Label>
                         <Form.Control
                             onChange={handleSearch}
                             placeholder="Начните набирать артикул или название продукта"
                         />
-                    </Form.Group>
+                    </Form.Group> */}
                     </Col>
                 </Row>
              </Container>
@@ -245,7 +246,6 @@ const Price = observer(() => {
                             <td>{item[1]||item.Name||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[2]||item.Price||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[3]||item.Balance||<div style={{"color":"red"}}>нет</div>}</td>
-                            <td>{item[4]}</td>
                         </tr>
                     )}
                  </tbody>
@@ -257,4 +257,4 @@ const Price = observer(() => {
     );
 });
 
-export default Price;
+export default UploadPrice;

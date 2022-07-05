@@ -4,6 +4,8 @@ import {fetchUser} from '../http/askAPI';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
+import ModalCT from '../components/ModalCT';
+import MessageBox from '../components/MessageBox'
 
 const OrgInfo = () => {
     const {id} = useParams();
@@ -12,6 +14,7 @@ const OrgInfo = () => {
     const [price,setPrice] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
+    const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const[search,setSearch] = useState("");
     let limit = 30
 
@@ -96,6 +99,10 @@ const OrgInfo = () => {
                     </Table>
                     </Form>
                 </Col>
+                <Button style={{fontSize:"13px",padding:"2px"}} 
+                                    onClick={()=>setModalActiveMessage(true)}>
+                                    Написать сообщение
+                </Button>
             </Row>
             <Row>
                 <Form.Label style={{
@@ -137,6 +144,12 @@ const OrgInfo = () => {
             </Table>
         </Container>
         </div>
+        <ModalCT 
+                  header="Сообщение" 
+                  active={modalActiveMessage}
+                  component={<MessageBox author={org} setActive={setModalActiveMessage}/>}
+                  setActive={setModalActiveMessage}   
+        />
         </div>
     );
 };

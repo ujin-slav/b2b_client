@@ -25,8 +25,9 @@ import Activate from "../pages/Activate";
 import Invited from "../pages/Invited";
 import InvitedPrice from "../pages/InvitedPrice";
 import Test from "../pages/Test";
-import MyPrice from "../pages/Price";
-import Price from "../pages/Prices";
+import UploadPrice from "../pages/UploadPrice";
+import Prices from "../pages/Prices";
+import MyPrice from "../pages/MyPrice";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -53,8 +54,9 @@ export const QUEST = '/quest'
 export const ORGINFO = '/orginfo'
 export const HELP = '/help'
 export const ABOUT = '/about'
-export const MYPRICE = '/price'
-export const PRICE = '/prices'
+export const UPLOADPRICE = '/uploadprice'
+export const MYPRICE = '/myprice'
+export const PRICES = '/prices'
 export const INVITED = '/invited'
 export const INVITEDPRICE = '/invitedprice'
 export const TEST = '/test'
@@ -170,12 +172,16 @@ export const authRoutes = [
         Component: InvitedPrice
     },
     {
-        path: MYPRICE,
-        Component: MyPrice
+        path: UPLOADPRICE,
+        Component: UploadPrice
     },
     {
-        path: PRICE,
-        Component: Price
+        path: PRICES,
+        Component: Prices
+    },
+    {
+        path: MYPRICE,
+        Component: MyPrice
     },
     {
         path: "*",
@@ -253,12 +259,12 @@ export const publicRoutes = [
         Component: Auth
     },
     {
-        path: MYPRICE,
-        Component: MyPrice
+        path: UPLOADPRICE,
+        Component: UploadPrice
     },
     {
-        path: PRICE,
-        Component: Price
+        path: PRICES,
+        Component: Prices
     },
     {
         path: ORGINFO +  '/:id',

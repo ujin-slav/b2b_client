@@ -9,6 +9,7 @@ import {useParams} from 'react-router-dom';
 import {useHistory} from 'react-router-dom';
 import { MYORDERSPRICE } from '../utils/routes';
 import * as XLSX from 'xlsx';
+import { FileEarmarkSpreadsheet } from 'react-bootstrap-icons';
 
 const CardPriceAsk = () => {
     
@@ -50,11 +51,32 @@ const CardPriceAsk = () => {
         })
     },[]);
 
-    const saveToFile = () => {
-        
-        const fileName = 'test.xlsx';
-
-		const ws = XLSX.utils.json_to_sheet(result);
+    const saveToFile = () => { 
+        const fileName = `ZAKAZ${id}.xlsx`;
+        const aoa = [
+            ["Автор",fiz.FIZ ? 
+            `${fiz.NameFiz + ", " + fiz.EmailFiz + ", " +  fiz.TelefonFiz}`
+            :
+            `${author?.name + ", " + author?.nameOrg}`],
+            ["Дата документа",dateFormat(dateDoc, "dd/mm/yyyy HH:MM:ss")],
+            ["Комментарий к заказу", comment],
+            [""],
+            ["Артикул", "Наименование", "Цена", "Кол-во","Сумма"],
+        ]
+        result.map((item)=>{
+            aoa.push([item.Code,item.Name,item.Price,item.Count,item.Count*item.Price])
+        })
+        aoa.push(["","","","Итог:",sumTotal])
+        aoa.push(["","","","Всего наименований:",result.length])
+		const ws = XLSX.utils.aoa_to_sheet(aoa);
+        var wscols = [
+            {wch:25},
+            {wch:60},
+            {wch:15},
+            {wch:15},
+            {wch:15},
+        ];
+        ws['!cols'] = wscols
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, 'test');
 
@@ -63,7 +85,7 @@ const CardPriceAsk = () => {
 
     return (
         <div class="container-priceask">
-        <div class="container-priceask-center"> 
+        <div class="container-priceask-center"  id="productTable"> 
             <Form.Group className="mx-auto my-2">
                 <Form.Label><span className="boldtext">Автор:</span> 
                 <span className="mx-2">
@@ -104,6 +126,12 @@ const CardPriceAsk = () => {
                     />
                 </div>
             </div>
+            <div style={{"text-align":"right"}}>
+                <a href="javascript:void(0)" onClick={()=>saveToFile()}>
+                Скачать в формате excel
+                </a>
+                <FileEarmarkSpreadsheet color="green" style={{"width": "25px", "height": "25px"}}/>
+            </div>
             <div class="border-price">
             <div class="table-responsive">
                 <Table  class="table table-hover">
@@ -142,13 +170,6 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
-        <Button
-            variant="primary"
-            className="btn btn-success mt-3 mx-3"
-            onClick={()=>saveToFile()}
-        >
-            Сохранить
-        </Button>
         </div>
         </div>
     );
