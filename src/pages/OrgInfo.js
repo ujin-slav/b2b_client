@@ -75,7 +75,12 @@ const OrgInfo = () => {
                         <tbody>
                             <tr>
                             <td>Имя</td>
-                            <td>{org?.name}</td>
+                            <td>{org?.name}
+                            <Button style={{fontSize:"13px",padding:"2px"}} 
+                                    onClick={()=>setModalActiveMessage(true)}>
+                                    Написать сообщение
+                            </Button>
+                            </td>
                             </tr>
                             <tr>
                             <td>Название организации</td>
@@ -99,10 +104,6 @@ const OrgInfo = () => {
                     </Table>
                     </Form>
                 </Col>
-                <Button style={{fontSize:"13px",padding:"2px"}} 
-                                    onClick={()=>setModalActiveMessage(true)}>
-                                    Написать сообщение
-                </Button>
             </Row>
             <Row>
                 <Form.Label style={{

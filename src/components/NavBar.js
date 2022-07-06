@@ -136,8 +136,8 @@ const NavBar = observer(() => {
                            </div>
                         </div>
                         </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={active===UPLOADPRICE ? "active" : ""}>Загрузить прайс</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={active===MYPRICE ? "active" : ""}>Мой прайс</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={active===UPLOADPRICE ? "active" : ""}>Загрузить прайс</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={active===INVITEDPRICE ? "active" : ""}>
                         <div className="parentAnswer">
                            <div>Мне заказали по прайсу</div>
