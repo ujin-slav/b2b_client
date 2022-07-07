@@ -62,7 +62,6 @@ const Question = observer(({...props})=>{
             inputEl.current.value="";
             setFetch(true)
             chat.socket.emit("unread_quest_mail", {data});
-            console.log(result)
         }
     }
 

@@ -126,4 +126,14 @@ export default class UserStore {
             this.setLoading(false);
         }
     }
+    async connectNotAuth() {
+        this.setLoading(true);
+        try {
+            this.chat.connect()
+        } catch (error) {
+            console.log(error)
+        }finally{
+            this.setLoading(false);
+        }
+    }
 }

@@ -3,6 +3,7 @@ import B2B from "../pages/B2b"
 import CardAsk from "../pages/CardAsk";
 import CardPriceAsk from "../pages/CardPriceAsk";
 import CreateAsk from "../pages/CreateAsk";
+import CreateSpecOffer from "../pages/CreateSpecOffer";
 import CreatePriceAsk from "../pages/CreatePriceAsk";
 import CreatePriceAskFiz from "../pages/CreatePriceAskFiz";
 import Forgot from "../pages/Forgot";
@@ -12,6 +13,7 @@ import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
 import MyOrdersPrice from "../pages/MyOrdersPrice";
 import MyOffers from "../pages/MyOffers";
+import MySpecOffers from "../pages/MySpecOffers";
 import ModifyAsk from "../pages/ModifyAsk";
 import ModifyPriceAsk from "../pages/ModifyPriceAsk";
 import CatOrg from "../pages/CatOrg";
@@ -38,6 +40,7 @@ export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CARDPRICEASK = '/cardpriceask'
 export const CREATEASK = '/createask'
+export const CREATESPECOFFER = '/createspecoffer'
 export const CREATEPRICEASK = '/createpriceask'
 export const CREATEPRICEASKFIZ = '/createpriceaskfiz'
 export const DOWNLOAD = '/download'
@@ -45,6 +48,7 @@ export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
 export const MYORDERSPRICE = '/myordersprice'
 export const MYOFFERS = '/myoffers'
+export const MYSPECOFFERS = '/myspecoffers'
 export const MODIFYASK = '/modifyask'
 export const MODIFYPRICEASK = '/modifypriceask'
 export const CATORG = '/catorg'
@@ -96,6 +100,10 @@ export const authRoutes = [
         Component: CreateAsk
     },
     {
+        path: CREATESPECOFFER,
+        Component: CreateSpecOffer
+    },
+    {
         path: CREATEPRICEASK + '/:idorg/:idprod',
         Component: CreatePriceAsk
     },
@@ -122,6 +130,10 @@ export const authRoutes = [
     {
         path: MYOFFERS,
         Component: MyOffers
+    },
+    {
+        path: MYSPECOFFERS,
+        Component: MySpecOffers
     },
     {
         path: MODIFYASK + '/:id',

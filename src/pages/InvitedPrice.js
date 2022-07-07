@@ -15,6 +15,7 @@ import PriceService from '../services/PriceService'
 
 const InvitedPriceAsk =  observer(() => {
     const {user} = useContext(Context);
+    const {chat} =  useContext(Context)
     const [askPriceUser, setAskPriceUser] = useState()
     const {myalert} = useContext(Context);
     const [deleteId,setDeleteId] = useState();
@@ -30,8 +31,8 @@ const InvitedPriceAsk =  observer(() => {
             PriceService.getAskPrice({to:user.user.id,limit,page:currentPage}).then((data)=>{
                 setAskPriceUser(data.docs)
                 setpageCount(data.totalPages);
-                console.log(data)
               })
+              chat.socket.emit("get_unread");
         }
       },[user.user,loading]);
 

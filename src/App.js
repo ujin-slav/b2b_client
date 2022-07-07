@@ -14,12 +14,13 @@ export const SocketContext  = createContext(null);
 const App = ()=> {
   const {user} = useContext(Context);
   const {chat} = useContext(Context);
-  var socket;
 
   useEffect(() => {
     (async () => {
       if (localStorage.getItem('token')) {
         await user.checkAuth()
+      } else {
+        await user.connectNotAuth()
       }
       localStorage.setItem('userId', user.user.id);
     })();

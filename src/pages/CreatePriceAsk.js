@@ -8,6 +8,7 @@ import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
 
 const CreatePriceAsk = () => {
+    const {chat} =  useContext(Context)
     const {idorg,idprod} = useParams();
     const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
@@ -105,18 +106,24 @@ const CreatePriceAsk = () => {
         setResult([...result]) 
     }
 
-    const saveOrder=async()=>{
+    const saveOrder=async(Sent)=>{
         const res = await PriceService.saveAsk(
             {Table:result,
             To:idorg,
             Comment:comment,
             Author:user.user.id,
             Sum:sumTotal,
-            Sent:false,
+            Sent,
             FIZ:false
         })
         if (res.status===200){
             myalert.setMessage("Успешно"); 
+            if(Sent){
+                const data = {
+                    To:idorg
+                }
+                chat.socket.emit("unread_invitedPrice", {data});
+            }
         } else {
             myalert.setMessage(res?.data?.message);
         }
@@ -153,7 +160,7 @@ const CreatePriceAsk = () => {
                         {price?.map((item,index)=>
                             <tr key={index} onClick={(e)=>addToResult(e,item)}>
                                 <td>{item?.Code}</td>
-                                <td>{item?.Name}</td>
+                                <td class="pointer">{item?.Name}</td>
                                 <td>{item?.Price}</td>
                                 <td>{item?.Balance}</td>
                                 <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
@@ -215,13 +222,14 @@ const CreatePriceAsk = () => {
             <Button
                 variant="primary"
                 className="btn mx-3 mt-3"
-                onClick={saveOrder}
+                onClick={()=>saveOrder(false)}
                 >
                 Записать
             </Button>
             <Button
                 variant="primary"
                 className="btn btn-success mt-3"
+                onClick={()=>saveOrder(true)}
                 >
                 Отправить поставщику
             </Button>

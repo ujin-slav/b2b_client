@@ -337,3 +337,6 @@ td.tdRed{
   .right{
     float: right;
   }
+  .pointer{
+    cursor: pointer
+  }

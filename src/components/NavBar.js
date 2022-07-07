@@ -100,9 +100,16 @@ const NavBar = observer(() => {
     }
 
     const sumInvited=()=>{
-        console.log("sum inv" + chat.invitedUnread )
         if(chat.invitedUnread > 0){
             return chat.invitedUnread
+        }else{
+            return ""
+        } 
+    }
+    const sumInvitedPrice=()=>{
+        console.log("sum inv" + chat.invitedPriceUnread )
+        if(chat.invitedPriceUnread > 0){
+            return chat.invitedPriceUnread
         }else{
             return ""
         } 
@@ -129,7 +136,7 @@ const NavBar = observer(() => {
                         <NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(INVITED)}className={active===INVITED ? "active" : ""}>
-                        <div className="parentAnswer">
+                        <div className="parentAnswer" id="invited">
                            <div>Мои приглашения</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvited()}</div>
@@ -142,15 +149,15 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Мне заказали по прайсу</div>
                            <div className="countQuest">
-                               <div className='yellowtext'></div>
+                               <div className='yellowtext'>{sumInvitedPrice()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Я заказывал по прайсу</NavDropdown.Item>
                     </NavDropdown>
                     <div className="parentAnswer myNoti">
-                           <div className="countQuest">{sumInvited()}</div>
-                        </div>
+                           <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>
+                    </div>
                     <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
                     <div className="parentAnswer">
                            <div>Сообщения</div>

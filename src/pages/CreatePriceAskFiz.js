@@ -30,6 +30,7 @@ const formValid = ({ data, formErrors }) => {
   
 
 const CreatePriceAskFiz = () => {
+    const {chat} =  useContext(Context)
     const {idorg,idprod} = useParams();
     const [recevier, setRecevier] = useState();
     const [org, setOrg] = useState();
@@ -140,14 +141,14 @@ const CreatePriceAskFiz = () => {
         setResult([...result]) 
     }
 
-    const saveOrder=async()=>{
+    const saveOrder=async(Sent)=>{
         if (formValid(priceAsk)) {
             const res = await PriceService.saveAsk(
                 {Table:result,
                 To:idorg,
                 Comment:comment,
                 Sum:sumTotal,
-                Sent:false,
+                Sent,
                 FIZ:true,
                 NameFiz:priceAsk.data.name,
                 EmailFiz:priceAsk.data.email,
@@ -155,12 +156,17 @@ const CreatePriceAskFiz = () => {
             })
             if (res.status===200){
                 myalert.setMessage("Успешно"); 
+                if(Sent){
+                    const data = {
+                        To:idorg
+                    }
+                    chat.socket.emit("unread_invitedPrice", {data});
+                }
             } else {
                 myalert.setMessage(res?.data?.message);
             }
         }else{
             myalert.setMessage("Не заполнены поля формы");
-            console.log(priceAsk)
         }
     }
 
@@ -306,7 +312,7 @@ const CreatePriceAskFiz = () => {
         <div class="right">
                 <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>     
                 <Button
-                    onClick={saveOrder}
+                    onClick={()=>saveOrder(true)}
                     variant="primary"
                     style={{"float": "right"}}
                     className="btn btn-success mt-3"
