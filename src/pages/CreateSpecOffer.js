@@ -42,7 +42,132 @@ const CreateSpecOffer = () => {
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
     const [checkedEmail,setCheckedEmail] =  useState([]);
+    const [fileSize, setFileSize] = useState(0);
+    const {myalert} = useContext(Context);
+    let sourceElement = null
+    const [sortedList, setSortedList] = useState([])
 
+    const newLine = () => {
+      setSortedList(sortedList.concat(''))
+    }
+
+    const handleDragStart = (event) => {
+      event.target.style.opacity = 0.5
+      sourceElement = event.target
+      event.dataTransfer.effectAllowed = 'move'
+    }
+
+    const handleDragOver = (event) => {
+      event.preventDefault()
+      event.dataTransfer.dropEffect = 'move' 
+    }
+
+    const handleDragEnter = (event) => {
+      event.target.classList.add('over')    
+    }
+  
+    const handleDragLeave = (event) => {
+      event.target.classList.remove('over')
+    }
+  
+    const handleDrop = (event) => {
+      event.stopPropagation()
+      if (sourceElement !== event.target) {
+        const list = sortedList.filter((item, i) => 
+          i.toString() !== sourceElement.id)
+        const removed = sortedList.filter((item, i) => 
+          i.toString() === sourceElement.id)[0]
+        let insertAt = Number(event.target.id)
+  
+        let tempList = []
+
+        if (insertAt >= list.length) {
+          tempList = list.slice(0).concat(removed)
+          setSortedList(tempList)
+          event.target.classList.remove('over')
+        } else
+        if ((insertAt < list.length)) {
+          tempList = list.slice(0,insertAt).concat(removed)
+
+          const newList = tempList.concat(list.slice(
+            insertAt))
+  
+          setSortedList(newList)
+          event.target.classList.remove('over')
+        }
+      }else
+      event.target.classList.remove('over') 
+    }
+  
+    const handleDragEnd = (event) => {
+      event.target.style.opacity = 1
+    }
+  
+    const handleChange = (event) => {
+      event.preventDefault()
+      const list = sortedList.map((item, i) => {
+        if (i !== Number(event.target.id)) { 
+          return item }
+        else return event.target.value   
+      })
+      setSortedList(list)
+    }
+    const handleDelete = (event) => {
+      event.preventDefault()
+      const list = sortedList.filter((item, i) => 
+        i !== Number(event.target.id))
+      setSortedList(list)
+    }
+    
+    const onInputChange = (e) => {
+      if(files.length+e.target.files.length<6){
+        for(let i = 0; i < e.target.files.length; i++) { 
+          try{
+            if(fileSize + e.target.files[i].size < 5242880){
+              setFileSize(fileSize + e.target.files[i].size)
+              setSortedList(((oldItems) => [...oldItems, e.target.files[i].name]))
+              setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
+            } else {
+              myalert.setMessage("Превышен размер файлов");
+            }  
+          }catch(e){
+            console.log(e)
+          }
+        }
+      }else{
+        myalert.setMessage("Превышено количество файлов");
+      }
+    };
+    
+    const removeFile = (file,id) => {
+      URL.revokeObjectURL(file)
+      setFileSize(fileSize - files[id].size)
+      const newFiles = files.filter((item,index,array)=>index!==id);
+      setFiles(newFiles);
+    }
+
+    const listItems = () => {
+
+      return sortedList.map((item, i) => (
+        <div key={i} className='dnd-list'>
+          <div           
+            id={i}
+            className='input-item'  
+            draggable='true' 
+            onDragStart={handleDragStart} 
+            onDragOver={handleDragOver} 
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onDragEnd={handleDragEnd}
+            onChange={handleChange}
+          >{sortedList[i]}</div>
+          <div id={i} className='delButton' onClick={handleDelete}>X</div>
+        </div>
+      )
+      )
+    }
+  
 
     return (
         <Container>
@@ -111,9 +236,12 @@ const CreateSpecOffer = () => {
                             <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
                             <td>
                             <input type="file"
+                                onChange={onInputChange}
                                 className="form-control"
                                 multiple/> {files.map((a,key)=><div key={key}>{a.name}
-                                <button>X</button>
+                                <img className="foto" src={URL.createObjectURL(a)} /> 
+                                <button onClick={()=>removeFile(a,key)
+                                }>X</button>
                               </div>
                               )}   </td>
                             </tr>
@@ -165,6 +293,7 @@ const CreateSpecOffer = () => {
                 setActive={setModalActiveMember} 
           />
           </Form>
+          {listItems()}
           </Container>
     );
 };
