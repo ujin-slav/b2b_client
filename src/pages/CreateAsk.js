@@ -47,8 +47,6 @@ return valid;
 
 const CreateAsk = observer(() => {
     var curr = new Date();
-    //curr.setDate(curr.getDate() + 3);
-    //var date = curr.toISOString().substr(0,10);
     var date = curr.setDate(curr.getDate() + 3);
     registerLocale("ru", ru)
 
@@ -194,7 +192,7 @@ const CreateAsk = observer(() => {
     const handleChangeCaptcha = (value) => {
       if(value){
         setCaptcha(true)
-      }
+    }
   }
 
     return (

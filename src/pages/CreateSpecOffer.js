@@ -20,6 +20,7 @@ import ModalCT from '../components/ModalCT';
 import EmailList from '../components/EmailList'
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
+import SpecOfferService from '../services/SpecOfferService'
 import {Context} from "../index";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
@@ -28,11 +29,34 @@ import {observer} from "mobx-react-lite";
 import Captcha from "demos-react-captcha";
 import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
+import { XCircle} from 'react-bootstrap-icons';
 
-const CreateSpecOffer = () => {
+const formValid = ({ data, formErrors }) => {
+  let valid = true;
+
+  // validate form errors being empty
+  Object.values(formErrors).forEach(val => {
+      val.length > 0 && (valid = false);
+  });
+
+  // validate the form was filled out
+  Object.values(data).forEach(val => {
+      val === null && (valid = false);
+});
+
+return valid;
+};
+
+
+const CreateSpecOffer = observer(() => {
+    var curr = new Date();
+    var date = curr.setDate(curr.getDate() + 30);
+    registerLocale("ru", ru)
+
     const {user} = useContext(Context);  
     const [captcha, setCaptcha] = useState(false);
     const [loading, setLoading] = useState(false)
+    const [startDate, setStartDate] = useState(date);
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
     const [modalActiveCat,setModalActiveCat] = useState(false)
@@ -44,12 +68,34 @@ const CreateSpecOffer = () => {
     const [checkedEmail,setCheckedEmail] =  useState([]);
     const [fileSize, setFileSize] = useState(0);
     const {myalert} = useContext(Context);
+    const history = useHistory();
     let sourceElement = null
     const [sortedList, setSortedList] = useState([])
 
-    const newLine = () => {
-      setSortedList(sortedList.concat(''))
+    const[specOffer,setSpecOffer] = useState( {
+      data: {
+        Author: "",
+        Name: "",
+        EndDateOffers: startDate,
+        Text: null,
+        Category: "",
+        Region: "",
+      },
+      formErrors: {
+        Name: "",
+        Text: "",
+      }
     }
+    );
+
+    useEffect(() => {
+      if(user.user.category){
+          setCheckedCat(Object.values(user.user.category))
+      }
+      if(user.user.region){
+          setCheckedRegion(Object.values(user.user.region))
+      }
+    },[user.user])
 
     const handleDragStart = (event) => {
       event.target.style.opacity = 0.5
@@ -112,11 +158,18 @@ const CreateSpecOffer = () => {
       })
       setSortedList(list)
     }
-    const handleDelete = (event) => {
+    const handleDelete = (event,id) => {
       event.preventDefault()
       const list = sortedList.filter((item, i) => 
-        i !== Number(event.target.id))
+      i !== Number(event.target.id))
       setSortedList(list)
+
+      URL.revokeObjectURL(files.find(item=>item.id===id))
+      setFileSize(fileSize - files.find(item=>item.id===id).size)
+      const newFiles = files.filter((item,index,array)=>item.id!==id);
+      setFiles(newFiles);
+
+      console.log(id)
     }
     
     const onInputChange = (e) => {
@@ -124,9 +177,11 @@ const CreateSpecOffer = () => {
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
+              e.target.files[i].id = Date.now() + Math.random()
               setFileSize(fileSize + e.target.files[i].size)
-              setSortedList(((oldItems) => [...oldItems, e.target.files[i].name]))
+              setSortedList(((oldItems) => [...oldItems, e.target.files[i].id]))
               setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
+              console.log(files)
             } else {
               myalert.setMessage("Превышен размер файлов");
             }  
@@ -148,30 +203,95 @@ const CreateSpecOffer = () => {
 
     const listItems = () => {
 
-      return sortedList.map((item, i) => (
-        <div key={i} className='dnd-list'>
-          <div           
-            id={i}
-            className='input-item'  
-            draggable='true' 
-            onDragStart={handleDragStart} 
-            onDragOver={handleDragOver} 
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onDragEnd={handleDragEnd}
-            onChange={handleChange}
-          >{sortedList[i]}</div>
-          <div id={i} className='delButton' onClick={handleDelete}>X</div>
-        </div>
-      )
+      return sortedList.map((item, i) => {
+        return(
+              <div key={i} className='dnd-list'>
+                <div className='fotoContainer'>
+                    <img 
+                    id={i}
+                    draggable='true' 
+                    onDragStart={handleDragStart} 
+                    onDragOver={handleDragOver} 
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                    onChange={handleChange}
+                    className="foto" src={URL.createObjectURL(files.find(item=>item.id===sortedList[i]))} /> 
+                    <div id={i} className='delButton' onClick={(event)=>handleDelete(event,sortedList[i])}>X</div>
+                </div>
+              </div>
+        )
+      }
       )
     }
   
+    const handleChangeControl = e => {
+      e.preventDefault();
+      const { name, value } = e.target;
+      let formErrors = specOffer.formErrors;
+      let data = specOffer.data
+      data[name] = value;
+      
+      switch (name) {
+        case "Name":
+          formErrors.Name =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;   
+        case "Text":
+          formErrors.Text =
+            value.length < 3 ? "минимум 3 символа" : "";
+          break;
+        default:
+          break;
+      }
+      setSpecOffer({ data, formErrors});
+    }
+
+    const onSubmit = async(e) => {
+      e.preventDefault();
+      if(captcha){
+        if (formValid(specOffer)) {
+          const data = new FormData();
+          sortedList.forEach((i)=>{
+                  data.append(
+                    "file", 
+                    files.find(item=>item.id===i)
+                  )
+                });
+          data.append("Author", user.user.id)
+          data.append("Name", specOffer.data.Name)
+          data.append("Telefon", specOffer.data.Telefon)
+          data.append("EndDateOffers", specOffer.data.EndDateOffers)
+          data.append("Text", specOffer.data.Text)
+          data.append("Category", JSON.stringify(checkedCat))
+          data.append("Region", JSON.stringify(checkedRegion))
+          const result = await SpecOfferService.addSpecOffer(data)
+          if (result.status===200){
+            myalert.setMessage("Заявка успешно добавлена");
+            //history.push(B2B_ROUTE)
+          } else {
+            myalert.setMessage(result?.data?.message)
+          }
+        } else {
+          console.error("FORM INVALID");
+          myalert.setMessage("Не заполнено поле текст заявки");
+        }
+      }else{
+        console.error("FORM INVALID");
+        myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+      }
+    }
+
+    const handleChangeCaptcha = (value) => {
+      if(value){
+        setCaptcha(true)
+      }
+    }
 
     return (
         <Container>
-          <Form>
+          <Form onSubmit={onSubmit}>
           <h3>Создать спец. предложение</h3> 
           <Table striped hover  className="createAsk">
             <col style={{"width":"15%"}}/>
@@ -182,18 +302,21 @@ const CreateSpecOffer = () => {
                             <td><Form.Control
                                   type="text"
                                   name="Name"
+                                  onChange={handleChangeControl}
                                   placeholder="Название"
                               />
-                              <span className="errorMessage" style={{color:"red"}}>{}</span></td>
+                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
                             </tr>
                             <tr>
                             <td>Дата окончания предложения</td>
                             <td>
-                               <DatePicker
+                            <DatePicker
                                   locale="ru"
+                                  selected={startDate}
                                   name="EndDateOffers"
                                   timeInputLabel="Время:"
                                   dateFormat="dd/MM/yyyy HH:mm"
+                                  onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
                                   showTimeInput
                                 />
                             </td>
@@ -203,15 +326,17 @@ const CreateSpecOffer = () => {
                             <td><Form.Control
                                   name="Text"
                                   placeholder="Текст заявки"
+                                  onChange={handleChangeControl}
                                   as="textarea"
                               />
-                              <span className="errorMessage" style={{color:"red"}}></span>
+                               <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Text}</span>
                             </td>
                             </tr>
                             <tr>
                             <td>Контактные данные</td>
                             <td> <Form.Control
                                 name="Telefon"
+                                onChange={handleChangeControl}
                                 defaultValue={user.user.telefon}
                                 placeholder="Контактный телефон"
                             /></td>
@@ -235,34 +360,20 @@ const CreateSpecOffer = () => {
                             <tr>
                             <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
                             <td>
+                              Разместите фото в нужном порядке, первое станет заглавным.
                             <input type="file"
                                 onChange={onInputChange}
                                 className="form-control"
-                                multiple/> {files.map((a,key)=><div key={key}>{a.name}
-                                <img className="foto" src={URL.createObjectURL(a)} /> 
-                                <button onClick={()=>removeFile(a,key)
-                                }>X</button>
-                              </div>
-                              )}   </td>
+                                multiple/>
+                                {listItems()}
+                                </td>
                             </tr>
                             <tr>
-                            <td>Комментарий</td>
-                            <td>
-                            <div style={{"color":"blue"}}>
-                              Комментарий будет виден только вам в разделе мои закупки,
-                               в нем например вы можете указать с какой целью производится закупка. 
-                              </div>
-                              <Form.Control
-                                  name="Comment"
-                                  placeholder="Комментарий"
-                                  as="textarea"
-                              />
-                            </td>
                             </tr>
                             
                         </tbody>
            </Table>   
-           <Captcha placeholder="Введите символы"/>                
+           <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
             <Button
             variant="primary"
             type="submit"
@@ -293,9 +404,8 @@ const CreateSpecOffer = () => {
                 setActive={setModalActiveMember} 
           />
           </Form>
-          {listItems()}
           </Container>
     );
-};
+});
 
 export default CreateSpecOffer;
