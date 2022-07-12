@@ -4,6 +4,7 @@ import {observer} from "mobx-react-lite";
 import { fetchAsks } from "../http/askAPI";
 import TableAsk from "../components/TableAsk";
 import SearchForm from "../components/SearchForm";
+import SpecOffersTable from "../components/SpecOffersTable";
 
 const B2b = observer(() => {
 
@@ -11,6 +12,7 @@ const B2b = observer(() => {
         <div>
             <SearchForm/>
            <TableAsk/>
+           <SpecOffersTable/>
         </div>
     );
 });

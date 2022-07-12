@@ -75,13 +75,16 @@ const CreateSpecOffer = observer(() => {
     const[specOffer,setSpecOffer] = useState( {
       data: {
         Author: "",
-        Name: "",
+        Name: null,
         EndDateOffers: startDate,
+        Telefon:"",
         Text: null,
+        Price: null,
         Category: "",
         Region: "",
       },
       formErrors: {
+        Price: "",
         Name: "",
         Text: "",
       }
@@ -242,6 +245,10 @@ const CreateSpecOffer = observer(() => {
           formErrors.Text =
             value.length < 3 ? "минимум 3 символа" : "";
           break;
+        case "Price":
+          formErrors.Price =
+            value <= 0 ? "Цена должна быть больше ноля" : "";
+          break;
         default:
           break;
       }
@@ -264,11 +271,13 @@ const CreateSpecOffer = observer(() => {
           data.append("Telefon", specOffer.data.Telefon)
           data.append("EndDateOffers", specOffer.data.EndDateOffers)
           data.append("Text", specOffer.data.Text)
+          data.append("Price", specOffer.data.Price)
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           const result = await SpecOfferService.addSpecOffer(data)
+          console.log(result)
           if (result.status===200){
-            myalert.setMessage("Заявка успешно добавлена");
+            myalert.setMessage("Предложение успешно добавлено");
             //history.push(B2B_ROUTE)
           } else {
             myalert.setMessage(result?.data?.message)
@@ -306,6 +315,17 @@ const CreateSpecOffer = observer(() => {
                                   placeholder="Название"
                               />
                               <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
+                            </tr>
+                            <tr>
+                            <td>Цена</td>
+                            <td><Form.Control
+                                  type="number" 
+                                  name="Price"
+                                  step=".01"
+                                  onChange={handleChangeControl}
+                                  placeholder="Цена"
+                              />
+                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Price}</span></td>
                             </tr>
                             <tr>
                             <td>Дата окончания предложения</td>

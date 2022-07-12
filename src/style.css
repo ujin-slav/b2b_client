@@ -367,3 +367,21 @@ td.tdRed{
     background-color:red !important;
     cursor: pointer
   }
+  .parentSpec {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+  }
+  .childSpec {
+    width: 20%;
+    height: 20%;
+    padding:10px 10px 10px 10px;
+  }
+  .fotoSpec{
+    display: block;
+    border-radius: 20px 20px 20px 20px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
