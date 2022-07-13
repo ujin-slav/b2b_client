@@ -371,8 +371,10 @@ td.tdRed{
     display: flex;
     flex-wrap: wrap;
     height: 100%;
+    cursor: pointer
   }
   .childSpec {
+    overflow-wrap: break-word;
     width: 20%;
     height: 20%;
     padding:10px 10px 10px 10px;
@@ -384,4 +386,34 @@ td.tdRed{
     height: 100%;
     object-fit: cover;
   }
-  
+  .specName{
+    font-size: 20px;
+    color:#0d6efd;
+    font-weight:bold;
+  }
+  .specPrice{
+    font-size: 20px;
+    font-weight:bold;
+  }
+  .specCloudy{
+    font-size: 15px;
+    color: #999999;
+  }
+  .fotoSpecCard{
+    width: 100%;
+  }
+  .parentSpecMiniFoto {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    cursor: pointer
+  }
+  .childSpecMiniFoto {
+    overflow-wrap: break-word;
+    width: 20%;
+    height: 20%;
+    padding:10px 10px 10px 10px;
+  }
+  .miniFotoSpecCard{
+    width: 100px;
+  }

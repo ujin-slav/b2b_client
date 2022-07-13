@@ -4,6 +4,11 @@ import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
 import {useHistory} from 'react-router-dom';
 import {Context} from "../index";
+import dateFormat from "dateformat";
+import {getCategoryName} from '../utils/Convert'
+import { regionNodes } from '../config/Region';
+import CardSpecOffer from '../pages/CardSpecOffer';
+import { CARDSPECOFFER } from '../utils/routes';
 
 const SpecOffersTable = observer(() => {
     const {ask} = useContext(Context);
@@ -48,24 +53,28 @@ const SpecOffersTable = observer(() => {
             {specOffers.map((item)=>{
                 console.log(item)
             return(
-                <div className='childSpec'>
+                <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
                     <img 
                     className="fotoSpec"
                     src={process.env.REACT_APP_API_URL + `getpic/` + item.Files[0].filename} />
-                    <div>
-                        {item.Text}
+                    <div className="specName">
+                        {item.Name}
                     </div>
-                    <div>
-                        {item.Price}
+                    <div className="specPrice">
+                        {item.Price} ₽
                     </div>
-                    <div>
+                    <div className="specNameOrg">
                         {item.NameOrg}
                     </div>
-                    <div>
-                        {item.Text}
+                    <div className="specCloudy">
+                        {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                        `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                        :
+                        getCategoryName(item.Region, regionNodes).join(", ")
+                        }
                     </div>
-                    <div>
-                        {item.Date}
+                    <div className="specCloudy">
+                        {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
                     </div>
                 </div>
             )

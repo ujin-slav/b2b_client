@@ -30,6 +30,7 @@ import Test from "../pages/Test";
 import UploadPrice from "../pages/UploadPrice";
 import Prices from "../pages/Prices";
 import MyPrice from "../pages/MyPrice";
+import CardSpecOffer from "../pages/CardSpecOffer";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -39,6 +40,7 @@ export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CARDPRICEASK = '/cardpriceask'
+export const CARDSPECOFFER = '/cardspecoffer'
 export const CREATEASK = '/createask'
 export const CREATESPECOFFER = '/createspecoffer'
 export const CREATEPRICEASK = '/createpriceask'
@@ -94,6 +96,10 @@ export const authRoutes = [
     {
         path: CARDPRICEASK + '/:id',
         Component: CardPriceAsk
+    },
+    {
+        path: CARDSPECOFFER + '/:id',
+        Component: CardSpecOffer
     },
     {
         path: CREATEASK,
