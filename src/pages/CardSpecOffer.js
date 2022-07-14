@@ -1,22 +1,33 @@
 import React,{useState,useEffect,useContext} from 'react';
-import {Container,Col,Row} from "react-bootstrap";
+import {Container,Col,Row,Button} from "react-bootstrap";
 import SpecOfferService from '../services/SpecOfferService'
 import {useParams} from 'react-router-dom';
 import waiting from "../waiting.gif";
 import {observer} from "mobx-react-lite";
+import FotoSlider from '../components/FotoSlider';
+import ModalCT from '../components/ModalCT';
+import MessageBox from '../components/MessageBox'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
+import {getCategoryName} from '../utils/Convert'
 
 const CardSpecOffer = observer(() => {
+    const [showSlider, setShowSlider] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [checkedRegion,setCheckedRegion] = useState([]);
+    const [checkedCat,setCheckedCat] = useState([]);
     const {id} = useParams();
     const [fotoFocus, setFotoFocus] = useState(0);
     const [specOffer, setSpecOffer] = useState([]);
+    const [modalActiveMessage,setModalActiveMessage] = useState(false)
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((data)=>{
             setSpecOffer(data)
-            console.log(data)
+            setCheckedRegion(data.Region)
+            setCheckedCat(data.Category)
         }).finally(()=>setLoading(false))     
-    },[specOffer]);
+    },[]);
 
     if (loading){
         return(
@@ -25,17 +36,13 @@ const CardSpecOffer = observer(() => {
             </p>
         )
     }
-    const images = [
-    { source: process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[0].filename },
-    { source: process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[1].filename },
-    { source: process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[2].filename }
-]
-
+  
     return (
         <Container className="mx-auto my-4">
            <Row>
             <Col>
                 <img className='fotoSpecCard' 
+                    onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus].filename}/>
                  <div className='parentSpec'>
                 {specOffer.Files.map((item,index)=>
@@ -46,11 +53,70 @@ const CardSpecOffer = observer(() => {
                     </div>
                 )}
                 </div>
+                <div className="specContact">
+                    <span>Категории</span>
+                </div>
+                <div className="specContactData">
+                    <span>{getCategoryName(checkedCat, categoryNodes).join(", ")}</span>
+                </div>
+                <div className="specContact">
+                    <span>Регионы</span>
+                </div>
+                <div className="specContactData">
+                    <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
+                </div>
+                <div className="specContact">
+                    <span>Описание</span>
+                </div>
+                <div className="specContactData">
+                    <span>{specOffer.Text}</span>
+                </div>
             </Col>
-            <Col>           
-                2
+            <Col>
+                <div className="cardSpecPrice">
+                    {specOffer.Price} ₽
+                </div>           
+                <Button style={{
+                    fontSize:"20px",
+                    padding:"10px 35px 10px 35px",
+                    marginTop:"30px"
+                }} 
+                                    onClick={()=>setModalActiveMessage(true)}>
+                                    Написать сообщение
+                </Button>
+                <div className="specContact">
+                    <span>Организация:</span>
+                </div>
+                <div className="specContactData">
+                    <span>{specOffer.NameOrg} ИНН {specOffer.Inn}</span>
+                </div>
+                <div className="specContact">
+                    <span>Контактное лицо:</span>
+                </div>
+                <div className="specContactData">
+                    <span>{specOffer.Contact}</span>
+                </div>
+                <div className="specContact">
+                    <span>Контактный телефон:</span>
+                </div>
+                <div className="specContactData">
+                    <span>{specOffer.Telefon}</span>
+                </div>
             </Col>
            </Row> 
+           <FotoSlider 
+            fotoArray={specOffer?.Files}
+            setShow={setShowSlider}
+            show={showSlider}
+            fotoFocus={fotoFocus}
+            setFotoFocus={setFotoFocus}
+           />
+            <ModalCT 
+            header="Сообщение" 
+            active={modalActiveMessage}
+            component={<MessageBox author={specOffer?.Author} setActive={setModalActiveMessage}/>}
+            setActive={setModalActiveMessage}   
+            />
         </Container>
     );
 });

@@ -370,7 +370,6 @@ td.tdRed{
   .parentSpec {
     display: flex;
     flex-wrap: wrap;
-    height: 100%;
     cursor: pointer
   }
   .childSpec {
@@ -416,4 +415,38 @@ td.tdRed{
   }
   .miniFotoSpecCard{
     width: 100px;
+  }
+  .fotoSlider{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    position: fixed; /* фиксированное положение */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.5); /* цвет фона */
+    z-index: 1050;
+    -webkit-transition: opacity 200ms ease-in; 
+    -moz-transition: opacity 200ms ease-in;
+    transition: opacity 200ms ease-in; /* анимация перехода */    
+    -moz-user-select: none;
+    -khtml-user-select: none; 
+    user-select: none;       
+  }
+  .leftNav{
+    margin: auto;
+  }
+  .rightNav{
+    margin: auto;
+  }
+  .cardSpecPrice{
+    font-size: 50px;
+    font-weight:bold;
+    padding-left: 50px;
+  }
+  .specContact{
+    margin: 20px;
+    font-size: 25px;
+    font-weight:bold;
   }

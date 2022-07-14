@@ -78,6 +78,7 @@ const CreateSpecOffer = observer(() => {
         Name: null,
         EndDateOffers: startDate,
         Telefon:"",
+        Contact:"",
         Text: null,
         Price: null,
         Category: "",
@@ -98,6 +99,11 @@ const CreateSpecOffer = observer(() => {
       if(user.user.region){
           setCheckedRegion(Object.values(user.user.region))
       }
+      let data = specOffer.data
+      let formErrors = specOffer.formErrors;
+      data["Contact"] = user.user.name;
+      data["Telefon"] = user.user.telefon;
+      setSpecOffer({ data, formErrors});
     },[user.user])
 
     const handleDragStart = (event) => {
@@ -269,6 +275,7 @@ const CreateSpecOffer = observer(() => {
           data.append("Author", user.user.id)
           data.append("Name", specOffer.data.Name)
           data.append("Telefon", specOffer.data.Telefon)
+          data.append("Contact", specOffer.data.Contact)
           data.append("EndDateOffers", specOffer.data.EndDateOffers)
           data.append("Text", specOffer.data.Text)
           data.append("Price", specOffer.data.Price)
@@ -353,7 +360,16 @@ const CreateSpecOffer = observer(() => {
                             </td>
                             </tr>
                             <tr>
-                            <td>Контактные данные</td>
+                            <td>Контактное лицо</td>
+                            <td> <Form.Control
+                                name="Telefon"
+                                onChange={handleChangeControl}
+                                defaultValue={user.user.name}
+                                placeholder="Контактный телефон"
+                            /></td>
+                            </tr>
+                            <tr>
+                            <td>Контактный телефон</td>
                             <td> <Form.Control
                                 name="Telefon"
                                 onChange={handleChangeControl}
