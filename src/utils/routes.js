@@ -15,6 +15,7 @@ import MyOrdersPrice from "../pages/MyOrdersPrice";
 import MyOffers from "../pages/MyOffers";
 import MySpecOffers from "../pages/MySpecOffers";
 import ModifyAsk from "../pages/ModifyAsk";
+import ModifySpecOffer from "../pages/ModifySpecOffer";
 import ModifyPriceAsk from "../pages/ModifyPriceAsk";
 import CatOrg from "../pages/CatOrg";
 import MyContr from "../pages/MyContr";
@@ -51,6 +52,7 @@ export const MYORDERS = '/myorders'
 export const MYORDERSPRICE = '/myordersprice'
 export const MYOFFERS = '/myoffers'
 export const MYSPECOFFERS = '/myspecoffers'
+export const MODIFYSPECOFFER = '/modifyspecoffer'
 export const MODIFYASK = '/modifyask'
 export const MODIFYPRICEASK = '/modifypriceask'
 export const CATORG = '/catorg'
@@ -144,6 +146,10 @@ export const authRoutes = [
     {
         path: MODIFYASK + '/:id',
         Component: ModifyAsk
+    },
+    {
+        path: MODIFYSPECOFFER + '/:id',
+        Component: ModifySpecOffer
     },
     {
         path: MODIFYPRICEASK + '/:id',

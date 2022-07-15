@@ -17,7 +17,8 @@ import {LOGIN_ROUTE,
         MYORDERSPRICE, 
         MYPRICE,
         PRICES, 
-        INVITEDPRICE} from "../utils/routes";
+        INVITEDPRICE,
+        MYSPECOFFERS} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -154,6 +155,7 @@ const NavBar = observer(() => {
                         </div>
                         </NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Я заказывал по прайсу</NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={active===MYSPECOFFERS ? "active" : ""}>Мои специальные предложения</NavDropdown.Item>
                     </NavDropdown>
                     <div className="parentAnswer myNoti">
                            <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>

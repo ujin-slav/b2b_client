@@ -9,6 +9,7 @@ import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER } from '../utils/routes';
+import ReactPaginate from "react-paginate";
 
 const SpecOffersTable = observer(() => {
     const {ask} = useContext(Context);
@@ -49,6 +50,7 @@ const SpecOffersTable = observer(() => {
     };
 
     return (
+        <div>
         <div className='parentSpec'>
             {specOffers.map((item)=>{
                 console.log(item)
@@ -79,6 +81,26 @@ const SpecOffersTable = observer(() => {
                 </div>
             )
             })}
+        </div>
+        <ReactPaginate
+            previousLabel={"предыдущий"}
+            nextLabel={"следующий"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </div>
     );
 });

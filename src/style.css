@@ -370,13 +370,15 @@ td.tdRed{
   .parentSpec {
     display: flex;
     flex-wrap: wrap;
-    cursor: pointer
+    cursor: pointer;
   }
   .childSpec {
     overflow-wrap: break-word;
     width: 20%;
     height: 20%;
     padding:10px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
   }
   .fotoSpec{
     display: block;
@@ -449,4 +451,49 @@ td.tdRed{
     margin: 20px;
     font-size: 25px;
     font-weight:bold;
+  }
+  .addSpecOffer{
+    width: 50px; 
+    height: 50px;
+    color:black;
+    margin: 10px 15px 5px 15px;
+  }
+  .addSpecOffer{
+    width: 50px; 
+    height: 50px;
+    color:black;
+    margin: 10px 15px 5px 15px;
+  }
+  .addSpecOffer:hover{
+    width: 50px; 
+    height: 50px;
+    color:red;
+    margin: 10px 15px 5px 15px;
+  }
+  .createNewOfferText{
+    font-size: 30px;
+    font-family: American Retro;
+  }
+  .delSpecOfferContainer{
+    height: 25px;
+    text-align: right;
+    margin: 5px 0px 5px 5px;
+  }
+  .delSpecOffer{
+    width: 25px; 
+    height: 25px;
+    color:gray;
+    display: inline-block;
+  }
+  .delSpecOffer:hover{
+    width: 25px; 
+    height: 25px;
+    color:red;
+    display: inline-block;
+  }
+  .changeSpecOffer{
+    width: 20px; 
+    height: 20px;
+    color:green;
+    display: inline-block;
   }

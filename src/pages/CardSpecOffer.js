@@ -54,6 +54,12 @@ const CardSpecOffer = observer(() => {
                 )}
                 </div>
                 <div className="specContact">
+                    <span>Описание</span>
+                </div>
+                <div className="specContactData">
+                    <span>{specOffer.Text}</span>
+                </div>
+                <div className="specContact">
                     <span>Категории</span>
                 </div>
                 <div className="specContactData">
@@ -64,12 +70,6 @@ const CardSpecOffer = observer(() => {
                 </div>
                 <div className="specContactData">
                     <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
-                </div>
-                <div className="specContact">
-                    <span>Описание</span>
-                </div>
-                <div className="specContactData">
-                    <span>{specOffer.Text}</span>
                 </div>
             </Col>
             <Col>
