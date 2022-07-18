@@ -24,5 +24,9 @@ export default class SpecOfferService {
         const data = await $api.post(`/deletespecoffer`,formData);
         return data
     }
+    static async getImage(name){
+        const data = await $api.get(`/getpic/` + name);
+        return data
+    }
 }
 
