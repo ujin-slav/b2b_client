@@ -421,7 +421,6 @@ td.tdRed{
   .fotoSlider{
     display: flex;
     flex-direction: row;
-    height: 100%;
     position: fixed; /* фиксированное положение */
     top: 0;
     right: 0;
@@ -496,4 +495,9 @@ td.tdRed{
     height: 20px;
     color:green;
     display: inline-block;
+  }
+  .fotoSliderImg{
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
   }

@@ -121,13 +121,13 @@ const ModifySpecOffer = observer(() => {
             setCheckedRegion(result.Region);
             setSpecOffer({ data, formErrors}); 
             result?.Files?.map((item)=>{
-              fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
-                  .then(res => res.blob()) 
-                  .then(blob => {
-                    let objectURL = URL.createObjectURL(blob);
-                    setFiles(((oldItems) => [...oldItems, objectURL]))
-                });
+                item.id = Date.now() + Math.random()
+                item.loaded = true
+                setFileSize(fileSize + item.size)
+                setSortedList(((oldItems) => [...oldItems, item.id]))
+                setFiles(((oldItems) => [...oldItems, item]))
             })
+            console.log(result.Files)
           })
     },[])
 
@@ -228,11 +228,15 @@ const ModifySpecOffer = observer(() => {
       }
     };
     
-    const removeFile = (file,id) => {
-      URL.revokeObjectURL(file)
-      setFileSize(fileSize - files[id].size)
-      const newFiles = files.filter((item,index,array)=>index!==id);
-      setFiles(newFiles);
+    const getImageURL = (id) => {
+      let file = files.find(item=>item.id===id)
+      if(file){
+        if(file.loaded){
+          return process.env.REACT_APP_API_URL + `getpic/` + file.filename
+        }else{
+          return URL.createObjectURL(file) 
+        }
+      }
     }
 
     const listItems = () => {
@@ -251,7 +255,7 @@ const ModifySpecOffer = observer(() => {
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
-                    className="foto" src={URL.createObjectURL(files.find(item=>item.id===sortedList[i]))} /> 
+                    className="foto" src={getImageURL(sortedList[i])} /> 
                     <div id={i} className='delButton' onClick={(event)=>handleDelete(event,sortedList[i])}>X</div>
                 </div>
               </div>
@@ -427,7 +431,6 @@ const ModifySpecOffer = observer(() => {
                                 className="form-control"
                                 multiple/>
                                 {listItems()}
-                                <img src={URL.createObjectURL(files[0])} />
                                 </td>
                             </tr>
                             <tr>
