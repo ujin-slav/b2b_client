@@ -48,6 +48,36 @@ const formValid = ({ data, formErrors }) => {
 return valid;
 };
 
+function blobCreationFromURL(inputURI) {
+  
+  var binaryVal;
+
+  // mime extension extraction
+  var inputMIME = inputURI.split(',')[0].split(':')[1].split(';')[0];
+
+  // Extract remaining part of URL and convert it to binary value
+  if (inputURI.split(',')[0].indexOf('base64') >= 0)
+      binaryVal = atob(inputURI.split(',')[1]);
+
+  // Decoding of base64 encoded string
+  else
+      binaryVal = unescape(inputURI.split(',')[1]);
+
+  // Computation of new string in which hexadecimal
+  // escape sequences are replaced by the character 
+  // it represents
+
+  // Store the bytes of the string to a typed array
+  var blobArray = [];
+  for (var index = 0; index < binaryVal.length; index++) {
+      blobArray.push(binaryVal.charCodeAt(index));
+  }
+
+  return new Blob([blobArray], {
+      type: inputMIME
+  });
+}
+
 
 const ModifySpecOffer = observer(() => {
     var curr = new Date();
@@ -89,10 +119,15 @@ const ModifySpecOffer = observer(() => {
             let formErrors = specOffer.formErrors;
             let data = Object.assign(specOffer.data, result);
             setCheckedRegion(result.Region);
-            setCheckedCat(result.Category);
-            console.log(data)
-            setSpecOffer({ data, formErrors});  
-            setFiles(result.Files);
+            setSpecOffer({ data, formErrors}); 
+            result?.Files?.map((item)=>{
+              fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
+                  .then(res => res.blob()) 
+                  .then(blob => {
+                    let objectURL = URL.createObjectURL(blob);
+                    setFiles(((oldItems) => [...oldItems, objectURL]))
+                });
+            })
           })
     },[])
 
@@ -392,6 +427,7 @@ const ModifySpecOffer = observer(() => {
                                 className="form-control"
                                 multiple/>
                                 {listItems()}
+                                <img src={URL.createObjectURL(files[0])} />
                                 </td>
                             </tr>
                             <tr>
