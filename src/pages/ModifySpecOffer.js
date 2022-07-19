@@ -121,13 +121,12 @@ const ModifySpecOffer = observer(() => {
             setCheckedRegion(result.Region);
             setSpecOffer({ data, formErrors}); 
             result?.Files?.map((item)=>{
-                item.id = Date.now() + Math.random()
-                item.loaded = true
-                setFileSize(fileSize + item.size)
-                setSortedList(((oldItems) => [...oldItems, item.id]))
-                setFiles(((oldItems) => [...oldItems, item]))
+              fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
+              .then(res => res.blob()) // Gets the response and returns it as a blob
+              .then(blob => {
+                setSortedList(((oldItems) => [...oldItems,blob]))
+            });
             })
-            console.log(result.Files)
           })
     },[])
 
@@ -199,7 +198,6 @@ const ModifySpecOffer = observer(() => {
       setSortedList(list)
 
       URL.revokeObjectURL(files.find(item=>item.id===id))
-      setFileSize(fileSize - files.find(item=>item.id===id).size)
       const newFiles = files.filter((item,index,array)=>item.id!==id);
       setFiles(newFiles);
 
@@ -211,11 +209,8 @@ const ModifySpecOffer = observer(() => {
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
-              e.target.files[i].id = Date.now() + Math.random()
-              setFileSize(fileSize + e.target.files[i].size)
-              setSortedList(((oldItems) => [...oldItems, e.target.files[i].id]))
-              setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
-              console.log(files)
+              let file = e.target.files[i]
+              setSortedList(((oldItems) => [...oldItems,file]))
             } else {
               myalert.setMessage("Превышен размер файлов");
             }  
@@ -231,11 +226,9 @@ const ModifySpecOffer = observer(() => {
     const getImageURL = (id) => {
       let file = files.find(item=>item.id===id)
       if(file){
-        if(file.loaded){
-          return process.env.REACT_APP_API_URL + `getpic/` + file.filename
-        }else{
-          return URL.createObjectURL(file) 
-        }
+        return URL.createObjectURL(file)
+      }else{
+        return URL.createObjectURL(id) 
       }
     }
 
@@ -255,7 +248,7 @@ const ModifySpecOffer = observer(() => {
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
-                    className="foto" src={getImageURL(sortedList[i])} /> 
+                    className="foto"  src={getImageURL(sortedList[i])} /> 
                     <div id={i} className='delButton' onClick={(event)=>handleDelete(event,sortedList[i])}>X</div>
                 </div>
               </div>
@@ -290,17 +283,22 @@ const ModifySpecOffer = observer(() => {
       setSpecOffer({ data, formErrors});
     }
 
+    const blobToFile=(item)=>{
+      return new File([item],"load",{type:item.type})
+    }
+
     const onSubmit = async(e) => {
       e.preventDefault();
       if(captcha){
         if (formValid(specOffer)) {
           const data = new FormData();
-          sortedList.forEach((i)=>{
+          sortedList.forEach((item)=>{
                   data.append(
                     "file", 
-                    files.find(item=>item.id===i)
+                    blobToFile(item)
                   )
                 });
+          data.append("ID", id)
           data.append("Author", user.user.id)
           data.append("Name", specOffer.data.Name)
           data.append("Telefon", specOffer.data.Telefon)
@@ -310,10 +308,10 @@ const ModifySpecOffer = observer(() => {
           data.append("Price", specOffer.data.Price)
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
-          const result = await SpecOfferService.addSpecOffer(data)
+          const result = await SpecOfferService.modifySpecOffer(data)
           console.log(result)
           if (result.status===200){
-            myalert.setMessage("Предложение успешно добавлено");
+            myalert.setMessage("Предложение успешно изменено");
             //history.push(B2B_ROUTE)
           } else {
             myalert.setMessage(result?.data?.message)
@@ -444,7 +442,7 @@ const ModifySpecOffer = observer(() => {
             type="submit"
             className="btn btn-success ml-auto mr-1"
             >
-            Создать
+            Сохранить
             </Button>
         <ModalCT 
                 header="Регионы" 

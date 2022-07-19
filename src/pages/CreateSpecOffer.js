@@ -186,11 +186,11 @@ const CreateSpecOffer = observer(() => {
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
-              e.target.files[i].id = Date.now() + Math.random()
-              setFileSize(fileSize + e.target.files[i].size)
-              setSortedList(((oldItems) => [...oldItems, e.target.files[i].id]))
-              setFiles(((oldItems) => [...oldItems, e.target.files[i]]))
-              console.log(files)
+              let file = e.target.files[i]
+              file.id = Date.now() + Math.random()
+              setFileSize(fileSize + file.size)
+              setSortedList(((oldItems) => [...oldItems,file.id]))
+              setFiles(((oldItems) => [...oldItems, file]))
             } else {
               myalert.setMessage("Превышен размер файлов");
             }  
@@ -202,13 +202,7 @@ const CreateSpecOffer = observer(() => {
         myalert.setMessage("Превышено количество файлов");
       }
     };
-    
-    const removeFile = (file,id) => {
-      URL.revokeObjectURL(file)
-      setFileSize(fileSize - files[id].size)
-      const newFiles = files.filter((item,index,array)=>index!==id);
-      setFiles(newFiles);
-    }
+  
 
     const listItems = () => {
 
@@ -266,12 +260,13 @@ const CreateSpecOffer = observer(() => {
       if(captcha){
         if (formValid(specOffer)) {
           const data = new FormData();
-          sortedList.forEach((i)=>{
-                  data.append(
-                    "file", 
-                    files.find(item=>item.id===i)
-                  )
-                });
+          // sortedList.forEach((i)=>{
+          //         data.append(
+          //           "file", 
+          //           files.find(item=>item.id===i)
+          //         )
+          //       });
+          console.log(files)
           data.append("Author", user.user.id)
           data.append("Name", specOffer.data.Name)
           data.append("Telefon", specOffer.data.Telefon)

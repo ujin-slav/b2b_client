@@ -33,7 +33,7 @@ const FotoSlider = ({fotoArray, show,setShow,fotoFocus,setFotoFocus}) => {
                 />
             </div>
             <div>
-                <img className='fotoSliderImg' src={process.env.REACT_APP_API_URL + `getpic/` + fotoArray[fotoFocus].filename}/> 
+                <img className='fotoSliderImg' src={process.env.REACT_APP_API_URL + `getpic/` + fotoArray[fotoFocus]?.filename}/> 
             </div>
             <div className='rightNav'>
                 <CaretRight color="white" style={{"width": "80px", "height": "80px"}} 

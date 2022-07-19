@@ -271,6 +271,10 @@ export const publicRoutes = [
         Component: CreatePriceAsk
     },
     {
+        path: CARDSPECOFFER + '/:id',
+        Component: CardSpecOffer
+    },
+    {
         path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
         Component: CreatePriceAskFiz
     },

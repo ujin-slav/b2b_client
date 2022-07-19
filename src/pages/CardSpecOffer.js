@@ -10,16 +10,20 @@ import MessageBox from '../components/MessageBox'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {getCategoryName} from '../utils/Convert'
+import {Context} from "../index";
+import SpecOfferAskFiz from '../components/SpecOfferAskFiz';
 
 const CardSpecOffer = observer(() => {
+    const {user} = useContext(Context);
     const [showSlider, setShowSlider] = useState(false);
     const [loading, setLoading] = useState(true);
     const [checkedRegion,setCheckedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const {id} = useParams();
     const [fotoFocus, setFotoFocus] = useState(0);
-    const [specOffer, setSpecOffer] = useState([]);
+    const [specOffer, setSpecOffer] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
+    const [modalActiveAskFiz,setModalActiveAskFiz] = useState(false)
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((data)=>{
@@ -43,7 +47,7 @@ const CardSpecOffer = observer(() => {
             <Col>
                 <img className='fotoSpecCard' 
                     onClick={()=>setShowSlider(true)}
-                    src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus].filename}/>
+                    src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
                  <div className='parentSpec'>
                 {specOffer.Files.map((item,index)=>
                     <div key={index} className='childSpec'>
@@ -75,15 +79,26 @@ const CardSpecOffer = observer(() => {
             <Col>
                 <div className="cardSpecPrice">
                     {specOffer.Price} ₽
-                </div>           
+                </div>      
+                {user.isAuth ? 
                 <Button style={{
                     fontSize:"20px",
                     padding:"10px 35px 10px 35px",
                     marginTop:"30px"
                 }} 
-                                    onClick={()=>setModalActiveMessage(true)}>
-                                    Написать сообщение
+                onClick={()=>setModalActiveMessage(true)}>
+                Написать сообщение
                 </Button>
+                :
+                <Button style={{
+                    fontSize:"20px",
+                    padding:"10px 35px 10px 35px",
+                    marginTop:"30px"
+                }} 
+                onClick={()=>setModalActiveAskFiz(true)}>
+                Заказать
+                </Button>
+                }
                 <div className="specContact">
                     <span>Организация:</span>
                 </div>
@@ -116,6 +131,12 @@ const CardSpecOffer = observer(() => {
             active={modalActiveMessage}
             component={<MessageBox author={specOffer?.Author} setActive={setModalActiveMessage}/>}
             setActive={setModalActiveMessage}   
+            />
+            <ModalCT 
+            header="Заказ" 
+            active={modalActiveAskFiz}
+            component={<SpecOfferAskFiz receiver={specOffer?.Author} setActive={setModalActiveAskFiz}/>}
+            setActive={setModalActiveAskFiz}   
             />
         </Container>
     );

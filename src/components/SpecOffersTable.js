@@ -58,7 +58,7 @@ const SpecOffersTable = observer(() => {
                 <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
                     <img 
                     className="fotoSpec"
-                    src={process.env.REACT_APP_API_URL + `getpic/` + item.Files[0].filename} />
+                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
                     <div className="specName">
                         {item.Name}
                     </div>
