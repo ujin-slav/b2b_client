@@ -19,7 +19,10 @@ export default class SpecOfferService {
         const {data} = await $api.post(`/getspecofferuser`,formData);
         return data
     }
-    
+    static async getSpecAskUser(formData){
+        const {data} = await $api.post(`/getspecaskuser`,formData);
+        return data
+    }
     static async getSpecOfferId(formData){
         const {data} = await $api.post(`/getspecofferid`,formData);
         return data
@@ -30,6 +33,10 @@ export default class SpecOfferService {
     }
     static async getImage(name){
         const data = await $api.get(`/getpic/` + name);
+        return data
+    }
+    static async specAskFiz(formData){
+        const data = await $api.post(`/specaskfiz`,formData);
         return data
     }
 }

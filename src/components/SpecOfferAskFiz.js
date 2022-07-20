@@ -11,6 +11,7 @@ import { Form,
  } from "react-bootstrap";
  import {Context} from "../index";
  import SpecOfferService from '../services/SpecOfferService'
+ import Captcha from "demos-react-captcha";
 
  const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -33,13 +34,14 @@ const formValid = ({ data, formErrors }) => {
   };
   
 
-const SpecOfferAskFiz = ({receiver,setActive}) => {
-    const [currentMessage, setCurrentMessage] = useState("");
+const SpecOfferAskFiz = ({receiver,specOffer,setActive}) => {
+    const [errorMessage, setErrorMessage] = useState("");
+    const [captcha, setCaptcha] = useState(false);
     const {user} = useContext(Context);
     const {myalert} = useContext(Context);
     const {chat} = useContext(Context);
     const inputEl = useRef(null);
-    const[specAsk,setPriceAsk] = useState( {
+    const[specAsk,setSpecAsk] = useState( {
         data: {
           name: null,
           email: null,
@@ -57,30 +59,32 @@ const SpecOfferAskFiz = ({receiver,setActive}) => {
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        if(true){
+        if(captcha){
           if (formValid(specAsk)) {
-            const data = new FormData();
-            data.append("Name", specAsk.data.Name)
-            data.append("Email", specAsk.data.Email)
-            data.append("Telefon", specAsk.data.Telefon)
-            data.append("City", specAsk.data.City)
-            data.append("Comment", specAsk.data.Comment)
-            data.append("Amount", specAsk.data.Amount)
-            const result = await SpecOfferService.modifySpecOffer(data)
-            console.log(result)
+            const result = await SpecOfferService.specAskFiz({
+              Name:specAsk.data.name,
+              Email:specAsk.data.email,
+              Telefon:specAsk.data.telefon,
+              City:specAsk.data.city,
+              Comment:specAsk.data.comment,
+              Amount:specAsk.data.amount,
+              Receiver:receiver,
+              SpecOffer:specOffer
+            })
             if (result.status===200){
-              myalert.setMessage("Предложение успешно изменено");
-              //history.push(B2B_ROUTE)
+              myalert.setMessage("Заявка успешно отправлена");
+              chat.socket.emit("unread_specOfferAsk", {To:receiver});
+              setActive(false)
             } else {
               myalert.setMessage(result?.data?.message)
             }
           } else {
             console.error("FORM INVALID");
-            myalert.setMessage("Не заполнено поле текст заявки");
+            setErrorMessage("Не заполнено поле текст заявки");
           }
         }else{
           console.error("FORM INVALID");
-          myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+          setErrorMessage("Неверно введены данные с картинки(CAPTCHA)");
         }
     };
     
@@ -90,22 +94,27 @@ const SpecOfferAskFiz = ({receiver,setActive}) => {
         let formErrors = specAsk.formErrors;
         let data = specAsk.data
         data[name] = value;
-        console.log(name)
         
-    switch (name) {
-        case "name":
-        formErrors.Name =
-            value.length < 3 ? "минимум 3 символа" : "";
-        break;   
-        case "email":
-            formErrors.Email = emailRegex.test(value)
-                ? ""
-                : "неверный email";
-        break;
-        default:
-        break;
+        switch (name) {
+            case "name":
+            formErrors.Name =
+                value.length < 3 ? "минимум 3 символа" : "";
+            break;   
+            case "email":
+                formErrors.Email = emailRegex.test(value)
+                    ? ""
+                    : "неверный email";
+            break;
+            default:
+            break;
+        }
+        setSpecAsk({ data, formErrors});
     }
-    setPriceAsk({ data, formErrors});
+
+    const handleChangeCaptcha = (value) => {
+      if(value){
+        setCaptcha(true)
+      }
     }
 
     return (
@@ -153,6 +162,8 @@ const SpecOfferAskFiz = ({receiver,setActive}) => {
                     onChange={handleChange}/>
                 </div>
             </div>
+            <div className="errorMessage" style={{color:"red"}}>{errorMessage}</div>  
+            <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>  
             <Button style={{marginTop:"10px"}} onClick={sendMessage}>Отправить</Button>
         </div>
     );

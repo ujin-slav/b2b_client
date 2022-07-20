@@ -32,6 +32,7 @@ import UploadPrice from "../pages/UploadPrice";
 import Prices from "../pages/Prices";
 import MyPrice from "../pages/MyPrice";
 import CardSpecOffer from "../pages/CardSpecOffer";
+import InvitedSpecOffer from "../pages/InvitedSpecOffer";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -67,6 +68,7 @@ export const MYPRICE = '/myprice'
 export const PRICES = '/prices'
 export const INVITED = '/invited'
 export const INVITEDPRICE = '/invitedprice'
+export const INVITEDSPECOFFER = '/invitedspecoffer'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
 
@@ -194,6 +196,10 @@ export const authRoutes = [
     {
         path: INVITEDPRICE,
         Component: InvitedPrice
+    },
+    {
+        path: INVITEDSPECOFFER,
+        Component: InvitedSpecOffer
     },
     {
         path: UPLOADPRICE,

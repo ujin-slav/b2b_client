@@ -135,7 +135,10 @@ const CardSpecOffer = observer(() => {
             <ModalCT 
             header="Заказ" 
             active={modalActiveAskFiz}
-            component={<SpecOfferAskFiz receiver={specOffer?.Author} setActive={setModalActiveAskFiz}/>}
+            component={<SpecOfferAskFiz 
+                specOffer={id}
+                receiver={specOffer?.Author} 
+                setActive={setModalActiveAskFiz}/>}
             setActive={setModalActiveAskFiz}   
             />
         </Container>
