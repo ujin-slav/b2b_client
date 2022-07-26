@@ -117,6 +117,15 @@ const NavBar = observer(() => {
         } 
     }
 
+    const sumInvitedSpecOffers=()=>{
+        console.log("sum offer ask" + chat.invitedPriceUnread )
+        if(chat.specOfferAskUnread > 0){
+            return chat.specOfferAskUnread
+        }else{
+            return ""
+        } 
+    }
+
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -159,7 +168,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Мне заказали по спец. предложению</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedPrice()}</div>
+                               <div className='yellowtext'>{sumInvitedSpecOffers()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>

@@ -1,7 +1,10 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table} from "react-bootstrap";
+import {
+  Table,
+  Card
+} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK } from '../utils/routes';
 import { fetchFilterAsks,fetchUser } from "../http/askAPI";
@@ -18,6 +21,7 @@ const TableAsk = observer(({authorId}) => {
     const {ask} = useContext(Context);
     const {myalert} = useContext(Context);
     const history = useHistory();
+    const[visible,setVisible] = useState(false);
     const [pageCount, setpageCount] = useState(0);
     const {user} = useContext(Context);
     const [currentPage,setCurrentPage] = useState(1)
@@ -59,7 +63,13 @@ const TableAsk = observer(({authorId}) => {
     }
 
     return (
-      <div>
+      <Card>
+        <Card.Header style={{"text-decoration": "underline",
+                          "color": "#EC4D3C",
+                          "cursor": "pointer"                                            
+        }} onClick={()=>setVisible(!visible)}>Заявки</Card.Header>
+        {visible ?
+        <div>
         <Table striped bordered hover className="tableAsk">
             <col style={{"width":"2%"}}/>
           	<col style={{"width":"5%"}}/>
@@ -169,7 +179,11 @@ const TableAsk = observer(({authorId}) => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
-     </div> 
+          </div> 
+          :
+          <div></div>
+          }
+      </Card>
     );
 });
 

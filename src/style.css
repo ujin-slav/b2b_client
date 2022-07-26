@@ -402,6 +402,7 @@ td.tdRed{
   }
   .fotoSpecCard{
     width: 100%;
+    cursor: pointer;
   }
   .parentSpecMiniFoto {
     display: flex;

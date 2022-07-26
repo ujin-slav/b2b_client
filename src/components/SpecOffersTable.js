@@ -14,6 +14,7 @@ import ReactPaginate from "react-paginate";
 const SpecOffersTable = observer(() => {
     const {ask} = useContext(Context);
     const [specOffers, setSpecOffers] = useState([]);
+    const[visible,setVisible] = useState(false);
     const {myalert} = useContext(Context);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0);
@@ -30,7 +31,6 @@ const SpecOffersTable = observer(() => {
           limit,page:currentPage}).then((data)=>{
           setSpecOffers(data.docs)
           setpageCount(data.totalPages);
-          console.log(data.docs)
         })
       },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn]);
 
@@ -50,10 +50,14 @@ const SpecOffersTable = observer(() => {
     };
 
     return (
-        <div>
+        <Card>
+        <Card.Header style={{"text-decoration": "underline",
+                        "color": "#EC4D3C",
+                        "cursor": "pointer"                                            
+        }} onClick={()=>setVisible(!visible)}>Специальные предложения</Card.Header>
+        {visible ?
         <div className='parentSpec'>
             {specOffers.map((item)=>{
-                console.log(item)
             return(
                 <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
                     <img 
@@ -81,7 +85,6 @@ const SpecOffersTable = observer(() => {
                 </div>
             )
             })}
-        </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
@@ -100,8 +103,12 @@ const SpecOffersTable = observer(() => {
             breakClassName={"page-item"}
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
-          />
+        />
         </div>
+        :
+        <div></div>
+        }
+        </Card>
     );
 });
 

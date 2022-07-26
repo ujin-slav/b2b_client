@@ -55,8 +55,8 @@ export default class SocketStore {
     setInvitedPriceUnread(invitedPriceUnread){
         this.invitedPriceUnread = invitedPriceUnread; 
     }
-    setSpecOfferAskUnread(invitedPriceUnread){
-        this.invitedPriceUnread = invitedPriceUnread; 
+    setSpecOfferAskUnread(specOfferAskUnread){
+        this.specOfferAskUnread = specOfferAskUnread; 
     }
 
     getQuestUnread(questUnread){
@@ -91,7 +91,7 @@ export default class SocketStore {
           this.socket.on("get_unread_invitedPrice", (data) => {   
             this.setInvitedPriceUnread(data)   
           })
-          this.socket.on("get_unread_specOfferAsk", (data) => {   
+          this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   
           })
     }

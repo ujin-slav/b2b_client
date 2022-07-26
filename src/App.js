@@ -19,8 +19,10 @@ const App = ()=> {
     (async () => {
       if (localStorage.getItem('token')) {
         await user.checkAuth()
+        console.log("auth")
       } else {
         await user.connectNotAuth()
+        console.log("not auth")
       }
       localStorage.setItem('userId', user.user.id);
     })();
