@@ -14,7 +14,7 @@ import {
  import RegionTree from '../components/RegionTree';
  import { regionNodes } from '../config/Region';
  import ModalCT from '../components/ModalCT';
- import { Cart4} from 'react-bootstrap-icons';
+ import { Cart4,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
  import ReactPaginate from "react-paginate";
 
 const Prices = observer(() => {
@@ -55,11 +55,18 @@ const Prices = observer(() => {
       };
 
     return (
-        <Card>
-            <Card.Header style={{"text-decoration": "underline",
-                             "color": "#EC4D3C",
-                             "cursor": "pointer"                                            
-            }} onClick={()=>setVisible(!visible)}>Прайс</Card.Header>
+        <Card className='section'>
+        <Card.Header className='sectionHeader headerPrices' 
+        onClick={()=>setVisible(!visible)}>
+          <div className='sectionName'>
+          {visible ?
+                <CaretUpFill className='caret'/>
+                :
+                <CaretDownFill className='caret'/>
+            }
+            Прайс
+          </div>
+        </Card.Header>
             {visible ?
             <div>
             <Table>

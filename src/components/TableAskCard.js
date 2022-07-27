@@ -77,96 +77,49 @@ const TableAsk = observer(({authorId}) => {
         </Card.Header>
         {visible ?
         <div>
-        <Table striped bordered hover className="tableAsk">
-            <col style={{"width":"2%"}}/>
-          	<col style={{"width":"5%"}}/>
-            <col style={{"width":"5%"}}/>
-          	<col style={{"width":"6%"}}/>
-            <col style={{"width":"25%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"10%"}}/>
-          	<col style={{"width":"5%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Название</th>
-            <th>Статус</th>
-            <th>Организация</th>
-            <th>Текст</th>
-            <th>Регионы</th>
-            <th>Категории товара</th>
-            <th>Окончание предложений</th>
-          </tr>
-        </thead>
-        <tbody className="tableAsk">
+        <div className='parentSpec'>
         {ask?.getAsk().map((item,index)=>{
-          if(!checkAccessAsk(user,item).Open){
+          if(checkAccessAsk(user,item).Open){
             return (
-                <tr key={index} onClick={()=>redirect(item)}>
-                  <td>{index+1+(currentPage-1)*limit}</td>
-                  <td className="blurry-text">Название</td>
-                  {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                  <td className="tdGreen">
-                  Активная
-                  </td>
-                  :
-                  <td className="tdRed">
-                  Истек срок
-                  </td>
-                  }
-                  <td className="blurry-text">8888888888
-                      <div className="blurry-text">Организация</div>
-                  </td>
-                  <td className="blurry-text">Заявка</td>
-                  <td className="blurry-text">Регионы</td>
-                  <td className="blurry-text">Категории</td>
-                  <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
-                </tr>)
-          }
-
-          return (
-          <tr key={index} onClick={()=>redirect(item)}>
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>{item.Name.length>15 ?
-                `${item.Name.substring(0, 15)}...`
-                 :
-                 item.Name
-                 }</td>
-            {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-            <td className="tdGreen">
-            Активная
-            </td>
-            :
-            <td className="tdRed">
-            Истек срок
-            </td>
-            }
-            <td>{item.Author.inn}
-                <div>{item.Author.nameOrg}</div>
-            </td>
-            <td>
-            {item.Text.length>50 ?
-                `${item.Text.substring(0, 50)}...`
-                 :
-                 item.Text
-                 }</td>
-            <td className="categoryColumn">
-                {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
-                 :
-                 getCategoryName(item.Region, regionNodes).join(", ")
-                 }</td>
-            <td className="categoryColumn">
-                {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
-                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
-                 :
-                 getCategoryName(item.Category, categoryNodes).join(", ")
-                 }</td>
-            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
-          </tr>)
-        })}  
-        </tbody>
-        </Table>
+                <div onClick={()=>redirect(item)} className='childSpec'>
+                <div className="specName">
+                        {item.Name.length>15 ?
+                        `${item.Name.substring(0, 15)}...`
+                        :
+                        item.Name
+                        }
+                </div>
+                <div className="specPrice">
+                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                        <span className="tdGreen">
+                        Активная
+                        </span>
+                        :
+                        <span className="tdRed">
+                        Истек срок
+                        </span>
+                        } 
+                </div>
+                <div className="specNameOrg">
+                        <div>{item.Author.inn}</div>
+                        <div>{item.Author.nameOrg}</div>
+                </div>
+                <div className="specCloudy">
+                    {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                    `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                    :
+                    getCategoryName(item.Region, regionNodes).join(", ")
+                    }
+                </div>
+                <div className="specCloudy">
+                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                </div>
+            </div>
+            )
+          } else{ 
+            return ("No")
+        }})}  
+        </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

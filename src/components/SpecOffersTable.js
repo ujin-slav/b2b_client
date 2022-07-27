@@ -10,6 +10,7 @@ import { regionNodes } from '../config/Region';
 import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
+import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 
 const SpecOffersTable = observer(() => {
     const {ask} = useContext(Context);
@@ -50,12 +51,20 @@ const SpecOffersTable = observer(() => {
     };
 
     return (
-        <Card>
-        <Card.Header style={{"text-decoration": "underline",
-                        "color": "#EC4D3C",
-                        "cursor": "pointer"                                            
-        }} onClick={()=>setVisible(!visible)}>Специальные предложения</Card.Header>
+        <Card className='section sectionOffers'>
+        <Card.Header className='sectionHeader headerOffers' 
+        onClick={()=>setVisible(!visible)}>
+          <div className='sectionName'>
+          {visible ?
+                <CaretUpFill className='caret'/>
+                :
+                <CaretDownFill className='caret'/>
+            }
+            Специальные предложения
+          </div>
+        </Card.Header>
         {visible ?
+        <div>
         <div className='parentSpec'>
             {specOffers.map((item)=>{
             return(
@@ -85,6 +94,7 @@ const SpecOffersTable = observer(() => {
                 </div>
             )
             })}
+        </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

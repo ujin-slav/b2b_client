@@ -371,6 +371,7 @@ td.tdRed{
     display: flex;
     flex-wrap: wrap;
     cursor: pointer;
+    background-color:white;
   }
   .childSpec {
     overflow-wrap: break-word;
@@ -501,4 +502,31 @@ td.tdRed{
     max-width: 100vw;
     max-height: 100vh;
     object-fit: contain;
+  }
+  .section.card{
+    margin: 5px 5px 5px 5px;
+    border: 0px!important;
+  }
+  .sectionHeader.card-header{
+    background-color: #282c34;
+    height: 55px;
+    text-decoration: underline;
+    color: #EC4D3C;
+    cursor: pointer; 
+    position: relative;   
+    border-radius: 20px 20px 20px 20px !important;                               
+  }
+  .sectionName{    
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); 
+    font-size: 25px;
+    font-family: American Retro;     
+    background-color:white;  
+    width: 350px;     
+    padding: 3px 3px 3px 10px;
+    border-radius: 20px 20px 20px 20px;            
+  }
+  .caret{
+    color: #282c34;
   }

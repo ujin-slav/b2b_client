@@ -6,12 +6,17 @@ import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
+import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+import SpecOffersTable from "../components/SpecOffersTable";
+import Prices from "../components/Price";
+import TableAsk from "../components/TableAsk";
 
 const OrgInfo = () => {
     const {id} = useParams();
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
+    const[visible,setVisible] = useState(false);
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
@@ -70,7 +75,7 @@ const OrgInfo = () => {
             <Row>
                 <Col>
                 <Form>
-                     <h3>Реквизиты организации</h3>
+                     <h3>{org?.nameOrg}, ИНН {org?.inn}</h3>
                      <Table striped bordered hover size="sm">
                         <tbody>
                             <tr>
@@ -106,43 +111,61 @@ const OrgInfo = () => {
                 </Col>
             </Row>
             <Row>
-                <Form.Label style={{
-                    "text-align":"center",
-                    "font-size":"130%"
-                    }}>
-                    Прайс лист организации</Form.Label>
+            <Row>
+                <TableAsk/>
             </Row>
             <Row>
-                    <Form.Group className="mx-auto my-2">
-                        <Form.Label>Поиск:</Form.Label>
-                        <Form.Control
-                            onChange={handleSearch}
-                            placeholder="Начните набирать артикул или название продукта"
-                        />
-                    </Form.Group>
+                <SpecOffersTable/>
             </Row>
-            <Table>
-             <thead>
-                <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Цена</th>
-                    <th>Остаток</th>
-                    <th>Дата</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {price?.map((item,index)=>
-                        <tr key={index}>
-                            <td>{item?.Code}</td>
-                            <td>{item?.Name}</td>
-                            <td>{item?.Price}</td>
-                            <td>{item?.Balance}</td>
-                            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                <Card className='section'>
+                <Card.Header className='sectionHeader headerPrices' 
+                onClick={()=>setVisible(!visible)}>
+                <div className='sectionName'>
+                 {visible ?
+                        <CaretUpFill className='caret'/>
+                        :
+                        <CaretDownFill className='caret'/>
+                    }
+                    Прайс
+                </div>
+                </Card.Header>
+                {visible ?
+                <div>
+                 <Form.Group className="mx-auto my-2">
+                 <Form.Label>Поиск:</Form.Label>
+                 <Form.Control
+                     onChange={handleSearch}
+                     placeholder="Начните набирать артикул или название продукта"
+                 />
+                </Form.Group>
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Артикул</th>
+                            <th>Наименование</th>
+                            <th>Цена</th>
+                            <th>Остаток</th>
+                            <th>Дата</th>
                         </tr>
-                    )}
-                 </tbody>
-            </Table>
+                        </thead>
+                        <tbody>
+                            {price?.map((item,index)=>
+                                <tr key={index}>
+                                    <td>{item?.Code}</td>
+                                    <td>{item?.Name}</td>
+                                    <td>{item?.Price}</td>
+                                    <td>{item?.Balance}</td>
+                                    <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                 </Table>
+                 </div>
+                 :
+                 <div></div>
+                }
+                </Card>
+            </Row>
         </Container>
         </div>
         <ModalCT 
