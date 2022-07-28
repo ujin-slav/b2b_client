@@ -1,7 +1,7 @@
 import React,{useEffect,useState,useContext} from 'react';
 import {fetchUserOffers} from '../http/askAPI';
 import { fetchOffers } from '../http/askAPI';
-import {Table, Container} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
@@ -28,6 +28,7 @@ const TableOffer = observer(() => {
       AskService.fetchUserOffers({authorId:user.user.id, limit,page:currentPage}).then((data)=>{
             offerUser.setOffer(data.docs);
             setpageCount(data.totalPages);
+            console.log(data)
         })
     },[]);
 
@@ -58,63 +59,55 @@ const TableOffer = observer(() => {
 
     return (
       <div>
-       <Table striped hover  className="tableAsk">
-            <col style={{"width":"3%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"25%"}}/>
-          	<col style={{"width":"20%"}}/>
-            <col style={{"width":"7%"}}/>
-          	<col style={{"width":"15%"}}/>
-            <col style={{"width":"7%"}}/>
-            <col style={{"width":"5%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Автор</th>
-            <th>Текст</th>
-            <th>Сообщение</th>
-            <th>Цена</th>
-            <th>Фаилы</th>
-            <th>Дата</th>
-            <th>Удалить</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className='parentSpecAsk'>
         {offerUser.getOffer().map((item,index)=>
-          <tr key={index}>
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>
+          <div key={index} className='childSpecAsk'>
+            <Card>
+              <Card.Header>{item?.Ask?.Name?.length>15 ?
+            `${item.Name.substring(0, 15)}...`
+             :
+             item?.Ask?.Name
+             }
+            <span className="cardMenu">
+                     <XCircle color="red"  className='menuIcon'
+                    onClick={(e)=>{
+                    e.stopPropagation();
+                    setModalActive(true);
+                    setDeleteId(item._id)
+            }} />     
+            </span> 
+             </Card.Header>
+            <div className='cardPadding'>
+            <div>
             <div>{item?.Ask?.Author?.name}</div> 
             <div>{item?.Ask?.Author?.nameOrg}</div>
-            </td>
-            <td className="tdText">
+            </div>
+            <div className="tdText">
             {item?.Ask?.Text?.length > 50 ? 
               `${item?.Ask?.Text?.substring(0,50)}...`
               :
               item?.Ask?.Text
             }
-            </td>
-            <td>{item?.Text?.length > 30 ? 
+            </div>
+            <div>Текст: {item?.Text?.length > 30 ? 
               `${item?.Text?.substring(0,30)}...`
               :
               item?.Text
-              }</td>
-            <td>{item?.Price}</td>
-            <td>
+              }</div>
+            <div>Стоимость: {item?.Price}</div>
+            <div>
             {item?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
                               <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
                               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}
-            </td>
-            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}} onClick={()=>{
-              setModalActive(true);
-              setDeleteId(item._id)}}/></td>
-          </tr>
+            </div>
+            <div className="specCloudy">{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+            </div>
+            </Card>
+          </div>
         )}  
-        </tbody>
-      </Table> 
+      </div> 
       <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

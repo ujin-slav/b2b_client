@@ -1,7 +1,7 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table,Container} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { MODIFYPRICEASK,CARDPRICEASK } from '../utils/routes';
 import SpecOfferService from '../services/SpecOfferService'
@@ -60,39 +60,28 @@ const InvitedSpecOffer =  observer(() => {
 
     return (
       <div>
-        <Table striped hover  className="tableAsk">
-            <col style={{"width":"3%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"5%"}}/>
-          	<col style={{"width":"15%"}}/>
-            <col style={{"width":"5%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>От кого</th>
-            <th>Количество</th>
-            <th>Комментарий</th>
-            <th>Дата</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className='parentSpecAsk'>
         {specAsk?.map((item, index)=>
-          <tr key={index}  
-            onClick={()=>history.push(CARDPRICEASK + '/' + item._id)}>
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>
+          <div key={index}  
+           className='childSpecAsk'>
+            <Card>
+              <Card.Header>
+              </Card.Header>
+            <div className='cardPadding'>
+            <div>
                 <div>{item?.Name}</div>
                 <div>{item?.Email}</div>
                 <div>{item?.Telefon}</div>
                 <div>{item?.City}</div>
-            </td>
-            <td>{item?.Amount}</td>
-            <td>{item?.Comment}</td>
-            <td>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-          </tr>
+            </div>
+            <div>{item?.Amount}</div>
+            <div>{item?.Comment}</div>
+            <div>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+            </div>
+            </Card>
+          </div>
         )}  
-        </tbody>
-        </Table>
+        </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

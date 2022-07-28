@@ -155,7 +155,7 @@ const CardAsk = observer(() => {
         <Container className="mx-auto my-4">
             <Row>
                 <Col>
-                     <Table striped bordered hover size="sm">
+                     <Table>
                         <tbody>
                             <tr>
                             <td>Автор</td>

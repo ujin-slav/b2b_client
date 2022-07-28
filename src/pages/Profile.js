@@ -141,7 +141,7 @@ const Profile =  observer(() => {
             <Row>
                 <Col>
                 <Form onSubmit={onSubmit}>
-                     <Table striped bordered hover size="sm">
+                     <Table>
                         <col style={{"width":"25%"}}/>
           	            <col style={{"width":"75%"}}/>
                         <tbody>

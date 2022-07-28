@@ -1,7 +1,7 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table,Container} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { MODIFYPRICEASK,CARDPRICEASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
@@ -57,53 +57,46 @@ const MyOrdersPrice = () => {
 
     return (
       <div>
-        <Table striped hover  className="tableAsk">
-            <col style={{"width":"3%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"5%"}}/>
-          	<col style={{"width":"15%"}}/>
-            <col style={{"width":"5%"}}/>
-            <col style={{"width":"5%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Кому</th>
-            <th>Сумма</th>
-            <th>Комментарий</th>
-            <th>Отправлен</th>
-            <th>Удалить</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className='parentSpecAsk'>
         {askPriceUser?.map((item, index)=>
-          <tr key={index}  
+          <div key={index}  
+            className='childSpecAsk'
             onClick={()=>item?.Sent ?
               history.push(CARDPRICEASK + '/' + item._id)
               :
               history.push(MODIFYPRICEASK + '/' + item._id)
             }
           >
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>{item?.To?.name} {item?.To?.nameOrg}</td>
-            <td>{item?.Sum}</td>
-            <td></td>
-            <td> {item?.Sent ?
+            <Card>
+              <Card.Header>
+              <span className="cardMenu">
+                     <XCircle color="red"  className='menuIcon'
+                    onClick={(e)=>{
+                    e.stopPropagation();
+                    setModalActive(true);
+                    setDeleteId(item._id)
+              }} />     
+              </span> 
+              </Card.Header>
+            <div className='cardPadding'>
+            <div>{item?.To?.name} {item?.To?.nameOrg}</div>
+            <div>{item?.Sum}</div>
+            <div></div>
+            <div> {item?.Sent ?
                     <div style={{"color":"green"}}>
                     Да
                     </div>
                     :
                     <div  style={{"color":"red"}}>
                     Нет</div>
-                    }</td>
-            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
-            onClick={()=>{
-              setModalActive(true)
-              setDeleteId(item._id)}}/>
-            </td>
-          </tr>
+                    }</div>
+            <div>
+            </div>
+          </div>
+          </Card>
+          </div>
         )}  
-        </tbody>
-        </Table>
+        </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

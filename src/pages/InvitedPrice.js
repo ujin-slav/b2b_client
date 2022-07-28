@@ -1,7 +1,7 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table,Container} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { MODIFYPRICEASK,CARDPRICEASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
@@ -59,40 +59,26 @@ const InvitedPriceAsk =  observer(() => {
 
     return (
       <div>
-        <Table striped hover  className="tableAsk">
-            <col style={{"width":"3%"}}/>
-          	<col style={{"width":"10%"}}/>
-            <col style={{"width":"5%"}}/>
-          	<col style={{"width":"15%"}}/>
-            <col style={{"width":"5%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>От кого</th>
-            <th>Сумма</th>
-            <th>Комментарий</th>
-            <th>Дата</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className='parentSpecAsk'>
         {askPriceUser?.map((item, index)=>
-          <tr key={index}  
-            onClick={()=>history.push(CARDPRICEASK + '/' + item._id)}>
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>
+          <div key={index} onClick={()=>history.push(CARDPRICEASK + '/' + item._id)} className='childSpecAsk'>
+            <Card>
+              <Card.Header>
+              </Card.Header>
+            <div>
             {item?.FIZ ? 
             `${item?.NameFiz + " " + item?.EmailFiz}`
             :
             `${item?.Author?.name + " " + item?.Author?.nameOrg}`
             }
-            </td>
-            <td>{item?.Sum}</td>
-            <td>{item?.Comment}</td>
-            <td>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-          </tr>
-        )}  
-        </tbody>
-        </Table>
+            </div>
+            <div>{item?.Sum}</div>
+            <div>{item?.Comment}</div>
+            <div>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+            </Card>
+          </div>
+        )} 
+      </div>
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

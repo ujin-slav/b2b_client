@@ -71,12 +71,11 @@ const OrgInfo = () => {
     return (
         <div>
             <div>
-            <Container style={{width: "70%"}}>
+            <Container style={{width: "80%"}}>
             <Row>
                 <Col>
                 <Form>
-                     <h3>{org?.nameOrg}, ИНН {org?.inn}</h3>
-                     <Table striped bordered hover size="sm">
+                     <Table >
                         <tbody>
                             <tr>
                             <td>Имя</td>

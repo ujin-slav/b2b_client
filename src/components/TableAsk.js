@@ -145,7 +145,7 @@ const TableAsk = observer(({authorId}) => {
                 <div>{item.Author.nameOrg}</div>
             </td>
             <td>
-            {item.Text.length>50 ?
+            Текст: {item.Text.length>50 ?
                 `${item.Text.substring(0, 50)}...`
                  :
                  item.Text

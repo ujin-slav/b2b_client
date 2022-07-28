@@ -1,7 +1,7 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Table,Container} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK, MODIFYASK } from '../utils/routes';
 import { fetchAsks } from "../http/askAPI";
@@ -55,102 +55,90 @@ const TableAsk = observer(() => {
     };
     return (
       <div>
-        <Table striped hover  className="tableAsk">
-            <col style={{"width":"3%"}}/>
-          	<col style={{"width":"5%"}}/>
-            <col style={{"width":"5%"}}/>
-          	<col style={{"width":"25%"}}/>
-            <col style={{"width":"15%"}}/>
-          	<col style={{"width":"7%"}}/>
-            <col style={{"width":"6%"}}/>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Название</th>
-            <th>Статус</th>
-            <th>Текст</th>
-            <th>Комментарий</th>
-            <th>Окончание предложений</th>
-            <th>Уд./Ре./Ко.</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div className='parentSpecAsk'>
         {askUser?.getAsk().map((item, index)=>
-          <tr key={index} onClick={()=>history.push(CARDASK + '/' + item._id)}>
-            <td>{index+1+(currentPage-1)*limit}</td>
-            <td>{item.Name.length>15 ?
-                `${item.Name.substring(0, 15)}...`
-                 :
-                 item.Name
-                 }</td>
-            <td>
-            {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-            <td className="tdGreen">
-            Активная
-            </td>
-            :
-            <td className="tdRed">
-            Истек срок
-            </td>
-            }
-            </td>
-            <td className="tdText">
-              {item.Text.length > 30 ? 
-              `${item.Text.substring(0,30)}...`
-              :
-              item.Text
-              }
-            </td>
-            <td>{item.Comment.length > 30 ? 
-              `${item.Comment.substring(0,30)}...`
-              :
-              item.Comment
-              }</td>
-            <td>{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</td>
-            <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
-                onClick={(e)=>{
+          <div key={index} onClick={()=>history.push(CARDASK + '/' + item._id)} className='childSpecAsk'>
+          <Card>
+              <Card.Header>{item.Name.length>15 ?
+            `${item.Name.substring(0, 15)}...`
+             :
+             item.Name
+             }
+            <span className="cardMenu">
+                  <Link45deg  className='menuIcon'
+                    onClick={(e)=>{
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
+                      myalert.setMessage("Ссылка скопирована");
+                    }}/>
+                    <Pen color="green" className='menuIcon'
+                    onClick={(e)=>{
+                        e.stopPropagation();
+                        history.push(MODIFYASK + '/' + item._id)
+                    }}/>
+                     <XCircle color="red"  className='menuIcon'
+                    onClick={(e)=>{
                     e.stopPropagation();
                     setModalActive(true);
                     setDeleteId(item._id)
-            }} /><Pen color="green" style={{"margin-left":"15px","width": "25px", "height": "25px"}}
-            onClick={(e)=>{
-                e.stopPropagation();
-                history.push(MODIFYASK + '/' + item._id)
-        }} />
-            <Link45deg style={{"margin-left":"15px","width": "25px", "height": "25px"}} 
-              onClick={(e)=>{
-                e.stopPropagation();
-                navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
-                myalert.setMessage("Ссылка скопирована");
-              }}/>
-        </td>
-          </tr>
+            }} />     
+            </span> 
+             </Card.Header>
+            <div className='cardPadding'>
+            <div>
+            <div>
+            Текст: {item.Text.length>50 ?
+            `${item.Text.substring(0, 50)}...`
+             :
+             item.Text
+             }
+            </div>
+            <div>
+                    {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                    <div style={{color:"green"}}>
+                    Активная
+                    </div>
+                    :
+                    <div style={{color:"red"}}>
+                    Истек срок
+                    </div>
+                    } 
+            </div>
+            </div>
+            <div>{item.Comment.length > 30 ? 
+              `${item.Comment.substring(0,30)}...`
+              :
+              item.Comment
+              }</div>
+            <div className="specCloudy">{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</div>
+        </div>      
+        </Card>      
+        </div>
         )}  
-        </tbody>
-        </Table>
-        <ReactPaginate
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
-            breakLabel={"..."}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination justify-content-center"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link"}
-            breakClassName={"page-item"}
-            breakLinkClassName={"page-link"}
-            activeClassName={"active"}
-          />
-          <ModalAlert header="Вы действительно хотите удалить" 
-              active={modalActive} 
-              setActive={setModalActive} funRes={deleteAsk}/>
      </div> 
+      <ReactPaginate
+      previousLabel={"предыдущий"}
+      nextLabel={"следующий"}
+      breakLabel={"..."}
+      pageCount={pageCount}
+      marginPagesDisplayed={2}
+      pageRangeDisplayed={3}
+      onPageChange={handlePageClick}
+      containerClassName={"pagination justify-content-center"}
+      pageClassName={"page-item"}
+      pageLinkClassName={"page-link"}
+      previousClassName={"page-item"}
+      previousLinkClassName={"page-link"}
+      nextClassName={"page-item"}
+      nextLinkClassName={"page-link"}
+      breakClassName={"page-item"}
+      breakLinkClassName={"page-link"}
+      activeClassName={"active"}
+    />
+    <ModalAlert header="Вы действительно хотите удалить" 
+        active={modalActive} 
+        setActive={setModalActive} funRes={deleteAsk}/>
+    </div>
     );
 });
 

@@ -77,48 +77,100 @@ const TableAsk = observer(({authorId}) => {
         </Card.Header>
         {visible ?
         <div>
-        <div className='parentSpec'>
+        <div className='parentSpecAsk'>
         {ask?.getAsk().map((item,index)=>{
-          if(checkAccessAsk(user,item).Open){
+          if(!checkAccessAsk(user,item).Open){
             return (
-                <div onClick={()=>redirect(item)} className='childSpec'>
-                <div className="specName">
-                        {item.Name.length>15 ?
-                        `${item.Name.substring(0, 15)}...`
-                        :
-                        item.Name
-                        }
-                </div>
-                <div className="specPrice">
-                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                        <span className="tdGreen">
-                        Активная
-                        </span>
-                        :
-                        <span className="tdRed">
-                        Истек срок
-                        </span>
-                        } 
-                </div>
-                <div className="specNameOrg">
-                        <div>{item.Author.inn}</div>
-                        <div>{item.Author.nameOrg}</div>
-                </div>
-                <div className="specCloudy">
-                    {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                    `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
-                    :
-                    getCategoryName(item.Region, regionNodes).join(", ")
-                    }
-                </div>
-                <div className="specCloudy">
-                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                </div>
-            </div>
+              <div onClick={()=>redirect(item)} className='childSpecAsk'>
+              <div className="blurry-text">
+                  Название
+              </div>
+              <div className="blurry-text">
+                  Текст
+              </div>
+              <div className="blurry-text">
+                      {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                      <div style={{color:"green"}}>
+                      Активная
+                      </div>
+                      :
+                      <div style={{color:"red"}}>
+                      Истек срок
+                      </div>
+                      } 
+              </div>
+              <div className="blurry-text">
+                      <div>ИНН: 8888888888</div>
+                      <div>Орг: Название</div>
+              </div>
+              <div className="blurry-text">
+                  Регионы
+              </div>
+              <div className="blurry-text">
+                  Категории
+              </div>
+              <div className="blurry-text">
+                  {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+              </div>
+              </div>
             )
-          } else{ 
-            return ("No")
-        }})}  
+          }else{
+            return( 
+            <div onClick={()=>redirect(item)} className='childSpecAsk'>
+            <Card>
+              <Card.Header>
+              <div className="specName">
+                    {item.Name.length>15 ?
+                    `${item.Name.substring(0, 15)}...`
+                    :
+                    item.Name
+                    }
+            </div>
+            </Card.Header>
+            <div className='cardPadding'>
+            <div>
+            Текст: {item.Text.length>50 ?
+            `${item.Text.substring(0, 50)}...`
+             :
+             item.Text
+             }
+            </div>
+            <div>
+                    {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                    <div style={{color:"green"}}>
+                    Активная
+                    </div>
+                    :
+                    <div style={{color:"red"}}>
+                    Истек срок
+                    </div>
+                    } 
+            </div>
+            <div>
+                    <div>ИНН: {item.Author.inn}</div>
+                    <div>Орг: {item.Author.nameOrg}</div>
+            </div>
+            <div className="specCloudy">
+                {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                :
+                getCategoryName(item.Region, regionNodes).join(", ")
+                }
+            </div>
+            <div className="specCloudy">
+                {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
+                :
+                getCategoryName(item.Category, categoryNodes).join(", ")
+                }
+            </div>
+            <div className="specCloudy">
+                {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+            </div>
+            </div>
+            </Card>
+            </div>
+        )}})}  
         </div>
         <ReactPaginate
             previousLabel={"предыдущий"}

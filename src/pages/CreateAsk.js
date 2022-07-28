@@ -199,8 +199,7 @@ const CreateAsk = observer(() => {
         <div>
           <Container>
           <Form onSubmit={onSubmit}>
-          <h3>Создать заявку</h3> 
-          <Table striped hover  className="createAsk">
+          <Table>
             <col style={{"width":"15%"}}/>
           	<col style={{"width":"85%"}}/>
                         <tbody>

@@ -33,6 +33,7 @@ const CardPriceAsk = () => {
 
     useEffect(() => {
         PriceService.getAskPriceId(id).then((data)=>{
+            console.log(data)
             setResult(data.Table)
             setRecevier(data.To)
             setSumTotal(data.Sum)

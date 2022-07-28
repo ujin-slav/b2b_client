@@ -523,10 +523,36 @@ td.tdRed{
     font-size: 25px;
     font-family: American Retro;     
     background-color:white;  
-    width: 350px;     
+    width: 98%;     
     padding: 3px 3px 3px 10px;
     border-radius: 20px 20px 20px 20px;            
   }
   .caret{
     color: #282c34;
+  }
+  .parentSpecAsk {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    background-color:white;
+  }
+  .childSpecAsk {
+    overflow-wrap: break-word;
+    width: 25%;
+    height: 25%;
+    padding:10px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .cardPadding{
+    padding:10px;
+  }
+  .cardMenu{
+    float:right;
+  }
+  .menuIcon{
+    margin-left:5px;
+    margin-left:5px;
+    width: 25px; 
+    height: 25px;
   }
