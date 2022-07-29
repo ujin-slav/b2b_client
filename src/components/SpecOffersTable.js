@@ -8,9 +8,9 @@ import dateFormat from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import CardSpecOffer from '../pages/CardSpecOffer';
-import { CARDSPECOFFER } from '../utils/routes';
+import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
-import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+import {CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
 
 const SpecOffersTable = observer(() => {
     const {ask} = useContext(Context);
@@ -52,7 +52,7 @@ const SpecOffersTable = observer(() => {
 
     return (
         <Card className='section sectionOffers'>
-        <Card.Header className='sectionHeader headerOffers' 
+        <Card.Header className='sectionHeaderOffer headerOffers' 
         onClick={()=>setVisible(!visible)}>
           <div className='sectionName'>
           {visible ?
@@ -65,6 +65,8 @@ const SpecOffersTable = observer(() => {
         </Card.Header>
         {visible ?
         <div>
+          <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addNew"/>
+          <span className="createNew">Создать новое</span>
         <div className='parentSpec'>
             {specOffers.map((item)=>{
             return(

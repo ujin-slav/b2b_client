@@ -8,6 +8,7 @@ import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from '../components/ModalAlert';
+import {ORGINFO} from "../utils/routes";
 import AskService from '../services/AskService'
 import { XCircle, Pen,Link45deg } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
@@ -79,16 +80,23 @@ const MyOrdersPrice = () => {
               </span> 
               </Card.Header>
             <div className='cardPadding'>
-            <div>{item?.To?.name} {item?.To?.nameOrg}</div>
-            <div>{item?.Sum}</div>
+            <div>Получатель:&nbsp; 
+              <a href="javascript:void(0)" onClick={(e)=>{
+                e.stopPropagation()
+                history.push(ORGINFO + '/' + item?.To?._id)
+              }}>
+                {item?.To?.name}, {item?.To?.nameOrg}
+              </a>
+            </div>
+            <div>Стоимость: {item?.Sum}</div>
             <div></div>
-            <div> {item?.Sent ?
-                    <div style={{"color":"green"}}>
+            <div>Отправлен: {item?.Sent ?
+                    <span style={{"color":"green"}}>
                     Да
-                    </div>
+                    </span>
                     :
-                    <div  style={{"color":"red"}}>
-                    Нет</div>
+                    <span  style={{"color":"red"}}>
+                    Нет</span>
                     }</div>
             <div>
             </div>

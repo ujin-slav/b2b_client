@@ -6,7 +6,7 @@ import {
   Card
 } from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { CARDASK } from '../utils/routes';
+import { CARDASK,CREATEASK } from '../utils/routes';
 import { fetchFilterAsks,fetchUser } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
@@ -14,7 +14,7 @@ import dateFormat, { masks } from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
-import { CircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+import { PlusCircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
 
 const TableAsk = observer(({authorId}) => {
@@ -77,6 +77,8 @@ const TableAsk = observer(({authorId}) => {
         </Card.Header>
         {visible ?
         <div>
+          <PlusCircleFill onClick={()=>history.push(CREATEASK)}  className="addNew"/>
+          <span className="createNew">Создать новое</span>
         <div className='parentSpecAsk'>
         {ask?.getAsk().map((item,index)=>{
           if(!checkAccessAsk(user,item).Open){

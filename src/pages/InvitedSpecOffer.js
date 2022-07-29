@@ -66,17 +66,17 @@ const InvitedSpecOffer =  observer(() => {
            className='childSpecAsk'>
             <Card>
               <Card.Header>
+                {item?.Name}
               </Card.Header>
             <div className='cardPadding'>
             <div>
-                <div>{item?.Name}</div>
-                <div>{item?.Email}</div>
-                <div>{item?.Telefon}</div>
-                <div>{item?.City}</div>
+                <div>Email: {item?.Email}</div>
+                <div>Телефон: {item?.Telefon}</div>
+                <div>Город: {item?.City}</div>
             </div>
-            <div>{item?.Amount}</div>
-            <div>{item?.Comment}</div>
-            <div>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+            <div>Количество: {item?.Amount}</div>
+            <div>Комментарий: {item?.Comment}</div>
+            <div  className="specCloudy">{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
             </div>
             </Card>
           </div>

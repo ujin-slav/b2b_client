@@ -19,7 +19,9 @@ import {LOGIN_ROUTE,
         PRICES, 
         INVITEDPRICE,
         MYSPECOFFERS,
-        INVITEDSPECOFFER} from "../utils/routes";
+        INVITEDSPECOFFER,
+        QUESTFROMME,
+        QUESTFORME} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -29,6 +31,7 @@ import io from "socket.io-client";
 import QuestService from '../services/QuestService'; 
 import faviconNewMessage from '../faviconNewMessage.ico'
 import faviconStd from '../favicon.ico'
+import QuestForMe from '../pages/QuestForMe';
 
 const NavBar = observer(() => {
 
@@ -141,7 +144,6 @@ const NavBar = observer(() => {
                 </NavLink >
                 <Nav className="me-auto">
                     <Nav.Link onClick={()=>activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(CREATEASK)}className={active===CREATEASK ? "active" : ""}>Создать заявку</Nav.Link>
                     <NavDropdown title="Мои">
                         <NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</NavDropdown.Item>
@@ -172,6 +174,13 @@ const NavBar = observer(() => {
                            </div>
                         </div>
                         </NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(QUESTFORME)}className={active===QUEST ? "active" : ""}>
+                        <div className="parentAnswer">
+                           <div>Вопросы для меня</div>
+                           <div className="countQuest">{sumUnreadQuest()}</div>
+                        </div>
+                        </NavDropdown.Item>
+                        <NavDropdown.Item onClick={()=>activeLink(QUESTFROMME)}className={active===INVITEDPRICE ? "active" : ""}>Вопросы от меня</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Я заказывал по прайсу</NavDropdown.Item>
                         <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={active===MYSPECOFFERS ? "active" : ""}>Мои специальные предложения</NavDropdown.Item>
                     </NavDropdown>
@@ -182,12 +191,6 @@ const NavBar = observer(() => {
                     <div className="parentAnswer">
                            <div>Сообщения</div>
                            <div className="countQuest">{sumUnread()}</div>
-                        </div>
-                    </Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(QUEST)}className={active===QUEST ? "active" : ""}>
-                        <div className="parentAnswer">
-                           <div>Вопрос-ответ</div>
-                           <div className="countQuest">{sumUnreadQuest()}</div>
                         </div>
                     </Nav.Link>
                     <Nav.Link onClick={()=>activeLink(PRICES)}className={active===PRICES ? "active" : ""}>Прайс</Nav.Link>

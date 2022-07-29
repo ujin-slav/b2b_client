@@ -38,9 +38,12 @@ const SearchForm = () => {
     },[checkedCat,checkedRegion]);
 
     return (
-        <div>
-            <Container className="mb-3 mt-3">
-                <Form>
+        <div style={{
+            "background-image":`url(${process.env.REACT_APP_API_URL}static/background/fon.png)`,
+            "background-size":'20%',
+            "background-repeat": "no-repeat"
+        }}>
+                <Form className="searchForm">
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">
                             <InputGroup className="mb-3">
@@ -90,7 +93,6 @@ const SearchForm = () => {
                     </Form.Group>
                     </Row>                   
                 </Form>  
-            </Container>
             <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 

@@ -33,6 +33,8 @@ import Prices from "../pages/Prices";
 import MyPrice from "../pages/MyPrice";
 import CardSpecOffer from "../pages/CardSpecOffer";
 import InvitedSpecOffer from "../pages/InvitedSpecOffer";
+import QuestForMe from "../pages/QuestForMe";
+import QuestFromMe from "../pages/QuestFromMe";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -60,6 +62,8 @@ export const CATORG = '/catorg'
 export const MYCONTR = '/mycontr'
 export const CHAT = '/chat'
 export const QUEST = '/quest'
+export const QUESTFORME = '/questforme'
+export const QUESTFROMME = '/questfromme'
 export const ORGINFO = '/orginfo'
 export const HELP = '/help'
 export const ABOUT = '/about'
@@ -172,6 +176,14 @@ export const authRoutes = [
     {
         path: QUEST,
         Component: Quest
+    },
+    {
+        path: QUESTFORME,
+        Component: QuestForMe
+    },
+    {
+        path: QUESTFROMME,
+        Component: QuestFromMe
     },
     {
         path: ORGINFO +  '/:id',

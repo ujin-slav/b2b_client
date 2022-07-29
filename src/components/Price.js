@@ -7,14 +7,14 @@ import {
  import CardOrg from '../components/CardOrg'; 
  import {Context} from "../index";
  import dateFormat, { masks } from "dateformat";
- import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
+ import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
  import {useHistory} from 'react-router-dom';
  import {observer} from "mobx-react-lite";
  import {getCategoryName} from '../utils/Convert'
  import RegionTree from '../components/RegionTree';
  import { regionNodes } from '../config/Region';
  import ModalCT from '../components/ModalCT';
- import { Cart4,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+ import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
  import ReactPaginate from "react-paginate";
 
 const Prices = observer(() => {
@@ -69,6 +69,8 @@ const Prices = observer(() => {
         </Card.Header>
             {visible ?
             <div>
+            <PlusCircleFill onClick={()=>history.push(UPLOADPRICE)}  className="addNew"/>
+                 <span className="createNew">Загрузить свой прайс</span>
             <Table>
              <thead>
                 <tr>

@@ -459,12 +459,6 @@ td.tdRed{
     color:black;
     margin: 10px 15px 5px 15px;
   }
-  .addSpecOffer{
-    width: 50px; 
-    height: 50px;
-    color:black;
-    margin: 10px 15px 5px 15px;
-  }
   .addSpecOffer:hover{
     width: 50px; 
     height: 50px;
@@ -516,6 +510,15 @@ td.tdRed{
     position: relative;   
     border-radius: 20px 20px 20px 20px !important;                               
   }
+  .sectionHeaderOffer.card-header{
+    background-color: #FF6A00;
+    height: 55px;
+    text-decoration: underline;
+    color: #EC4D3C;
+    cursor: pointer; 
+    position: relative;   
+    border-radius: 20px 20px 20px 20px !important;                               
+  }
   .sectionName{    
     position: absolute;
     top: 50%;
@@ -555,4 +558,23 @@ td.tdRed{
     margin-left:5px;
     width: 25px; 
     height: 25px;
+  }
+  .addNew{
+    width: 35px; 
+    height: 35px;
+    color:black;
+    margin: 10px 15px 5px 15px;
+  }
+  .addNew:hover{
+    width: 35px; 
+    height: 35px;
+    color:red;
+    margin: 10px 15px 5px 15px;
+  }
+  .createNew{
+    font-size: 25px;
+    font-family: American Retro;
+  }
+  .searchForm{
+    padding: 30px 120px 10px 120px;
   }
