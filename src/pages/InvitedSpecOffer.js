@@ -38,7 +38,7 @@ const InvitedSpecOffer =  observer(() => {
       },[user.user,loading]);
 
     const fetchPage = async (currentPage) => {
-        SpecOfferService.getSpecAskUser({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
+        SpecOfferService.getSpecAskUser({to:user.user.id,limit,page:currentPage}).then((data)=>{
             setSpecAsk(data.docs)
         })
     };

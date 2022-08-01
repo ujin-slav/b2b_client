@@ -232,8 +232,8 @@ td.tdRed{
   font-weight:bold !important;
 }
 
-.active{
-  color:yellow !important;
+.activeLink{
+  color:#FF6A00 !important;
   font-weight:bold !important;
 }
 
@@ -577,4 +577,7 @@ td.tdRed{
   }
   .searchForm{
     padding: 30px 120px 10px 120px;
+  }
+  .dropdown-menu-wrapper li {
+    list-style-type: none;
   }

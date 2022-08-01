@@ -2,6 +2,7 @@ import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
+import '../fontawesome.min.css';
 import {LOGIN_ROUTE,
         CREATEASK, 
         MYORDERS, 
@@ -23,7 +24,7 @@ import {LOGIN_ROUTE,
         QUESTFROMME,
         QUESTFORME} from "../utils/routes";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
-import { Button,Navbar,Nav, NavDropdown } from "react-bootstrap";
+import { Container,Navbar,Nav, NavDropdown,Dropdown,NavItem } from "react-bootstrap";
 import logo from '../b2blogo.png'
 import profileLogo from '../profile.png'
 import SocketIOFileClient from 'socket.io-file-client';
@@ -39,11 +40,11 @@ const NavBar = observer(() => {
     const history = useHistory();
     const {myalert} = useContext(Context);
     const currentRoute = useHistory().location.pathname.toLowerCase();
-    const [active,setActive]=useState();
     const [blink,setBlink]=useState(false);
     const [countquest,setCountQuest]=useState();
     const [countchat,setCountChat]=useState([]);
     const {chat} = useContext(Context);
+    const location = useLocation(); 
 
     useEffect(() => {
         QuestService.getUnreadQuest(user.user.id).then((response)=>{
@@ -51,11 +52,10 @@ const NavBar = observer(() => {
                 setCountQuest(response.data)
             }                
         })
-      },[]);
+      },[location]);
 
     const activeLink=(route)=>{
         history.push(route);
-        setActive(route);
     }  
 
     const setFavicon=(num)=> {
@@ -128,97 +128,144 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const classNameLink=(route)=>{
+        return location.pathname===route ? "activeLink" : ""
+    }
 
     return (
         <div>
-            <Navbar bg="dark" variant="dark">
-            <div className="navbar-collapse collapse justify-content-stretch" id="navbar6">
-                <NavLink to="/">
-                    <img
-                        src={logo}
-                        width="50"
-                        height="50"
-                        className="d-inline-block align-top"
-                        alt = ""
-                    />
-                </NavLink >
-                <Nav className="me-auto">
-                    <Nav.Link onClick={()=>activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
-                    <NavDropdown title="Мои">
-                        <NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={active===MYORDERS ? "active" : ""}>Мои заявки</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={active===MYOFFERS ? "active" : ""}>Мои предложения</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={active===MYCONTR ? "active" : ""}>Мои контрагенты</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(INVITED)}className={active===INVITED ? "active" : ""}>
+        <Navbar bg="dark" variant="dark">
+        <div className="navbar-collapse collapse justify-content-stretch" id="navbar6">
+            <NavLink to="/">
+                <img
+                    src={logo}
+                    width="50"
+                    height="50"
+                    className="d-inline-block align-top"
+                    alt = ""
+                />
+            </NavLink >
+            <Nav className="me-auto">
+                <Nav.Link onClick={()=>activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
+                <NavDropdown title="Мои">
+                <div className="dropdown-menu-wrapper">
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><i className="col-2 fa fa-2x fa-solid fa-handshake"/></div>
+                            <div><b>&nbsp;&nbsp;Заявки</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={classNameLink(MYORDERS)}>Мои заявки</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={classNameLink(MYOFFERS)}>Мои предложения</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={classNameLink(MYCONTR)}>Мои контрагенты</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(INVITED)}className={classNameLink(INVITED)}>
                         <div className="parentAnswer" id="invited">
                            <div>Мои приглашения</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvited()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={active===MYPRICE ? "active" : ""}>Мой прайс</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={active===UPLOADPRICE ? "active" : ""}>Загрузить прайс</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={active===INVITEDPRICE ? "active" : ""}>
-                        <div className="parentAnswer">
-                           <div>Мне заказали по прайсу</div>
-                           <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedPrice()}</div>
-                           </div>
-                        </div>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={active===INVITEDSPECOFFER ? "active" : ""}>
+                        </NavDropdown.Item></li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><i className="col-2 fa fa-2x fa-solid fa-basket-shopping"/></div>
+                            <div><b>&nbsp;&nbsp;Спец. предложения</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={classNameLink(MYSPECOFFERS)}>Мои специальные предложения</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> 
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
                         <div className="parentAnswer">
                            <div>Мне заказали по спец. предложению</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvitedSpecOffers()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(QUESTFORME)}className={active===QUEST ? "active" : ""}>
+                        </NavDropdown.Item></li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><i className="col-2 fa fa-2x fa-solid fa-calculator"/></div>
+                            <div><b>&nbsp;&nbsp;Прайс-листы</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={classNameLink(MYPRICE)}>Мой прайс</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={classNameLink(UPLOADPRICE)}>Загрузить прайс</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={classNameLink(MYORDERSPRICE)}>Я заказывал по прайсу</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={classNameLink(INVITEDPRICE)}>
+                        <div className="parentAnswer">
+                           <div>Мне заказали по прайсу</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'>{sumInvitedPrice()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item></li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><i className="col-2 fa fa-2x fa-solid fa-circle-question"/></div>
+                            <div><b>&nbsp;&nbsp;Вопросы</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(QUESTFROMME)}className={classNameLink(QUESTFROMME)}>Вопросы от меня</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> 
+                        <NavDropdown.Item onClick={()=>activeLink(QUESTFORME)}className={classNameLink(QUESTFORME)}>
                         <div className="parentAnswer">
                            <div>Вопросы для меня</div>
                            <div className="countQuest">{sumUnreadQuest()}</div>
                         </div>
                         </NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(QUESTFROMME)}className={active===INVITEDPRICE ? "active" : ""}>Вопросы от меня</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={active===MYORDERSPRICE ? "active" : ""}>Я заказывал по прайсу</NavDropdown.Item>
-                        <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={active===MYSPECOFFERS ? "active" : ""}>Мои специальные предложения</NavDropdown.Item>
-                    </NavDropdown>
-                    <div className="parentAnswer myNoti">
-                           <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>
+                        </li>
+                      </ul>
                     </div>
-                    <Nav.Link onClick={()=>activeLink(CHAT)}className={active===CHAT ? "active" : ""}>
-                    <div className="parentAnswer">
-                           <div>Сообщения</div>
-                           <div className="countQuest">{sumUnread()}</div>
-                        </div>
-                    </Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(PRICES)}className={active===PRICES ? "active" : ""}>Прайс</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(HELP)}className={active===HELP ? "active" : ""}>Помощь</Nav.Link>
-                    <Nav.Link onClick={()=>activeLink(ABOUT)}className={active===ABOUT ? "active" : ""}>О сервисе</Nav.Link>
-                </Nav>
-            </div>
-            <NavLink to="/profile">
-            <img
-                        src={profileLogo}
-                        width="50"
-                        height="50"
-                        className="d-inline-block align-top"
-                        alt = ""
-                    />
-            </NavLink>
-            <div className="navbar-nav ml-auto">
-                <Nav className="me-auto">
-                    {user.isAuth?
-                        <Nav.Link onClick={()=>user.logout()} className="generalLink">Выйти</Nav.Link>
-                    :
-                        <Nav.Link onClick={()=>history.push(LOGIN_ROUTE)} className="generalLink">Войти</Nav.Link>     
-                    }  
-                </Nav>
-            </div>
-            </Navbar>
-        </div>    
-
+                 </div>
+                </NavDropdown>
+                <div className="parentAnswer myNoti">
+                       <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>
+                </div>
+                <Nav.Link onClick={()=>activeLink(CHAT)}className={classNameLink(CHAT)}>
+                <div className="parentAnswer">
+                       <div>Сообщения</div>
+                       <div className="countQuest">{sumUnread()}</div>
+                    </div>
+                </Nav.Link>
+                <Nav.Link onClick={()=>activeLink(PRICES)}className={classNameLink(PRICES)}>Прайс</Nav.Link>
+                <Nav.Link onClick={()=>activeLink(HELP)}className={classNameLink(HELP)}>Помощь</Nav.Link>
+                <Nav.Link onClick={()=>activeLink(ABOUT)}className={classNameLink(ABOUT)}>О сервисе</Nav.Link>
+            </Nav>
+        </div>
+        <NavLink to="/profile">
+        <img
+                    src={profileLogo}
+                    width="50"
+                    height="50"
+                    className="d-inline-block align-top"
+                    alt = ""
+                />
+        </NavLink>
+        <div className="navbar-nav ml-auto">
+            <Nav className="me-auto">
+                {user.isAuth?
+                    <Nav.Link onClick={()=>user.logout()} className="generalLink">Выйти</Nav.Link>
+                :
+                    <Nav.Link onClick={()=>history.push(LOGIN_ROUTE)} className="generalLink">Войти</Nav.Link>     
+                }  
+            </Nav>
+        </div>
+        </Navbar>
+    </div>    
     );
 });
 

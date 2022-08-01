@@ -31,13 +31,14 @@ const InvitedPriceAsk =  observer(() => {
             PriceService.getAskPrice({to:user.user.id,limit,page:currentPage}).then((data)=>{
                 setAskPriceUser(data.docs)
                 setpageCount(data.totalPages);
+                console.log(data)
               })
               chat.socket.emit("get_unread");
         }
       },[user.user,loading]);
 
     const fetchPage = async (currentPage) => {
-       PriceService.getAskPrice({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
+       PriceService.getAskPrice({to:user.user.id,limit,page:currentPage}).then((data)=>{
             setAskPriceUser(data.docs)
         })
     };

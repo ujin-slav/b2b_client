@@ -5,6 +5,7 @@ import UserStore from './store/UserStore';
 import AskStore from './store/AskStore';
 import AskUserStore from './store/AskUserStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../src/styleMenu.css';
 import AlertStore from './store/AlertStore';
 import QuestStore from './store/QuestStore';
 import ChatStore from './store/ChatStore';
