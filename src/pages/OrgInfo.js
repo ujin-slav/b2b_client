@@ -7,66 +7,22 @@ import dateFormat, { masks } from "dateformat";
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
-import SpecOffersTable from "../components/SpecOffersTable";
+import UserSpecOfferTable from "../components/UserSpecOfferTable";
 import Prices from "../components/Price";
-import TableAsk from "../components/TableAsk";
+import UserAsk from "../components/UserAsk";
+import UserPrice from '../components/UserPrice';
 
 const OrgInfo = () => {
     const {id} = useParams();
     const [org, setOrg] = useState();
-    const[fetching,setFetching] = useState(true);
-    const [price,setPrice] = useState([]); 
-    const[visible,setVisible] = useState(false);
-    const[totalDocs,setTotalDocs] = useState(0);
-    const[currentPage,setCurrentPage] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
-    const[search,setSearch] = useState("");
-    let limit = 30
-
-    useEffect(() => {
-        if(fetching){
-            if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:id}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice([...price, ...data.docs]);
-                setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>setFetching(false))
-            }
-        }
-    },[fetching]);
-
-    useEffect(() => {
-        document.addEventListener('scroll',scrollHandler);
-        return function(){
-            document.removeEventListener('scroll',scrollHandler);
-        }
-    },[]);
-
-    const scrollHandler = (e) =>{
-        if((e.target.documentElement.scrollHeight - 
-            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setFetching(true)
-            }
-    }
 
     useEffect(() => {
         fetchUser(id).then((data)=>{
             setOrg(data)
         })
 
-      },[]);
-
-    const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:id}).
-            then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
-                setSearch(e.target.value)
-        }).finally(
-            ()=>setFetching(false)
-        )
-    }
+    },[]);
 
     return (
         <div>
@@ -111,59 +67,12 @@ const OrgInfo = () => {
             </Row>
             <Row>
             <Row>
-                <TableAsk/>
+                <UserAsk id={id}/>
             </Row>
             <Row>
-                <SpecOffersTable/>
+                <UserSpecOfferTable id={id}/>
             </Row>
-                <Card className='section'>
-                <Card.Header className='sectionHeader headerPrices' 
-                onClick={()=>setVisible(!visible)}>
-                <div className='sectionName'>
-                 {visible ?
-                        <CaretUpFill className='caret'/>
-                        :
-                        <CaretDownFill className='caret'/>
-                    }
-                    Прайс
-                </div>
-                </Card.Header>
-                {visible ?
-                <div>
-                 <Form.Group className="mx-auto my-2">
-                 <Form.Label>Поиск:</Form.Label>
-                 <Form.Control
-                     onChange={handleSearch}
-                     placeholder="Начните набирать артикул или название продукта"
-                 />
-                </Form.Group>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Артикул</th>
-                            <th>Наименование</th>
-                            <th>Цена</th>
-                            <th>Остаток</th>
-                            <th>Дата</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {price?.map((item,index)=>
-                                <tr key={index}>
-                                    <td>{item?.Code}</td>
-                                    <td>{item?.Name}</td>
-                                    <td>{item?.Price}</td>
-                                    <td>{item?.Balance}</td>
-                                    <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-                                </tr>
-                            )}
-                        </tbody>
-                 </Table>
-                 </div>
-                 :
-                 <div></div>
-                }
-                </Card>
+                <UserPrice id={id}/>
             </Row>
         </Container>
         </div>

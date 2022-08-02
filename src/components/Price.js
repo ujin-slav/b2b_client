@@ -16,43 +16,68 @@ import {
  import ModalCT from '../components/ModalCT';
  import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
  import ReactPaginate from "react-paginate";
+ import waiting from "../waiting.gif";
 
 const Prices = observer(() => {
+    const [loading,setLoading] = useState(true) 
     const {user} = useContext(Context);
     const[price,setPrice] = useState([]);
     const [pageCount, setpageCount] = useState(0);
     const[visible,setVisible] = useState(false);
     const[currentPage,setCurrentPage] = useState();
-    const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const[search,setSearch] = useState("");
     const history = useHistory();
     let limit = 30
 
     useEffect(() => {
-        if(fetching){
+        if(visible){
             if(price.length===0 || price.length<totalDocs) {
             PriceService.getPrice({page:currentPage,limit,search}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
                 setpageCount(data.totalPages);
-            }).finally(()=>setFetching(false))
+            }).finally(()=>setLoading(false))
             }
         }  
-    },[fetching]);
+    },[visible]);
 
 
     const fetchComments = async (currentPage) => {
         PriceService.getPrice({page:currentPage,limit,search}).then(
             (data)=>{
             setPrice(data.docs);
-    })};
+        }).finally(()=>setLoading(false))
+    };
     
     const handlePageClick = async (data) => {
         setCurrentPage(data.selected + 1)
         await fetchComments(data.selected + 1);
       };
+
+      if (loading){
+        return(
+            <Card className='section'>
+            <Card.Header className='sectionHeader headerPrices' 
+            onClick={()=>setVisible(!visible)}>
+              <div className='sectionName'>
+              {visible ?
+                    <CaretUpFill className='caret'/>
+                    :
+                    <CaretDownFill className='caret'/>
+                }
+                Прайс
+              </div>
+            </Card.Header>
+              {visible ?
+                  <img className="gifWaiting" src={waiting}/>
+                :
+                <div></div>
+              }
+              </Card>
+        )
+       }
 
     return (
         <Card className='section'>

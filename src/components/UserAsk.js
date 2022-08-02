@@ -7,7 +7,7 @@ import {
 } from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK,CREATEASK } from '../utils/routes';
-import { fetchFilterAsks,fetchUser } from "../http/askAPI";
+import { fetchUserAsks} from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import dateFormat, { masks } from "dateformat";
@@ -18,12 +18,12 @@ import { PlusCircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
 import waiting from "../waiting.gif";
 
-const TableAsk = observer(({authorId}) => {
+const UserAsk = observer(({id}) => {
     const [loading,setLoading] = useState(true) 
-    const {ask} = useContext(Context);
+    const [ask,setAsk] = useState([]) 
     const {myalert} = useContext(Context);
     const history = useHistory();
-    const[visible,setVisible] = useState(false);
+    const [visible,setVisible] = useState(false);
     const [pageCount, setpageCount] = useState(0);
     const {user} = useContext(Context);
     const [currentPage,setCurrentPage] = useState(1)
@@ -31,26 +31,20 @@ const TableAsk = observer(({authorId}) => {
 
     useEffect(() => {
       if(visible){
-        fetchFilterAsks({
-          filterCat:ask.categoryFilter,
-          filterRegion:ask.regionFilter,
-          searchText:ask.searchText,
-          searchInn:ask.searchInn,
-          limit,page:currentPage}).then((data)=>{
-          ask.setAsk(data.docs)
+        fetchUserAsks({
+          id,limit,page:currentPage}).then((data)=>{
+          setAsk(data.docs)
           setpageCount(data.totalPages);
+          console.log(data)
         }).finally(()=>setLoading(false))
       }
-      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible]);
+      },[visible]);
 
     const fetchComments = async (currentPage) => {
-      fetchFilterAsks({
-        filterCat:ask.categoryFilter,
-        filterRegion:ask.regionFilter,
-        searchText:ask.searchText,
-        searchInn:ask.searchInn,
-        limit,page:currentPage}).then((data)=>{
-        ask.setAsk(data.docs)
+        fetchUserAsks({
+        id,limit,page:currentPage}).then((data)=>{
+        setAsk(data.docs)
+        setpageCount(data.totalPages);
        }).finally(()=>setLoading(false))
     };
 
@@ -105,10 +99,8 @@ const TableAsk = observer(({authorId}) => {
         </Card.Header>
         {visible ?
         <div>
-          <PlusCircleFill onClick={()=>history.push(CREATEASK)}  className="addNew"/>
-          <span className="createNew">Создать новое</span>
         <div className='parentSpecAsk'>
-        {ask?.getAsk().map((item,index)=>{
+        {ask?.map((item,index)=>{
           if(!checkAccessAsk(user,item).Open){
             return (
               <div onClick={()=>redirect(item)} className='childSpecAsk'>
@@ -229,4 +221,4 @@ const TableAsk = observer(({authorId}) => {
     );
 });
 
-export default TableAsk;
+export default UserAsk;

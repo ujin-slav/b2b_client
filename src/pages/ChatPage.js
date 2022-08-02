@@ -248,6 +248,7 @@ const ChatPage = observer(() => {
                                             <div>{item.contact.name}</div>
                                             <div>{item.contact.nameOrg}</div>
                                             {searchUnread(item.contact._id)}
+                                            <div className="online">111</div>
                             </div>)
                         })}
                     </div>

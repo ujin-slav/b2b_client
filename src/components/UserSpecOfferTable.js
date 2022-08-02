@@ -13,7 +13,7 @@ import ReactPaginate from "react-paginate";
 import {CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
 import waiting from "../waiting.gif";
 
-const SpecOffersTable = observer(() => {
+const UserSpecOffersTable = observer(({id}) => {
     const [loading,setLoading] = useState(true) 
     const {ask} = useContext(Context);
     const [specOffers, setSpecOffers] = useState([]);
@@ -27,12 +27,8 @@ const SpecOffersTable = observer(() => {
 
     useEffect(() => {
     if(visible){
-        SpecOfferService.getFilterSpecOffer({
-          filterCat:ask.categoryFilter,
-          filterRegion:ask.regionFilter,
-          searchText:ask.searchText,
-          searchInn:ask.searchInn,
-          limit,page:currentPage}).then((data)=>{
+        SpecOfferService.getSpecOfferUser({
+          id,limit,page:currentPage}).then((data)=>{
           setSpecOffers(data.docs)
           setpageCount(data.totalPages)
         }).finally(()=>setLoading(false))
@@ -40,13 +36,10 @@ const SpecOffersTable = observer(() => {
       },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible]);
 
     const fetchComments = async (currentPage) => {
-        SpecOfferService.getFilterSpecOffer({
-        filterCat:ask.categoryFilter,
-        filterRegion:ask.regionFilter,
-        searchText:ask.searchText,
-        searchInn:ask.searchInn,
-        limit,page:currentPage}).then((data)=>{
-        setSpecOffers(data.docs)
+        SpecOfferService.getSpecOfferUser({
+            id,limit,page:currentPage}).then((data)=>{
+            setSpecOffers(data.docs)
+            setpageCount(data.totalPages)
         }).finally(()=>setLoading(false))
     };
 
@@ -94,8 +87,6 @@ const SpecOffersTable = observer(() => {
         </Card.Header>
         {visible ?
         <div>
-          <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addNew"/>
-          <span className="createNew">Создать новое</span>
         <div className='parentSpec'>
             {specOffers.map((item)=>{
             return(
@@ -126,6 +117,7 @@ const SpecOffersTable = observer(() => {
             )
             })}
         </div>
+        {pageCount>2 ?
         <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
@@ -145,6 +137,9 @@ const SpecOffersTable = observer(() => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
         />
+        :
+        <div></div>
+        }
         </div>
         :
         <div></div>
@@ -153,4 +148,4 @@ const SpecOffersTable = observer(() => {
     );
 });
 
-export default SpecOffersTable;
+export default UserSpecOffersTable;
