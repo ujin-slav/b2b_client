@@ -11,21 +11,25 @@ const UserPrice = ({id}) => {
     const [price,setPrice] = useState([]); 
     const[visible,setVisible] = useState(false);
     const[totalDocs,setTotalDocs] = useState(0);
+    const[fetching,setFetching] = useState(true);
     const[currentPage,setCurrentPage] = useState();
     const[search,setSearch] = useState("");
     let limit = 30
 
     useEffect(() => {
-        if(loading){
+        if(loading || fetching){
             if(price.length===0 || price.length<totalDocs) {
             PriceService.getPrice({page:currentPage,limit,search,org:id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>setLoading(false))
+            }).finally(()=>{
+                setLoading(false)
+                setFetching(false)
+            })
             }
         }
-    },[visible]);
+    },[fetching,visible]);
 
     useEffect(() => {
         document.addEventListener('scroll',scrollHandler);
@@ -37,7 +41,7 @@ const UserPrice = ({id}) => {
     const scrollHandler = (e) =>{
         if((e.target.documentElement.scrollHeight - 
             (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setLoading(true)
+                setFetching(true)
             }
     }
 
@@ -49,7 +53,7 @@ const UserPrice = ({id}) => {
                 setCurrentPage(prevState=>prevState + 1)
                 setSearch(e.target.value)
         }).finally(
-            ()=>setLoading(false)
+            ()=>setFetching(false)
         )
     }
 

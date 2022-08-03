@@ -38,11 +38,7 @@ const SearchForm = () => {
     },[checkedCat,checkedRegion]);
 
     return (
-        <div style={{
-            "background-image":`url(${process.env.REACT_APP_API_URL}static/background/fon.png)`,
-            "background-size":'20%',
-            "background-repeat": "no-repeat"
-        }}>
+        <div>
                 <Form className="searchForm">
                     <Row>
                     <Form.Group as={Col} controlId="formGridEmail">

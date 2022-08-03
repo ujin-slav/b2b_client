@@ -11,6 +11,7 @@ import UserSpecOfferTable from "../components/UserSpecOfferTable";
 import Prices from "../components/Price";
 import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
+import ReviewOrgItems from '../components/ReviewOrgItems';
 
 const OrgInfo = () => {
     const {id} = useParams();
@@ -73,6 +74,12 @@ const OrgInfo = () => {
                 <UserSpecOfferTable id={id}/>
             </Row>
                 <UserPrice id={id}/>
+            </Row>
+            <Row>
+                <Card>
+                    <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
+                    <ReviewOrgItems id={id}/>
+            </Card>
             </Row>
         </Container>
         </div>
