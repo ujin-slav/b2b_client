@@ -12,6 +12,7 @@ import Prices from "../components/Price";
 import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
 import ReviewOrgItems from '../components/ReviewOrgItems';
+import '../fontawesome.min.css';
 
 const OrgInfo = () => {
     const {id} = useParams();
@@ -37,10 +38,13 @@ const OrgInfo = () => {
                             <tr>
                             <td>Имя</td>
                             <td>{org?.name}
-                            <Button style={{fontSize:"13px",padding:"2px"}} 
+                            <button className="myButtonMessage"
                                     onClick={()=>setModalActiveMessage(true)}>
+                                    <div>
                                     Написать сообщение
-                            </Button>
+                                    </div>
+                            </button>
+                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
                             </td>
                             </tr>
                             <tr>
@@ -76,10 +80,7 @@ const OrgInfo = () => {
                 <UserPrice id={id}/>
             </Row>
             <Row>
-                <Card>
-                    <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
-                    <ReviewOrgItems id={id}/>
-            </Card>
+                <ReviewOrgItems id={id}/>
             </Row>
         </Container>
         </div>

@@ -9,6 +9,7 @@ InputGroup,
 Button,
 Card,
 ListGroup,
+CardGroup,
 } from "react-bootstrap";
 import ReviewOrgService from '../services/ReviewOrgService'; 
 import {Context} from "../index"; 
@@ -36,7 +37,7 @@ const ReviewOrgItems = observer(({...props})=>{
                 setReview(response.data)
                 setFetch(false)
                 setFetchAnswer(false)
-                chat.socket.emit("unread_reviewOrg", {id:user.user.id});
+                //chat.socket.emit("unread_reviewOrg", {id:user.user.id});
             }                
         })
     },[fetch,fetchAnswer]);
@@ -83,29 +84,41 @@ const ReviewOrgItems = observer(({...props})=>{
 
     return (
         <div>
-        <Form onSubmit={handleSubmit}>    
-            {user.isAuth === true ?
-                <InputGroup> 
-                    <Button type="submit">Отправить
-                    </Button> 
-                </InputGroup>
-            :
-            <div></div> 
-            }    
-            <Form.Control
+        <Card className='section borderRadius'>
+            <Card.Header className='sectionHeader headerPrices'>
+                <div className='sectionName'>
+                Написать отзыв
+                </div>
+            </Card.Header>
+            <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Сообщение:</Form.Label>
+                    <Form.Control
                     name="Text"
                     placeholder="Текст сообщения"
                     as="textarea"
                     ref={inputEl}
                     onChange={(e)=>setText(e.target.value)}
-            />
-        </Form>
+                    />
+                    <button className="myButton" type="submit" >
+                        <div>
+                            Отправить
+                        </div>
+                    </button>
+                </Form.Group>
+                </Form>
+            </Card.Body>
+        </Card>   
         {review?.map((item,index)=>
         <div key={index}>
-            <Card>
-            <Card.Text className="m-3">
-            {item.Author?._id===user.user.id ?
-            <XSquare color="red" className="xcircleQuest"  onClick={e=>delQuest(item)} /> : <div></div>} 
+            <Card className="reviewCard">
+            <Card.Header>
+                <span className="boldtext">Автор:</span> {item.Author?.name}, {item.Author?.nameOrg}
+                {item.Author?._id===user.user.id ?
+                <XCircle color="red" className="xcircleReview"  onClick={e=>delQuest(item)} /> : <div></div>}
+            </Card.Header>
+            <Card.Text className="m-3"> 
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
             </Card.Text>
             {item.Destination?._id===user.user.id ?     
@@ -119,7 +132,6 @@ const ReviewOrgItems = observer(({...props})=>{
             }
             </Card>
                 {item.Answer.map((item)=>{
-                    console.log(item)
                     return(
                     <Card className="ms-5">
                         <Card.Text>

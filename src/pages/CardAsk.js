@@ -16,6 +16,7 @@ import ModalCT from '../components/ModalCT';
 import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
 import { checkAccessAsk } from '../utils/CheckAccessAsk';
+import '../fontawesome.min.css';
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -165,10 +166,15 @@ const CardAsk = observer(() => {
                                 {(user.user.id === ask?.Author._id) || user.isAuth == false  ? 
                                 <div></div> 
                                 : 
-                                  <Button style={{fontSize:"13px",padding:"2px"}} 
-                                    onClick={()=>setModalActiveMessage(true)}>
-                                    Написать сообщение
-                                  </Button>
+                                <div>
+                                <button className="myButtonMessage"
+                                onClick={()=>setModalActiveMessage(true)}>
+                                  <div>
+                                  Написать сообщение
+                                  </div>
+                                </button>
+                                <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                                </div>
                                 }
                                 </td>
                             </tr>
