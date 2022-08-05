@@ -642,6 +642,39 @@ td.tdRed{
   }
   .reviewCard{
     border: 1px solid !important;
+    margin-top: 5px;
     border-radius: 20px 20px 20px 20px !important;  
   }
-  
+  .page-link{
+    border-radius: 20px 20px 20px 20px !important; 
+  }
+  li.page-item a{
+    color: #282c34 !important;
+  }
+  li.page-item.active a{
+    color: white !important;
+  }
+  li.page-item.disabaled a{
+    color: gray !important;
+  }
+  .page-item.active .page-link{
+    background-color: #EC4D3C !important;
+  }
+  .answer{
+    font-size: 12px;
+    margin:2px;
+    padding: 1px 1px 3px 6px !important;
+    border-radius: 20px 20px 20px 20px !important; 
+  }
+  .borderRadius{
+    border-radius: 20px 20px 20px 20px !important; 
+  }
+  .answerReview{
+    margin-left: 20px;
+    padding: 2px 2px 2px 2px !important;
+    border-radius: 20px 20px 20px 20px !important; 
+  }
+  .dateAnswer{
+    margin-right: 10px;
+    float: right;
+  }

@@ -166,15 +166,15 @@ const CardAsk = observer(() => {
                                 {(user.user.id === ask?.Author._id) || user.isAuth == false  ? 
                                 <div></div> 
                                 : 
-                                <div>
+                                <span>
                                 <button className="myButtonMessage"
                                 onClick={()=>setModalActiveMessage(true)}>
                                   <div>
                                   Написать сообщение
-                                  </div>
+                                </div>
                                 </button>
                                 <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
-                                </div>
+                                </span>
                                 }
                                 </td>
                             </tr>

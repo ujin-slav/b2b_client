@@ -1,23 +1,15 @@
 import React, {useState,
     useContext,
     useRef,
-    useEffect,
-    createRef} from "react";
+    useEffect} from "react";
 import {useLocation} from "react-router-dom";
-import { Form,
-InputGroup,
-Button,
-Card,
-ListGroup,
-CardGroup,
-} from "react-bootstrap";
+import { Form,Card,} from "react-bootstrap";
 import ReviewOrgService from '../services/ReviewOrgService'; 
 import {Context} from "../index"; 
-import AnswerCard from "./AnswerCard"
+import AnswerCardReviewOrg from "./AnswerCardReviewOrg"
 import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
-import {SocketContext} from "../App";
-import { checkAccessAsk } from "../utils/CheckAccessAsk";
+import dateFormat, { masks } from "dateformat";
 
 const ReviewOrgItems = observer(({...props})=>{
     const {id} = props   
@@ -35,6 +27,7 @@ const ReviewOrgItems = observer(({...props})=>{
         ReviewOrgService.fetchReviewOrg({id}).then((response)=>{
             if(response.status===200){
                 setReview(response.data)
+                console.log(response)
                 setFetch(false)
                 setFetchAnswer(false)
                 //chat.socket.emit("unread_reviewOrg", {id:user.user.id});
@@ -60,11 +53,10 @@ const ReviewOrgItems = observer(({...props})=>{
         }
     }
 
-    const delQuest = async (item) => {
+    const delReview = async (item) => {
         const result = await ReviewOrgService.delReviewOrg(item.ID);
         if (result.status===200){
              myalert.setMessage("Успешно");
-               chat.socket.emit("unread_quest", {id:item.Destination._id}); 
            } else {
              myalert.setMessage(result.data.message);
         }
@@ -72,7 +64,6 @@ const ReviewOrgItems = observer(({...props})=>{
     }
 
     const delAnswer = async (item) => {
-        console.log(item)
         const result = await ReviewOrgService.delAnswerOrg(item._id);
         if (result.status===200){
             myalert.setMessage("Успешно"); 
@@ -116,15 +107,16 @@ const ReviewOrgItems = observer(({...props})=>{
             <Card.Header>
                 <span className="boldtext">Автор:</span> {item.Author?.name}, {item.Author?.nameOrg}
                 {item.Author?._id===user.user.id ?
-                <XCircle color="red" className="xcircleReview"  onClick={e=>delQuest(item)} /> : <div></div>}
+                <XCircle color="red" className="xcircleReview"  onClick={e=>delReview(item)} /> : <div></div>}
+                <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
             </Card.Header>
             <Card.Text className="m-3"> 
                 <span style={{fontSize:"18px"}}>{item.Text}</span>
             </Card.Text>
-            {item.Destination?._id===user.user.id ?     
-                    <AnswerCard user={user} 
+            {item?.Org===user.user.id ?     
+                    <AnswerCardReviewOrg 
+                                user={user} 
                                 item={item}
-                                id={id}
                                 setFetchAnswer={setFetchAnswer}
                                 />
             :
@@ -133,18 +125,17 @@ const ReviewOrgItems = observer(({...props})=>{
             </Card>
                 {item.Answer.map((item)=>{
                     return(
-                    <Card className="ms-5">
+                    <Card className="answerReview">
                         <Card.Text>
                         <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                         <span style={{"float": "right"}}>
                         {item.Author===user.user.id ?
-                                <XSquare color="red" className="xcircleQuest"  onClick={e=>delAnswer(item)} /> : <div></div>} 
+                                <XCircle color="red" className="xcircleQuest"  onClick={e=>delAnswer(item)} /> : <div></div>} 
                         </span>
                         </Card.Text>
                     </Card> 
                     ) 
-                })}
-                <div style={{"height":"5px","background":"#ECECEC"}}></div>          
+                })}      
         </div>
         )}                  
         </div>

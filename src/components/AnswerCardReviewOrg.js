@@ -5,10 +5,10 @@ import { Form,
     Card,
     ListGroup,
  } from "react-bootstrap";
-import QuestService from '../services/QuestService'; 
+import ReviewOrgService from '../services/ReviewOrgService'; 
 import {Context} from "../index"; 
 
-const AnswerCard = ({...props}) => {
+const AnswerCardReviewOrg = ({...props}) => {
     const{user,id,item,setFetchAnswer} = props
     const inputEl = useRef(null);
     const [textAnswer,setTextAnswer] = useState('')
@@ -21,11 +21,9 @@ const AnswerCard = ({...props}) => {
             Host:item.ID,
             Text: textAnswer,
             Author:user.user.id,
-            Ask: id,
-            Destination:item.DestinationID 
-        }
-        
-        const result = await QuestService.addQuest(data)
+            Org:item.Org 
+        }     
+        const result = await ReviewOrgService.addReviewOrg(data)
         if(result.data?.errors){
             myalert.setMessage(result.data.message);
         } else {
@@ -39,11 +37,11 @@ const AnswerCard = ({...props}) => {
     return (
         <div>
             <ListGroup>
-                <ListGroup.Item style={{fontSize:"12px"}} className="p-1">
+                <ListGroup.Item className="answer">
                 <a href="javascript:void(0)" onClick={()=>setVisible(!visible)}> Ответить</a></ListGroup.Item>
             </ListGroup>
             {visible ? 
-            <Card>
+            <Card className="borderRadius">
             <Form.Control
                 name="Text"
                 placeholder="Текст сообщения"
@@ -64,4 +62,4 @@ const AnswerCard = ({...props}) => {
     );
 };
 
-export default AnswerCard;
+export default AnswerCardReviewOrg;
