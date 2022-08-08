@@ -112,7 +112,6 @@ const NavBar = observer(() => {
         } 
     }
     const sumInvitedPrice=()=>{
-        console.log("sum inv" + chat.invitedPriceUnread )
         if(chat.invitedPriceUnread > 0){
             return chat.invitedPriceUnread
         }else{
@@ -121,7 +120,6 @@ const NavBar = observer(() => {
     }
 
     const sumInvitedSpecOffers=()=>{
-        console.log("sum offer ask" + chat.invitedPriceUnread )
         if(chat.specOfferAskUnread > 0){
             return chat.specOfferAskUnread
         }else{

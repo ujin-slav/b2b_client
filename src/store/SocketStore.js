@@ -94,6 +94,9 @@ export default class SocketStore {
           this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   
           })
+          this.socket.on("user_disconnected", (data) => { 
+            console.log(data)   
+          })
     }
     connectNotAuth(){
         this.socket = io.connect()

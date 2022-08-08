@@ -22,6 +22,7 @@ import dateFormat, { masks } from "dateformat";
 import waiting from "../waiting.gif";
 import SocketIOFileClient from 'socket.io-file-client';
 import {LOGIN_ROUTE} from "../utils/routes";
+import ChatService from '../services/ChatService'
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
@@ -91,9 +92,31 @@ const ChatPage = observer(() => {
         chat.socket.on("delete_message", (data) => {  
             newMessage(data);
         })
+        chat.socket.on("user_disconnected", (data) => { 
+            let newUsers = users.map((item)=>{
+                let newItem = item
+                if(item.contact._id===data){
+                    newItem = 
+                    {
+                        _id: item._id,
+                        owner: item.owner,
+                        contact: {
+                          id: item.contact.id,
+                          email: item.contact.email,
+                          name: item.contact.name,
+                          nameOrg: item.contact.nameOrg,
+                          statusLine: false
+                        }
+                    }
+                }
+                return newItem
+            })
+            setUsers(newUsers)
+        })
         chat.socket.emit("get_unread"); 
         localStorage.removeItem('recevier');
         localStorage.removeItem('recevierName')
+
         return ()=>{
             localStorage.removeItem('recevier');
             localStorage.removeItem('recevierName')
@@ -161,6 +184,7 @@ const ChatPage = observer(() => {
                     chat.totalPageUser = response.data.totalPages
                     chat.currentPageUser = response.data.page
                     setUsers(response.data.docs)
+                    console.log(response)
                 }            
             })
     }
@@ -248,7 +272,10 @@ const ChatPage = observer(() => {
                                             <div>{item.contact.name}</div>
                                             <div>{item.contact.nameOrg}</div>
                                             {searchUnread(item.contact._id)}
-                                            <div className="online">111</div>
+                                            {item.contact.statusLine ? 
+                                            <div className="online"></div>
+                                            :
+                                            <div className="offline"></div>}
                             </div>)
                         })}
                     </div>
