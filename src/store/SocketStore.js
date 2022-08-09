@@ -2,16 +2,17 @@ import { makeAutoObservable } from "mobx";
 import io from "socket.io-client";
 
 export default class SocketStore {
-    unread = [];
-    questUnread = 0;
-    invitedUnread = 0;
-    invitedPriceUnread = 0;
-    specOfferAskUnread = 0;
-    connected = false;
-    socket;
-    limit = 20;
-    limitUser = 8;
-    totalDocs;
+    unread = []
+    users = []
+    questUnread = 0
+    invitedUnread = 0
+    invitedPriceUnread = 0
+    specOfferAskUnread = 0
+    connected = false
+    socket
+    limit = 20
+    limitUser = 8
+    totalDocs
     totalDocsUser
     totalPageUser
     currentPageUser
@@ -70,6 +71,12 @@ export default class SocketStore {
     setTotalDocs(num){
         this.totalDocs = num
     }
+    setUsers(array){
+        this.users = array; 
+    }
+    getUsers(){
+        return this.users;
+    }
 
     connect(token){
         this.socket = io.connect(`${process.env.REACT_APP_SOCKET_URL}`,{
@@ -93,9 +100,6 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   
-          })
-          this.socket.on("user_disconnected", (data) => { 
-            console.log(data)   
           })
     }
     connectNotAuth(){

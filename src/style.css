@@ -691,3 +691,12 @@ td.tdRed{
     margin-right: 10px;
     float: right;
   }
+.lastVisit{
+  position: absolute;
+  right:30px;
+  bottom:0;
+  font-size: 18px;
+  color:black;
+  padding:0px 0px 0px 10px;
+  font-family: American Retro;
+}

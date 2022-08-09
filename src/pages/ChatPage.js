@@ -30,7 +30,7 @@ const ChatPage = observer(() => {
     const [unread, setUnread] = useState([]);
     const messageBox = useRef(null)
     const userBox = useRef(null)
-    const [users, setUsers] = useState([]);
+    //const [users, setUsers] = useState([]);
     const [userPage, setUserPage] = useState(1);
     const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
@@ -83,7 +83,7 @@ const ChatPage = observer(() => {
                     if(response.status===200){
                         chat.totalPageUser = response.data.totalPages
                         chat.currentPageUser = response.data.page
-                        setUsers(response.data.docs)
+                        chat.setUsers(response.data.docs)
                     }            
                 })
             }    
@@ -93,25 +93,23 @@ const ChatPage = observer(() => {
             newMessage(data);
         })
         chat.socket.on("user_disconnected", (data) => { 
-            let newUsers = users.map((item)=>{
-                let newItem = item
+            let newUsers = chat.getUsers().map((item)=>{
                 if(item.contact._id===data){
-                    newItem = 
-                    {
-                        _id: item._id,
-                        owner: item.owner,
-                        contact: {
-                          id: item.contact.id,
-                          email: item.contact.email,
-                          name: item.contact.name,
-                          nameOrg: item.contact.nameOrg,
-                          statusLine: false
-                        }
-                    }
+                    item.statusLine = false
+                    item.lastVisit = new Date()
                 }
-                return newItem
+                return item 
             })
-            setUsers(newUsers)
+            chat.setUsers(newUsers)
+        })
+        chat.socket.on("user_connected", (data) => { 
+            let newUsers = chat.getUsers().map((item)=>{
+                if(item.contact._id===data){
+                    item.statusLine = true
+                }
+                return item 
+            })
+            chat.setUsers(newUsers)
         })
         chat.socket.emit("get_unread"); 
         localStorage.removeItem('recevier');
@@ -155,7 +153,7 @@ const ChatPage = observer(() => {
                 UserService.fetchUsers(8,userPage+1,user.user.id).then((response)=>{
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
-                        setUsers(old=>[...old,...response.data.docs])  
+                        chat.setUsers(old=>[...old,...response.data.docs])  
                     }            
                 })
             }
@@ -183,7 +181,7 @@ const ChatPage = observer(() => {
                 if(response.status===200){
                     chat.totalPageUser = response.data.totalPages
                     chat.currentPageUser = response.data.page
-                    setUsers(response.data.docs)
+                    chat.setUsers(response.data.docs)
                     console.log(response)
                 }            
             })
@@ -266,13 +264,19 @@ const ChatPage = observer(() => {
                 <Row className="overflow-auto">
                     <Col className="col-3"> 
                     <div className="userBox" ref={userBox}>
-                        {users?.map((item,index)=>{
-                            return(<div key={index} className={item.contact._id===recevier?"userCardChange":"userCard"} 
-                             onClick={(e)=>handleRecevier(item.contact._id,item.contact.name)}>
-                                            <div>{item.contact.name}</div>
-                                            <div>{item.contact.nameOrg}</div>
-                                            {searchUnread(item.contact._id)}
-                                            {item.contact.statusLine ? 
+                        {chat.getUsers().map((item,index)=>{
+                            return(<div key={index} className={item.contact?._id===recevier?"userCardChange":"userCard"} 
+                             onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
+                                            <div>{item.contact?.name}</div>
+                                            <div>{item.contact?.nameOrg}</div>
+                                            {searchUnread(item?.contact._id)}
+                                            {item?.statusLine ? 
+                                            <div></div>
+                                            :
+                                            <div className="lastVisit">
+                                                {item?.lastVisit!==null ? dateFormat(item?.lastVisit?.Date, "dd/mm/yyyy HH:MM:ss"):``}
+                                            </div>}
+                                            {item?.statusLine ? 
                                             <div className="online"></div>
                                             :
                                             <div className="offline"></div>}
