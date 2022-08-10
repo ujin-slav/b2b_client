@@ -700,3 +700,18 @@ td.tdRed{
   padding:0px 0px 0px 10px;
   font-family: American Retro;
 }
+.parentCarousel::-webkit-scrollbar {
+  display: none;
+}
+.parentCarousel {
+  background-color: #fff;
+  min-width: 100%;
+  min-height: 200px;
+  display: flex;
+  overflow-x: auto;
+}
+.childCarousel {
+  background-color: #e74c3c;
+  min-width: 200px;
+  margin: 5px;
+}

@@ -26,6 +26,7 @@ const Profile =  observer(() => {
 
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
+    const [file, setFile] = useState([])
     const[profile,setProfile] = useState( {
         data: {
             id:null,
@@ -134,6 +135,39 @@ const Profile =  observer(() => {
         data[name] = checked
         setProfile({ data, formErrors});
     }
+
+    const onInputChange = (e) => {
+        try{
+            if(e.target.files[0].size < 5242880){
+                let file = e.target.files[0]
+                setFile(file)
+            } else {
+            myalert.setMessage("Превышен размер файла");
+            }  
+        }catch(e){
+            console.log(e)
+        }
+      };
+
+    const logo = () => {
+        if(file.length!==0){
+            return (
+                <div className='dnd-list'>
+                <div className='fotoContainer'>
+                    <img 
+                        className="foto" 
+                        src={URL.createObjectURL(file)} 
+                    /> 
+                    <div className='delButton' onClick={()=>setFile([])}>X</div>
+                </div>
+                </div>
+            )    
+        }else{
+            return(
+                <span></span>
+            )
+        }
+    }
     
     return (
         <div>
@@ -145,6 +179,16 @@ const Profile =  observer(() => {
                         <col style={{"width":"25%"}}/>
           	            <col style={{"width":"75%"}}/>
                         <tbody>
+                            <tr>
+                            <td>Логотип</td>
+                            <td>
+                                {logo()}
+                                <input type="file"
+                                onChange={onInputChange}
+                                className="form-control"
+                                single/>
+                            </td>
+                            </tr>
                             <tr>
                             <td>Имя</td>
                             <td><Form.Control

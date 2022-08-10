@@ -7,15 +7,17 @@ import SearchForm from "../components/SearchForm";
 import SpecOffersTable from "../components/SpecOffersTable";
 import Prices from "../components/Price";
 import { urlToBase64 } from "blob-url-to-file";
+import Carousel from "../components/Carousel";
 
 const B2b = observer(() => {
 
     return (
         <div>
-            <SearchForm/>
+           <SearchForm/>
            <TableAskCard/>
            <SpecOffersTable/>
            <Prices/>
+           <Carousel/>
         </div>
     );
 });
