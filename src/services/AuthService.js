@@ -13,8 +13,8 @@ export default class AuthService {
         return $api.post('/logout')
     }
     
-    static async changeuser(data){
-        return $api.post('/changeuser',{data})
+    static async changeuser(formData){
+        return $api.post('/changeuser',formData)
     }
     
     static async forgot(email){

@@ -260,13 +260,12 @@ const CreateSpecOffer = observer(() => {
       if(captcha){
         if (formValid(specOffer)) {
           const data = new FormData();
-          // sortedList.forEach((i)=>{
-          //         data.append(
-          //           "file", 
-          //           files.find(item=>item.id===i)
-          //         )
-          //       });
-          console.log(files)
+          sortedList.forEach((i)=>{
+                  data.append(
+                    "file", 
+                    files.find(item=>item.id===i)
+                  )
+                });
           data.append("Author", user.user.id)
           data.append("Name", specOffer.data.Name)
           data.append("Telefon", specOffer.data.Telefon)
@@ -277,7 +276,6 @@ const CreateSpecOffer = observer(() => {
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           const result = await SpecOfferService.addSpecOffer(data)
-          console.log(result)
           if (result.status===200){
             myalert.setMessage("Предложение успешно добавлено");
             //history.push(B2B_ROUTE)

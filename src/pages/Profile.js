@@ -8,6 +8,7 @@ import ModalCT from '../components/ModalCT';
 import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import { categoryNodes } from '../config/Category';
+import AuthService from "../services/AuthService";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -62,6 +63,14 @@ const Profile =  observer(() => {
         data.notiMessage = user.user.notiMessage
         data.notiQuest = user.user.notiQuest
         setProfile({ data, formErrors});
+        if(user.user.logo){
+            fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
+            .then(res => res.blob())
+            .then(blob => {
+              setFile(blob)
+            })
+        }
+        console.log(user.user.logo?.filename)
       },[user.user]);
 
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -103,6 +112,10 @@ const Profile =  observer(() => {
             }
         setProfile({ data, formErrors});
     }
+    
+    const blobToFile=(item)=>{
+        return new File([item],"load",{type:item.type})
+    }
 
     const onSubmit = async (e)=>{
         e.preventDefault();
@@ -114,10 +127,26 @@ const Profile =  observer(() => {
         }
         
         if (formValid(profile)) {
-            data["category"] = JSON.stringify(checkedCat);
-            data["region"] = JSON.stringify(checkedRegion);
-            setProfile({ data, formErrors});
-            const result = await user.changeuser(profile);
+            const formData = new FormData();
+
+            formData.append("id", data.id)
+            formData.append("name",data.name)
+            formData.append("nameOrg",data.nameOrg)
+            formData.append("adressOrg",data.adressOrg)
+            formData.append("telefon",data.telefon)
+            formData.append("inn",data.inn)
+            formData.append("region",JSON.stringify(checkedRegion))
+            formData.append("category",JSON.stringify(checkedCat))
+            formData.append("notiInvited",data.notiInvited)
+            formData.append("notiMessage",data.notiMessage)
+            formData.append("notiQuest",data.notiQuest)
+            if(file.length!==0){
+                formData.append("file", blobToFile(file))
+            }else{
+                formData.append("file", null)
+            }
+
+            const result = await AuthService.changeuser(formData);
             if (result.status===200){
                 myalert.setMessage("Данные успешно сохранены"); 
             } else {
