@@ -148,6 +148,7 @@ const Profile =  observer(() => {
 
             const result = await AuthService.changeuser(formData);
             if (result.status===200){
+                user.setUser(result.data.user);
                 myalert.setMessage("Данные успешно сохранены"); 
             } else {
                 myalert.setMessage(result.data.message);

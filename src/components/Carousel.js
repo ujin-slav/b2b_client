@@ -56,11 +56,18 @@ const Carousel = () => {
           }
     }
 
+    const scrollHandler =(e) => {
+        if((e.target.scrollWidth - e.target.offsetWidth)===e.target.scrollLeft){
+            console.log("Край")
+        }
+    }
+
     useEffect(() => {
         const element = slider.current;
 
         element.addEventListener('mousedown', mouseDownHandler )
         element.addEventListener('wheel', mouseWheelHandler )
+        element.addEventListener('scroll', scrollHandler )
         return ()=>{
             element.removeEventListener('mousedown', mouseDownHandler )
             element.removeEventListener('wheel', mouseWheelHandler )
