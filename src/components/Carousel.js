@@ -1,26 +1,23 @@
-import {React,useContext,useEffect,useState,useRef} from 'react'
-import {Card,Col,Row} from "react-bootstrap"
-import {observer} from "mobx-react-lite"
-import SpecOfferService from '../services/SpecOfferService'
-import {useHistory} from 'react-router-dom'
-import {Context} from "../index"
-import dateFormat from "dateformat"
-import {getCategoryName} from '../utils/Convert'
-import { regionNodes } from '../config/Region'
-import CardSpecOffer from '../pages/CardSpecOffer'
-import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes'
-import ReactPaginate from "react-paginate"
-import {CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons'
+import {React,useEffect,useState,useRef} from 'react'
+import {Card} from "react-bootstrap"
+import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons'
 import waiting from "../waiting.gif"
+import CarouselService from '../services/CarouselService'
 
 const Carousel = () => {
 
     const[visible,setVisible] = useState(true)
+    const[carousel,setCarousel] = useState([])
+    const[fetching,setFetching] = useState(true)
+    const[totalDocs,setTotalDocs] = useState(0)
+    const[currentPage,setCurrentPage] = useState()
+    const[test,setTest] = useState(0)
     const slider = useRef(null)
 
     let isDown = false
     let startX
     let scrollLeft
+    let limit = 10
     
     const mouseDownHandler =(e) => {
         isDown = true
@@ -47,6 +44,7 @@ const Carousel = () => {
     }
 
     const mouseWheelHandler =(e) => {
+        scrollHandler(e)
         if (e.deltaY > 0) {
             slider.current.scrollLeft += 100;
             e.preventDefault();
@@ -57,8 +55,9 @@ const Carousel = () => {
     }
 
     const scrollHandler =(e) => {
-        if((e.target.scrollWidth - e.target.offsetWidth)===e.target.scrollLeft){
-            console.log("Край")
+        console.log(e)
+        if(e.target.offsetWidth + e.target.offsetLeft + 200>slider.current.clientWidth){
+           alert("end")
         }
     }
 
@@ -67,12 +66,26 @@ const Carousel = () => {
 
         element.addEventListener('mousedown', mouseDownHandler )
         element.addEventListener('wheel', mouseWheelHandler )
-        element.addEventListener('scroll', scrollHandler )
+        //element.addEventListener('scroll', scrollHandler )
         return ()=>{
             element.removeEventListener('mousedown', mouseDownHandler )
             element.removeEventListener('wheel', mouseWheelHandler )
+           // element.addEventListener('scroll', scrollHandler )
         }
-      })
+      },[])
+
+    useEffect(() => {
+        if(fetching){
+            if(carousel.length===0 || carousel.length<totalDocs) {
+                CarouselService.getCarousel({search:"",limit,page:1}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setCarousel([...carousel, ...data.docs]);
+                setCurrentPage(prevState=>prevState + 1)
+                console.log(data)
+            }).finally(()=>setFetching(false))
+            }
+        }  
+    },[fetching]);
 
     return (
         <Card className='section sectionOffers'>
@@ -85,25 +98,19 @@ const Carousel = () => {
                 <CaretDownFill className='caret'/>
             }
             Участники
+            {test}
           </div>
         </Card.Header>
-        <div class="parentCarousel" ref={slider}>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
-            <div class="childCarousel"></div>
+        <div class="parentCarousel" id="slider" ref={slider}>
+        {carousel.map((item,index)=>
+            <div key={index} class="childCarousel">
+                <div className="carouselHead">
+                    <div>{item?.nameOrg}</div>
+                    <div>{item?.inn}</div>
+                </div>
+                <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+            </div>
+        )}
         </div>
         </Card>
     )

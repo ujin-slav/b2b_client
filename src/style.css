@@ -711,7 +711,23 @@ td.tdRed{
   overflow-x: auto;
 }
 .childCarousel {
-  background-color: #e74c3c;
+  background-color: #fafabe;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 20px;
   min-width: 200px;
   margin: 5px;
+}
+.childCarousel img {
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  max-height: 90%;
+  max-width:  90%;
+}
+.carouselHead{
+  background-color:white;
+  border-radius: 20px;
+  margin: 10px 3px 10px 3px;
+  padding: 3px 3px 3px 5px;
 }

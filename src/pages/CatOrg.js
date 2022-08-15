@@ -27,7 +27,6 @@ const CatOrg = () => {
                 setTotalDocs(data.totalDocs);
                 setOrg([...org, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
-                console.log(search)
             }).finally(()=>setFetching(false))
             }
         }  
