@@ -3,14 +3,17 @@ import {Card} from "react-bootstrap"
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons'
 import waiting from "../waiting.gif"
 import CarouselService from '../services/CarouselService'
+import {useHistory} from 'react-router-dom';
+import {ORGINFO} from "../utils/routes";
 
 const Carousel = () => {
 
     const[visible,setVisible] = useState(true)
+    const history = useHistory()
     const[carousel,setCarousel] = useState([])
     const[fetching,setFetching] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
-    const[currentPage,setCurrentPage] = useState()
+    const[page,setPage] = useState(1)
     const[test,setTest] = useState(0)
     const slider = useRef(null)
 
@@ -44,7 +47,6 @@ const Carousel = () => {
     }
 
     const mouseWheelHandler =(e) => {
-        scrollHandler(e)
         if (e.deltaY > 0) {
             slider.current.scrollLeft += 100;
             e.preventDefault();
@@ -55,9 +57,8 @@ const Carousel = () => {
     }
 
     const scrollHandler =(e) => {
-        console.log(e)
-        if(e.target.offsetWidth + e.target.offsetLeft + 200>slider.current.clientWidth){
-           alert("end")
+        if((e.target.scrollWidth - e.target.offsetWidth)===e.target.scrollLeft){
+            setFetching(true)
         }
     }
 
@@ -66,22 +67,21 @@ const Carousel = () => {
 
         element.addEventListener('mousedown', mouseDownHandler )
         element.addEventListener('wheel', mouseWheelHandler )
-        //element.addEventListener('scroll', scrollHandler )
+        element.addEventListener('scroll', scrollHandler )
         return ()=>{
             element.removeEventListener('mousedown', mouseDownHandler )
             element.removeEventListener('wheel', mouseWheelHandler )
-           // element.addEventListener('scroll', scrollHandler )
+            element.addEventListener('scroll', scrollHandler )
         }
       },[])
 
     useEffect(() => {
         if(fetching){
             if(carousel.length===0 || carousel.length<totalDocs) {
-                CarouselService.getCarousel({search:"",limit,page:1}).then((data)=>{
+                CarouselService.getCarousel({search:"",limit,page}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setCarousel([...carousel, ...data.docs]);
-                setCurrentPage(prevState=>prevState + 1)
-                console.log(data)
+                setPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
             }
         }  
@@ -105,7 +105,9 @@ const Carousel = () => {
         {carousel.map((item,index)=>
             <div key={index} class="childCarousel">
                 <div className="carouselHead">
+                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.id)}>
                     <div>{item?.nameOrg}</div>
+                    </a>
                     <div>{item?.inn}</div>
                 </div>
                 <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
