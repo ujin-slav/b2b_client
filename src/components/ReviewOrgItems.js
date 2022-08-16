@@ -2,38 +2,61 @@ import React, {useState,
     useContext,
     useRef,
     useEffect} from "react";
-import {useLocation} from "react-router-dom";
-import { Form,Card,} from "react-bootstrap";
+import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+import { Form,Card, Button,} from "react-bootstrap";
 import ReviewOrgService from '../services/ReviewOrgService'; 
 import {Context} from "../index"; 
 import AnswerCardReviewOrg from "./AnswerCardReviewOrg"
 import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
+import ReactPaginate from "react-paginate";
+
 
 const ReviewOrgItems = observer(({...props})=>{
     const {id} = props   
 
     const [text,setText] = useState('')
+    const[visible,setVisible] = useState(false);
     const {user} = useContext(Context);
     const [fetch,setFetch] = useState(false);
     const [fetchAnswer,setFetchAnswer] = useState(false)
     const [review,setReview] = useState([]);
+    const [loading,setLoading] = useState(true) 
     const {myalert} = useContext(Context);
     const inputEl = useRef(null);
     const {chat} =  useContext(Context)
+    const [pageCount, setpageCount] = useState(0);
+    const [currentPage,setCurrentPage] = useState(1)
+    let limit = 10
     
     useEffect(() => {
-        ReviewOrgService.fetchReviewOrg({id}).then((response)=>{
-            if(response.status===200){
-                setReview(response.data)
-                console.log(response)
-                setFetch(false)
-                setFetchAnswer(false)
-                //chat.socket.emit("unread_reviewOrg", {id:user.user.id});
-            }                
-        })
-    },[fetch,fetchAnswer]);
+        if(visible){
+            ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage}).then((response)=>{
+                if(response.status===200){
+                    setReview(response.data.docs)
+                    console.log(response)
+                    setFetch(false)
+                    setFetchAnswer(false)
+                    setpageCount(response.data.totalPages);
+                }                
+            }).finally(()=>setLoading(false))
+        }
+    },[fetch,fetchAnswer,visible]);
+
+    const fetchComments = async (currentPage) => {
+        ReviewOrgService.fetchReviewOrg({
+        id,limit,page:currentPage}).then((data)=>{
+        setReview(data.docs)
+        setpageCount(data.totalPages);
+       }).finally(()=>setLoading(false))
+    };
+
+    const handlePageClick = async (data) => {
+      setCurrentPage(data.selected + 1)
+      await fetchComments(data.selected + 1);
+    };
+
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
@@ -75,32 +98,44 @@ const ReviewOrgItems = observer(({...props})=>{
 
     return (
         <div>
-        <Card className='section borderRadius'>
-            <Card.Header className='sectionHeader headerPrices'>
-                <div className='sectionName'>
-                Написать отзыв
-                </div>
+        <Card className='section'>
+            <Card.Header className='sectionHeader headerPrices'
+             onClick={()=>setVisible(!visible)}>
+            <div className='sectionName'>
+             {visible ?
+                    <CaretUpFill className='caret'/>
+                    :
+                    <CaretDownFill className='caret'/>
+                }
+                Отзывы
+            </div>
             </Card.Header>
-            <Card.Body>
-                <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Сообщение:</Form.Label>
-                    <Form.Control
-                    name="Text"
-                    placeholder="Текст сообщения"
-                    as="textarea"
-                    ref={inputEl}
-                    onChange={(e)=>setText(e.target.value)}
-                    />
-                    <button className="myButton" type="submit" >
-                        <div>
+        </Card>  
+        {visible ?
+        <div>
+        <div className='formReviewOrg'>
+                    <Form onSubmit={handleSubmit}>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <div>Написать отзыв.</div>
+                        <div>Сообщение:</div>
+                        <Form.Control
+                        name="Text"
+                        placeholder="Текст сообщения"
+                        as="textarea"
+                        ref={inputEl}
+                        onChange={(e)=>setText(e.target.value)}
+                        />
+                        {/* <button className="myButton" type="submit" >
+                            <div>
+                                Отправить
+                            </div>
+                        </button> */}
+                        <Button className="mt-3" type="submit">
                             Отправить
-                        </div>
-                    </button>
-                </Form.Group>
-                </Form>
-            </Card.Body>
-        </Card>   
+                        </Button>
+                    </Form.Group>
+                    </Form>
+        </div> 
         {review?.map((item,index)=>
         <div key={index}>
             <Card className="reviewCard">
@@ -137,7 +172,30 @@ const ReviewOrgItems = observer(({...props})=>{
                     ) 
                 })}      
         </div>
-        )}                  
+        )} 
+          <ReactPaginate
+            previousLabel={"предыдущий"}
+            nextLabel={"следующий"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
+        :
+        <div></div>
+        }              
         </div>
     );
     })

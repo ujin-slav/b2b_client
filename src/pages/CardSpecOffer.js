@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import FotoSlider from '../components/FotoSlider';
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
+import SimilarSpecOffers from '../components/SimilarSpecOffers'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {getCategoryName} from '../utils/Convert'
@@ -74,6 +75,17 @@ const CardSpecOffer = observer(() => {
                 </div>
                 <div className="specContactData">
                     <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
+                </div>
+                <div className="specContact">
+                    <span>Похожие предложения</span>
+                </div>
+                <div className="specContactData">
+                    <span>
+                        <SimilarSpecOffers 
+                            categoryFilter={checkedCat}
+                            regionFilter={checkedRegion} 
+                        />
+                     </span>
                 </div>
             </Col>
             <Col>

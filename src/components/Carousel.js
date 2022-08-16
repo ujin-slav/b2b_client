@@ -14,7 +14,6 @@ const Carousel = () => {
     const[fetching,setFetching] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
     const[page,setPage] = useState(1)
-    const[test,setTest] = useState(0)
     const slider = useRef(null)
 
     let isDown = false
@@ -57,7 +56,7 @@ const Carousel = () => {
     }
 
     const scrollHandler =(e) => {
-        if((e.target.scrollWidth - e.target.offsetWidth)===e.target.scrollLeft){
+        if((e.target.scrollWidth - e.target.offsetWidth)<e.target.scrollLeft+1){
             setFetching(true)
         }
     }
@@ -98,14 +97,13 @@ const Carousel = () => {
                 <CaretDownFill className='caret'/>
             }
             Участники
-            {test}
           </div>
         </Card.Header>
         <div class="parentCarousel" id="slider" ref={slider}>
         {carousel.map((item,index)=>
             <div key={index} class="childCarousel">
                 <div className="carouselHead">
-                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.id)}>
+                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
                     <div>{item?.nameOrg}</div>
                     </a>
                     <div>{item?.inn}</div>

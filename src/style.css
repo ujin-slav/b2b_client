@@ -619,10 +619,10 @@ td.tdRed{
     border-radius: 20px;
   }
   .myButton{
-    border-radius: 20px;
+    /* border-radius: 20px;
     height: 45px;
     margin: 10px;
-    background-color: #282c34;
+    background-color: #282c34; */
   } .myButtonMessage{
     border:0px;
     background-color: white;
@@ -654,7 +654,7 @@ td.tdRed{
     height: 20px;
   }
   .reviewCard{
-    border: 1px solid !important;
+    /* border: 1px solid !important; */
     margin-top: 5px;
     border-radius: 20px 20px 20px 20px !important;  
   }
@@ -730,4 +730,9 @@ td.tdRed{
   border-radius: 20px;
   margin: 10px 3px 10px 3px;
   padding: 3px 3px 3px 5px;
+}
+.formReviewOrg {
+  padding: 20px 0px 15px 0px;
+  /* border: 1px solid !important;
+  border-radius: 20px; */
 }
