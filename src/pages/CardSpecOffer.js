@@ -79,14 +79,6 @@ const CardSpecOffer = observer(() => {
                 <div className="specContact">
                     <span>Похожие предложения</span>
                 </div>
-                <div className="specContactData">
-                    <span>
-                        <SimilarSpecOffers 
-                            categoryFilter={checkedCat}
-                            regionFilter={checkedRegion} 
-                        />
-                     </span>
-                </div>
             </Col>
             <Col>
                 <div className="cardSpecPrice">
@@ -131,6 +123,10 @@ const CardSpecOffer = observer(() => {
                 </div>
             </Col>
            </Row> 
+           <SimilarSpecOffers 
+                    categoryFilter={checkedCat}
+                    regionFilter={checkedRegion} 
+                />
            <FotoSlider 
             fotoArray={specOffer?.Files}
             setShow={setShowSlider}
