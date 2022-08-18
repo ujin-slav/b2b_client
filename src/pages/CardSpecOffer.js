@@ -13,6 +13,9 @@ import { regionNodes } from '../config/Region';
 import {getCategoryName} from '../utils/Convert'
 import {Context} from "../index";
 import SpecOfferAskFiz from '../components/SpecOfferAskFiz';
+import SpecOfferAskOrg from '../components/SpecOfferAskOrg';
+import {useHistory,useLocation} from 'react-router-dom'
+import { CARDSPECOFFER } from '../utils/routes';
 
 const CardSpecOffer = observer(() => {
     const {user} = useContext(Context);
@@ -25,6 +28,9 @@ const CardSpecOffer = observer(() => {
     const [specOffer, setSpecOffer] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const [modalActiveAskFiz,setModalActiveAskFiz] = useState(false)
+    const [modalActiveAskOrg,setModalActiveAskOrg] = useState(false)
+    const history = useHistory()
+    const location = useLocation(); 
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((data)=>{
@@ -32,7 +38,7 @@ const CardSpecOffer = observer(() => {
             setCheckedRegion(data.Region)
             setCheckedCat(data.Category)
         }).finally(()=>setLoading(false))     
-    },[]);
+    },[location]);
 
     if (loading){
         return(
@@ -40,6 +46,11 @@ const CardSpecOffer = observer(() => {
                 <img height="320" src={waiting}/>
             </p>
         )
+    }
+
+    const redirect=(e,id)=>{
+        window.scrollTo(0, 0) 
+        history.push(CARDSPECOFFER + '/' + id)
     }
   
     return (
@@ -84,15 +95,25 @@ const CardSpecOffer = observer(() => {
                 <div className="cardSpecPrice">
                     {specOffer.Price} ₽
                 </div>      
-                {user.isAuth ? 
-                <Button style={{
-                    fontSize:"20px",
-                    padding:"10px 35px 10px 35px",
-                    marginTop:"30px"
-                }} 
-                onClick={()=>setModalActiveMessage(true)}>
-                Написать сообщение
-                </Button>
+                {user.isAuth ?
+                <div>
+                    <Button style={{
+                        fontSize:"20px",
+                        padding:"10px 35px 10px 35px",
+                        marginTop:"30px"
+                    }} 
+                    onClick={()=>setModalActiveAskOrg(true)}>
+                    Заказать
+                    </Button>
+                    <Button style={{
+                        fontSize:"20px",
+                        padding:"10px 35px 10px 35px",
+                        marginTop:"30px"
+                    }} 
+                    onClick={()=>setModalActiveMessage(true)}>
+                    Написать сообщение
+                    </Button>
+                </div>
                 :
                 <Button style={{
                     fontSize:"20px",
@@ -126,6 +147,7 @@ const CardSpecOffer = observer(() => {
            <SimilarSpecOffers 
                     categoryFilter={checkedCat}
                     regionFilter={checkedRegion} 
+                    redirect={redirect}
                 />
            <FotoSlider 
             fotoArray={specOffer?.Files}
@@ -148,6 +170,15 @@ const CardSpecOffer = observer(() => {
                 receiver={specOffer?.Author} 
                 setActive={setModalActiveAskFiz}/>}
             setActive={setModalActiveAskFiz}   
+            />
+            <ModalCT 
+            header="Заказ" 
+            active={modalActiveAskOrg}
+            component={<SpecOfferAskOrg 
+                specOffer={id}
+                receiver={specOffer?.Author} 
+                setActive={setModalActiveAskOrg}/>}
+            setActive={setModalActiveAskOrg}   
             />
         </Container>
     );

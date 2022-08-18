@@ -6,7 +6,7 @@ import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region'
 import dateFormat from "dateformat"
 
-const SimilarSpecOffers = ({categoryFilter,regionFilter}) => {
+const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
 
     let limit = 10
     const [specOffers, setSpecOffers] = useState([]);
@@ -94,11 +94,11 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter}) => {
     return (
         <div class="parentCarousel" id="slider" ref={slider}>
         {specOffers.map((item,index)=>
-                <div key={index} onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} class="childCarousel">
+                <div key={index} class="childCarouselSimilar">
                     <img 
                     className="logo"
                     src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
-                    <div className="specName">
+                    <div className="specName" onClick={(e)=>redirect(e,item._id)}>
                         {item.Name}
                     </div>
                     <div className="specPrice">

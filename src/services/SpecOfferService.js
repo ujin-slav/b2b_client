@@ -39,5 +39,9 @@ export default class SpecOfferService {
         const data = await $api.post(`/specaskfiz`,formData);
         return data
     }
+    static async specAskOrg(formData){
+        const data = await $api.post(`/specaskorg`,formData);
+        return data
+    }
 }
 

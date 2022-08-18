@@ -392,6 +392,8 @@ td.tdRed{
     font-size: 20px;
     color:#0d6efd;
     font-weight:bold;
+    cursor: pointer;
+    text-decoration:underline;
   }
   .specPrice{
     font-size: 20px;
@@ -402,6 +404,7 @@ td.tdRed{
     color: #999999;
   }
   .fotoSpecCard{
+    border-radius: 20px;
     width: 100%;
     cursor: pointer;
   }
@@ -715,7 +718,8 @@ td.tdRed{
   font-weight: bold;
   font-size: 14px;
   border-radius: 20px;
-  min-width: 200px;
+  min-width: 240px;
+  max-width: 240px;
   margin: 5px;
 }
 .childCarousel img {
@@ -735,4 +739,21 @@ td.tdRed{
   padding: 20px 0px 15px 0px;
   /* border: 1px solid !important;
   border-radius: 20px; */
+}
+.childCarouselSimilar {
+  padding: 10px 10px 10px 10px;
+  background-color: #fafabe;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 20px;
+  min-width: 240px;
+  max-width: 240px;
+  margin: 5px;
+}
+.childCarouselSimilar img {
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  max-height: 90%;
+  max-width:  90%;
 }
