@@ -10,6 +10,7 @@ import {useHistory} from 'react-router-dom';
 import { MYORDERSPRICE } from '../utils/routes';
 import * as XLSX from 'xlsx';
 import { FileEarmarkSpreadsheet } from 'react-bootstrap-icons';
+import OrderStatus from './OrderStatus';
 
 const CardPriceAsk = () => {
     
@@ -171,6 +172,7 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
+        <OrderStatus/>
         </div>
         </div>
     );

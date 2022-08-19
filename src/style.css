@@ -757,3 +757,56 @@ td.tdRed{
   max-height: 90%;
   max-width:  90%;
 }
+.statusRing {
+  width: 100px;
+  height: 100px;
+  border: 10px solid #aaaaaa;
+  border-radius: 100%;
+}
+.statusRingActive {
+  width: 100px;
+  height: 100px;
+  border: 10px solid #FF6A00;
+  border-radius: 100%;
+}
+.statusLineContainer {
+  width: 100px;
+  height: 50px;
+}
+.statusLine {
+  margin-top: -2px;
+  position:relative;
+  width: 8px;
+  left:44px;
+  height: 100%;
+  background-color: #aaaaaa;
+}
+.statusNumber{
+  position:relative;
+  font-size: 60px;
+  left:25px;
+  bottom:10px;
+  font-weight: bold;
+  color:#aaaaaa;
+}
+.statusNumberActive{
+  position:relative;
+  font-size: 60px;
+  left:25px;
+  bottom:10px;
+  font-weight: bold;
+  color:black;
+}
+.statusRingContainer{
+  display: flex;
+}
+.nameStatus{
+  display:table;
+}
+.nameStatus span{
+  display:table-cell!important;
+  vertical-align:middle;
+  font-size:30px;
+  font-weight: bold;
+  color:#aaaaaa;
+}
