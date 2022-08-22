@@ -172,7 +172,7 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
-        <OrderStatus/>
+        <OrderStatus priceAskId={id}/>
         </div>
         </div>
     );

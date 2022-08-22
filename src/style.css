@@ -781,6 +781,14 @@ td.tdRed{
   height: 100%;
   background-color: #aaaaaa;
 }
+.statusLineActive {
+  margin-top: -2px;
+  position:relative;
+  width: 8px;
+  left:44px;
+  height: 100%;
+  background-color: #FF6A00;
+}
 .statusNumber{
   position:relative;
   font-size: 60px;
@@ -801,12 +809,15 @@ td.tdRed{
   display: flex;
 }
 .nameStatus{
-  display:table;
 }
-.nameStatus span{
-  display:table-cell!important;
+.nameStatusText{
   vertical-align:middle;
   font-size:30px;
   font-weight: bold;
   color:#aaaaaa;
+}
+.nameStatusTextActive{
+  vertical-align:middle;
+  font-size:30px;
+  font-weight: bold;
 }
