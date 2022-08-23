@@ -35,7 +35,7 @@ export const statusOrder = [
     },
 ]
 
-const OrderStatus = (priceAskId) => {
+const OrderStatus = ({priceAskId}) => {
 
     const[status,setStatus] = useState(1)
     const [filesBils, setFilesBils] = useState([])
@@ -49,20 +49,30 @@ const OrderStatus = (priceAskId) => {
     const {myalert} = useContext(Context);
 
     const send=async()=>{
-        const statusData = new FormData();
-        filesBils.forEach((item)=>statusData.append("file", Object.assign(item,{status:"bild"})));
-        filesPaid.forEach((item)=>statusData.append("file", item));
-        filesShipment.forEach((item)=>statusData.append("file", item));
-        filesReceived.forEach((item)=>statusData.append("file", item));
-        //data.append("PriceAskId", priceAskId)
-        //data.append("Status", "shipment")
-        const result = await PriceService.setStatus(statusData)
+        const data = new FormData();
+        filesBils.forEach((item)=>{data.append("file", item);data.append("Bilsfiles", item.name)})
+        filesPaid.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
+        filesShipment.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
+        filesReceived.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
+        data.append("PriceAskId", priceAskId)
+        data.append("Status", JSON.stringify(statusOrder.find(item=>item.value===status)))
+        const result = await PriceService.setStatus(data)
         if (result.status===200){
             myalert.setMessage("Успешно");
           } else {
             myalert.setMessage(result?.data?.message)
         }
     }
+
+    useEffect(() => {
+        PriceService.getStatus(priceAskId).then((result)=>{
+            console.log(result)
+            setFilesBils(result.Bilsfiles)
+            setFilesPaid(result.Paidfiles)
+            setFilesShipment(result.Shipmentfiles)
+            setFilesReceived(result.Receivedfiles)
+        })
+      },[]);
 
     const increment=()=>{
         setStatus(status+1)
@@ -119,11 +129,13 @@ const OrderStatus = (priceAskId) => {
                         onChange={(e)=>onInputChange(e,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesBils.map((a,key)=>
-                    <div key={key}>{a.name}
+                        multiple/> {filesBils.map((a,key)=>{
+                            console.log(a)
+                            return(
+                    <div key={key}>{a.name||a.originalname}
                         <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>
                     </div>
-                )}  
+                    )})}  
             </div> 
         )
     }
@@ -136,7 +148,7 @@ const OrderStatus = (priceAskId) => {
                         className="form-control"
                         disabled={!active}
                         multiple/> {filesPaid.map((a,key)=>
-                    <div key={key}>{a.name}
+                    <div key={key}>{a.name||a.originalname}
                         <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>
                     </div>
                 )}  
@@ -152,7 +164,7 @@ const OrderStatus = (priceAskId) => {
                         className="form-control"
                         disabled={!active}
                         multiple/> {filesShipment.map((a,key)=>
-                    <div key={key}>{a.name}
+                    <div key={key}>{a.name||a.originalname}
                         <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>
                     </div>
                 )}  
@@ -168,7 +180,7 @@ const OrderStatus = (priceAskId) => {
                         className="form-control"
                         disabled={!active}
                         multiple/> {filesReceived.map((a,key)=>
-                    <div key={key}>{a.name}
+                    <div key={key}>{a.name||a.originalname}
                         <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>
                     </div>
                 )}  

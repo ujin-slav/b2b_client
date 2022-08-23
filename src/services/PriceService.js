@@ -41,5 +41,9 @@ export default class PriceService {
         const {data} = await $api.post(`/setstatuspriceask`,formData);
         return data
     }
+    static async getStatus(id){
+        const {data} = await $api.post(`/getstatuspriceask`,{id});
+        return data
+    }
     
 }
