@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {Context} from "../index";
 import PriceService from '../services/PriceService'
+import {Eye} from 'react-bootstrap-icons';
 
 export const statusOrder = [
     {
@@ -43,19 +44,21 @@ const OrderStatus = ({priceAskId}) => {
     const [filesPaid, setFilesPaid] = useState([])
     const [fileSizePaid, setFileSizePaid] = useState(0);
     const [filesShipment, setFilesShipment] = useState([])
-    const [fileSizeShipment, setFileSizeShipment] = useState(0);
+    const [fileSizeShipment, setFileSizeShipment] = useState(0)
     const [filesReceived, setFilesReceived] = useState([])
-    const [fileSizeReceived, setFileSizeReceived] = useState(0);
+    const [fileSizeReceived, setFileSizeReceived] = useState(0)
+    const [deletedFiles,setDeletedFiles] = useState([])
     const {myalert} = useContext(Context);
 
     const send=async()=>{
         const data = new FormData();
-        filesBils.forEach((item)=>{data.append("file", item);data.append("Bilsfiles", item.name)})
-        filesPaid.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
-        filesShipment.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
-        filesReceived.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
+        filesBils?.forEach((item)=>{data.append("file", item);data.append("Bilsfiles", item.name)})
+        filesPaid?.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
+        filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
+        filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value===status)))
+        data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await PriceService.setStatus(data)
         if (result.status===200){
             myalert.setMessage("Успешно");
@@ -66,11 +69,13 @@ const OrderStatus = ({priceAskId}) => {
 
     useEffect(() => {
         PriceService.getStatus(priceAskId).then((result)=>{
-            console.log(result)
-            setFilesBils(result.Bilsfiles)
-            setFilesPaid(result.Paidfiles)
-            setFilesShipment(result.Shipmentfiles)
-            setFilesReceived(result.Receivedfiles)
+            if(result){
+                setStatus(result?.Status?.value)
+                setFilesBils(result?.Bilsfiles)
+                setFilesPaid(result?.Paidfiles)
+                setFilesShipment(result?.Shipmentfiles)
+                setFilesReceived(result?.Receivedfiles)
+            }
         })
       },[]);
 
@@ -83,6 +88,7 @@ const OrderStatus = ({priceAskId}) => {
     }
 
     const removeFile = (id,files,setFiles,fileSize,setFileSize) => {
+        setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
         setFileSize(fileSize - files[id].size)
         const newFiles = files.filter((item,index,array)=>index!==id);
         setFiles(newFiles);
@@ -129,11 +135,24 @@ const OrderStatus = ({priceAskId}) => {
                         onChange={(e)=>onInputChange(e,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesBils.map((a,key)=>{
-                            console.log(a)
+                        multiple/> {filesBils?.map((a,key)=>{
                             return(
-                    <div key={key}>{a.name||a.originalname}
-                        <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>     
+                            </div>
+                        }
                     </div>
                     )})}  
             </div> 
@@ -147,11 +166,26 @@ const OrderStatus = ({priceAskId}) => {
                         onChange={(e)=>onInputChange(e,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesPaid.map((a,key)=>
-                    <div key={key}>{a.name||a.originalname}
-                        <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>
+                        multiple/> {filesPaid?.map((a,key)=>{
+                            return(
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>     
+                            </div>
+                        }
                     </div>
-                )}  
+                    )})}  
             </div> 
         )
     }
@@ -163,11 +197,26 @@ const OrderStatus = ({priceAskId}) => {
                         onChange={(e)=>onInputChange(e,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesShipment.map((a,key)=>
-                    <div key={key}>{a.name||a.originalname}
-                        <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>
+                        multiple/> {filesShipment?.map((a,key)=>{
+                            return(
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>     
+                            </div>
+                        }
                     </div>
-                )}  
+                    )})}  
             </div> 
         )
     }
@@ -179,11 +228,26 @@ const OrderStatus = ({priceAskId}) => {
                         onChange={(e)=>onInputChange(e,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesReceived.map((a,key)=>
-                    <div key={key}>{a.name||a.originalname}
-                        <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>
+                        multiple/> {filesReceived?.map((a,key)=>{
+                            return(
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>     
+                            </div>
+                        }
                     </div>
-                )}  
+                    )})}  
             </div> 
         )
     }
@@ -193,17 +257,17 @@ const OrderStatus = ({priceAskId}) => {
             {statusOrder.map((item,index)=>
                 <div key={index}>
                     <div className='statusRingContainer'>
-                        <div className={status>item.value ? "statusRingActive" : "statusRing"}>
-                            <span className={status>item.value ? "statusNumberActive" : "statusNumber"}>{item.value}</span>
+                        <div className={status>=item.value ? "statusRingActive" : "statusRing"}>
+                            <span className={status>=item.value ? "statusNumberActive" : "statusNumber"}>{item.value}</span>
                         </div>
                         <div className='nameStatus'>
-                            <div className={status>item.value ? 'nameStatusTextActive' : 'nameStatusText'}>{item.labelRu}</div>
-                            {addOptionStatus(item.value,status>item.value)}
+                            <div className={status>=item.value ? 'nameStatusTextActive' : 'nameStatusText'}>{item.labelRu}</div>
+                            {addOptionStatus(item.value,status>=item.value)}
                         </div>
                     </div>
                     {item.value<statusOrder.length ?
                         <div className='statusLineContainer'>
-                            <div className={status>item.value ? "statusLineActive" : "statusLine"}>
+                            <div className={status>=item.value ? "statusLineActive" : "statusLine"}>
                             </div>
                         </div>
                         :

@@ -171,7 +171,7 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
-        <OrderStatus priceAskId={id}/>
+        {!fiz.FIZ ? <OrderStatus priceAskId={id}/> : <div></div>}
         </div>
         </div>
     );

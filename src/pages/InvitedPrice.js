@@ -65,17 +65,18 @@ const InvitedPriceAsk =  observer(() => {
           <div key={index} onClick={()=>history.push(CARDPRICEASK + '/' + item._id)} className='childSpecAsk'>
             <Card>
               <Card.Header>
+              <span className='boldtext'>№ {item?._id} от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
               </Card.Header>
             <div>
+            Автор:
             {item?.FIZ ? 
             `${item?.NameFiz + " " + item?.EmailFiz}`
             :
             `${item?.Author?.name + " " + item?.Author?.nameOrg}`
             }
             </div>
-            <div>{item?.Sum}</div>
+            <div>Сумма:{item?.Sum}</div>
             <div>{item?.Comment}</div>
-            <div>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
             </Card>
           </div>
         )} 
