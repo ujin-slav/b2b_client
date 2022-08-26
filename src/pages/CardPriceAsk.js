@@ -1,16 +1,13 @@
 import React,{useState,useEffect,useContext} from 'react';
-import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
+import {Table,Form} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
-import { XCircle} from 'react-bootstrap-icons';
-import { fetchUser} from '../http/askAPI';
-import {Context} from "../index";
 import {useParams} from 'react-router-dom';
-import {useHistory} from 'react-router-dom';
-import { MYORDERSPRICE } from '../utils/routes';
 import * as XLSX from 'xlsx';
 import { FileEarmarkSpreadsheet } from 'react-bootstrap-icons';
 import OrderStatus from './OrderStatus';
+import ModalCT from '../components/ModalCT';
+import MessageBox from '../components/MessageBox';
 
 const CardPriceAsk = () => {
     
@@ -19,6 +16,7 @@ const CardPriceAsk = () => {
     const [author, setAuthor] = useState();
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
+    const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const [result,setResult] = useState([]); 
     const [dateDoc,setDateDoc] = useState()
     const [fiz,setFiz] = useState(
@@ -93,7 +91,16 @@ const CardPriceAsk = () => {
                     {fiz.FIZ ? 
                     `${fiz.NameFiz + ", " + fiz.EmailFiz + ", " +  fiz.TelefonFiz}`
                     :
-                    `${author?.name + ", " + author?.nameOrg}`
+                    <span>
+                        {author?.name + ", " + author?.nameOrg}
+                        <button className="myButtonMessage"
+                                    onClick={()=>setModalActiveMessage(true)}>
+                                    <div>
+                                    Написать сообщение
+                                    </div>
+                        </button>
+                        <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                    </span>
                     }
                 </span>
                 </Form.Label>
@@ -173,6 +180,12 @@ const CardPriceAsk = () => {
         </div>
         {!fiz.FIZ ? <OrderStatus priceAskId={id}/> : <div></div>}
         </div>
+        <ModalCT 
+                  header="Сообщение" 
+                  active={modalActiveMessage}
+                  component={<MessageBox author={author?._id} setActive={setModalActiveMessage}/>}
+                  setActive={setModalActiveMessage}   
+        />
         </div>
     );
 };

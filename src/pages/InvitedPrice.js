@@ -76,7 +76,17 @@ const InvitedPriceAsk =  observer(() => {
             }
             </div>
             <div>Сумма:{item?.Sum}</div>
-            <div>{item?.Comment}</div>
+            {!item?.FIZ ? 
+                <div>Статус:
+                {item?.Status?.Status ? 
+                <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
+                :
+                <span className='statusLabel'>Доставлен поставщику</span>
+                }
+              </div>
+              :
+              <div></div>
+            }
             </Card>
           </div>
         )} 

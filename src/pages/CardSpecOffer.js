@@ -16,6 +16,8 @@ import SpecOfferAskFiz from '../components/SpecOfferAskFiz';
 import SpecOfferAskOrg from '../components/SpecOfferAskOrg';
 import {useHistory,useLocation} from 'react-router-dom'
 import { CARDSPECOFFER } from '../utils/routes';
+import { Cart4} from 'react-bootstrap-icons';
+import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
 
 const CardSpecOffer = observer(() => {
     const {user} = useContext(Context);
@@ -97,14 +99,14 @@ const CardSpecOffer = observer(() => {
                 </div>      
                 {user.isAuth ?
                 <div>
-                    <Button style={{
+                    {/* <Button style={{
                         fontSize:"20px",
                         padding:"10px 35px 10px 35px",
                         marginTop:"30px"
                     }} 
                     onClick={()=>setModalActiveAskOrg(true)}>
                     Заказать
-                    </Button>
+                    </Button> */}
                     <Button style={{
                         fontSize:"20px",
                         padding:"10px 35px 10px 35px",
@@ -113,6 +115,15 @@ const CardSpecOffer = observer(() => {
                     onClick={()=>setModalActiveMessage(true)}>
                     Написать сообщение
                     </Button>
+                    <Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                            onClick={()=>{
+                                if(user.isAuth){
+                                    history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + specOffer?.PriceId)
+                                }else{
+                                    history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + specOffer?.PriceId)
+                                }
+                            }}
+                            />
                 </div>
                 :
                 <Button style={{

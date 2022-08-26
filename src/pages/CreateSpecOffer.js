@@ -81,6 +81,8 @@ const CreateSpecOffer = observer(() => {
         Contact:"",
         Text: null,
         Price: null,
+        Code:"",
+        Balance:"",
         Category: "",
         Region: "",
       },
@@ -273,6 +275,8 @@ const CreateSpecOffer = observer(() => {
           data.append("EndDateOffers", specOffer.data.EndDateOffers)
           data.append("Text", specOffer.data.Text)
           data.append("Price", specOffer.data.Price)
+          data.append("Code", specOffer.data.Code)
+          data.append("Balance", specOffer.data.Balance)
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           const result = await SpecOfferService.addSpecOffer(data)
@@ -340,6 +344,22 @@ const CreateSpecOffer = observer(() => {
                                   showTimeInput
                                 />
                             </td>
+                            </tr>
+                            <tr>
+                            <td>Артикул</td>
+                            <td> <Form.Control
+                                name="Code"
+                                onChange={handleChangeControl}
+                                placeholder="не обязательно"
+                            /></td>
+                            </tr>
+                            <tr>
+                            <td>Остаток</td>
+                            <td> <Form.Control
+                                name="Balance"
+                                onChange={handleChangeControl}
+                                placeholder="не обязательно"
+                            /></td>
                             </tr>
                             <tr>
                             <td>Текст</td>

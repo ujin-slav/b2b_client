@@ -2,6 +2,11 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Context} from "../index";
 import PriceService from '../services/PriceService'
 import {Eye} from 'react-bootstrap-icons';
+import {
+    Form,
+    InputGroup,
+    Button,
+ } from "react-bootstrap";
 
 export const statusOrder = [
     {
@@ -27,7 +32,7 @@ export const statusOrder = [
     {
         value: 5,
         label: "shipment",
-        labelRu: "Товар в пути"
+        labelRu: "Создана реализация(товар в пути)"
     },
     {
         value: 6,
@@ -69,12 +74,12 @@ const OrderStatus = ({priceAskId}) => {
 
     useEffect(() => {
         PriceService.getStatus(priceAskId).then((result)=>{
-            if(result){
-                setStatus(result?.Status?.value)
-                setFilesBils(result?.Bilsfiles)
-                setFilesPaid(result?.Paidfiles)
-                setFilesShipment(result?.Shipmentfiles)
-                setFilesReceived(result?.Receivedfiles)
+            if(result.Status){
+                setStatus(result?.Status?.Status?.value)
+                setFilesBils(result?.Status?.Bilsfiles)
+                setFilesPaid(result?.Status?.Paidfiles)
+                setFilesShipment(result?.Status?.Shipmentfiles)
+                setFilesReceived(result?.Status?.Receivedfiles)
             }
         })
       },[]);
@@ -254,6 +259,19 @@ const OrderStatus = ({priceAskId}) => {
 
     return (
         <div>
+             <InputGroup className="mt-4 mb-4"> 
+                <Form.Label className="px-3 mt-2">Изменить статус:</Form.Label>
+                    <Form.Control
+                        as="select" 
+                        onChange={(e)=>setStatus(e.target.value)}        
+                    >       
+                            <option value="2">Обрабатывается поставщиком</option>
+                            <option value="3">Выставлен счет(ожидается оплата)</option>
+                            <option value="5">Создана реализация(товар в пути)</option>
+                    </Form.Control>
+                    <Button onClick={()=>send()}>Сохранить
+                    </Button> 
+                </InputGroup>
             {statusOrder.map((item,index)=>
                 <div key={index}>
                     <div className='statusRingContainer'>
@@ -275,9 +293,6 @@ const OrderStatus = ({priceAskId}) => {
                     }
                 </div>
             )}
-        <button onClick={()=>decrement()}>-</button>
-        <button onClick={()=>increment()}>+</button>
-        <button onClick={()=>send()}>Отправить</button>
         </div>
     );
 };
