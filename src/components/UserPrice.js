@@ -4,9 +4,12 @@ import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import waiting from "../waiting.gif";
+import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
+import {useHistory} from 'react-router-dom';
 
 const UserPrice = ({id}) => {
-
+    
+    const history = useHistory();
     const [loading,setLoading] = useState(true) 
     const [price,setPrice] = useState([]); 
     const[visible,setVisible] = useState(false);
@@ -117,7 +120,16 @@ const UserPrice = ({id}) => {
                             {price?.map((item,index)=>
                                 <tr key={index}>
                                     <td>{item?.Code}</td>
-                                    <td>{item?.Name}</td>
+                                    <td>{item?.SpecOffer ? 
+                                    <button className="myButtonMessage"
+                                      onClick={()=>history.push(CARDSPECOFFER + '/' + item?.SpecOffer)}>
+                                         <span className='text-decoration-underline text-primary'>{item?.Name}</span> 
+                                         <span className="text-danger"> Спецпредложение</span>
+                                    </button>
+                                    : 
+                                    <span>{item?.Name}</span>
+                                    }
+                                    </td>
                                     <td>{item?.Price}</td>
                                     <td>{item?.Balance}</td>
                                     <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>

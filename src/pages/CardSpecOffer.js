@@ -21,6 +21,7 @@ import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
 
 const CardSpecOffer = observer(() => {
     const {user} = useContext(Context);
+    const [priceID, setPriceID] = useState();
     const [showSlider, setShowSlider] = useState(false);
     const [loading, setLoading] = useState(true);
     const [checkedRegion,setCheckedRegion] = useState([]);
@@ -36,9 +37,10 @@ const CardSpecOffer = observer(() => {
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((data)=>{
-            setSpecOffer(data)
-            setCheckedRegion(data.Region)
-            setCheckedCat(data.Category)
+            setPriceID(data.priceId)
+            setSpecOffer(data.specoffer)
+            setCheckedRegion(data.specoffer.Region)
+            setCheckedCat(data.specoffer.Category)
         }).finally(()=>setLoading(false))     
     },[location]);
 
@@ -96,7 +98,18 @@ const CardSpecOffer = observer(() => {
             <Col>
                 <div className="cardSpecPrice">
                     {specOffer.Price} ₽
-                </div>      
+                </div>  
+                <div className="cartContainer">  
+                    <Cart4 className="specOfferCart"
+                                onClick={()=>{
+                                    if(user.isAuth){
+                                        history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
+                                    }else{
+                                        history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
+                                    }
+                                }}
+                    />
+                </div> 
                 {user.isAuth ?
                 <div>
                     {/* <Button style={{
@@ -115,15 +128,6 @@ const CardSpecOffer = observer(() => {
                     onClick={()=>setModalActiveMessage(true)}>
                     Написать сообщение
                     </Button>
-                    <Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
-                            onClick={()=>{
-                                if(user.isAuth){
-                                    history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + specOffer?.PriceId)
-                                }else{
-                                    history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + specOffer?.PriceId)
-                                }
-                            }}
-                            />
                 </div>
                 :
                 <Button style={{
