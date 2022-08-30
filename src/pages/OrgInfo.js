@@ -13,11 +13,14 @@ import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
 import ReviewOrgItems from '../components/ReviewOrgItems';
 import '../fontawesome.min.css';
+import { CREATEASK } from '../utils/routes';
+import {useHistory} from 'react-router-dom'
 
 const OrgInfo = () => {
     const {id} = useParams();
     const [org, setOrg] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
+    const history = useHistory()
 
     useEffect(() => {
         fetchUser(id).then((data)=>{
@@ -42,6 +45,13 @@ const OrgInfo = () => {
                                     onClick={()=>setModalActiveMessage(true)}>
                                     <div>
                                     Написать сообщение
+                                    </div>
+                            </button>
+                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                            <button className="myButtonMessage"
+                                    onClick={()=>history.push(CREATEASK + '/' + id)}>
+                                    <div>
+                                    Отправить персональную заявку
                                     </div>
                             </button>
                             <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>

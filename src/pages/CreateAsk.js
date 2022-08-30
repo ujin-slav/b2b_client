@@ -6,8 +6,6 @@ import RegInput from "../components/RegInput";
 import {useHistory} from 'react-router-dom';
 import {
     Container,
-    Row,
-    Col,
     Form,
     Button,
     InputGroup,
@@ -27,6 +25,8 @@ import {observer} from "mobx-react-lite";
 import Captcha from "demos-react-captcha";
 import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
+import {useParams} from 'react-router-dom';
+import { fetchUser} from '../http/askAPI';
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -50,6 +50,7 @@ const CreateAsk = observer(() => {
     var date = curr.setDate(curr.getDate() + 3);
     registerLocale("ru", ru)
 
+    const {id} = useParams();
     const {user} = useContext(Context);  
     const [captcha, setCaptcha] = useState(false);
     const [loading, setLoading] = useState(false)
@@ -97,6 +98,24 @@ const CreateAsk = observer(() => {
       }
       if(user.user.region){
           setCheckedRegion(Object.values(user.user.region))
+      }
+      if(id){
+        fetchUser(id).then((data)=>{
+            let tempArray = []
+            tempArray.push( 
+              {
+              Name:data?.name,
+              Email:data?.email
+              }
+            )
+            setCheckedEmail(tempArray)
+            document.getElementById("Private").checked = true
+            document.getElementById("Hiden").checked = true
+            document.getElementById("Send").checked = true
+            ask.data.Private=!ask.data.Private
+            ask.data.Hiden=!ask.data.Private
+            ask.data.Send=!ask.data.Private
+        })
       }
     },[user.user])
 
@@ -250,6 +269,7 @@ const CreateAsk = observer(() => {
                               </Button>
                               <InputGroup>
                                 <Form.Check
+                                      id="Private"
                                       name="Private"
                                       type="checkbox"
                                       onChange={()=>{ask.data.Private=!ask.data.Private}}>
@@ -258,6 +278,7 @@ const CreateAsk = observer(() => {
                               </InputGroup>
                               <InputGroup>
                               <Form.Check
+                                    id="Send"
                                     name="Send"
                                     type="checkbox"
                                     onChange={()=>{ask.data.Send=!ask.data.Send}}>
@@ -266,6 +287,7 @@ const CreateAsk = observer(() => {
                               </InputGroup>
                               <InputGroup>
                               <Form.Check
+                                    id="Hiden"
                                     name="Hiden"
                                     type="checkbox"
                                     onChange={()=>{ask.data.Hiden=!ask.data.Hiden}}>

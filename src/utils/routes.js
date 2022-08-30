@@ -110,7 +110,7 @@ export const authRoutes = [
         Component: CardSpecOffer
     },
     {
-        path: CREATEASK,
+        path: CREATEASK + '/:id',
         Component: CreateAsk
     },
     {
