@@ -7,12 +7,13 @@ import {Context} from "../index";
 import Question from '../components/Question';
 import GoogleDocsViewer from "react-google-docs-viewer";
 import dateFormat, { masks } from "dateformat";
-import {Eye} from 'react-bootstrap-icons';
+import {Eye,StarFill} from 'react-bootstrap-icons';
 import "../style.css";
 import waiting from "../waiting.gif";
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
+import ModalAlert from '../components/ModalAlert';
 import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
 import { checkAccessAsk } from '../utils/CheckAccessAsk';
@@ -38,6 +39,8 @@ const formValid = ({ data, formErrors }) => {
 const CardAsk = observer(() => {
     const history = useHistory();
     const {myalert} = useContext(Context);
+    const [modalActive,setModalActive] = useState(false);
+    const [winnerId,setWinnerId] = useState();
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState([{}]);
     const [fileSize, setFileSize] = useState(0);
@@ -131,10 +134,20 @@ const CardAsk = observer(() => {
     )
     }
 
+    const setWinner = ()=>{
+      console.log(winnerId)
+    }
+
     const offersRender = (item,index) =>{
       return(
         <tr key={index}>
-          <td>{index+1}</td>
+          <td>{index+1}
+          {user.user.id === ask?.Author._id ? 
+                <StarFill className='starFillSetWinner' onClick={(e)=>{setWinnerId(item);setModalActive(true)}}/>
+              :
+                <div></div>
+          }
+          </td>
           <td>
             <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
               {item.AuthorName} 
@@ -218,6 +231,14 @@ const CardAsk = observer(() => {
                     </Table>
                 </Col>
             </Row>
+            {user.user.id === ask?.Author._id ? 
+                <div className='exampleWinner'>
+                  <StarFill className='starFillExample'/>
+                  - Выбрать победителя(после этого торги будут прекращены).
+                </div>
+              :
+                <div></div>
+            }
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
@@ -248,13 +269,10 @@ const CardAsk = observer(() => {
                     </tbody>
                   </Table>
             </Card>   
-            <Card>
-                <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
                 <Question ask={ask} 
                           author={ask?.Author} 
                           id={id} 
                           user={user}/>
-            </Card>
             { checkAccessAsk(user,ask).AddOffer  ?       
             <Card>
             <Card.Header style={{"background":"#282C34", "color":"white"}}>Мое предложение</Card.Header>
@@ -300,6 +318,12 @@ const CardAsk = observer(() => {
                   component={<MessageBox author={ask?.Author} setActive={setModalActiveMessage}/>}
                   setActive={setModalActiveMessage}   
         />
+        <ModalAlert header={`Вы действительно хотите назначить победителем `
+         + winnerId.AuthorName + ` ` 
+         + winnerId.AuthorOrg + 
+        `. Возобновить торги будет уже нельзя.`}
+              active={modalActive} 
+              setActive={setModalActive} funRes={setWinner}/>
         </Container>
 
     );

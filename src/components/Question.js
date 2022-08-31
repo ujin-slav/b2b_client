@@ -2,7 +2,7 @@ import React, {useState,
             useContext,
             useRef,
             useEffect,
-            createRef} from "react";
+            createRef} from "react"
 import {useLocation} from "react-router-dom";
 import { Form,
         InputGroup,
@@ -40,7 +40,7 @@ const Question = observer(({...props})=>{
                 setQuest(response.data)
                 setFetch(false)
                 setFetchAnswer(false)
-                chat.socket.emit("unread_quest", {id:user.user.id});
+                chat?.socket?.emit("unread_quest", {id:user.user.id});
             }                
         })
     },[fetch,fetchAnswer]);
@@ -87,8 +87,15 @@ const Question = observer(({...props})=>{
         setFetch(true)
     }
 
+    if(!checkAccessAsk(user,ask).AddQuestAsk || !quest?.length>0){
+        return(
+            <div></div>
+        )
+    }
+
     return (
-        <div>
+        <Card>
+        <Card.Header style={{"background":"#282C34", "color":"white"}}>Вопрос-ответ</Card.Header>
         {checkAccessAsk(user,ask).AddQuestAsk ?
         <Form onSubmit={handleSubmit}>    
             {user.isAuth === true ?
@@ -155,7 +162,7 @@ const Question = observer(({...props})=>{
                 <div style={{"height":"5px","background":"#ECECEC"}}></div>          
         </div>
         )}                  
-        </div>
+        </Card>
     );
     })
   

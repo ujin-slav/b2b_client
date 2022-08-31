@@ -840,3 +840,17 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .cartContainer{
   padding-left: 100px;
 }
+.starFillExample{
+  width:40px;
+  height:40px;
+  color:rgb(255, 230, 0);
+}
+.starFillSetWinner{
+  width:20px;
+  height:20px;
+  color:rgb(255, 230, 0);
+  cursor: pointer;
+}
+.exampleWinner{
+  padding-bottom: 10px;
+}
