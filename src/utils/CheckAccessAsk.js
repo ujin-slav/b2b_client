@@ -1,5 +1,5 @@
 export const checkAccessAsk = (user,ask) => { 
-    let askActive = Date.parse(ask?.EndDateOffers) > new Date().getTime() 
+    let askActive = Date.parse(ask?.EndDateOffers) > new Date().getTime() && !ask.Winner
     let privateAsk = ask?.Private
 
     if(user?.isAuth===false){

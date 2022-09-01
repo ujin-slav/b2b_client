@@ -2,7 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
 import { fetchOneAsk, fetchOffers, fetchUser} from '../http/askAPI';
 import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
-import {uploadOffer} from "../http/askAPI";
+import {uploadOffer,setWinnerAPI} from "../http/askAPI";
 import {Context} from "../index";
 import Question from '../components/Question';
 import GoogleDocsViewer from "react-google-docs-viewer";
@@ -40,7 +40,7 @@ const CardAsk = observer(() => {
     const history = useHistory();
     const {myalert} = useContext(Context);
     const [modalActive,setModalActive] = useState(false);
-    const [winnerId,setWinnerId] = useState();
+    const [winnerDTO,setWinnerDTO] = useState();
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState([{}]);
     const [fileSize, setFileSize] = useState(0);
@@ -63,7 +63,6 @@ const CardAsk = observer(() => {
     useEffect(() => {
         fetchOneAsk(id).then((data)=>{
             setAsk(data)
-            console.log(data)
         })
         fetchOffers(id).then((data)=>{ 
           setOffers(data);
@@ -135,18 +134,48 @@ const CardAsk = observer(() => {
     }
 
     const setWinner = ()=>{
-      console.log(winnerId)
+      setWinnerAPI({winnerDTO,id}).then((result)=>{
+        if (result.status===200){
+          myalert.setMessage("Успешно");
+        } else {
+          myalert.setMessage(result?.data?.message)
+        }
+      })
+    }
+
+    const possChoise = (item) => {
+      if(user.user.id === ask?.Author._id && !ask?.Winner){
+        return (<StarFill className='starFillSetWinner' onClick={(e)=>{setWinnerDTO(item);setModalActive(true)}}/>)
+      }else{
+        return (<div></div>)
+      }
+    }
+
+    const winnerDef = () => {
+      console.log(ask?.Winner)
+      if(user.user.id === ask?.Author._id && !ask?.Winner){
+        return (
+          <div className='exampleWinner'>
+          <StarFill className='starFillExample'/>
+            - Выбрать победителя(после этого торги будут прекращены).
+          </div>
+        )
+      }else if(ask?.Winner){
+        const winner = offers.find(item => item.AuthorID === ask?.Winner)
+        return (
+          <div className='exampleWinner'>
+          <span className="boldtext">Победителем выбран: {winner?.AuthorName} {winner?.AuthorOrg}</span>
+          </div>
+        )
+      }else{
+          return(<div></div>)
+      }
     }
 
     const offersRender = (item,index) =>{
       return(
         <tr key={index}>
-          <td>{index+1}
-          {user.user.id === ask?.Author._id ? 
-                <StarFill className='starFillSetWinner' onClick={(e)=>{setWinnerId(item);setModalActive(true)}}/>
-              :
-                <div></div>
-          }
+          <td>{index+1}{possChoise(item)}
           </td>
           <td>
             <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
@@ -231,14 +260,7 @@ const CardAsk = observer(() => {
                     </Table>
                 </Col>
             </Row>
-            {user.user.id === ask?.Author._id ? 
-                <div className='exampleWinner'>
-                  <StarFill className='starFillExample'/>
-                  - Выбрать победителя(после этого торги будут прекращены).
-                </div>
-              :
-                <div></div>
-            }
+            {winnerDef()}
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
                   <Table striped bordered hover>
@@ -319,8 +341,8 @@ const CardAsk = observer(() => {
                   setActive={setModalActiveMessage}   
         />
         <ModalAlert header={`Вы действительно хотите назначить победителем `
-         + winnerId.AuthorName + ` ` 
-         + winnerId.AuthorOrg + 
+         + winnerDTO?.AuthorName + ` ` 
+         + winnerDTO?.AuthorOrg + 
         `. Возобновить торги будет уже нельзя.`}
               active={modalActive} 
               setActive={setModalActive} funRes={setWinner}/>

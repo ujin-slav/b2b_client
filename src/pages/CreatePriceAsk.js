@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
-import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
+import {InputGroup, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
@@ -19,15 +19,17 @@ const CreatePriceAsk = () => {
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState();
     const[comment,setComment] = useState("");
+    const[onlySpec,setOnlySpec] = useState(false);
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
+    const[profile,setProfile] = useState( {data: {onlySpec:false}});
     let limit = 30
 
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg,onlySpec:false}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
@@ -58,13 +60,21 @@ const CreatePriceAsk = () => {
             }
     }
 
-    const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).
+    const handleChecked = (e) =>{
+        const { name, checked } = e.target;
+        let data = profile.data
+        let formErrors = profile.formErrors
+        data[name] = checked
+        setProfile({ data, formErrors});
+        handleSearch()
+    }
+
+    const handleSearch = () =>{
+        PriceService.getPrice({page:currentPage,limit,search,org:idorg,onlySpec:profile.data.onlySpec}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
-                setSearch(e.target.value)
         }).finally(
             ()=>setFetching(false)
         )
@@ -141,10 +151,20 @@ const CreatePriceAsk = () => {
             <Form.Group className="mx-auto my-2">
                 <Form.Label>Поиск:</Form.Label>
                 <Form.Control
-                    onChange={handleSearch}
+                    onChange={(e)=>{setSearch(e.target.value);handleSearch()}}
                     placeholder="Начните набирать артикул или название продукта"
                 />
             </Form.Group>
+            <InputGroup className="mt-3">
+                <Form.Check
+                    name="onlySpec"
+                    type="checkbox"
+                    checked={profile.data.onlySpec}
+                    onChange={handleChecked}
+                >
+                </Form.Check>
+                <Form.Label>Показать только специальные предложения.</Form.Label>
+            </InputGroup>
             <div class="table-responsive">
                 <Table class="table table-hover">
                 <thead>
