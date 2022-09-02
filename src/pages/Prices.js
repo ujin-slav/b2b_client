@@ -24,7 +24,7 @@ import {
 const Prices = observer(() => {
     const {user} = useContext(Context);
     const[price,setPrice] = useState([]);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const [checkedRegion,setCheckedRegion] = useState([]);

@@ -15,7 +15,7 @@ const UserPrice = ({id}) => {
     const[visible,setVisible] = useState(false);
     const[totalDocs,setTotalDocs] = useState(0);
     const[fetching,setFetching] = useState(true);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[search,setSearch] = useState("");
     let limit = 30
 
@@ -132,7 +132,7 @@ const UserPrice = ({id}) => {
                                     </td>
                                     <td>{item?.Price}</td>
                                     <td>{item?.Balance}</td>
-                                    <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                                    <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                                 </tr>
                             )}
                         </tbody>

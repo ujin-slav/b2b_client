@@ -24,7 +24,7 @@ const Prices = observer(() => {
     const[price,setPrice] = useState([]);
     const [pageCount, setpageCount] = useState(0);
     const[visible,setVisible] = useState(false);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[totalDocs,setTotalDocs] = useState(0);
     const[search,setSearch] = useState("");
     const history = useHistory();

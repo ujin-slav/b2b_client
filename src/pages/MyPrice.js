@@ -11,7 +11,7 @@ const MyPrice = observer(() => {
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const[search,setSearch] = useState("");
     let limit = 30

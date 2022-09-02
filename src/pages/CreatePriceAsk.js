@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useContext} from 'react';
+import React,{useState,useEffect,useContext,useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {InputGroup, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
@@ -17,64 +17,63 @@ const CreatePriceAsk = () => {
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[comment,setComment] = useState("");
-    const[onlySpec,setOnlySpec] = useState(false);
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
-    const[profile,setProfile] = useState( {data: {onlySpec:false}});
+    const[check,setCheck]  = useState( {data: {
+        onlySpec:false
+    }});
+    const table = useRef(null)
     let limit = 30
 
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:idorg,onlySpec:false}).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:false}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
-            if(idprod){
-                PriceService.getPriceUnit(idprod).then((data)=>{
-                    addToResult(null,data)
-                })
-            }
         }
         }
     },[fetching]);
 
     useEffect(() => {
+        if(idprod){
+            PriceService.getPriceUnit(idprod).then((data)=>{
+                addToResult(null,data)
+            })
+        }
         fetchUser(idorg).then((data)=>{
             setRecevier(data)
         })
-        document.addEventListener('scroll',scrollHandler);
+        table.current.addEventListener('scroll',scrollHandler);
         return function(){
-            document.removeEventListener('scroll',scrollHandler);
+            table.current.removeEventListener('scroll',scrollHandler);
         }
     },[]);
 
     const scrollHandler = (e) =>{
-        if((e.target.documentElement.scrollHeight - 
-            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setFetching(true)
-            }
+        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+            setFetching(true)
+        }
     }
 
     const handleChecked = (e) =>{
         const { name, checked } = e.target;
-        let data = profile.data
-        let formErrors = profile.formErrors
-        data[name] = checked
-        setProfile({ data, formErrors});
-        handleSearch()
+        setCheck(checked);
+        handleSearch(search)
     }
 
-    const handleSearch = () =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:idorg,onlySpec:profile.data.onlySpec}).
+    const handleSearch = (text) =>{
+        PriceService.getPrice({page:1,limit,search:text,org:idorg,spec:check}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
+                setSearch(text)
         }).finally(
             ()=>setFetching(false)
         )
@@ -151,7 +150,7 @@ const CreatePriceAsk = () => {
             <Form.Group className="mx-auto my-2">
                 <Form.Label>Поиск:</Form.Label>
                 <Form.Control
-                    onChange={(e)=>{setSearch(e.target.value);handleSearch()}}
+                    onChange={(e)=>{handleSearch(e.target.value)}}
                     placeholder="Начните набирать артикул или название продукта"
                 />
             </Form.Group>
@@ -159,13 +158,13 @@ const CreatePriceAsk = () => {
                 <Form.Check
                     name="onlySpec"
                     type="checkbox"
-                    checked={profile.data.onlySpec}
+                    checked={check}
                     onChange={handleChecked}
                 >
                 </Form.Check>
                 <Form.Label>Показать только специальные предложения.</Form.Label>
             </InputGroup>
-            <div class="table-responsive">
+            <div class="table-responsive" ref={table}>
                 <Table class="table table-hover">
                 <thead>
                     <tr>

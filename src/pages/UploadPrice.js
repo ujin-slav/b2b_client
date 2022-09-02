@@ -33,7 +33,7 @@ const UploadPrice = observer(() => {
     const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]);  
     const [dats,setData] = useState(); 
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const[help,setHelp] = useState(false);

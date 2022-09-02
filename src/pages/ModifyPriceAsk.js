@@ -20,7 +20,7 @@ const CreatePriceAsk = () => {
     const [result,setResult] = useState([]); 
     const [sent,setSent] = useState(false); 
     const[totalDocs,setTotalDocs] = useState(0);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[comment,setComment] = useState("");
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);

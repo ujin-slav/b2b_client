@@ -40,7 +40,7 @@ const CreatePriceAskFiz = () => {
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[comment,setComment] = useState("");
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);

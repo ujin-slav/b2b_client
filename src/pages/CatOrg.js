@@ -15,7 +15,7 @@ import {
 
 const CatOrg = () => {
     const[org,setOrg] = useState([]);
-    const[currentPage,setCurrentPage] = useState();
+    const[currentPage,setCurrentPage] = useState(1);
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const[search,setSearch] = useState("");
