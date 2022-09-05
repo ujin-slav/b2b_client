@@ -31,7 +31,7 @@ const CreatePriceAsk = () => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:false}).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:check.data.onlySpec}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
@@ -49,9 +49,10 @@ const CreatePriceAsk = () => {
         fetchUser(idorg).then((data)=>{
             setRecevier(data)
         })
-        table.current.addEventListener('scroll',scrollHandler);
+        const element = table.current;
+        element.addEventListener('scroll',scrollHandler);
         return function(){
-            table.current.removeEventListener('scroll',scrollHandler);
+            element.removeEventListener('scroll',scrollHandler);
         }
     },[]);
 
@@ -63,12 +64,14 @@ const CreatePriceAsk = () => {
 
     const handleChecked = (e) =>{
         const { name, checked } = e.target;
-        setCheck(checked);
+        let data = check.data
+        data[name] = checked
+        setCheck({data})
         handleSearch(search)
     }
 
     const handleSearch = (text) =>{
-        PriceService.getPrice({page:1,limit,search:text,org:idorg,spec:check}).
+        PriceService.getPrice({page:1,limit,search:text,org:idorg,spec:check.data.onlySpec}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -158,7 +161,7 @@ const CreatePriceAsk = () => {
                 <Form.Check
                     name="onlySpec"
                     type="checkbox"
-                    checked={check}
+                    checked={check.data.onlySpec}
                     onChange={handleChecked}
                 >
                 </Form.Check>

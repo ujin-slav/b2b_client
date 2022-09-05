@@ -9,25 +9,23 @@ import {
     Card,
     ListGroup,
   } from "react-bootstrap";
-import {Envelope,Paperclip,X} from 'react-bootstrap-icons';
-import {useHistory,NavLink,useLocation } from 'react-router-dom';
-import io from "socket.io-client";
+import {Envelope,Paperclip,X,Search,XLg} from 'react-bootstrap-icons';
+import {useHistory} from 'react-router-dom';
 import ScrollToBottom from "react-scroll-to-bottom";
 import UserService from '../services/UserService';
+import MessageService from '../services/MessageService';
 import "../style.css";
 import {Context} from "../index";
-import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import waiting from "../waiting.gif";
 import SocketIOFileClient from 'socket.io-file-client';
-import {LOGIN_ROUTE} from "../utils/routes";
-import ChatService from '../services/ChatService'
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
+    const [searchMessage, setSearchMessage] = useState("");
     const messageBox = useRef(null)
     const userBox = useRef(null)
     //const [users, setUsers] = useState([]);
@@ -135,7 +133,8 @@ const ChatPage = observer(() => {
         const getMessage = {
             No:2,
             UserId: user.user.id,
-            RecevierId:localStorage.getItem('recevier')
+            RecevierId:localStorage.getItem('recevier'),
+            SearchText: searchMessage
         }
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
             if(chat.limit<chat.totalDocs){
@@ -189,11 +188,11 @@ const ChatPage = observer(() => {
     }, [user.user]);
 
     const handleRecevier =(iD,name)=>{
-        console.log(iD,name)
         const data = {
             No:3,
             UserId: user.user.id,
-            RecevierId: iD
+            RecevierId: iD,
+            SearchText: searchMessage
         }
         localStorage.setItem('recevier', iD);
         localStorage.setItem('recevierName', name);
@@ -259,6 +258,19 @@ const ChatPage = observer(() => {
         }
     }
 
+    const handleMessageSearch=(text)=>{
+        if(localStorage.getItem('recevier')&&user.user.id){
+            const data = {
+                No:3,
+                UserId: user.user.id,
+                RecevierId: localStorage.getItem('recevier'),
+                SearchText: text
+            }
+            chat.socket.emit("get_message", {...data,limit:10});
+            setSearchMessage(text)
+        }
+    }
+
     return (
             <Container fluid>
                 <Row className="overflow-auto">
@@ -282,9 +294,18 @@ const ChatPage = observer(() => {
                                             <div className="offline"></div>}
                             </div>)
                         })}
+                    <InputGroup className="mt-2 position-absolute bottom-0 mb-3">
+                                <Form.Control type="nameOrder" placeholder="Поиск по имени автора или организации" />
+                    </InputGroup>
                     </div>
                     </Col>
                     <Col className="col-9">
+                        <InputGroup className="mb-2 mt-2">
+                                <Form.Control 
+                                    placeholder="Поиск по тексту сообщения" 
+                                    onChange={(e)=>handleMessageSearch(e.target.value)}
+                                />
+                        </InputGroup>
                         <div className="chat" id="chat"  ref={messageBox}>
                         <div className="messageBox">
                             {messageList.map((messageContent, index) => {

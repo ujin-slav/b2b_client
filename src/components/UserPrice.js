@@ -6,6 +6,7 @@ import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import waiting from "../waiting.gif";
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import {useHistory} from 'react-router-dom';
+import ReactPaginate from "react-paginate";
 
 const UserPrice = ({id}) => {
     
@@ -17,6 +18,7 @@ const UserPrice = ({id}) => {
     const[fetching,setFetching] = useState(true);
     const[currentPage,setCurrentPage] = useState(1);
     const[search,setSearch] = useState("");
+    const [pageCount, setpageCount] = useState(0);
     let limit = 30
 
     useEffect(() => {
@@ -26,6 +28,7 @@ const UserPrice = ({id}) => {
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
+                setpageCount(data.totalPages);
             }).finally(()=>{
                 setLoading(false)
                 setFetching(false)
@@ -34,25 +37,33 @@ const UserPrice = ({id}) => {
         }
     },[fetching,visible]);
 
-    useEffect(() => {
-        document.addEventListener('scroll',scrollHandler);
-        return function(){
-            document.removeEventListener('scroll',scrollHandler);
-        }
-    },[]);
+    // useEffect(() => {
+    //     document.addEventListener('scroll',scrollHandler);
+    //     return function(){
+    //         document.removeEventListener('scroll',scrollHandler);
+    //     }
+    // },[]);
 
-    const scrollHandler = (e) =>{
-        if((e.target.documentElement.scrollHeight - 
-            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setFetching(true)
-            }
-    }
+    const fetchComments = async (currentPage) => {
+        PriceService.getPrice({page:currentPage,limit,search,org:id}).then(
+            (data)=>{
+            setPrice(data.docs);
+        }).finally(()=>setLoading(false))
+    };
+
+    // const scrollHandler = (e) =>{
+    //     if((e.target.documentElement.scrollHeight - 
+    //         (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
+    //             setFetching(true)
+    //         }
+    // }
 
     const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:id}).
+        PriceService.getPrice({page:1,limit,search,org:id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
+                setpageCount(data.totalPages);
                 setCurrentPage(prevState=>prevState + 1)
                 setSearch(e.target.value)
         }).finally(
@@ -82,6 +93,11 @@ const UserPrice = ({id}) => {
               </Card>
         )
        }
+    
+    const handlePageClick = async (data) => {
+        setCurrentPage(data.selected + 1)
+        await fetchComments(data.selected + 1);
+    };
 
     return (
         <div>
@@ -137,6 +153,25 @@ const UserPrice = ({id}) => {
                             )}
                         </tbody>
                  </Table>
+                 <ReactPaginate
+                    previousLabel={"предыдущий"}
+                    nextLabel={"следующий"}
+                    breakLabel={"..."}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination justify-content-center"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                    />
                  </div>
                  :
                  <div></div>

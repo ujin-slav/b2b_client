@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useContext} from 'react';
+import React,{useState,useEffect,useContext,useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {Card, Table, Col, Container, Row, InputGroup,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
@@ -45,6 +45,10 @@ const CreatePriceAskFiz = () => {
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
+    const table = useRef(null)
+    const[check,setCheck]  = useState( {data: {
+        onlySpec:false
+    }});
     const[priceAsk,setPriceAsk] = useState( {
         data: {
           name: null,
@@ -62,44 +66,52 @@ const CreatePriceAskFiz = () => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:check.data.onlySpec}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
-            if(idprod){
-                PriceService.getPriceUnit(idprod).then((data)=>{
-                    addToResult(null,data)
-                })
-            }
         }
         }
     },[fetching]);
 
     useEffect(() => {
+        if(idprod){
+            PriceService.getPriceUnit(idprod).then((data)=>{
+                addToResult(null,data)
+            })
+        }
         fetchUser(idorg).then((data)=>{
             setRecevier(data)
         })
-        document.addEventListener('scroll',scrollHandler);
+        const element = table.current;
+        element.addEventListener('scroll',scrollHandler);
         return function(){
-            document.removeEventListener('scroll',scrollHandler);
+            element.removeEventListener('scroll',scrollHandler);
         }
     },[]);
 
     const scrollHandler = (e) =>{
-        if((e.target.documentElement.scrollHeight - 
-            (e.target.documentElement.scrollTop + window.innerHeight) < 100)) {
-                setFetching(true)
-            }
+        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+            setFetching(true)
+        }
     }
 
-    const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).
+    const handleChecked = (e) =>{
+        const { name, checked } = e.target;
+        let data = check.data
+        data[name] = checked
+        setCheck({data})
+        handleSearch(search)
+    }
+
+    const handleSearch = (text) =>{
+        PriceService.getPrice({page:1,limit,search:text,org:idorg,spec:check.data.onlySpec}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
-                setSearch(e.target.value)
+                setSearch(text)
         }).finally(
             ()=>setFetching(false)
         )
@@ -205,12 +217,22 @@ const CreatePriceAskFiz = () => {
                 </Form.Label>
             </Form.Group> 
             <Form.Group className="mx-auto my-2">
-                <Form.Control
-                    onChange={handleSearch}
+            <Form.Control
+                    onChange={(e)=>{handleSearch(e.target.value)}}
                     placeholder="Начните набирать артикул или название продукта"
                 />
             </Form.Group>
-            <div class="table-responsive">
+            <InputGroup className="mt-3">
+                <Form.Check
+                    name="onlySpec"
+                    type="checkbox"
+                    checked={check.data.onlySpec}
+                    onChange={handleChecked}
+                >
+                </Form.Check>
+                <Form.Label>Показать только специальные предложения.</Form.Label>
+            </InputGroup>
+            <div class="table-responsive" ref={table}>
                 <Table class="table table-hover">
                 <thead>
                     <tr>

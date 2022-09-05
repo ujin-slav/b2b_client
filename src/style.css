@@ -122,6 +122,7 @@ table {
 .userBox{
   overflow-y:auto;
   height:90vh;
+  position: relative;
 }
 
 .messageBox{
