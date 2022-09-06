@@ -26,6 +26,7 @@ const ChatPage = observer(() => {
     const [messageList, setMessageList] = useState([]);
     const [unread, setUnread] = useState([]);
     const [searchMessage, setSearchMessage] = useState("");
+    const [searchUser, setSearchUser] = useState("");
     const messageBox = useRef(null)
     const userBox = useRef(null)
     //const [users, setUsers] = useState([]);
@@ -77,7 +78,7 @@ const ChatPage = observer(() => {
                 } else {
                     chat.setUnread(data);
                 }
-                UserService.fetchUsers(8,userPage,user.user.id).then((response)=>{
+                UserService.fetchUsers(8,userPage,user.user.id,searchUser).then((response)=>{
                     if(response.status===200){
                         chat.totalPageUser = response.data.totalPages
                         chat.currentPageUser = response.data.page
@@ -149,7 +150,7 @@ const ChatPage = observer(() => {
         if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
             if(chat.currentPageUser<chat.totalPageUser){
                 chat.currentPageUser = chat.currentPageUser + 1
-                UserService.fetchUsers(8,userPage+1,user.user.id).then((response)=>{
+                UserService.fetchUsers(8,userPage+1,user.user.id,searchUser).then((response)=>{
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
                         chat.setUsers(old=>[...old,...response.data.docs])  
@@ -176,12 +177,11 @@ const ChatPage = observer(() => {
     
     useEffect(() => {
         if(user.user.id!==undefined){
-            UserService.fetchUsers(8,userPage,user.user.id).then((response)=>{
+            UserService.fetchUsers(8,userPage,user.user.id,searchUser).then((response)=>{
                 if(response.status===200){
                     chat.totalPageUser = response.data.totalPages
                     chat.currentPageUser = response.data.page
                     chat.setUsers(response.data.docs)
-                    console.log(response)
                 }            
             })
     }
@@ -271,6 +271,18 @@ const ChatPage = observer(() => {
         }
     }
 
+    const handleUserSearch=(text)=>{
+        if(user.user.id!==undefined){
+            UserService.fetchUsers(8,userPage,user.user.id,text).then((response)=>{
+                if(response.status===200){
+                    chat.totalPageUser = response.data.totalPages
+                    chat.currentPageUser = response.data.page
+                    chat.setUsers(response.data.docs)
+                    setSearchUser(text)
+                }            
+        })
+    }}
+
     return (
             <Container fluid>
                 <Row className="overflow-auto">
@@ -281,7 +293,7 @@ const ChatPage = observer(() => {
                              onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
                                             <div>{item.contact?.name}</div>
                                             <div>{item.contact?.nameOrg}</div>
-                                            {searchUnread(item?.contact._id)}
+                                            {searchUnread(item?.contact?._id)}
                                             {item?.statusLine ? 
                                             <div></div>
                                             :
@@ -295,7 +307,11 @@ const ChatPage = observer(() => {
                             </div>)
                         })}
                     <InputGroup className="mt-2 position-absolute bottom-0 mb-3">
-                                <Form.Control type="nameOrder" placeholder="Поиск по имени автора или организации" />
+                                <Form.Control 
+                                    type="nameOrder" 
+                                    placeholder="Поиск по имени автора или организации" 
+                                    onChange={(e)=>handleUserSearch(e.target.value)}
+                                />
                     </InputGroup>
                     </div>
                     </Col>

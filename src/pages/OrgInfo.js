@@ -19,15 +19,43 @@ import {useHistory} from 'react-router-dom'
 const OrgInfo = () => {
     const {id} = useParams();
     const [org, setOrg] = useState();
+    const [file, setFile] = useState([])
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
         fetchUser(id).then((data)=>{
             setOrg(data)
+            console.log(data)
+            if(data.logo){
+                fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
+                .then(res => res.blob())
+                .then(blob => {
+                  setFile(blob)
+                })
+            }
         })
 
     },[]);
+
+    const logo = () => {
+        if(file.length!==0){
+            return (
+                <div className='dnd-list'>
+                <div className='fotoContainer'>
+                    <img 
+                        className="foto" 
+                        src={URL.createObjectURL(file)} 
+                    /> 
+                </div>
+                </div>
+            )    
+        }else{
+            return(
+                <span></span>
+            )
+        }
+    }
 
     return (
         <div>
@@ -38,6 +66,12 @@ const OrgInfo = () => {
                 <Form>
                      <Table >
                         <tbody>
+                        <tr>
+                            <td>Логотип</td>
+                            <td>
+                                {logo()}
+                            </td>
+                            </tr>
                             <tr>
                             <td>Имя</td>
                             <td>{org?.name}
