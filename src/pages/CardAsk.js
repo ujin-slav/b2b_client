@@ -5,7 +5,7 @@ import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
 import {uploadOffer,setWinnerAPI} from "../http/askAPI";
 import {Context} from "../index";
 import Question from '../components/Question';
-import GoogleDocsViewer from "react-google-docs-viewer";
+import AskStatus from './AskStatus';
 import dateFormat, { masks } from "dateformat";
 import {Eye,StarFill} from 'react-bootstrap-icons';
 import "../style.css";
@@ -152,7 +152,6 @@ const CardAsk = observer(() => {
     }
 
     const winnerDef = () => {
-      console.log(ask?.Winner)
       if(user.user.id === ask?.Author._id && !ask?.Winner){
         return (
           <div className='exampleWinner'>
@@ -334,6 +333,7 @@ const CardAsk = observer(() => {
                           <div></div> 
                         
             }       
+        {ask?.Winner ? <AskStatus askId={id}/> : <div></div>}
         <ModalCT 
                   header="Сообщение" 
                   active={modalActiveMessage}

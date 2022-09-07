@@ -62,7 +62,7 @@ const OrderStatus = ({priceAskId}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
-        data.append("Status", JSON.stringify(statusOrder.find(item=>item.value===status)))
+        data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await PriceService.setStatus(data)
         if (result.status===200){
@@ -265,6 +265,7 @@ const OrderStatus = ({priceAskId}) => {
                         as="select" 
                         onChange={(e)=>setStatus(e.target.value)}        
                     >       
+                            <option>Выбрать</option>
                             <option value="2">Обрабатывается поставщиком</option>
                             <option value="3">Выставлен счет(ожидается оплата)</option>
                             <option value="5">Создана реализация(товар в пути)</option>

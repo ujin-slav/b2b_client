@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {Context} from "../index";
-import PriceService from '../services/PriceService'
+import AskService from '../services/AskService'
 import {Eye} from 'react-bootstrap-icons';
 import {
     Form,
@@ -25,17 +25,22 @@ export const statusOrder = [
     //     labelRu: "Выставлен счет(ожидается оплата)"
     // },
     {
-        value: 1,
+         value: 1,
+         label: "deliveredSupplier",
+         labelRu: "Выбран победитель"
+    },
+    {
+        value: 2,
         label: "paid",
         labelRu: "Оплата произведена"
     },   
     {
-        value: 2,
+        value: 3,
         label: "shipment",
         labelRu: "Создана реализация(товар в пути)"
     },
     {
-        value: 3,
+        value: 4,
         label: "received",
         labelRu: "Товар получен"
     },
@@ -62,9 +67,9 @@ const AskStatus = ({askId}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("askId", askId)
-        data.append("Status", JSON.stringify(statusOrder.find(item=>item.value===status)))
+        data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
-        const result = await PriceService.setStatus(data)
+        const result = await AskService.setStatus(data)
         if (result.status===200){
             myalert.setMessage("Успешно");
           } else {
@@ -73,7 +78,7 @@ const AskStatus = ({askId}) => {
     }
 
     useEffect(() => {
-        PriceService.getStatus(askId).then((result)=>{
+        AskService.getStatus(askId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles)
@@ -120,13 +125,11 @@ const AskStatus = ({askId}) => {
     
     const addOptionStatus = (number,active) => {
         switch (number) {
-            case 3:
-                return biled(active) 
-            case 4:
+            case 2:
                 return paid(active) 
-            case 5:
+            case 3:
                 return shipment(active) 
-            case 6:
+            case 4:
                 return received(active) 
             default:
               break;
@@ -265,9 +268,10 @@ const AskStatus = ({askId}) => {
                         as="select" 
                         onChange={(e)=>setStatus(e.target.value)}        
                     >       
-                            <option value="2">Обрабатывается поставщиком</option>
-                            <option value="3">Выставлен счет(ожидается оплата)</option>
-                            <option value="5">Создана реализация(товар в пути)</option>
+                            <option>Выбрать</option>
+                            <option value="2">Оплата произведена</option>
+                            <option value="3">Создана реализация(товар в пути)</option>
+                            <option value="4">Товар получен</option>
                     </Form.Control>
                     <Button onClick={()=>send()}>Сохранить
                     </Button> 

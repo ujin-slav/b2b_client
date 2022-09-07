@@ -40,5 +40,13 @@ export default class AskService {
     static async deleteFile(path){
         return $api.post(`/deletefile`, {path});
     }
+    static async setStatus(formData){
+        const data = await $api.post(`/setstatusask`,formData);
+        return data
+    }
+    static async getStatus(id){
+        const {data} = await $api.post(`/getstatusask`,{id});
+        return data
+    }
     
 }
