@@ -2,6 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Context} from "../index";
 import PriceService from '../services/PriceService'
 import {Eye} from 'react-bootstrap-icons';
+import {observer} from "mobx-react-lite";
 import {
     Form,
     InputGroup,
@@ -41,9 +42,11 @@ export const statusOrder = [
     },
 ]
 
-const OrderStatus = ({priceAskId}) => {
+const OrderStatus = observer(({priceAskId}) => {
 
-    const[status,setStatus] = useState(1)
+    const [status,setStatus] = useState(1)
+    const [author, setAuthor] = useState()
+    const [fiz, setFiz] = useState(false)
     const [filesBils, setFilesBils] = useState([])
     const [fileSizeBils, setFileSizeBils] = useState(0);
     const [filesPaid, setFilesPaid] = useState([])
@@ -53,6 +56,7 @@ const OrderStatus = ({priceAskId}) => {
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
     const [deletedFiles,setDeletedFiles] = useState([])
+    const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
 
     const send=async()=>{
@@ -80,16 +84,16 @@ const OrderStatus = ({priceAskId}) => {
                 setFilesPaid(result?.Status?.Paidfiles)
                 setFilesShipment(result?.Status?.Shipmentfiles)
                 setFilesReceived(result?.Status?.Receivedfiles)
+                setFiz(result.Fiz)
+                setAuthor(result.author)
             }
+            setFiz(result.Fiz)
+            setAuthor(result.author)
         })
-      },[]);
+      },[user.user]);
 
-    const increment=()=>{
-        setStatus(status+1)
-    }
-
-    const decrement=()=>{
-        setStatus(status-1)
+    if(fiz){
+        return <div></div>
     }
 
     const removeFile = (id,files,setFiles,fileSize,setFileSize) => {
@@ -257,19 +261,38 @@ const OrderStatus = ({priceAskId}) => {
         )
     }
 
+    const getChoise =()=>{
+        if(user.user._id === author){
+            return (
+                <Form.Control
+                as="select" 
+                onChange={(e)=>setStatus(e.target.value)}        
+                 >       
+                    <option>Выбрать</option>
+                    <option value="2">Обрабатывается поставщиком</option>
+                    <option value="3">Выставлен счет(ожидается оплата)</option>
+                    <option value="5">Создана реализация(товар в пути)</option>
+                </Form.Control> 
+            )
+        }else{
+            return (
+                <Form.Control
+                as="select" 
+                onChange={(e)=>setStatus(e.target.value)}        
+                 >       
+                    <option>Выбрать</option>
+                    <option value="4">Оплата произведена</option>
+                    <option value="6">Товар получен</option>
+                </Form.Control> 
+            )
+        }    
+    }
+
     return (
         <div>
              <InputGroup className="mt-4 mb-4"> 
                 <Form.Label className="px-3 mt-2">Изменить статус:</Form.Label>
-                    <Form.Control
-                        as="select" 
-                        onChange={(e)=>setStatus(e.target.value)}        
-                    >       
-                            <option>Выбрать</option>
-                            <option value="2">Обрабатывается поставщиком</option>
-                            <option value="3">Выставлен счет(ожидается оплата)</option>
-                            <option value="5">Создана реализация(товар в пути)</option>
-                    </Form.Control>
+                    {getChoise()}
                     <Button onClick={()=>send()}>Сохранить
                     </Button> 
                 </InputGroup>
@@ -296,6 +319,6 @@ const OrderStatus = ({priceAskId}) => {
             )}
         </div>
     );
-};
+});
 
 export default OrderStatus;

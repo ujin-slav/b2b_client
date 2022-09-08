@@ -31,7 +31,6 @@ const InvitedPriceAsk =  observer(() => {
             PriceService.getAskPrice({to:user.user.id,limit,page:currentPage}).then((data)=>{
                 setAskPriceUser(data.docs)
                 setpageCount(data.totalPages);
-                console.log(data)
               })
               chat.socket.emit("get_unread");
         }
@@ -65,7 +64,10 @@ const InvitedPriceAsk =  observer(() => {
           <div key={index} onClick={()=>history.push(CARDPRICEASK + '/' + item._id)} className='childSpecAsk'>
             <Card>
               <Card.Header>
-              <span className='boldtext'>№ {item?._id} от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
+              <div className='boldtext'>№ 
+                {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+              </div>
+              <div>Дата {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
             <div>
             Автор:

@@ -178,7 +178,7 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
-        {!fiz.FIZ ? <OrderStatus priceAskId={id}/> : <div></div>}
+        <OrderStatus priceAskId={id}/> 
         </div>
         <ModalCT 
                   header="Сообщение" 

@@ -2,6 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Context} from "../index";
 import AskService from '../services/AskService'
 import {Eye} from 'react-bootstrap-icons';
+import {observer} from "mobx-react-lite";
 import {
     Form,
     InputGroup,
@@ -46,7 +47,7 @@ export const statusOrder = [
     },
 ]
 
-const AskStatus = ({askId}) => {
+const AskStatus = observer(({askId}) => {
 
     const[status,setStatus] = useState(1)
     const [filesBils, setFilesBils] = useState([])
@@ -59,6 +60,9 @@ const AskStatus = ({askId}) => {
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
     const [deletedFiles,setDeletedFiles] = useState([])
     const {myalert} = useContext(Context);
+    const [author, setAuthor] = useState()
+    const [winner, setWinner] = useState()
+    const {user} = useContext(Context);  
 
     const send=async()=>{
         const data = new FormData();
@@ -86,17 +90,14 @@ const AskStatus = ({askId}) => {
                 setFilesShipment(result?.Status?.Shipmentfiles)
                 setFilesReceived(result?.Status?.Receivedfiles)
             }
+            setAuthor(result.Author)
+            setWinner(result.Winner)
         })
-      },[]);
-
-    const increment=()=>{
-        setStatus(status+1)
-    }
-
-    const decrement=()=>{
-        setStatus(status-1)
-    }
-
+      },[user.user]);
+    console.log(author) 
+    console.log(winner)   
+    console.log(user?.user?.id) 
+    
     const removeFile = (id,files,setFiles,fileSize,setFileSize) => {
         setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
         setFileSize(fileSize - files[id].size)
@@ -259,20 +260,47 @@ const AskStatus = ({askId}) => {
             </div> 
         )
     }
-
-    return (
-        <div>
-             <InputGroup className="mt-4 mb-4"> 
-                <Form.Label className="px-3 mt-2">Изменить статус:</Form.Label>
-                    <Form.Control
+    const getChoise =()=>{
+        if(user.user._id === author){
+            return (
+                <Form.Control
                         as="select" 
                         onChange={(e)=>setStatus(e.target.value)}        
                     >       
                             <option>Выбрать</option>
                             <option value="2">Оплата произведена</option>
-                            <option value="3">Создана реализация(товар в пути)</option>
                             <option value="4">Товар получен</option>
-                    </Form.Control>
+                </Form.Control>
+            )
+        }else if(user.user._id === winner){
+            return (
+                <Form.Control
+                as="select" 
+                onChange={(e)=>setStatus(e.target.value)}        
+                >       
+                    <option>Выбрать</option>
+                    <option value="3">Создана реализация(товар в пути)</option>
+                </Form.Control>
+            )
+        }else{
+            return (
+                <Form.Control as="select" onChange={(e)=>setStatus(e.target.value)}>  
+                     <option>Выбрать</option>
+                </Form.Control>
+            )
+        }
+    }
+    if(!(user?.user?.id===author || user?.user?.id===winner)){
+        return(
+            <div></div>
+        )
+    }
+
+    return (
+        <div>
+            <InputGroup className="mt-4 mb-4"> 
+                <Form.Label className="px-3 mt-2">Изменить статус:</Form.Label>
+                    {getChoise()}
                     <Button onClick={()=>send()}>Сохранить
                     </Button> 
                 </InputGroup>
@@ -298,7 +326,7 @@ const AskStatus = ({askId}) => {
                 </div>
             )}
         </div>
-    );
-};
+    )
+});
 
 export default AskStatus;
