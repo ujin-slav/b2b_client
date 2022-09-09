@@ -22,7 +22,13 @@ import {LOGIN_ROUTE,
         MYSPECOFFERS,
         INVITEDSPECOFFER,
         QUESTFROMME,
-        QUESTFORME} from "../utils/routes";
+        QUESTFORME,
+        LENTSTATUS} from "../utils/routes";
+import handShake from "../icons/handshake-o.svg";
+import basketShop from "../icons/shopping-basket.svg";
+import calc from "../icons/calculator.svg";
+import calendar from "../icons/calendar.svg";
+import quest from "../icons/question-circle.svg";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Container,Navbar,Nav, NavDropdown,Dropdown,NavItem } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -151,7 +157,7 @@ const NavBar = observer(() => {
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
-                            <div><i className="col-2 fa fa-2x fa-solid fa-handshake"/></div>
+                            <div><img className="awesomeIcon" src={handShake}/></div>
                             <div><b>&nbsp;&nbsp;Заявки</b></div>
                           </div>
                         </li>
@@ -172,7 +178,7 @@ const NavBar = observer(() => {
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
-                            <div><i className="col-2 fa fa-2x fa-solid fa-basket-shopping"/></div>
+                            <div><img className="awesomeIcon" src={basketShop}/></div>
                             <div><b>&nbsp;&nbsp;Спец. предложения</b></div>
                           </div>
                         </li>
@@ -192,7 +198,7 @@ const NavBar = observer(() => {
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
-                            <div><i className="col-2 fa fa-2x fa-solid fa-calculator"/></div>
+                            <div><img className="awesomeIcon" src={calc}/></div>
                             <div><b>&nbsp;&nbsp;Прайс-листы</b></div>
                           </div>
                         </li>
@@ -213,7 +219,7 @@ const NavBar = observer(() => {
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
-                            <div><i className="col-2 fa fa-2x fa-solid fa-circle-question"/></div>
+                            <div><img className="awesomeIcon" src={quest}/></div>
                             <div><b>&nbsp;&nbsp;Вопросы</b></div>
                           </div>
                         </li>
@@ -225,6 +231,21 @@ const NavBar = observer(() => {
                            <div className="countQuest">{sumUnreadQuest()}</div>
                         </div>
                         </NavDropdown.Item>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><img className="awesomeIcon" src={calendar}/></div>
+                            <div><b>&nbsp;&nbsp;События</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs">
+                            <NavDropdown.Item  onClick={()=>activeLink(LENTSTATUS)}className={classNameLink(LENTSTATUS)}>
+                                Лента статуса заявок
+                            </NavDropdown.Item>
                         </li>
                       </ul>
                     </div>

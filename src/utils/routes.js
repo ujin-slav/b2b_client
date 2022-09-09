@@ -35,6 +35,7 @@ import CardSpecOffer from "../pages/CardSpecOffer";
 import InvitedSpecOffer from "../pages/InvitedSpecOffer";
 import QuestForMe from "../pages/QuestForMe";
 import QuestFromMe from "../pages/QuestFromMe";
+import LentStatus from "../pages/LentStatus";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -70,6 +71,7 @@ export const ABOUT = '/about'
 export const UPLOADPRICE = '/uploadprice'
 export const MYPRICE = '/myprice'
 export const PRICES = '/prices'
+export const LENTSTATUS = '/lentstatus'
 export const INVITED = '/invited'
 export const INVITEDPRICE = '/invitedprice'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
@@ -228,6 +230,10 @@ export const authRoutes = [
     {
         path: MYPRICE,
         Component: MyPrice
+    },
+    {
+        path: LENTSTATUS,
+        Component: LentStatus
     },
     {
         path: "*",

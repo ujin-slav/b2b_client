@@ -70,7 +70,7 @@ const AskStatus = observer(({askId}) => {
         filesPaid?.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
-        data.append("askId", askId)
+        data.append("AskId", askId)
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await AskService.setStatus(data)
@@ -261,7 +261,7 @@ const AskStatus = observer(({askId}) => {
         )
     }
     const getChoise =()=>{
-        if(user.user._id === author){
+        if(user.user.id === author){
             return (
                 <Form.Control
                         as="select" 
