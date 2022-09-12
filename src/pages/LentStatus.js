@@ -8,11 +8,9 @@ import "../style.css";
 import ReactPaginate from "react-paginate";
 
 const LentStatus = observer(() => {
-    const {askUser} = useContext(Context);
+    const [lent, setLent] = useState([])
     const {user} = useContext(Context);
     const {myalert} = useContext(Context);
-    const [deleteId,setDeleteId] = useState();
-    const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
@@ -21,16 +19,17 @@ const LentStatus = observer(() => {
 
     useEffect(() => {
         if(user?.user?.id){
-            fetchLentStatus({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
-                askUser.setAsk(data.docs)
+            fetchLentStatus({userId:user.user.id,limit,page:currentPage}).then((data)=>{
+                setLent(data.docs)
                 setpageCount(data.totalPages);
+                console.log(data)
             })
         }
-      },[loading]);
+      },[user.user,loading]);
 
     const fetchPage = async (currentPage) => {
         fetchLentStatus({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
-        askUser.setAsk(data.docs)
+          setLent(data.docs)
     })};
 
 
@@ -41,7 +40,7 @@ const LentStatus = observer(() => {
     return (
       <div>
       <div className='parentSpecAsk'>
-        {askUser?.getAsk().map((item, index)=>
+        {lent.map((item, index)=>
           <div key={index} className='childSpecAsk'>
           <Card>
               <Card.Header>

@@ -50,6 +50,7 @@ export const statusOrder = [
 const AskStatus = observer(({askId}) => {
 
     const[status,setStatus] = useState(1)
+    const[prevStatus,setPrevStatus] = useState(1)
     const [filesBils, setFilesBils] = useState([])
     const [fileSizeBils, setFileSizeBils] = useState(0);
     const [filesPaid, setFilesPaid] = useState([])
@@ -71,11 +72,15 @@ const AskStatus = observer(({askId}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("AskId", askId)
+        data.append("Author", author)
+        data.append("Winner", winner)
+        data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await AskService.setStatus(data)
         if (result.status===200){
             myalert.setMessage("Успешно");
+            setPrevStatus(status)
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -85,6 +90,7 @@ const AskStatus = observer(({askId}) => {
         AskService.getStatus(askId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
+                setPrevStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles)
                 setFilesPaid(result?.Status?.Paidfiles)
                 setFilesShipment(result?.Status?.Shipmentfiles)
@@ -94,9 +100,6 @@ const AskStatus = observer(({askId}) => {
             setWinner(result.Winner)
         })
       },[user.user]);
-    console.log(author) 
-    console.log(winner)   
-    console.log(user?.user?.id) 
     
     const removeFile = (id,files,setFiles,fileSize,setFileSize) => {
         setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
