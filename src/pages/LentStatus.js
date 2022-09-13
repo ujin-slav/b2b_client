@@ -6,6 +6,7 @@ import {useHistory} from 'react-router-dom';
 import { fetchLentStatus } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
+import dateFormat, { masks } from "dateformat";
 
 const LentStatus = observer(() => {
     const [lent, setLent] = useState([])
@@ -42,10 +43,25 @@ const LentStatus = observer(() => {
       <div className='parentSpecAsk'>
         {lent.map((item, index)=>
           <div key={index} className='childSpecAsk'>
-          <Card>
-              <Card.Header>
+             <Card>
+              <Card.Header  className="specNameDoc">
+
+                <div>№ 
+                  {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}
+                </div>
+                <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
-          </Card>      
+              <div>Изменила статус</div>
+              <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
+              <div>
+              Стало:
+              <span className="specCloudy"> {item?.Ask?.Status?.Status?.labelRu || item?.PriceAsk?.Status?.Status?.labelRu}</span> 
+              </div>
+              <div>
+                Дата изменения:  
+                <span className="specCloudy"> {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
+              </div>
+            </Card>  
         </div>
         )}  
      </div> 
