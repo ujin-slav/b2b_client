@@ -62,14 +62,19 @@ const MyOrdersPrice = () => {
         {askPriceUser?.map((item, index)=>
           <div key={index}  
             className='childSpecAsk'
-            onClick={()=>item?.Sent ?
-              history.push(CARDPRICEASK + '/' + item._id)
-              :
-              history.push(MODIFYPRICEASK + '/' + item._id)
-            }
           >
             <Card>
-              <Card.Header>
+              <Card.Header  className="specNameDoc"
+                  onClick={()=>item?.Sent ?
+                    history.push(CARDPRICEASK + '/' + item._id)
+                    :
+                    history.push(MODIFYPRICEASK + '/' + item._id)
+                  }
+              >
+              <div>№ 
+                  {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+              </div>
+              <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               <span className="cardMenu">
                      <XCircle color="red"  className='menuIcon'
                     onClick={(e)=>{
@@ -80,7 +85,7 @@ const MyOrdersPrice = () => {
               </span> 
               </Card.Header>
             <div className='cardPadding'>
-            <div>Получатель:&nbsp; 
+            <div><span className="specCloudy">Получатель: </span> 
               <a href="javascript:void(0)" onClick={(e)=>{
                 e.stopPropagation()
                 history.push(ORGINFO + '/' + item?.To?._id)
@@ -88,9 +93,9 @@ const MyOrdersPrice = () => {
                 {item?.To?.name}, {item?.To?.nameOrg}
               </a>
             </div>
-            <div>Стоимость: {item?.Sum}</div>
+            <div><span className="specCloudy">Стоимость: </span>{item?.Sum}</div>
             <div></div>
-            <div>Отправлен: {item?.Sent ?
+            <div><span className="specCloudy">Отправлен: </span>{item?.Sent ?
                     <span style={{"color":"green"}}>
                     Да
                     </span>

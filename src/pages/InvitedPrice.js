@@ -61,25 +61,25 @@ const InvitedPriceAsk =  observer(() => {
       <div>
         <div className='parentSpecAsk'>
         {askPriceUser?.map((item, index)=>
-          <div key={index} onClick={()=>history.push(CARDPRICEASK + '/' + item._id)} className='childSpecAsk'>
+          <div key={index} className='childSpecAsk'>
             <Card>
-              <Card.Header>
+              <Card.Header className="specNameDoc" onClick={()=>history.push(CARDPRICEASK + '/' + item._id)}>
               <div className='boldtext'>№ 
                 {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
               </div>
-              <div>Дата {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+              <div>От {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
             <div>
-            Автор:
+            <span className="specCloudy">Автор: </span>
             {item?.FIZ ? 
             `${item?.NameFiz + " " + item?.EmailFiz}`
             :
             `${item?.Author?.name + " " + item?.Author?.nameOrg}`
             }
             </div>
-            <div>Сумма:{item?.Sum}</div>
+            <div><span className="specCloudy">Сумма: </span>{item?.Sum}</div>
             {!item?.FIZ ? 
-                <div>Статус:
+                <div><span className="specCloudy">Статус: </span>
                 {item?.Status?.Status ? 
                 <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
                 :

@@ -540,7 +540,6 @@ td.tdRed{
   .parentSpecAsk {
     display: flex;
     flex-wrap: wrap;
-    cursor: pointer;
     background-color:white;
   }
   .childSpecAsk {
@@ -555,7 +554,9 @@ td.tdRed{
     padding:10px;
   }
   .cardMenu{
-    float:right;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
   .menuIcon{
     margin-left:5px;

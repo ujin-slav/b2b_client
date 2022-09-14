@@ -1,4 +1,5 @@
 import React,{useEffect,useState,useContext} from 'react';
+import {useHistory} from 'react-router-dom';
 import {fetchUserOffers} from '../http/askAPI';
 import { fetchOffers } from '../http/askAPI';
 import {Card} from "react-bootstrap";
@@ -10,6 +11,7 @@ import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
 import {Eye} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
+import { CARDASK} from '../utils/routes';
 
 const TableOffer = observer(() => {
 
@@ -17,6 +19,7 @@ const TableOffer = observer(() => {
     const [modalActive,setModalActive] = useState(false);
     const [deleteId,setDeleteId] = useState();
     const [offers, setOffers] = useState();
+    const history = useHistory();
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
     const [pageCount, setpageCount] = useState(0);
@@ -63,18 +66,18 @@ const TableOffer = observer(() => {
         {offerUser.getOffer().map((item,index)=>
           <div key={index} className='childSpecAsk'>
             <Card>
-              <Card.Header>{item?.Ask?.Name?.length>15 ?
-            `${item.Name.substring(0, 15)}...`
-             :
-             item?.Ask?.Name
-             }
-            <span className="cardMenu">
+              <Card.Header className="specNameDoc" onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >
+              <div>№ 
+                  {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+                </div>
+              <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+              <span className="cardMenu">
                      <XCircle color="red"  className='menuIcon'
                     onClick={(e)=>{
                     e.stopPropagation();
                     setModalActive(true);
                     setDeleteId(item._id)
-            }} />     
+              }}/>     
             </span> 
              </Card.Header>
             <div className='cardPadding'>
@@ -89,13 +92,14 @@ const TableOffer = observer(() => {
               item?.Ask?.Text
             }
             </div>
-            <div>Текст: {item?.Text?.length > 30 ? 
+            <div><span className="specCloudy">Текст: </span>{item?.Text?.length > 30 ? 
               `${item?.Text?.substring(0,30)}...`
               :
               item?.Text
               }</div>
-            <div>Стоимость: {item?.Price}</div>
+            <div><span className="specCloudy">Стоимость: </span>{item?.Price}</div>
             <div>
+            <div><span className="specCloudy">Файлы: </span></div>
             {item?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
                               <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=

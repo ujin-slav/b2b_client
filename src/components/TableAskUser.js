@@ -11,6 +11,9 @@ import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
 import { XCircle, Pen,Link45deg } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
+import {getCategoryName} from '../utils/Convert'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
 
 const TableAsk = observer(() => {
     const {askUser} = useContext(Context);
@@ -53,67 +56,98 @@ const TableAsk = observer(() => {
       setCurrentPage(data.selected + 1)
       await fetchPage(data.selected + 1);
     };
+    
+    const redirect = (item)=>{
+        history.push(CARDASK + '/' + item._id)
+    }
+
     return (
       <div>
       <div className='parentSpecAsk'>
         {askUser?.getAsk().map((item, index)=>
-          <div key={index} onClick={()=>history.push(CARDASK + '/' + item._id)} className='childSpecAsk'>
-          <Card>
-              <Card.Header>{item.Name.length>15 ?
-            `${item.Name.substring(0, 15)}...`
-             :
-             item.Name
-             }
-            <span className="cardMenu">
-                  <Link45deg  className='menuIcon'
-                    onClick={(e)=>{
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
-                      myalert.setMessage("Ссылка скопирована");
-                    }}/>
-                    <Pen color="green" className='menuIcon'
-                    onClick={(e)=>{
-                        e.stopPropagation();
-                        history.push(MODIFYASK + '/' + item._id)
-                    }}/>
-                     <XCircle color="red"  className='menuIcon'
+               <div onClick={()=>redirect(item)} className='childSpecAsk'>
+               <Card>
+                 <Card.Header>
+                 <span className="cardMenu">
+                 <XCircle color="red"  className='menuIcon'
                     onClick={(e)=>{
                     e.stopPropagation();
                     setModalActive(true);
                     setDeleteId(item._id)
-            }} />     
-            </span> 
-             </Card.Header>
-            <div className='cardPadding'>
-            <div>
-            <div>
-            Текст: {item.Text.length>50 ?
-            `${item.Text.substring(0, 50)}...`
-             :
-             item.Text
-             }
-            </div>
-            <div>
-                    {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                    <div style={{color:"green"}}>
-                    Активная
-                    </div>
-                    :
-                    <div style={{color:"red"}}>
-                    Истек срок
-                    </div>
-                    } 
-            </div>
-            </div>
-            <div>{item.Comment.length > 30 ? 
-              `${item.Comment.substring(0,30)}...`
-              :
-              item.Comment
-              }</div>
-            <div className="specCloudy">{dateFormat(item.EndDateOffers, "dd/mm/yyyy HH:MM:ss")}</div>
-        </div>      
-        </Card>      
-        </div>
+                    }} />
+                 </span> 
+                 <div className="specName">
+                       {item.Name.length>15 ?
+                       `${item.Name.substring(0, 15)}...`
+                       :
+                       item.Name
+                       }
+               </div>
+               </Card.Header>
+               <div className='cardPadding'>
+               <div>
+               Текст: {item.Text.length>50 ?
+               `${item.Text.substring(0, 50)}...`
+                :
+                item.Text
+                }
+               </div>
+               <div>
+                       {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                       <div style={{color:"green"}}>
+                       Активная
+                       </div>
+                       :
+                       <div style={{color:"red"}}>
+                       Истек срок
+                       </div>
+                       } 
+               </div>
+               <div>
+                       <div>ИНН: {item.Author.inn}</div>
+                       <div>Орг: {item.Author.nameOrg}</div>
+               </div>
+               <div className="specCloudy">
+                   {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                   `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                   :
+                   getCategoryName(item.Region, regionNodes).join(", ")
+                   }
+               </div>
+               <div className="specCloudy">
+                   {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
+                   `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
+                   :
+                   getCategoryName(item.Category, categoryNodes).join(", ")
+                   }
+               </div>
+                <div>
+                <a href="javascript:void(0)" 
+                    onClick={(e)=>{
+                        e.stopPropagation();
+                        history.push(MODIFYASK + '/' + item._id)
+                }}>
+                Редактировать
+                </a>
+                <Pen  className="changeSpecOffer"/>
+                </div>
+                <div>
+                <a href="javascript:void(0)" 
+                    onClick={(e)=>{
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
+                        myalert.setMessage("Ссылка скопирована");
+                    }}>
+                Скопировать ссылку
+                </a>
+                <Link45deg  className="changeSpecOffer"/>
+                </div>
+                <div className="specCloudy">
+                   {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+               </div>
+               </div>
+               </Card>
+               </div>
         )}  
      </div> 
       <ReactPaginate

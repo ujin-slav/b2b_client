@@ -7,6 +7,7 @@ import { fetchLentStatus } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import dateFormat, { masks } from "dateformat";
+import { CARDASK, CARDPRICEASK } from '../utils/routes';
 
 const LentStatus = observer(() => {
     const [lent, setLent] = useState([])
@@ -37,21 +38,33 @@ const LentStatus = observer(() => {
     const handlePageClick = async (data) => {
       setCurrentPage(data.selected + 1)
       await fetchPage(data.selected + 1);
-    };
+    }
+
+    const redirect = (item)=>{
+      if(item.PriceAsk){
+        history.push(CARDPRICEASK + '/' + item?.PriceAsk?._id)
+      }else{
+        history.push(CARDASK + '/' + item?.Ask?._id)
+      }
+    }
+
     return (
       <div>
       <div className='parentSpecAsk'>
         {lent.map((item, index)=>
           <div key={index} className='childSpecAsk'>
              <Card>
-              <Card.Header  className="specNameDoc">
+              <Card.Header  className="specNameDoc" onClick={()=>redirect(item)}>
 
                 <div>№ 
                   {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}
                 </div>
                 <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
-              <div>Изменила статус</div>
+              <div>Изменил статус:</div>
+              <div>
+                <span className="specCloudy">{item?.Author?.name} {item?.Author?.nameOrg}</span>
+              </div>
               <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
               <div>
               Стало:
