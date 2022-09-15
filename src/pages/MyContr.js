@@ -108,47 +108,6 @@ const MyContr = observer(() => {
         <div>
             <Container className="mx-auto my-4">
             <Row>
-            <Col>   <div  className="mb-2">
-                        Мои контрагенты
-                    </div>
-                    <InputGroup className="mb-3">
-                    <Form.Control
-                            placeholder="Введите имя контрагента"
-                            onChange={(e)=>setContragentName(e.target.value)}
-                            ref={nameBox}
-                        />
-                        <Form.Control
-                            placeholder="Введите e-mail контрагента"
-                            onChange={(e)=>setContragent(e.target.value)}
-                            ref={emailBox}
-                        />
-                        <Button variant="outline-secondary" id="button-addon2" onClick={()=>handleClick()}>
-                            +
-                        </Button>
-                    </InputGroup>
-                        <span className="errorMessage" style={{color:"red"}}>{error}</span>    
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Имя</th>
-                        <th>E-mail</th>
-                        <th>Удалить</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {listCont.map((item,index)=>
-                    <tr>
-                        <td style={{"width":"10%"}}>{index+1}</td>
-                        <td style={{"width":"50%"}}>{item.Name}</td>
-                        <td>{item.Email}</td>
-                        <td><XCircle color="red" style={{"width": "25px", "height": "25px"}}
-                            onClick={(e)=>{deleteContr(item.Email)}} /></td>
-                    </tr>
-                    )}  
-                    </tbody>
-                </Table>
-                </Col>
                 <Col >
                     <div  className="mb-2">
                         Участники системы 
