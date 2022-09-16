@@ -866,4 +866,7 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   cursor: pointer;
   text-decoration:underline;
 }
+.userList{
+  height:300px
+}
 
