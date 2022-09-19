@@ -7,16 +7,19 @@ const SearchMyContr = observer(() => {
 
     const {myContr} = useContext(Context)
 
-    const handleSearch = async(e)=>{
-        myContr.setSearchString(e.target.value)
+    const handleSearch = async(value) =>{
+        myContr.setSearchString(value)
     }
 
     return (
         <div>
-            <Form.Control
-                        onChange={handleSearch}
-                        placeholder="Начните набирать инн или название фирмы"
-            />
+            <Form.Group className="mx-auto my-2">
+                <Form.Label>Поиск:</Form.Label>
+                <Form.Control
+                    onChange={(e)=>{handleSearch(e.target.value)}}
+                    placeholder="Начните набирать инн или название организации"
+                />
+            </Form.Group>
         </div>
     );
 });

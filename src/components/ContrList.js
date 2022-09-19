@@ -18,23 +18,21 @@ const ContrList = observer(() => {
     const [listUser,setListUser] =  useState([]);
     const [currentPage,setCurrentPage] = useState(1)
     const[totalDocs,setTotalDocs] = useState(0);
-    const [pageCount, setpageCount] = useState(0)
-    const [fetching,setFetching] = useState(true);
-    const [error, setError] = useState();
     const userList = useRef(null)
     let limit = 10
 
     useEffect(() => {
-        if(fetching){
+        if(myContr.fetchingContr){
             if(listUser.length===0 || listUser.length<totalDocs) {
-            ContrService.fetchContr({search:myContr.searchString,limit,page:currentPage}).then((data)=>{
+            ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:currentPage}).then((data)=>{
                 setTotalDocs(data.totalDocs);
-                setListUser([...listUser, ...data.docs]);
+                setListUser(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>setFetching(false))
+                console.log(data)
+            }).finally(()=>myContr.setFetchingContr(false))
             }
         }  
-    },[fetching]);
+    },[myContr.fetchingContr]);
 
     useEffect(() => {
         const element = userList.current;
@@ -44,18 +42,19 @@ const ContrList = observer(() => {
         }
     },[]);
 
-     const addContr = async(item)=>{
-        const result = await ContrService.addContr({email:item.email,name:item.name,userid:user.user.id})
-        if (result.errors){
-            setError(result.message)
-        } else {
-            setFetching(true)
-        }
-    }
+    useEffect(() => {
+        ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:1}).then((data)=>{
+            setTotalDocs(data.totalDocs);
+            setListUser(data.docs);
+            setCurrentPage(prevState=>prevState + 1)
+            console.log(data)
+        }).finally(()=>myContr.setFetchingContr(false))
+    },[myContr.searchString]);
+
     
     const scrollHandler = (e) =>{
         if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
-            setFetching(true)
+            myContr.setFetchingContr(true)
         }
     }
 
@@ -64,10 +63,8 @@ const ContrList = observer(() => {
             {listUser?.map((item,index)=>
             <Card>
                 <div>{index+1}</div>
-                <div >{item.name}</div>
-                <div>{item.nameOrg}</div>
-                <div><PlusCircle color="#0D55FD" style={{"width": "25px", "height": "25px"}}
-                    onClick={(e)=>{addContr(item)}} /></div>
+                <div >{item?.Contragent?.name}</div>
+                <div>{item?.Contragent?.nameOrg}</div>
             </Card>
             )}  
         </div>

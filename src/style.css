@@ -869,4 +869,8 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .userList{
   height:300px
 }
+.container-mycontr{
+  width: 70%; 
+  margin: 0 auto; 
+}
 

@@ -2,13 +2,13 @@ import $api from "../http";
 
 export default class ContrService {
 
-    static async addContr({email,userid,name}){
-        const {data} = await $api.post(`/addcontr`,{email,name,userid});
+    static async addContr(formData){
+        const {data} = await $api.post(`/addcontr`,formData);
         return data
     }
     
-    static async fetchContr(userid){
-        const {data} = await $api.post(`/getcontr`,{userid});
+    static async fetchContr(formData){
+        const {data} = await $api.post(`/getcontr`,formData);
         return data
     }
     static async delContr({email,userid}){
