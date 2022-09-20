@@ -28,7 +28,6 @@ const ContrList = observer(() => {
                 setTotalDocs(data.totalDocs);
                 setListUser(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
-                console.log(data)
             }).finally(()=>myContr.setFetchingContr(false))
             }
         }  
@@ -43,12 +42,14 @@ const ContrList = observer(() => {
     },[]);
 
     useEffect(() => {
-        ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:1}).then((data)=>{
-            setTotalDocs(data.totalDocs);
-            setListUser(data.docs);
-            setCurrentPage(prevState=>prevState + 1)
-            console.log(data)
-        }).finally(()=>myContr.setFetchingContr(false))
+        if(myContr.searchString!==""){
+            ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:1}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setListUser(data.docs);
+                setCurrentPage(prevState=>prevState + 1)
+                console.log(data)
+            }).finally(()=>myContr.setFetchingContr(false))
+        }
     },[myContr.searchString]);
 
     
@@ -63,8 +64,8 @@ const ContrList = observer(() => {
             {listUser?.map((item,index)=>
             <Card>
                 <div>{index+1}</div>
-                <div >{item?.Contragent?.name}</div>
-                <div>{item?.Contragent?.nameOrg}</div>
+                <div >{item?.name}</div>
+                <div>{item?.nameOrg}</div>
             </Card>
             )}  
         </div>
