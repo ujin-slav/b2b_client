@@ -75,7 +75,7 @@ const CreatePriceAsk = () => {
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
+                setCurrentPage(2)
                 setSearch(text)
         }).finally(
             ()=>setFetching(false)

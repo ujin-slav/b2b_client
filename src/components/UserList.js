@@ -28,7 +28,7 @@ const UserList = observer(() => {
             if(listUser.length===0 || listUser.length<totalDocs) {
             ContrService.getUserList({search:myContr.searchString,limit,page:currentPage}).then((data)=>{
                 setTotalDocs(data.totalDocs);
-                setListUser(data.docs);
+                setListUser([...listUser, ...data.docs])
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
             }
@@ -44,20 +44,21 @@ const UserList = observer(() => {
     },[]);
 
     useEffect(() => {
-        ContrService.getUserList({search:myContr.searchString,limit,page:1}).then((data)=>{
-            setTotalDocs(data.totalDocs);
-            setListUser(data.docs);
-            setCurrentPage(prevState=>prevState + 1)
-        }).finally(()=>setFetching(false))
-    },[myContr.searchString]);
+        if(myContr.searching){
+            ContrService.getUserList({search:myContr.searchString,limit,page:1}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setListUser(data.docs);
+                setCurrentPage(2)
+            }).finally(()=>{setFetching(false);myContr.setSearching(false)})
+        }
+    },[myContr.searching]);
 
      const addContr = async(item)=>{
         const result = await ContrService.addContr({contragent:item._id,userid:user.user.id})
         if (result.errors){
             setError(result.message)
         } else {
-            console.log("true")
-            myContr.setFetchingContr(true)
+            myContr.setFetchContr(true)
         }
     }
     

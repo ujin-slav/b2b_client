@@ -17,21 +17,22 @@ const ContrList = observer(() => {
     const {user} = useContext(Context)
     const [listUser,setListUser] =  useState([]);
     const [currentPage,setCurrentPage] = useState(1)
+    const [fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const userList = useRef(null)
     let limit = 10
 
     useEffect(() => {
-        if(myContr.fetchingContr){
+        if(fetching){
             if(listUser.length===0 || listUser.length<totalDocs) {
             ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:currentPage}).then((data)=>{
                 setTotalDocs(data.totalDocs);
-                setListUser(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>myContr.setFetchingContr(false))
+                setListUser([...listUser, ...data.docs])
+                setCurrentPage(2)
+            }).finally(()=>setFetching(false))
             }
         }  
-    },[myContr.fetchingContr]);
+    },[fetching]);
 
     useEffect(() => {
         const element = userList.current;
@@ -42,20 +43,18 @@ const ContrList = observer(() => {
     },[]);
 
     useEffect(() => {
-        if(myContr.searchString!==""){
+        if(myContr.searching || myContr.fetchContr){
             ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:1}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setListUser(data.docs);
                 setCurrentPage(prevState=>prevState + 1)
-                console.log(data)
-            }).finally(()=>myContr.setFetchingContr(false))
+            }).finally(()=>{myContr.setSearching(false);myContr.setFetchContr(false)})
         }
-    },[myContr.searchString]);
-
+    },[myContr.searchString,myContr.fetchContr]);
     
     const scrollHandler = (e) =>{
         if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
-            myContr.setFetchingContr(true)
+            setFetching(true)
         }
     }
 
