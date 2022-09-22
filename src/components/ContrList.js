@@ -1,10 +1,5 @@
 import React,{useContext,useEffect,useState,useRef} from 'react'
-import {
-    Card,
-    Col,
-    Container,
-    Table,
-} from "react-bootstrap"
+import {Form} from "react-bootstrap"
 import {Context} from "../index";
 import ContrService from '../services/ContrService';
 import ReactPaginate from "react-paginate";
@@ -59,13 +54,16 @@ const ContrList = observer(() => {
     }
 
     return (
-        <div class="userList overflow-auto" ref={userList}>
+        <div class="userList overflow-auto mt-3" ref={userList}>
+            <div class="block">
+                <span>Мои контрагенты:</span>
+            </div>
             {listUser?.map((item,index)=>
-            <Card>
+            <div class="userCard">
                 <div>{index+1}</div>
                 <div >{item?.name}</div>
                 <div>{item?.nameOrg}</div>
-            </Card>
+            </div>
             )}  
         </div>
     );

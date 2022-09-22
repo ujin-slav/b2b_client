@@ -71,13 +71,13 @@ const UserList = observer(() => {
     return (
         <div class="userList overflow-auto" ref={userList}>
             {listUser?.map((item,index)=>
-            <Card>
+            <div class="userCard">
                 <div>{index+1}</div>
                 <div >{item.name}</div>
                 <div>{item.nameOrg}</div>
                 <div><PlusCircle color="#0D55FD" style={{"width": "25px", "height": "25px"}}
                     onClick={(e)=>{addContr(item)}} /></div>
-            </Card>
+            </div>
             )}  
         </div>
     );

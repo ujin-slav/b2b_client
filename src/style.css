@@ -867,10 +867,37 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   text-decoration:underline;
 }
 .userList{
-  height:400px
+  height:400px;
 }
 .container-mycontr{
   width: 70%; 
   margin: 0 auto; 
+}
+.block {
+  text-align: center;
+  width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.block span {
+  position: relative;
+}
+.block span:before {
+display: block;
+width:1000px;
+content: '';
+position: absolute;
+border-bottom: 1px solid #000;
+top:50%;
+right: 110px; 
+}
+.block span:after {
+display: block;
+width:1000px;
+content: '';
+position: absolute;
+border-bottom: 1px solid #000;
+top:50%;
+left: 110px; 
 }
 
