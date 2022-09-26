@@ -54,10 +54,11 @@ const ContrList = observer(() => {
     }
 
     return (
-        <div class="userList overflow-auto mt-3" ref={userList}>
-            <div class="block">
-                <span>Мои контрагенты:</span>
+        <div class="mt-3">
+            <div class="titleLine">
+                Мои контрагенты
             </div>
+            <div class="userList overflow-auto" ref={userList}>
             {listUser?.map((item,index)=>
             <div class="userCard">
                 <div>{index+1}</div>
@@ -65,6 +66,7 @@ const ContrList = observer(() => {
                 <div>{item?.nameOrg}</div>
             </div>
             )}  
+        </div>
         </div>
     );
 

@@ -873,31 +873,42 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   width: 70%; 
   margin: 0 auto; 
 }
-.block {
+.titleLine {
+	overflow: hidden;
   text-align: center;
-  width: 80%;
-  margin: 0 auto;
-  overflow: hidden;
+  font-family: American Retro;
+  font-size: 25px;
 }
-.block span {
-  position: relative;
+.titleLine:before,
+.titleLine:after {
+	content: '';
+	display: inline-block;
+	vertical-align: middle;
+	box-sizing: border-box;
+	width: 100%;
+	height: 1px;
+	background:black;
+	border: solid #FFF;
+	border-width: 0 10px;
 }
-.block span:before {
-display: block;
-width:1000px;
-content: '';
-position: absolute;
-border-bottom: 1px solid #000;
-top:50%;
-right: 110px; 
+.titleLine:before {
+	margin-left: -100%;
 }
-.block span:after {
-display: block;
-width:1000px;
-content: '';
-position: absolute;
-border-bottom: 1px solid #000;
-top:50%;
-left: 110px; 
+.titleLine:after {
+	margin-right: -100%;
+}
+.containerUserListIcon{
+  float: left;
+}
+.userCardListUser {
+  margin:10px;
+  border-radius:20px;
+  padding:10px 10px 10px 10px;
+  font-size: 15px;
+  background-color:#FFF4A8 !important;
+}
+.userCardListUserFlex{
+  display: flex;
+  align-items: center;
 }
 
