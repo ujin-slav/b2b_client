@@ -15,11 +15,11 @@ const UserList = observer(() => {
 
     const {myContr} = useContext(Context)
     const {user} = useContext(Context)
+    const {myalert} = useContext(Context);
     const [listUser,setListUser] =  useState([]);
     const [currentPage,setCurrentPage] = useState(1)
     const[totalDocs,setTotalDocs] = useState(0);
     const [fetching,setFetching] = useState(true);
-    const [error, setError] = useState();
     const userList = useRef(null)
     let limit = 10
 
@@ -56,7 +56,7 @@ const UserList = observer(() => {
      const addContr = async(item)=>{
         const result = await ContrService.addContr({contragent:item._id,userid:user.user.id})
         if (result.errors){
-            setError(result.message)
+            myalert.setMessage(result.message); 
         } else {
             myContr.setFetchContr(true)
         }
@@ -77,7 +77,7 @@ const UserList = observer(() => {
             {listUser?.map((item,index)=>
             <div key={index} class="userCardListUser">
                 <div class="userCardListUserFlex">
-                        <PlusCircle color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                        <PlusCircle class="plusCircleContr"
                             onClick={(e)=>{addContr(item)}} />
                     <div>
                         <div >{item.name}</div>

@@ -223,9 +223,9 @@ const ModifyAsk = observer((askId) => {
                                 </div>  
                                 <Form.Control
                                   name="Party"
-                                  defaultValue={checkedEmail.map((item)=>
-                                    "(" + item.Name + ") " + item.Email
-                                    )}
+                                  // defaultValue={checkedEmail.map((item)=>
+                                  //   "(" + item.Name + ") " + item.Email
+                                  //   )}
                                   placeholder="Участники"
                                   onChange={handleChange}
                                   disabled={true}

@@ -3,13 +3,14 @@ import {Form} from "react-bootstrap"
 import {Context} from "../index";
 import ContrService from '../services/ContrService';
 import ReactPaginate from "react-paginate";
-import { XCircle,PlusCircle } from 'react-bootstrap-icons';
+import { DashCircle } from 'react-bootstrap-icons';
 import { observer } from 'mobx-react-lite';
 
 const ContrList = observer(() => {
 
     const {myContr} = useContext(Context)
     const {user} = useContext(Context)
+    const {myalert} = useContext(Context);
     const [listUser,setListUser] =  useState([]);
     const [currentPage,setCurrentPage] = useState(1)
     const [fetching,setFetching] = useState(true);
@@ -23,7 +24,7 @@ const ContrList = observer(() => {
             ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:currentPage}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setListUser([...listUser, ...data.docs])
-                setCurrentPage(2)
+                setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
             }
         }  
@@ -42,7 +43,7 @@ const ContrList = observer(() => {
             ContrService.fetchContr({user:user.user.id,search:myContr.searchString,limit,page:1}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setListUser(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
+                setCurrentPage(2)
             }).finally(()=>{myContr.setSearching(false);myContr.setFetchContr(false)})
         }
     },[myContr.searchString,myContr.fetchContr]);
@@ -53,6 +54,16 @@ const ContrList = observer(() => {
         }
     }
 
+    const delContr = async(item) =>{
+        const result = await ContrService.delContr({id:item._id})
+        console.log(item)
+        if (result.errors){
+            myalert.setMessage(result.message); 
+        } else {
+            myContr.setFetchContr(true)
+        }
+    }
+
     return (
         <div class="mt-3">
             <div class="titleLine">
@@ -60,10 +71,14 @@ const ContrList = observer(() => {
             </div>
             <div class="userList overflow-auto" ref={userList}>
             {listUser?.map((item,index)=>
-            <div class="userCard">
-                <div>{index+1}</div>
-                <div >{item?.name}</div>
-                <div>{item?.nameOrg}</div>
+            <div key={index} class="userCardListUser">
+                 <div class="userCardListUserFlex">
+                        <DashCircle class="dashCircleContr" onClick={(e)=>delContr(item)}/>
+                    <div>
+                        <div >{item.name}</div>
+                        <div>{item.nameOrg}</div>
+                    </div>
+                </div>
             </div>
             )}  
         </div>

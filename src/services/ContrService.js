@@ -11,8 +11,8 @@ export default class ContrService {
         const {data} = await $api.post(`/getcontr`,formData);
         return data
     }
-    static async delContr({email,userid}){
-        const {data} = await $api.post(`/delcontr`,{email,userid});
+    static async delContr(formData){
+        const {data} = await $api.post(`/delcontr`,formData);
         return data
     }
     static async getUserList(formData){

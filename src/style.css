@@ -911,4 +911,17 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   display: flex;
   align-items: center;
 }
-
+.plusCircleContr {
+  width: 35px;
+  height: 35px;
+  margin: 5px;
+  color:#0D55FD;
+  cursor: pointer;
+}
+.dashCircleContr {
+  width: 35px;
+  height: 35px;
+  margin: 5px;
+  color:red;
+  cursor: pointer;
+}

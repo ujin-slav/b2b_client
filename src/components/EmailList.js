@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useContext} from 'react';
+import React,{useState,useEffect,useContext,useRef} from 'react';
 import {
     Container,
     Row,
@@ -15,32 +15,53 @@ import {
 
 const EmailList = ({checked,setChecked}) => {
     const [listCont,setListContragent] =  useState([]);
-    const [emailSearch,setEmailSearch] =  useState("");
-    const {user} = useContext(Context);  
+    const [search,setSearch] =  useState("");
+    const [fetching,setFetching] = useState(true);
+    const [currentPage,setCurrentPage] = useState(1)
+    const[totalDocs,setTotalDocs] = useState(0);
+    const {user} = useContext(Context); 
+    const userList = useRef(null) 
+    let limit = 10
     
     useEffect(() => {
-        fetchContr();
-    },[user.user.id]);
+        if(fetching){
+            if(listCont.length===0 || listCont.length<totalDocs) {
+            ContrService.fetchContr({user:user.user.id,search:search,limit,page:currentPage}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setListContragent([...listCont, ...data.docs])
+                setCurrentPage(prevState=>prevState + 1)
+            }).finally(()=>setFetching(false))
+            }
+        }  
+    },[fetching]);
 
-    const fetchContr = () =>{
-        ContrService.fetchContr(user.user.id).then((data)=>{  
-            setListContragent(data);
-    })
+    useEffect(() => {
+        const element = userList.current;
+        element.addEventListener('scroll',scrollHandler);
+        return function(){
+            element.removeEventListener('scroll',scrollHandler);
+        }
+    },[]);
+
+    const handleSearch = (e) =>{
+        ContrService.fetchContr({user:user.user.id,search:e.target.value,limit,page:1}).
+            then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setListContragent(data.docs)
+                setCurrentPage(prevState=>prevState + 1)
+                setSearch(e.target.value)
+        }).finally(
+            ()=>setFetching(false)
+        )
     }
 
-    const handleControl = (e)=> {
-        setEmailSearch(e.target.value)
-    }
-
-    const filterEmail=(item)=>{
-        let tempEmail = item.Email
-        let tempName =  item.Name
-        return tempEmail.toLowerCase().indexOf(emailSearch.toLowerCase()) > -1 || 
-        tempName.toLowerCase().indexOf(emailSearch.toLowerCase()) > -1
+    const scrollHandler = (e) =>{
+        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+            setFetching(true)
+        }
     }
 
     const checkedHandler=(e,item)=>{
-        console.log(item)
         if(e.target.checked){
             setChecked([...checked, item]);
         }else{
@@ -52,34 +73,26 @@ const EmailList = ({checked,setChecked}) => {
         <div>Добавлять контрагентов вы можете в разделе контрагенты в основном меню.
               <Form.Control
                             placeholder="Введите имя или e-mail контрагента"
-                            onChange={(e)=>handleControl(e)}
-            />
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Имя</th>
-                    <th>E-mail</th>
-                    <th>Выбрать</th>
-                </tr>
-                </thead>
-                <tbody>
-                {listCont.filter(filterEmail).map((item,index)=>{    
-                return(    
-                <tr key={index}>
-                    <td>{index+1}</td>
-                    <td>{item.Name}</td>
-                    <td>{item.Email}</td>
-                    <td><Form.Check
-                            name="email"
-                            type="checkbox"
-                            defaultChecked={checked.filter(i => i.Email == item.Email).length > 0}
-                            onChange={(e)=>checkedHandler(e,item)}
-                    /></td>
-                </tr>
-                )})}  
-                </tbody>
-            </Table>
+                            onChange={handleSearch}
+                />
+            <div class="userList overflow-auto" ref={userList}>
+            {listCont?.map((item,index)=>
+            <div key={index} class="userCardListUser">
+                 <div class="userCardListUserFlex">
+                        <Form.Check
+                                name="email"
+                                type="checkbox"
+                                defaultChecked={checked.filter(i => i.Email == item.Email).length > 0}
+                                onChange={(e)=>checkedHandler(e,item)}
+                        />
+                    <div>
+                        <div >{item.name}</div>
+                        <div>{item.nameOrg}</div>
+                    </div>
+                </div>
+            </div>
+            )}  
+        </div>
         </div>
     );
 };
