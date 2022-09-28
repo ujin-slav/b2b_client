@@ -258,7 +258,7 @@ const CreateAsk = observer(() => {
                               <Form.Control
                                   name="Party"
                                   defaultValue={checkedEmail.map((item)=>
-                                    "(" + item.Name + ") " + item.Email
+                                    "(" + item.name + ") " + item.nameOrg
                                     )}
                                   placeholder="Участники"
                                   onChange={handleChange}

@@ -62,17 +62,18 @@ const EmailList = ({checked,setChecked}) => {
     }
 
     const checkedHandler=(e,item)=>{
+        console.log(item)
         if(e.target.checked){
             setChecked([...checked, item]);
         }else{
-            setChecked(checked.filter(el => el.Email !== item.Email));
+            setChecked(checked.filter(el => el._id !== item._id));
         }
     }
 
     return (
         <div>Добавлять контрагентов вы можете в разделе контрагенты в основном меню.
               <Form.Control
-                            placeholder="Введите имя или e-mail контрагента"
+                            placeholder="Начните набирать инн или название организации"
                             onChange={handleSearch}
                 />
             <div class="userList overflow-auto" ref={userList}>
@@ -82,7 +83,7 @@ const EmailList = ({checked,setChecked}) => {
                         <Form.Check
                                 name="email"
                                 type="checkbox"
-                                defaultChecked={checked.filter(i => i.Email == item.Email).length > 0}
+                                defaultChecked={checked.filter(i => i._id === item._id).length > 0}
                                 onChange={(e)=>checkedHandler(e,item)}
                         />
                     <div>
