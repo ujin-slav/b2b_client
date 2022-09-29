@@ -156,7 +156,7 @@ table {
   position: relative;
   margin:10px;
   border-radius:20px;
-  padding:10px 10px 10px 10px;
+  padding:3px 3px 3px 3px;
   font-size: 15px;
   background-color:#FFF4A8 !important;
 }
@@ -165,7 +165,7 @@ table {
   position: relative;
   margin:10px;
   border-radius:20px;
-  padding:10px 10px 10px 10px;
+  padding:3px 3px 3px 3px;
   font-size: 15px;
   background-color:#a2ebfd !important;
 }
@@ -912,16 +912,27 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   align-items: center;
 }
 .plusCircleContr {
-  width: 35px;
-  height: 35px;
-  margin: 5px;
+  width: 25px;
+  height: 25px;
+  margin: 3px;
   color:#0D55FD;
   cursor: pointer;
 }
 .dashCircleContr {
-  width: 35px;
-  height: 35px;
-  margin: 5px;
+  width: 25px;
+  height: 25px;
+  margin: 3px;
   color:red;
   cursor: pointer;
+}
+.avatarContr{
+  width: 80px;
+  height: 80px;
+  border-radius: 80px;
+}
+.avatarChat{
+  width: 70px;
+  height: 70px;
+  margin-right: 5px;
+  border-radius: 70px;
 }

@@ -134,7 +134,7 @@ const CreateAsk = observer(() => {
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           data.append("Date", new Date())
-          data.append("Private", ask.data.Private)
+          data.append("Private", checkedEmail.length>0)
           data.append("Hiden", ask.data.Hiden)
           data.append("Comment", ask.data.Comment)
           data.append("Send", ask.data.Send)
@@ -267,7 +267,7 @@ const CreateAsk = observer(() => {
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
-                              <InputGroup>
+                              {/* <InputGroup>
                                 <Form.Check
                                       id="Private"
                                       name="Private"
@@ -275,8 +275,8 @@ const CreateAsk = observer(() => {
                                       onChange={()=>{ask.data.Private=!ask.data.Private}}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
-                              </InputGroup>
-                              <InputGroup>
+                              </InputGroup> */}
+                              {/* <InputGroup>
                               <Form.Check
                                     id="Send"
                                     name="Send"
@@ -284,7 +284,7 @@ const CreateAsk = observer(() => {
                                     onChange={()=>{ask.data.Send=!ask.data.Send}}>
                               </Form.Check>
                                 Разослать приглашение на участие.
-                              </InputGroup>
+                              </InputGroup> */}
                               <InputGroup>
                               <Form.Check
                                     id="Hiden"

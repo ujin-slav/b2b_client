@@ -289,22 +289,26 @@ const ChatPage = observer(() => {
                     <Col className="col-3"> 
                     <div className="userBox" ref={userBox}>
                         {chat.getUsers().map((item,index)=>{
-                            return(<div key={index} className={item.contact?._id===recevier?"userCardChange":"userCard"} 
-                             onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
-                                            <div>{item.contact?.name}</div>
-                                            <div>{item.contact?.nameOrg}</div>
-                                            {searchUnread(item?.contact?._id)}
-                                            {item?.statusLine ? 
-                                            <div></div>
-                                            :
-                                            <div className="lastVisit">
-                                                {item?.lastVisit!==null ? dateFormat(item?.lastVisit?.Date, "dd/mm/yyyy HH:MM:ss"):``}
-                                            </div>}
-                                            {item?.statusLine ? 
-                                            <div className="online"></div>
-                                            :
-                                            <div className="offline"></div>}
-                            </div>)
+                            return(
+                                <div key={index} className={item.contact?._id===recevier?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
+                                    onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
+                                    <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.contact?.logo?.filename} />
+                                    <div>
+                                        <div>{item.contact?.name}</div>
+                                        <div>{item.contact?.nameOrg}</div>
+                                    </div>
+                                    {searchUnread(item?.contact?._id)}
+                                    {item?.statusLine ? 
+                                    <div></div>
+                                    :
+                                    <div className="lastVisit">
+                                        {item?.lastVisit!==null ? dateFormat(item?.lastVisit?.Date, "dd/mm/yyyy HH:MM:ss"):``}
+                                    </div>}
+                                    {item?.statusLine ? 
+                                    <div className="online"></div>
+                                    :
+                                    <div className="offline"></div>}
+                                </div>)
                         })}
                     <InputGroup className="mt-2 position-absolute bottom-0 mb-3">
                                 <Form.Control 

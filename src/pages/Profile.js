@@ -38,7 +38,7 @@ const Profile =  observer(() => {
             inn: null,
             notiInvited:true,
             notiMessage:true,
-            notiQuest:true
+            notiAsk:true
           },
           formErrors: {
             name: "",
@@ -61,7 +61,7 @@ const Profile =  observer(() => {
         let formErrors = profile.formErrors
         data.notiInvited = user.user.notiInvited
         data.notiMessage = user.user.notiMessage
-        data.notiQuest = user.user.notiQuest
+        data.notiAsk = user.user.notiAsk
         setProfile({ data, formErrors});
         if(user.user.logo){
             fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
@@ -70,7 +70,6 @@ const Profile =  observer(() => {
               setFile(blob)
             })
         }
-        console.log(user.user.logo?.filename)
       },[user.user]);
 
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -139,7 +138,7 @@ const Profile =  observer(() => {
             formData.append("category",JSON.stringify(checkedCat))
             formData.append("notiInvited",data.notiInvited)
             formData.append("notiMessage",data.notiMessage)
-            formData.append("notiQuest",data.notiQuest)
+            formData.append("notiAsk",data.notiAsk)
             if(file.length!==0){
                 formData.append("file", blobToFile(file))
             }else{
@@ -319,13 +318,13 @@ const Profile =  observer(() => {
                             </tr>
                             <tr>
                                 <td>
-                                    Новые вопросы                
+                                    Новые заявки клиентов               
                                 </td>
                                 <td>
                                     <Form.Check
-                                        name="notiQuest"
+                                        name="notiAsk"
                                         type="checkbox"
-                                        checked={profile.data.notiQuest}
+                                        checked={profile.data.notiAsk}
                                         onChange={handleChecked}>
                                     </Form.Check>
                                 </td>

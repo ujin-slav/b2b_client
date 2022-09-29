@@ -223,9 +223,9 @@ const ModifyAsk = observer((askId) => {
                                 </div>  
                                 <Form.Control
                                   name="Party"
-                                  // defaultValue={checkedEmail.map((item)=>
-                                  //   "(" + item.Name + ") " + item.Email
-                                  //   )}
+                                  defaultValue={checkedEmail.map((item)=>
+                                    "(" + item.name + ") " + item.nameOrg
+                                    )}
                                   placeholder="Участники"
                                   onChange={handleChange}
                                   disabled={true}
@@ -233,7 +233,7 @@ const ModifyAsk = observer((askId) => {
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
-                              <InputGroup>
+                              {/* <InputGroup>
                                 <Form.Check
                                       name="Private"
                                       type="checkbox"
@@ -241,7 +241,7 @@ const ModifyAsk = observer((askId) => {
                                       onChange={handleChecked}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
-                              </InputGroup>
+                              </InputGroup> */}
                               <InputGroup>
                               <Form.Check
                                     name="Hiden"

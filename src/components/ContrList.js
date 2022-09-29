@@ -73,10 +73,11 @@ const ContrList = observer(() => {
             {listUser?.map((item,index)=>
             <div key={index} class="userCardListUser">
                  <div class="userCardListUserFlex">
-                        <DashCircle class="dashCircleContr" onClick={(e)=>delContr(item)}/>
+                        <img className="avatarContr" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
                     <div>
                         <div >{item.name}</div>
                         <div>{item.nameOrg}</div>
+                                            <DashCircle class="dashCircleContr" onClick={(e)=>delContr(item)}/>
                     </div>
                 </div>
             </div>

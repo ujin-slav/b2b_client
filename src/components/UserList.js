@@ -77,11 +77,11 @@ const UserList = observer(() => {
             {listUser?.map((item,index)=>
             <div key={index} class="userCardListUser">
                 <div class="userCardListUserFlex">
-                        <PlusCircle class="plusCircleContr"
-                            onClick={(e)=>{addContr(item)}} />
+                        <img className="avatarContr" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
                     <div>
                         <div >{item.name}</div>
                         <div>{item.nameOrg}</div>
+                        <PlusCircle class="plusCircleContr"onClick={(e)=>{addContr(item)}} />
                     </div>
                 </div>
             </div>
