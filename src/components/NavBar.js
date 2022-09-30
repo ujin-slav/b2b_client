@@ -244,7 +244,7 @@ const NavBar = observer(() => {
                         </li>
                         <li className="job-sub-tabs">
                             <NavDropdown.Item  onClick={()=>activeLink(LENTSTATUS)}className={classNameLink(LENTSTATUS)}>
-                                Лента статуса заявок
+                                Cтатус заявок
                             </NavDropdown.Item>
                         </li>
                       </ul>

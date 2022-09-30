@@ -27,16 +27,26 @@ export const statusOrder = [
     },
     {
         value: 4,
+        label: "crContract",
+        labelRu: "Создан договор(контракт)"
+    },
+    {
+        value: 5,
+        label: "siContract",
+        labelRu: "Подписан договор(контракт)"
+    },
+    {
+        value: 6,
         label: "paid",
         labelRu: "Оплата произведена"
     },   
     {
-        value: 5,
+        value: 7,
         label: "shipment",
         labelRu: "Создана реализация(товар в пути)"
     },
     {
-        value: 6,
+        value: 8,
         label: "received",
         labelRu: "Товар получен"
     },
@@ -49,6 +59,10 @@ const OrderStatus = observer(({priceAskId}) => {
     const [fiz, setFiz] = useState(false)
     const [filesBils, setFilesBils] = useState([])
     const [fileSizeBils, setFileSizeBils] = useState(0);
+    const [filesSiContract, setFilesSiContract] = useState([])
+    const [fileSizeSiContract, setFileSizeSiContract] = useState(0);
+    const [filesCrContract, setFilesCrContract] = useState([])
+    const [fileSizeCrContract, setFileSizeCrContract] = useState(0);
     const [filesPaid, setFilesPaid] = useState([])
     const [fileSizePaid, setFileSizePaid] = useState(0);
     const [filesShipment, setFilesShipment] = useState([])
@@ -61,6 +75,8 @@ const OrderStatus = observer(({priceAskId}) => {
 
     const send=async()=>{
         const data = new FormData();
+        filesCrContract?.forEach((item)=>{data.append("file", item);data.append("CrContractfiles", item.name)})
+        filesSiContract?.forEach((item)=>{data.append("file", item);data.append("SiContractfiles", item.name)})
         filesBils?.forEach((item)=>{data.append("file", item);data.append("Bilsfiles", item.name)})
         filesPaid?.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
@@ -81,6 +97,8 @@ const OrderStatus = observer(({priceAskId}) => {
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles)
+                setFilesCrContract(result?.Status?.CrContract)
+                setFilesSiContract(result?.Status?.SiContract)
                 setFilesPaid(result?.Status?.Paidfiles)
                 setFilesShipment(result?.Status?.Shipmentfiles)
                 setFilesReceived(result?.Status?.Receivedfiles)
@@ -127,14 +145,80 @@ const OrderStatus = observer(({priceAskId}) => {
             case 3:
                 return biled(active) 
             case 4:
-                return paid(active) 
+                return crContract(active) 
             case 5:
-                return shipment(active) 
+                return siContract(active) 
             case 6:
+                return paid(active) 
+            case 7:
+                return shipment(active) 
+            case 8:
                 return received(active) 
             default:
               break;
         }
+    }
+    const crContract=(active)=>{
+        return(
+            <div>
+                Можете прикрепить файлы договора(контракта).
+                    <input type="file"
+                        onChange={(e)=>onInputChange(e,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}
+                        className="form-control"
+                        disabled={!active}
+                        multiple/> {filesCrContract?.map((a,key)=>{
+                            return(
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}>X</button>     
+                            </div>
+                        }
+                    </div>
+                    )})}  
+            </div> 
+        )
+    }
+    const siContract=(active)=>{
+        return(
+            <div>
+                Можете прикрепить файлы договора(контракта).
+                    <input type="file"
+                        onChange={(e)=>onInputChange(e,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}
+                        className="form-control"
+                        disabled={!active}
+                        multiple/> {filesSiContract?.map((a,key)=>{
+                            return(
+                        <div key={key}>
+                        {a.originalname ?
+                            <div>
+                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
+                                <a
+                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
+                                >{a.originalname}</a>
+                                <button disabled={!active} onClick={()=>removeFile(key,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}>X</button>     
+                            </div>
+                        :
+                            <div>
+                                {a.name}
+                                <button disabled={!active} onClick={()=>removeFile(key,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}>X</button>     
+                            </div>
+                        }
+                    </div>
+                    )})}  
+            </div> 
+    )
     }
     const biled=(active)=>{
         return(
@@ -271,7 +355,9 @@ const OrderStatus = observer(({priceAskId}) => {
                     <option>Выбрать</option>
                     <option value="2">Обрабатывается поставщиком</option>
                     <option value="3">Выставлен счет(ожидается оплата)</option>
-                    <option value="5">Создана реализация(товар в пути)</option>
+                    <option value="4">Создан договор(контракт)</option>
+                    <option value="5">Подписан договор(контракт)</option>
+                    <option value="7">Создана реализация(товар в пути)</option>
                 </Form.Control> 
             )
         }else{
@@ -281,8 +367,10 @@ const OrderStatus = observer(({priceAskId}) => {
                 onChange={(e)=>setStatus(e.target.value)}        
                  >       
                     <option>Выбрать</option>
-                    <option value="4">Оплата произведена</option>
-                    <option value="6">Товар получен</option>
+                    <option value="4">Создан договор(контракт)</option>
+                    <option value="5">Подписан договор(контракт)</option>
+                    <option value="6">Оплата произведена</option>
+                    <option value="8">Товар получен</option>
                 </Form.Control> 
             )
         }    
