@@ -122,6 +122,8 @@ const OrderStatus = observer(({priceAskId}) => {
     }
 
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
+        console.log(e)
+        console.log(files)
         if(files.length+e.target.files.length<10){
           for(let i = 0; i < e.target.files.length; i++) { 
             try{
@@ -314,16 +316,20 @@ const OrderStatus = observer(({priceAskId}) => {
         )
     }
     const received=(active)=>{
+            inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)
+    }
+
+    const inputFiles = (active, files,setFiles,fileSize,setFileSize) => {
         return(
             <div>
                 Можете прикрепить файлы подписанных документов.
                 <input type="file"
-                        onChange={(e)=>onInputChange(e,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}
+                        onChange={(e)=>onInputChange(e,files,setFiles,fileSize,setFileSize)}
                         className="form-control"
                         disabled={!active}
-                        multiple/> {filesReceived?.map((a,key)=>{
+                        multiple/> {files?.map((a,key)=>{
                             return(
-                        <div key={key}>
+                    <div key={key}>
                         {a.originalname ?
                             <div>
                                 <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
@@ -331,12 +337,12 @@ const OrderStatus = observer(({priceAskId}) => {
                                 <a
                                 href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
                                 >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>     
+                                <button disabled={!active} onClick={()=>removeFile(key,files,setFiles,fileSize,setFileSize)}>X</button>     
                             </div>
                         :
                             <div>
                                 {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)}>X</button>     
+                                <button disabled={!active} onClick={()=>removeFile(key,files,setFiles,fileSize,setFileSize)}>X</button>     
                             </div>
                         }
                     </div>
