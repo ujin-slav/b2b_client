@@ -936,3 +936,9 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   margin-right: 5px;
   border-radius: 70px;
 }
+.alertCustom{
+  position:fixed;
+  top: 0px;
+  z-index: 50;
+  width: -webkit-fill-available;
+}

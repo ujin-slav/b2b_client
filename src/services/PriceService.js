@@ -45,5 +45,8 @@ export default class PriceService {
         const {data} = await $api.post(`/getstatuspriceask`,{id});
         return data
     }
+    static async deleteFile(formData){
+        return $api.post(`/deletestatuspriceaskfile`, formData);
+    }
     
 }

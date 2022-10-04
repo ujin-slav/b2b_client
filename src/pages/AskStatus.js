@@ -104,8 +104,8 @@ const AskStatus = observer(({askId}) => {
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
                 setPrevStatus(result?.Status?.Status?.value)
-                setFilesCrContract(result?.Status?.CrContract || [])
-                setFilesSiContract(result?.Status?.SiContract || [])
+                setFilesCrContract(result?.Status?.CrContractfiles || [])
+                setFilesSiContract(result?.Status?.SiContractfiles || [])
                 setFilesPaid(result?.Status?.Paidfiles || [])
                 setFilesShipment(result?.Status?.Shipmentfiles || [])
                 setFilesReceived(result?.Status?.Receivedfiles || [])
@@ -115,20 +115,26 @@ const AskStatus = observer(({askId}) => {
         })
       },[user.user]);
     
-    const removeFile = async(id,a,files,setFiles,fileSize,setFileSize) => {
-        if(a.originalname){
-            const result = await AskService.deleteFile({file:a,askId})
-            if (result.status===200){
-                myalert.setMessage("Успешно");
-                setPrevStatus(status)
-              } else {
-                myalert.setMessage(result?.data?.message)
-            }
-        }
+    const removeFile = async(id,a,files,setFiles,fileSize,setFileSize,nameArray) => {
+        
         setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
         setFileSize(fileSize - files[id].size)
         const newFiles = files.filter((item,index,array)=>index!==id);
         setFiles(newFiles);
+
+        if(a.originalname){
+            const result = await AskService.deleteFile({
+                file:a,
+                askId,
+                newFiles,
+                nameArray  
+            })
+            if (result.status===200){
+                myalert.setMessage("Успешно");
+              } else {
+                myalert.setMessage(result?.data?.message)
+            }
+        }
     }
 
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
@@ -153,23 +159,23 @@ const AskStatus = observer(({askId}) => {
     const addOptionStatus = (number,active) => {
         switch (number) {
             case 2:
-                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract) 
+                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles") 
             case 3:
-                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)
+                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles")
             case 4:
-                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)
+                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles")
             case 5:
-                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)
+                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles")
             case 6:
-                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived) 
+                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles") 
             default:
               break;
         }
     }
-    const inputFiles = (active, files,setFiles,fileSize,setFileSize) => {
+    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray) => {
         return(
             <div>
-                Можете прикрепить файлы подписанных документов.
+                Можете прикрепить файлы документов.
                 <input type="file"
                         onChange={(e)=>onInputChange(e,files,setFiles,fileSize,setFileSize)}
                         className="form-control"
@@ -184,12 +190,16 @@ const AskStatus = observer(({askId}) => {
                                 <a
                                 href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
                                 >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize)}>X</button>     
+                                {user.user.id === a.author ?
+                                    <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize,nameArray)}>X</button>  
+                                    :
+                                    <div></div>
+                                }   
                             </div>
                         :
                             <div>
                                 {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize)}>X</button>     
+                                <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize,nameArray)}>X</button>     
                             </div>
                         }
                     </div>

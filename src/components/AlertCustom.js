@@ -8,7 +8,7 @@ const AlertCustom =  observer(() => {
     const {myalert} = useContext(Context); 
 
     return (
-        <div>
+        <div className='alertCustom'>
             <Alert variant="warning" show={myalert.show} onClose={() => myalert.setShow(false)} dismissible>
                     {myalert.message}
             </Alert>

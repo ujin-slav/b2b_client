@@ -8,6 +8,7 @@ import {
     InputGroup,
     Button,
  } from "react-bootstrap";
+import { faBullseye } from '@fortawesome/free-solid-svg-icons';
 
 export const statusOrder = [
     {
@@ -69,7 +70,7 @@ const OrderStatus = observer(({priceAskId}) => {
     const [fileSizeShipment, setFileSizeShipment] = useState(0)
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
-    const [deletedFiles,setDeletedFiles] = useState([])
+    const [loading,setLoading] = useState(false)   
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
 
@@ -83,42 +84,60 @@ const OrderStatus = observer(({priceAskId}) => {
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
-        data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await PriceService.setStatus(data)
         if (result.status===200){
-            myalert.setMessage("Успешно");
+            getStatus()
           } else {
             myalert.setMessage(result?.data?.message)
         }
     }
 
     useEffect(() => {
+        getStatus()
+    },[user.user]);
+
+    const getStatus = () => {
+        setLoading(true)
         PriceService.getStatus(priceAskId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
-                setFilesBils(result?.Status?.Bilsfiles)
-                setFilesCrContract(result?.Status?.CrContract)
-                setFilesSiContract(result?.Status?.SiContract)
-                setFilesPaid(result?.Status?.Paidfiles)
-                setFilesShipment(result?.Status?.Shipmentfiles)
-                setFilesReceived(result?.Status?.Receivedfiles)
+                setFilesBils(result?.Status?.Bilsfiles || [])
+                setFilesCrContract(result?.Status?.CrContract || [])
+                setFilesSiContract(result?.Status?.SiContract || [])
+                setFilesPaid(result?.Status?.Paidfiles || [])
+                setFilesShipment(result?.Status?.Shipmentfiles || [])
+                setFilesReceived(result?.Status?.Receivedfiles || [])
                 setFiz(result.Fiz)
                 setAuthor(result.author)
             }
             setFiz(result.Fiz)
             setAuthor(result.author)
-        })
-      },[user.user]);
+        }).finally(()=>setLoading(false))
+    }
 
     if(fiz){
         return <div></div>
     }
 
-    const removeFile = (id,files,setFiles,fileSize,setFileSize) => {
-        setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
+    const removeFile = async(id,a,files,setFiles,fileSize,setFileSize,nameArray) => {
+        
         setFileSize(fileSize - files[id].size)
         const newFiles = files.filter((item,index,array)=>index!==id);
         setFiles(newFiles);
+
+        if(a.originalname){
+            const result = await PriceService.deleteFile({
+                file:a,
+                priceAskId,
+                newFiles,
+                nameArray  
+            })
+            if (result.status===200){
+                myalert.setMessage("Успешно");
+              } else {
+                myalert.setMessage(result?.data?.message)
+            }
+        }
     }
 
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
@@ -145,184 +164,26 @@ const OrderStatus = observer(({priceAskId}) => {
     const addOptionStatus = (number,active) => {
         switch (number) {
             case 3:
-                return biled(active) 
+                return inputFiles(active,filesBils,setFilesBils,fileSizeBils,setFileSizeBils,"CrContractfiles")  
             case 4:
-                return crContract(active) 
+                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles")  
             case 5:
-                return siContract(active) 
+                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles") 
             case 6:
-                return paid(active) 
+                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles") 
             case 7:
-                return shipment(active) 
+                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles") 
             case 8:
-                return received(active) 
+                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles")  
             default:
               break;
         }
     }
-    const crContract=(active)=>{
-        return(
-            <div>
-                Можете прикрепить файлы договора(контракта).
-                    <input type="file"
-                        onChange={(e)=>onInputChange(e,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}
-                        className="form-control"
-                        disabled={!active}
-                        multiple/> {filesCrContract?.map((a,key)=>{
-                            return(
-                        <div key={key}>
-                        {a.originalname ?
-                            <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
-                                <a
-                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
-                                >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}>X</button>     
-                            </div>
-                        :
-                            <div>
-                                {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract)}>X</button>     
-                            </div>
-                        }
-                    </div>
-                    )})}  
-            </div> 
-        )
-    }
-    const siContract=(active)=>{
-        return(
-            <div>
-                Можете прикрепить файлы договора(контракта).
-                    <input type="file"
-                        onChange={(e)=>onInputChange(e,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}
-                        className="form-control"
-                        disabled={!active}
-                        multiple/> {filesSiContract?.map((a,key)=>{
-                            return(
-                        <div key={key}>
-                        {a.originalname ?
-                            <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
-                                <a
-                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
-                                >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}>X</button>     
-                            </div>
-                        :
-                            <div>
-                                {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract)}>X</button>     
-                            </div>
-                        }
-                    </div>
-                    )})}  
-            </div> 
-    )
-    }
-    const biled=(active)=>{
-        return(
-            <div>
-                Можете прикрепить файлы счета.
-                    <input type="file"
-                        onChange={(e)=>onInputChange(e,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}
-                        className="form-control"
-                        disabled={!active}
-                        multiple/> {filesBils?.map((a,key)=>{
-                            return(
-                        <div key={key}>
-                        {a.originalname ?
-                            <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
-                                <a
-                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
-                                >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>     
-                            </div>
-                        :
-                            <div>
-                                {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesBils,setFilesBils,fileSizeBils,setFileSizeBils)}>X</button>     
-                            </div>
-                        }
-                    </div>
-                    )})}  
-            </div> 
-        )
-    }
-    const paid=(active)=>{
-        return(
-            <div>
-                Можете прикрепить файлы платежного поручения.
-                <input type="file"
-                        onChange={(e)=>onInputChange(e,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}
-                        className="form-control"
-                        disabled={!active}
-                        multiple/> {filesPaid?.map((a,key)=>{
-                            return(
-                        <div key={key}>
-                        {a.originalname ?
-                            <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
-                                <a
-                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
-                                >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>     
-                            </div>
-                        :
-                            <div>
-                                {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid)}>X</button>     
-                            </div>
-                        }
-                    </div>
-                    )})}  
-            </div> 
-        )
-    }
-    const shipment=(active)=>{
-        return(
-            <div>
-                Можете прикрепить файлы реализации(Накладная,СФ,УПД ...).
-                <input type="file"
-                        onChange={(e)=>onInputChange(e,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}
-                        className="form-control"
-                        disabled={!active}
-                        multiple/> {filesShipment?.map((a,key)=>{
-                            return(
-                        <div key={key}>
-                        {a.originalname ?
-                            <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
-                                <a
-                                href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
-                                >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>     
-                            </div>
-                        :
-                            <div>
-                                {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment)}>X</button>     
-                            </div>
-                        }
-                    </div>
-                    )})}  
-            </div> 
-        )
-    }
-    const received=(active)=>{
-            inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived)
-    }
 
-    const inputFiles = (active, files,setFiles,fileSize,setFileSize) => {
+    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray) => {
         return(
             <div>
-                Можете прикрепить файлы подписанных документов.
+                Можете прикрепить файлы документов.
                 <input type="file"
                         onChange={(e)=>onInputChange(e,files,setFiles,fileSize,setFileSize)}
                         className="form-control"
@@ -337,12 +198,16 @@ const OrderStatus = observer(({priceAskId}) => {
                                 <a
                                 href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
                                 >{a.originalname}</a>
-                                <button disabled={!active} onClick={()=>removeFile(key,files,setFiles,fileSize,setFileSize)}>X</button>     
+                                {user.user.id === a.author ?
+                                    <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize,nameArray)}>X</button>  
+                                    :
+                                    <div></div>
+                                }   
                             </div>
                         :
                             <div>
                                 {a.name}
-                                <button disabled={!active} onClick={()=>removeFile(key,files,setFiles,fileSize,setFileSize)}>X</button>     
+                                <button disabled={!active} onClick={()=>removeFile(key,a,files,setFiles,fileSize,setFileSize,nameArray)}>X</button>     
                             </div>
                         }
                     </div>
