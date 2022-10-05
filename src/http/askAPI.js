@@ -8,7 +8,7 @@ export const fetchAsks = async (formData) => {
 }
 
 export const fetchLentStatus = async (formData) => {
-    const {data} = await $api.post(`/getlent`,{formData});
+    const {data} = await $api.post(`/getlent`,formData);
     return data
 }
 

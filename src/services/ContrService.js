@@ -11,6 +11,10 @@ export default class ContrService {
         const {data} = await $api.post(`/getcontr`,formData);
         return data
     }
+    static async fetchContrParty(formData){
+        const {data} = await $api.post(`/getcontrparty`,formData);
+        return data
+    }
     static async delContr(formData){
         const {data} = await $api.post(`/delcontr`,formData);
         return data

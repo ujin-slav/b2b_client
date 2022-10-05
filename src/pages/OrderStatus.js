@@ -87,6 +87,7 @@ const OrderStatus = observer(({priceAskId}) => {
         const result = await PriceService.setStatus(data)
         if (result.status===200){
             getStatus()
+            myalert.setMessage("Успешно");
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -141,8 +142,6 @@ const OrderStatus = observer(({priceAskId}) => {
     }
 
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
-        console.log(e)
-        console.log(files)
         if(files.length+e.target.files.length<10){
           for(let i = 0; i < e.target.files.length; i++) { 
             try{

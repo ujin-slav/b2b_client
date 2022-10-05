@@ -8,6 +8,7 @@ import {
     InputGroup,
     Button,
  } from "react-bootstrap";
+ import waiting from "../waiting.gif";
 
 export const statusOrder = [
     // {
@@ -72,6 +73,7 @@ const AskStatus = observer(({askId}) => {
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
     const [deletedFiles,setDeletedFiles] = useState([])
+    const [loading,setLoading] = useState(false)   
     const {myalert} = useContext(Context);
     const [author, setAuthor] = useState()
     const [winner, setWinner] = useState()
@@ -92,6 +94,7 @@ const AskStatus = observer(({askId}) => {
         data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await AskService.setStatus(data)
         if (result.status===200){
+            getStatus()
             myalert.setMessage("Успешно");
             setPrevStatus(status)
           } else {
@@ -100,6 +103,11 @@ const AskStatus = observer(({askId}) => {
     }
 
     useEffect(() => {
+        getStatus()
+    },[user.user]);
+
+    const getStatus = () => {
+        setLoading(true)
         AskService.getStatus(askId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
@@ -112,8 +120,8 @@ const AskStatus = observer(({askId}) => {
             }
             setAuthor(result.Author)
             setWinner(result.Winner)
-        })
-      },[user.user]);
+        }).finally(()=>setLoading(false))
+    }
     
     const removeFile = async(id,a,files,setFiles,fileSize,setFileSize,nameArray) => {
         
@@ -244,6 +252,14 @@ const AskStatus = observer(({askId}) => {
     if(!(user?.user?.id===author || user?.user?.id===winner)){
         return(
             <div></div>
+        )
+    }
+
+    if(loading){
+        return(
+            <p className="waiting">
+                <img height="320" src={waiting}/>
+            </p>
         )
     }
 

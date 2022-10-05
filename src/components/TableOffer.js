@@ -66,8 +66,8 @@ const TableOffer = observer(() => {
         {offerUser.getOffer().map((item,index)=>
           <div key={index} className='childSpecAsk'>
             <Card>
-              <Card.Header className="specNameDoc" onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >
-              <div>№ 
+              <Card.Header onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >
+              <div className="specNameDoc">№ 
                   {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
                 </div>
               <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>

@@ -24,13 +24,12 @@ const LentStatus = observer(() => {
             fetchLentStatus({userId:user.user.id,limit,page:currentPage}).then((data)=>{
                 setLent(data.docs)
                 setpageCount(data.totalPages);
-                console.log(data)
             })
         }
       },[user.user,loading]);
 
     const fetchPage = async (currentPage) => {
-        fetchLentStatus({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
+        fetchLentStatus({userId:user.user.id,limit,page:currentPage}).then((data)=>{
           setLent(data.docs)
     })};
 
@@ -49,35 +48,32 @@ const LentStatus = observer(() => {
     }
 
     return (
-      <div>
-      <div className='parentSpecAsk'>
-        {lent.map((item, index)=>
-          <div key={index} className='childSpecAsk'>
-             <Card>
-              <Card.Header  className="specNameDoc" onClick={()=>redirect(item)}>
-
-                <div>№ 
-                  {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}
+      <div className='container-mycontr mt-3'>
+       <div class="lentStatus overflow-auto">
+          {lent?.map((item,index)=>
+            <div key={index} class="userCardListUser">
+              <div class="userCardListUserFlex">
+                <div className='mx-3'> 
+                    <span className="specNameDoc" onClick={()=>redirect(item)}>№{dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}</span> 
+                    <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
                 </div>
-                <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
-              </Card.Header>
-              <div>Изменил статус:</div>
-              <div>
-                <span className="specCloudy">{item?.Author?.name} {item?.Author?.nameOrg}</span>
+                <div>Изменил статус:</div>
+                <div>
+                  <span className="specCloudy">{item?.Author?.name} {item?.Author?.nameOrg}</span>
+                </div>
+                <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
+                <div>
+                Стало:
+                <span className="specCloudy"> {item?.Ask?.Status?.Status?.labelRu || item?.PriceAsk?.Status?.Status?.labelRu}</span> 
+                </div>
+                <div>
+                  Дата изменения:  
+                  <span className="specCloudy"> {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
+                </div>
               </div>
-              <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
-              <div>
-              Стало:
-              <span className="specCloudy"> {item?.Ask?.Status?.Status?.labelRu || item?.PriceAsk?.Status?.Status?.labelRu}</span> 
-              </div>
-              <div>
-                Дата изменения:  
-                <span className="specCloudy"> {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
-              </div>
-            </Card>  
+            </div>
+            )}  
         </div>
-        )}  
-     </div> 
       <ReactPaginate
       previousLabel={"предыдущий"}
       nextLabel={"следующий"}

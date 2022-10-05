@@ -26,7 +26,7 @@ const EmailList = ({checked,setChecked}) => {
     useEffect(() => {
         if(fetching){
             if(listCont.length===0 || listCont.length<totalDocs) {
-            ContrService.fetchContr({user:user.user.id,search:search,limit,page:currentPage}).then((data)=>{
+            ContrService.fetchContrParty({user:user.user.id,search:search,limit,page:currentPage}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setListContragent([...listCont, ...data.docs])
                 setCurrentPage(prevState=>prevState + 1)
@@ -44,7 +44,7 @@ const EmailList = ({checked,setChecked}) => {
     },[]);
 
     const handleSearch = (e) =>{
-        ContrService.fetchContr({user:user.user.id,search:e.target.value,limit,page:1}).
+        ContrService.fetchContrParty({user:user.user.id,search:e.target.value,limit,page:1}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setListContragent(data.docs)
