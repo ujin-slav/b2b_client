@@ -3,6 +3,7 @@ import {Context} from "../index";
 import AskService from '../services/AskService'
 import {Eye} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
+import ModalAlert from '../components/ModalAlert'
 import {
     Form,
     InputGroup,
@@ -73,7 +74,9 @@ const AskStatus = observer(({askId}) => {
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
     const [deletedFiles,setDeletedFiles] = useState([])
-    const [loading,setLoading] = useState(false)   
+    const [loading,setLoading] = useState(false)
+    const [deletingFile,setDeletingFile] = useState({});   
+    const [modalActive,setModalActive] = useState(false);
     const {myalert} = useContext(Context);
     const [author, setAuthor] = useState()
     const [winner, setWinner] = useState()
@@ -87,7 +90,7 @@ const AskStatus = observer(({askId}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("AskId", askId)
-        data.append("Author", author)
+        data.append("Author", user.user.id)
         data.append("Winner", winner)
         data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
@@ -124,14 +127,19 @@ const AskStatus = observer(({askId}) => {
     }
     
     const removeFile = async(id,a,files,setFiles,fileSize,setFileSize,nameArray) => {
-        
-        setDeletedFiles(((oldItems) => [...oldItems,files[id]]));
-        setFileSize(fileSize - files[id].size)
-        const newFiles = files.filter((item,index,array)=>index!==id);
-        setFiles(newFiles);
+        setDeletingFile({id,a,files,setFiles,fileSize,setFileSize,nameArray})
+        setModalActive(true)
+    }
+    
+    const delFile = async()=> {
 
+        const {
+            id,a,files,setFiles,fileSize,setFileSize,nameArray
+        } = deletingFile
+
+        const newFiles = files.filter((item,index,array)=>index!==id);
         if(a.originalname){
-            const result = await AskService.deleteFile({
+                const result = await AskService.deleteFile({
                 file:a,
                 askId,
                 newFiles,
@@ -139,12 +147,17 @@ const AskStatus = observer(({askId}) => {
             })
             if (result.status===200){
                 myalert.setMessage("Успешно");
+                setFileSize(fileSize - files[id].size)
+                setFiles(newFiles);
               } else {
                 myalert.setMessage(result?.data?.message)
             }
+        }else{
+            setFileSize(fileSize - files[id].size)
+            setFiles(newFiles);
         }
+        setDeletingFile({})
     }
-
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
         if(files.length+e.target.files.length<10){
           for(let i = 0; i < e.target.files.length; i++) { 
@@ -292,6 +305,11 @@ const AskStatus = observer(({askId}) => {
                     }
                 </div>
             )}
+        <ModalAlert header="Вы действительно хотите удалить" 
+        active={modalActive} 
+        setActive={setModalActive} 
+        funRes={delFile}
+        />
         </div>
     )
 });

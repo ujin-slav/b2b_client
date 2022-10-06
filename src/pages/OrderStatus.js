@@ -3,6 +3,7 @@ import {Context} from "../index";
 import PriceService from '../services/PriceService'
 import {Eye} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
+import ModalAlert from '../components/ModalAlert'
 import {
     Form,
     InputGroup,
@@ -73,6 +74,8 @@ const OrderStatus = observer(({priceAskId}) => {
     const [loading,setLoading] = useState(false)   
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
+    const [modalActive,setModalActive] = useState(false);
+    const [deletingFile,setDeletingFile] = useState({});
 
     const send=async()=>{
         const data = new FormData();
@@ -83,6 +86,7 @@ const OrderStatus = observer(({priceAskId}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
+        data.append("Author", user.user.id)
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         const result = await PriceService.setStatus(data)
         if (result.status===200){
@@ -103,8 +107,8 @@ const OrderStatus = observer(({priceAskId}) => {
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles || [])
-                setFilesCrContract(result?.Status?.CrContract || [])
-                setFilesSiContract(result?.Status?.SiContract || [])
+                setFilesCrContract(result?.Status?.CrContractfiles || [])
+                setFilesSiContract(result?.Status?.SiContractfiles || [])
                 setFilesPaid(result?.Status?.Paidfiles || [])
                 setFilesShipment(result?.Status?.Shipmentfiles || [])
                 setFilesReceived(result?.Status?.Receivedfiles || [])
@@ -122,12 +126,19 @@ const OrderStatus = observer(({priceAskId}) => {
 
     const removeFile = async(id,a,files,setFiles,fileSize,setFileSize,nameArray) => {
         
-        setFileSize(fileSize - files[id].size)
-        const newFiles = files.filter((item,index,array)=>index!==id);
-        setFiles(newFiles);
+        setDeletingFile({id,a,files,setFiles,fileSize,setFileSize,nameArray})
+        setModalActive(true)
+    }
+    
+    const delFile = async()=> {
 
+        const {
+            id,a,files,setFiles,fileSize,setFileSize,nameArray
+        } = deletingFile
+
+        const newFiles = files.filter((item,index,array)=>index!==id);
         if(a.originalname){
-            const result = await PriceService.deleteFile({
+                const result = await PriceService.deleteFile({
                 file:a,
                 priceAskId,
                 newFiles,
@@ -135,10 +146,16 @@ const OrderStatus = observer(({priceAskId}) => {
             })
             if (result.status===200){
                 myalert.setMessage("Успешно");
+                setFileSize(fileSize - files[id].size)
+                setFiles(newFiles);
               } else {
                 myalert.setMessage(result?.data?.message)
             }
+        }else{
+            setFileSize(fileSize - files[id].size)
+            setFiles(newFiles);
         }
+        setDeletingFile({})
     }
 
     const onInputChange = (e,files,setFiles,fileSize,setFileSize) => {
@@ -275,6 +292,11 @@ const OrderStatus = observer(({priceAskId}) => {
                     }
                 </div>
             )}
+        <ModalAlert header="Вы действительно хотите удалить" 
+        active={modalActive} 
+        setActive={setModalActive} 
+        funRes={delFile}
+        />
         </div>
     );
 });
