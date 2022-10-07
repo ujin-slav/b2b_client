@@ -30,12 +30,12 @@ const Profile =  observer(() => {
     const [file, setFile] = useState([])
     const[profile,setProfile] = useState( {
         data: {
-            id:null,
             name: null,
             nameOrg:  null,
             adressOrg: null,
             telefon: null,
             inn: null,
+            description:null,
             notiInvited:true,
             notiMessage:true,
             notiAsk:true
@@ -60,8 +60,8 @@ const Profile =  observer(() => {
         let data = profile.data
         let formErrors = profile.formErrors
         data.notiInvited = user.user.notiInvited
-        data.notiMessage = user.user.notiMessage
-        data.notiAsk = user.user.notiAsk
+        data.notiMessage = user.user.notiMessage 
+        data.notiAsk = user.user.notiAsk 
         setProfile({ data, formErrors});
         if(user.user.logo){
             fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
@@ -128,11 +128,12 @@ const Profile =  observer(() => {
         if (formValid(profile)) {
             const formData = new FormData();
 
-            formData.append("id", data.id)
+            formData.append("id", user.user.id)
             formData.append("name",data.name)
             formData.append("nameOrg",data.nameOrg)
             formData.append("adressOrg",data.adressOrg)
             formData.append("telefon",data.telefon)
+            formData.append("description",data.description)
             formData.append("inn",data.inn)
             formData.append("region",JSON.stringify(checkedRegion))
             formData.append("category",JSON.stringify(checkedCat))
@@ -227,6 +228,17 @@ const Profile =  observer(() => {
                                     defaultValue={user.user.name}
                                 /> 
                                 <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.name}</span></td>
+                            </tr>
+                            <tr>
+                            <td>Описание</td>
+                            <td><Form.Control
+                                    name="description"
+                                    type="text"
+                                    as="textarea"
+                                    onChange={handleChange}
+                                    defaultValue={user.user.description}
+                                /> 
+                            </td>
                             </tr>
                             <tr>
                             <td>Название организации</td>

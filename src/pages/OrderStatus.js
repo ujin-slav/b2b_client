@@ -57,6 +57,7 @@ export const statusOrder = [
 const OrderStatus = observer(({priceAskId}) => {
 
     const [status,setStatus] = useState(1)
+    const[prevStatus,setPrevStatus] = useState(1)
     const [author, setAuthor] = useState()
     const [fiz, setFiz] = useState(false)
     const [filesBils, setFilesBils] = useState([])
@@ -87,11 +88,13 @@ const OrderStatus = observer(({priceAskId}) => {
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
         data.append("Author", user.user.id)
+        data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
         const result = await PriceService.setStatus(data)
         if (result.status===200){
             getStatus()
             myalert.setMessage("Успешно");
+            setPrevStatus(status)
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -106,6 +109,7 @@ const OrderStatus = observer(({priceAskId}) => {
         PriceService.getStatus(priceAskId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
+                setPrevStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles || [])
                 setFilesCrContract(result?.Status?.CrContractfiles || [])
                 setFilesSiContract(result?.Status?.SiContractfiles || [])

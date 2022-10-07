@@ -73,7 +73,8 @@ const AskStatus = observer(({askId}) => {
     const [fileSizeShipment, setFileSizeShipment] = useState(0)
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
-    const [deletedFiles,setDeletedFiles] = useState([])
+    const [filesOther,setFilesOther] = useState([])
+    const [filesSizeOther,setFileSizeOther] = useState(0)
     const [loading,setLoading] = useState(false)
     const [deletingFile,setDeletingFile] = useState({});   
     const [modalActive,setModalActive] = useState(false);
@@ -87,6 +88,7 @@ const AskStatus = observer(({askId}) => {
         filesCrContract?.forEach((item)=>{data.append("file", item);data.append("CrContractfiles", item.name)})
         filesSiContract?.forEach((item)=>{data.append("file", item);data.append("SiContractfiles", item.name)})
         filesPaid?.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
+        filesOther.forEach((item)=>{data.append("file", item);data.append("Otherfiles", item.name)})
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("AskId", askId)
@@ -94,7 +96,6 @@ const AskStatus = observer(({askId}) => {
         data.append("Winner", winner)
         data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
-        data.append("DeletedFiles", JSON.stringify(deletedFiles))
         const result = await AskService.setStatus(data)
         if (result.status===200){
             getStatus()
@@ -120,6 +121,7 @@ const AskStatus = observer(({askId}) => {
                 setFilesPaid(result?.Status?.Paidfiles || [])
                 setFilesShipment(result?.Status?.Shipmentfiles || [])
                 setFilesReceived(result?.Status?.Receivedfiles || [])
+                setFilesOther(result?.Status?.Otherfiles || [])
             }
             setAuthor(result.Author)
             setWinner(result.Winner)
@@ -180,23 +182,23 @@ const AskStatus = observer(({askId}) => {
     const addOptionStatus = (number,active) => {
         switch (number) {
             case 2:
-                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles") 
+                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles","Можете прикрепить файлы документов") 
             case 3:
-                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles")
+                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles","Можете прикрепить файлы документов")
             case 4:
-                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles")
+                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles","Можете прикрепить файлы документов")
             case 5:
-                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles")
+                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles","Можете прикрепить файлы документов")
             case 6:
-                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles") 
+                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles","Можете прикрепить файлы документов") 
             default:
               break;
         }
     }
-    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray) => {
+    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray,text) => {
         return(
             <div>
-                Можете прикрепить файлы документов.
+                {text}
                 <input type="file"
                         onChange={(e)=>onInputChange(e,files,setFiles,fileSize,setFileSize)}
                         className="form-control"
@@ -305,6 +307,9 @@ const AskStatus = observer(({askId}) => {
                     }
                 </div>
             )}
+                <div className='mt-4 mb-4'>
+                    {inputFiles(true, filesOther,setFilesOther,filesSizeOther,setFileSizeOther,"Otherfiles","Прикрепить остальные файлы")}
+                </div>
         <ModalAlert header="Вы действительно хотите удалить" 
         active={modalActive} 
         setActive={setModalActive} 
