@@ -236,6 +236,10 @@ export const authRoutes = [
         Component: LentStatus
     },
     {
+        path: TEST,
+        Component: Test
+    },
+    {
         path: "*",
         Component: B2B
     }

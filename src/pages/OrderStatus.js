@@ -8,6 +8,7 @@ import {
     Form,
     InputGroup,
     Button,
+    ProgressBar
  } from "react-bootstrap";
 import { faBullseye } from '@fortawesome/free-solid-svg-icons';
 
@@ -72,18 +73,32 @@ const OrderStatus = observer(({priceAskId}) => {
     const [fileSizeShipment, setFileSizeShipment] = useState(0)
     const [filesReceived, setFilesReceived] = useState([])
     const [fileSizeReceived, setFileSizeReceived] = useState(0)
+    const [filesOther,setFilesOther] = useState([])
+    const [filesSizeOther,setFileSizeOther] = useState(0)
     const [loading,setLoading] = useState(false)   
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
     const [modalActive,setModalActive] = useState(false);
+    const [progress, setProgress] = useState(0)
     const [deletingFile,setDeletingFile] = useState({});
 
     const send=async()=>{
+        const options = {
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+              if( percent < 100 ){
+                setProgress(percent)
+              }
+            }
+        }
         const data = new FormData();
         filesCrContract?.forEach((item)=>{data.append("file", item);data.append("CrContractfiles", item.name)})
         filesSiContract?.forEach((item)=>{data.append("file", item);data.append("SiContractfiles", item.name)})
         filesBils?.forEach((item)=>{data.append("file", item);data.append("Bilsfiles", item.name)})
         filesPaid?.forEach((item)=>{data.append("file", item);data.append("Paidfiles", item.name)})
+        filesOther?.forEach((item)=>{data.append("file", item);data.append("Otherfiles", item.name)})
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
@@ -95,6 +110,7 @@ const OrderStatus = observer(({priceAskId}) => {
             getStatus()
             myalert.setMessage("Успешно");
             setPrevStatus(status)
+            setProgress(0)
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -116,6 +132,7 @@ const OrderStatus = observer(({priceAskId}) => {
                 setFilesPaid(result?.Status?.Paidfiles || [])
                 setFilesShipment(result?.Status?.Shipmentfiles || [])
                 setFilesReceived(result?.Status?.Receivedfiles || [])
+                setFilesOther(result?.Status?.Otherfiles || [])
                 setFiz(result.Fiz)
                 setAuthor(result.author)
             }
@@ -184,26 +201,26 @@ const OrderStatus = observer(({priceAskId}) => {
     const addOptionStatus = (number,active) => {
         switch (number) {
             case 3:
-                return inputFiles(active,filesBils,setFilesBils,fileSizeBils,setFileSizeBils,"CrContractfiles")  
+                return inputFiles(active,filesBils,setFilesBils,fileSizeBils,setFileSizeBils,"CrContractfiles","Можете прикрепить файлы документов")  
             case 4:
-                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles")  
+                return inputFiles(active,filesCrContract,setFilesCrContract,fileSizeCrContract,setFileSizeCrContract,"CrContractfiles","Можете прикрепить файлы документов")  
             case 5:
-                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles") 
+                return inputFiles(active,filesSiContract,setFilesSiContract,fileSizeSiContract,setFileSizeSiContract,"SiContractfiles","Можете прикрепить файлы документов") 
             case 6:
-                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles") 
+                return inputFiles(active,filesPaid,setFilesPaid,fileSizePaid,setFileSizePaid,"Paidfiles","Можете прикрепить файлы документов") 
             case 7:
-                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles") 
+                return inputFiles(active,filesShipment,setFilesShipment,fileSizeShipment,setFileSizeShipment,"Shipmentfiles","Можете прикрепить файлы документов") 
             case 8:
-                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles")  
+                return inputFiles(active,filesReceived,setFilesReceived,fileSizeReceived,setFileSizeReceived,"Receivedfiles","Можете прикрепить файлы документов")  
             default:
               break;
         }
     }
 
-    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray) => {
+    const inputFiles = (active, files,setFiles,fileSize,setFileSize,nameArray,text) => {
         return(
             <div>
-                Можете прикрепить файлы документов.
+                {text}
                 <input type="file"
                         onChange={(e)=>onInputChange(e,files,setFiles,fileSize,setFileSize)}
                         className="form-control"
@@ -275,6 +292,11 @@ const OrderStatus = observer(({priceAskId}) => {
                     <Button onClick={()=>send()}>Сохранить
                     </Button> 
                 </InputGroup>
+            {progress!==0 ? 
+            <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
+            :
+            <div></div>
+            }
             {statusOrder.map((item,index)=>
                 <div key={index}>
                     <div className='statusRingContainer'>
@@ -296,6 +318,9 @@ const OrderStatus = observer(({priceAskId}) => {
                     }
                 </div>
             )}
+                <div className='mt-4 mb-4'>
+                    {inputFiles(true, filesOther,setFilesOther,filesSizeOther,setFileSizeOther,"Otherfiles","Прикрепить прочие файлы")}
+                </div>
         <ModalAlert header="Вы действительно хотите удалить" 
         active={modalActive} 
         setActive={setModalActive} 

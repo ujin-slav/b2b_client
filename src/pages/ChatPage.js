@@ -4,15 +4,14 @@ import {
     Row,
     Col,
     Form,
-    Button,
+    ProgressBar,
     InputGroup,
-    Card,
-    ListGroup,
   } from "react-bootstrap";
 import {Envelope,Paperclip,X,Search,XLg} from 'react-bootstrap-icons';
 import {useHistory} from 'react-router-dom';
 import ScrollToBottom from "react-scroll-to-bottom";
 import UserService from '../services/UserService';
+import ChatService from '../services/ChatService';
 import MessageService from '../services/MessageService';
 import "../style.css";
 import {Context} from "../index";
@@ -24,10 +23,11 @@ import SocketIOFileClient from 'socket.io-file-client';
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
     const [messageList, setMessageList] = useState([]);
-    const [unread, setUnread] = useState([]);
+    const [progress, setProgress] = useState(0);
     const [searchMessage, setSearchMessage] = useState("");
     const [searchUser, setSearchUser] = useState("");
     const messageBox = useRef(null)
+    const {myalert} = useContext(Context);
     const userBox = useRef(null)
     //const [users, setUsers] = useState([]);
     const [userPage, setUserPage] = useState(1);
@@ -235,15 +235,42 @@ const ChatPage = observer(() => {
     }
 
     const upload = (e) => {
-        //console.log(e.target.files);
-        if(localStorage.getItem('userId')!==""&&localStorage.getItem('userId')!==""){
-        uploader.current.upload(document.getElementById("myInput"), {
-            data:{
-                Author: localStorage.getItem('userId'),
-                Recevier: localStorage.getItem('recevier'), 
-                Date: new Date()
-                }
-        })};
+        e.preventDefault();
+        // if(localStorage.getItem('userId')!==""&&localStorage.getItem('userId')!==""){
+        // uploader.current.upload(document.getElementById("myInput"), {
+        //     data:{
+        //         Author: localStorage.getItem('userId'),
+        //         Recevier: localStorage.getItem('recevier'), 
+        //         Date: new Date()
+        //         }
+        // })};
+        const options = {
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              if( percent < 100 ){
+                setProgress(percent)
+              }
+            }
+        }
+
+        const data = new FormData();
+        data.append("file", e.target.files[0])
+
+        ChatService.upLoadFile(data,options).then((result)=>{
+            if (result.status!==200){
+                myalert.setMessage(result?.data?.message)
+            }else{
+                chat.socket.emit("uploadcomplete", 
+                    {
+                        Author: localStorage.getItem('userId'),
+                        Recevier: localStorage.getItem('recevier'), 
+                        Date: new Date(),
+                        File: result.data
+                    }
+                )
+            }
+        })
     };
     const deleteMessage = (messageContent) => {
         console.log(messageContent);
@@ -341,7 +368,7 @@ const ChatPage = observer(() => {
                                             <td>
                                             <div className={messageContent.Author===user.user.id?"messageItem":"messageItemRecevier"}> 
                                             {messageContent.File ?  
-                                            <img height="240" src={process.env.REACT_APP_API_URL + `download/` + messageContent.File}></img>
+                                            <a href={process.env.REACT_APP_API_URL + `download/` + messageContent.File.filename}>{messageContent.File.originalname}</a>
                                             :
                                             <div></div>
                                             }
@@ -362,6 +389,11 @@ const ChatPage = observer(() => {
                             })}
                         </div>
                         </div>
+                        {progress!==0 ? 
+                        <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
+                        :
+                        <div></div>
+                        }
                         <InputGroup className="mt-3">
                                 <label htmlFor="myInput">
                                 <Paperclip type="file" color="blue"
@@ -371,7 +403,6 @@ const ChatPage = observer(() => {
                                 <input id="myInput" type="file"
                                 ref={fileInput}   
                                 onChange={upload}                         
-                                accept="image/*"
                                 style={{display:'none'}}
                                 className="form-control"/>
                                 <Form.Control as="textarea" 

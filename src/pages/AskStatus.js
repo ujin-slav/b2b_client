@@ -8,6 +8,7 @@ import {
     Form,
     InputGroup,
     Button,
+    ProgressBar
  } from "react-bootstrap";
  import waiting from "../waiting.gif";
 
@@ -81,9 +82,20 @@ const AskStatus = observer(({askId}) => {
     const {myalert} = useContext(Context);
     const [author, setAuthor] = useState()
     const [winner, setWinner] = useState()
+    const [progress, setProgress] = useState(0)
     const {user} = useContext(Context);  
 
     const send=async()=>{
+        const options = {
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+              if( percent < 100 ){
+                setProgress(percent)
+              }
+            }
+        }
         const data = new FormData();
         filesCrContract?.forEach((item)=>{data.append("file", item);data.append("CrContractfiles", item.name)})
         filesSiContract?.forEach((item)=>{data.append("file", item);data.append("SiContractfiles", item.name)})
@@ -96,11 +108,12 @@ const AskStatus = observer(({askId}) => {
         data.append("Winner", winner)
         data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
-        const result = await AskService.setStatus(data)
+        const result = await AskService.setStatus(data,options)
         if (result.status===200){
             getStatus()
             myalert.setMessage("Успешно");
             setPrevStatus(status)
+            setProgress(0)
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -286,6 +299,11 @@ const AskStatus = observer(({askId}) => {
                     <Button onClick={()=>send()}>Сохранить
                     </Button> 
                 </InputGroup>
+            {progress!==0 ? 
+            <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
+            :
+            <div></div>
+            }
             {statusOrder.map((item,index)=>
                 <div key={index}>
                     <div className='statusRingContainer'>
@@ -308,7 +326,7 @@ const AskStatus = observer(({askId}) => {
                 </div>
             )}
                 <div className='mt-4 mb-4'>
-                    {inputFiles(true, filesOther,setFilesOther,filesSizeOther,setFileSizeOther,"Otherfiles","Прикрепить остальные файлы")}
+                    {inputFiles(true, filesOther,setFilesOther,filesSizeOther,setFileSizeOther,"Otherfiles","Прикрепить прочие файлы")}
                 </div>
         <ModalAlert header="Вы действительно хотите удалить" 
         active={modalActive} 

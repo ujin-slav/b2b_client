@@ -40,8 +40,8 @@ export default class AskService {
     static async deleteFile(formData){
         return $api.post(`/deletestatusaskfile`, formData);
     }
-    static async setStatus(formData){
-        const data = await $api.post(`/setstatusask`,formData);
+    static async setStatus(formData,option){
+        const data = await $api.post(`/setstatusask`,formData,option);
         return data
     }
     static async getStatus(id){
