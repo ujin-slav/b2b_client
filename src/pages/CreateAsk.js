@@ -104,17 +104,14 @@ const CreateAsk = observer(() => {
             let tempArray = []
             tempArray.push( 
               {
-              Name:data?.name,
-              Email:data?.email
+                idContr: data?._id,
+                name: data?.name,
+                nameOrg: data?.nameOrg
               }
             )
-            setCheckedEmail(tempArray)
             document.getElementById("Private").checked = true
-            document.getElementById("Hiden").checked = true
-            document.getElementById("Send").checked = true
             ask.data.Private=!ask.data.Private
-            ask.data.Hiden=!ask.data.Private
-            ask.data.Send=!ask.data.Private
+            setCheckedEmail(tempArray)
         })
       }
     },[user.user])
@@ -267,7 +264,7 @@ const CreateAsk = observer(() => {
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
-                              {/* <InputGroup>
+                              <InputGroup>
                                 <Form.Check
                                       id="Private"
                                       name="Private"
@@ -275,7 +272,7 @@ const CreateAsk = observer(() => {
                                       onChange={()=>{ask.data.Private=!ask.data.Private}}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
-                              </InputGroup> */}
+                              </InputGroup>
                               {/* <InputGroup>
                               <Form.Check
                                     id="Send"

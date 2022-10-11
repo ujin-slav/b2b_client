@@ -26,7 +26,6 @@ const OrgInfo = () => {
     useEffect(() => {
         fetchUser(id).then((data)=>{
             setOrg(data)
-            console.log(data)
             if(data.logo){
                 fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
                 .then(res => res.blob())
@@ -75,6 +74,11 @@ const OrgInfo = () => {
                             <tr>
                             <td>Имя</td>
                             <td>{org?.name}
+                            </td>
+                            </tr>
+                            <tr>
+                            <td></td>
+                            <td>
                             <button className="myButtonMessage"
                                     onClick={()=>setModalActiveMessage(true)}>
                                     <div>
@@ -88,7 +92,7 @@ const OrgInfo = () => {
                                     Отправить персональную заявку
                                     </div>
                             </button>
-                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                            <i className="col-2 fa fa-solid fa-envelope-o colorBlue"/>
                             </td>
                             </tr>
                             <tr>
@@ -102,6 +106,10 @@ const OrgInfo = () => {
                             <tr>
                             <td>ИНН</td>
                             <td>{org?.inn}</td>
+                            </tr>
+                            <tr>
+                            <td>Описание</td>
+                            <td>{org?.description}</td>
                             </tr>
                             <tr>
                             <td>Контактный телефон</td>

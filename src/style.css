@@ -945,3 +945,6 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   z-index: 50;
   width: -webkit-fill-available;
 }
+.eye{
+  cursor:pointer;
+}

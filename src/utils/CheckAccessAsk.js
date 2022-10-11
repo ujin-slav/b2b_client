@@ -18,7 +18,7 @@ export const checkAccessAsk = (user,ask) => {
         }
         return result
     }
-    if(ask?.Party?.findIndex(el => el.Email === user.user.email)!==-1){
+    if(ask?.Party?.findIndex(el => el.idContr === user.user.id)!==-1){
         let result = {
             Open : true,
             AddQuestAsk : askActive,

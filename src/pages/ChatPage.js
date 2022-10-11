@@ -7,7 +7,7 @@ import {
     ProgressBar,
     InputGroup,
   } from "react-bootstrap";
-import {Envelope,Paperclip,X,Search,XLg} from 'react-bootstrap-icons';
+import {Envelope,Paperclip,X,Search,XLg,Eye} from 'react-bootstrap-icons';
 import {useHistory} from 'react-router-dom';
 import ScrollToBottom from "react-scroll-to-bottom";
 import UserService from '../services/UserService';
@@ -236,27 +236,17 @@ const ChatPage = observer(() => {
 
     const upload = (e) => {
         e.preventDefault();
-        // if(localStorage.getItem('userId')!==""&&localStorage.getItem('userId')!==""){
-        // uploader.current.upload(document.getElementById("myInput"), {
-        //     data:{
-        //         Author: localStorage.getItem('userId'),
-        //         Recevier: localStorage.getItem('recevier'), 
-        //         Date: new Date()
-        //         }
-        // })};
         const options = {
             onUploadProgress: (progressEvent) => {
-              const {loaded, total} = progressEvent;
-              let percent = Math.floor( (loaded * 100) / total )
-              if( percent < 100 ){
+            const {loaded, total} = progressEvent;
+            let percent = Math.floor( (loaded * 100) / total )
+            if( percent < 100 ){
                 setProgress(percent)
-              }
+            }
             }
         }
-
         const data = new FormData();
         data.append("file", e.target.files[0])
-
         ChatService.upLoadFile(data,options).then((result)=>{
             if (result.status!==200){
                 myalert.setMessage(result?.data?.message)
@@ -271,6 +261,7 @@ const ChatPage = observer(() => {
                 )
             }
         })
+        fileInput.current.value = null
     };
     const deleteMessage = (messageContent) => {
         console.log(messageContent);
@@ -368,7 +359,11 @@ const ChatPage = observer(() => {
                                             <td>
                                             <div className={messageContent.Author===user.user.id?"messageItem":"messageItemRecevier"}> 
                                             {messageContent.File ?  
-                                            <a href={process.env.REACT_APP_API_URL + `download/` + messageContent.File.filename}>{messageContent.File.originalname}</a>
+                                            <span>
+                                                <a href={process.env.REACT_APP_API_URL + `download/` + messageContent.File.filename}>{messageContent.File.originalname}</a>
+                                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                                ${process.env.REACT_APP_API_URL}download/${messageContent.File.filename}`)}/>
+                                             </span>
                                             :
                                             <div></div>
                                             }
@@ -394,6 +389,7 @@ const ChatPage = observer(() => {
                         :
                         <div></div>
                         }
+                        {localStorage.getItem('recevier')!==null ?
                         <InputGroup className="mt-3">
                                 <label htmlFor="myInput">
                                 <Paperclip type="file" color="blue"
@@ -419,12 +415,15 @@ const ChatPage = observer(() => {
                                 <div style={{display: "flex",
                                 justifyContent:"center",
                                 alignItems:"center"}}>
-                                    <Envelope color="blue" 
-                                    style={{"width": "50px",
-                                    "height": "50px"}}
-                                    onClick={sendMessage}/>
+                                <Envelope color="blue" 
+                                style={{"width": "50px",
+                                "height": "50px"}}
+                                onClick={sendMessage}/>
                                 </div>
                          </InputGroup>
+                         :
+                         <span></span>
+                        }
                     </Col>
                 </Row>
             </Container>

@@ -62,7 +62,6 @@ const EmailList = ({checked,setChecked}) => {
     }
 
     const checkedHandler=(e,item)=>{
-        console.log(item)
         if(e.target.checked){
             setChecked([...checked, item]);
         }else{
