@@ -215,7 +215,7 @@ const NavBar = observer(() => {
                         </NavDropdown.Item></li>
                       </ul>
                     </div>
-                    <div>
+                    {/* <div>
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
@@ -233,7 +233,7 @@ const NavBar = observer(() => {
                         </NavDropdown.Item>
                         </li>
                       </ul>
-                    </div>
+                    </div> */}
                     <div>
                       <ul>
                         <li className="dropdown-header">

@@ -246,12 +246,10 @@ const CreateAsk = observer(() => {
                             <tr>
                             <td>Участники торгов</td>
                             <td>
-                              <div style={{"text-indent": "30px", "color":"blue"}}> В данном поле вы можете указать кто из ваших контрагентов будет участвовать в торгах, вы можете 
-                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.</div>
-                              <div style={{"text-indent": "30px"}}> Также вы можете поставить галочку разослать приглашение на участие в торгах от имени нашего сервиса.</div> 
-                              <div style={{"text-indent": "30px"}}>
-                                Но самым надежным способом будет если вы отправите приглашение на участие скопировав ссылку из раздела мои заявки.
-                                </div>  
+                            <div style={{"text-indent": "30px", "color":"blue"}}> 
+                              В данном поле вы можете указать кому из ваших контрагентов придет уведомление на участие в торгах. Также вы можете 
+                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.
+                              </div>
                               <Form.Control
                                   name="Party"
                                   defaultValue={checkedEmail.map((item)=>
@@ -261,7 +259,7 @@ const CreateAsk = observer(() => {
                                   onChange={handleChange}
                                   disabled={true}
                               />
-                               <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
+                               <Button variant="outline-secondary" id="button-addon2" onClick={()=>!id && setModalActiveMember(true)}>
                                 Выбор
                               </Button>
                               <InputGroup>

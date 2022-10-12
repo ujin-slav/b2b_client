@@ -17,12 +17,6 @@ import * as XLSX from 'xlsx';
 import PriceService from '../services/PriceService'
 import ModalAlert from '../components/ModalAlert';
 
-const make_cols = refstr => {
-    let o = [],
-      C = XLSX.utils.decode_range(refstr).e.c + 1;
-    for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i };
-    return o;
-};
 
 const UploadPrice = observer(() => {
 
@@ -83,8 +77,9 @@ const UploadPrice = observer(() => {
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
                 /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const data = XLSX.utils.sheet_to_json(ws, { header: 1,blankrows: true, defval: '', });
                 /* Update state */
+                console.log(data)
                 setPrice(data);
                 input.current.value=null
                 };
