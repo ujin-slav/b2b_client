@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import {Card, Table,Form} from "react-bootstrap";
 import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
@@ -8,7 +8,7 @@ import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import {useHistory} from 'react-router-dom';
 import ReactPaginate from "react-paginate";
 
-const UserPrice = ({id}) => {
+const UserPrice = ({idorg,idprod}) => {
     
     const history = useHistory();
     const [loading,setLoading] = useState(true) 
@@ -19,33 +19,43 @@ const UserPrice = ({id}) => {
     const[currentPage,setCurrentPage] = useState(1);
     const[search,setSearch] = useState("");
     const [pageCount, setpageCount] = useState(0);
+    const input = useRef(null);
     let limit = 30
 
     useEffect(() => {
         if(loading || fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:id}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice([...price, ...data.docs]);
-                setCurrentPage(prevState=>prevState + 1)
-                setpageCount(data.totalPages);
-            }).finally(()=>{
-                setLoading(false)
-                setFetching(false)
-            })
+                if(idprod){
+                    PriceService.getPriceUnit(idprod).then((data)=>{
+                        setSearch(data.Name)
+                        if(!data.errors){
+                            setVisible(true)
+                            getPrice()
+                        }else{
+                            setLoading(false)
+                        }
+                    })
+                }else{
+                    getPrice()
+                }
             }
         }
     },[fetching,visible]);
 
-    // useEffect(() => {
-    //     document.addEventListener('scroll',scrollHandler);
-    //     return function(){
-    //         document.removeEventListener('scroll',scrollHandler);
-    //     }
-    // },[]);
+    const getPrice = () =>{
+        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
+            setTotalDocs(data.totalDocs);
+            setPrice([...price, ...data.docs]);
+            setCurrentPage(prevState=>prevState + 1)
+            setpageCount(data.totalPages);
+        }).finally(()=>{
+            setLoading(false)
+            setFetching(false)
+        })
+    }
 
     const fetchComments = async (currentPage) => {
-        PriceService.getPrice({page:currentPage,limit,search,org:id}).then(
+        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then(
             (data)=>{
             setPrice(data.docs);
         }).finally(()=>setLoading(false))
@@ -58,14 +68,14 @@ const UserPrice = ({id}) => {
     //         }
     // }
 
-    const handleSearch = (e) =>{
-        PriceService.getPrice({page:1,limit,search,org:id}).
+    const handleSearch = (value) =>{
+        PriceService.getPrice({page:1,limit,search,org:idorg}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setpageCount(data.totalPages);
                 setCurrentPage(prevState=>prevState + 1)
-                setSearch(e.target.value)
+                setSearch(value)
         }).finally(
             ()=>setFetching(false)
         )
@@ -118,7 +128,8 @@ const UserPrice = ({id}) => {
                  <Form.Group className="mx-auto my-2">
                  <Form.Label>Поиск:</Form.Label>
                  <Form.Control
-                     onChange={handleSearch}
+                     ref={input}
+                     onChange={(e)=>handleSearch(e.target.value)}
                      placeholder="Начните набирать артикул или название продукта"
                  />
                 </Form.Group>

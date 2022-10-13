@@ -192,7 +192,7 @@ export const authRoutes = [
         Component: QuestFromMe
     },
     {
-        path: ORGINFO +  '/:id',
+        path: ORGINFO + '/:idorg/:idprod?',
         Component: OrgInfo
     },
     {

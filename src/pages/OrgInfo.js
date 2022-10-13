@@ -17,14 +17,15 @@ import { CREATEASK } from '../utils/routes';
 import {useHistory} from 'react-router-dom'
 
 const OrgInfo = () => {
-    const {id} = useParams();
+
+    const {idorg,idprod} = useParams();
     const [org, setOrg] = useState();
     const [file, setFile] = useState([])
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
-        fetchUser(id).then((data)=>{
+        fetchUser(idorg).then((data)=>{
             setOrg(data)
             if(data.logo){
                 fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
@@ -59,7 +60,7 @@ const OrgInfo = () => {
     return (
         <div>
             <div>
-            <Container style={{width: "80%"}}>
+            <Container style={{widorgth: "80%"}}>
             <Row>
                 <Col>
                 <Form>
@@ -85,14 +86,14 @@ const OrgInfo = () => {
                                     Написать сообщение
                                     </div>
                             </button>
-                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                            <i className="fa fa-solidorg fa-paper-plane colorBlue"/>
                             <button className="myButtonMessage"
-                                    onClick={()=>history.push(CREATEASK + '/' + id)}>
+                                    onClick={()=>history.push(CREATEASK + '/' + idorg)}>
                                     <div>
                                     Отправить персональную заявку
                                     </div>
                             </button>
-                            <i className="col-2 fa fa-solid fa-envelope-o colorBlue"/>
+                            <i className="fa fa-solidorg fa-envelope-o colorBlue"/>
                             </td>
                             </tr>
                             <tr>
@@ -124,15 +125,15 @@ const OrgInfo = () => {
             </Row>
             <Row>
             <Row>
-                <UserAsk id={id}/>
+                <UserAsk idorg={idorg}/>
             </Row>
             <Row>
-                <UserSpecOfferTable id={id}/>
+                <UserSpecOfferTable idorg={idorg}/>
             </Row>
-                <UserPrice id={id}/>
+                <UserPrice idorg={idorg} idprod={idprod}/>
             </Row>
             <Row>
-                <ReviewOrgItems id={id}/>
+                <ReviewOrgItems idorg={idorg}/>
             </Row>
         </Container>
         </div>

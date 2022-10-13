@@ -210,7 +210,7 @@ const CreateSpecOffer = observer(() => {
 
       return sortedList.map((item, i) => {
         return(
-              <div key={i} className='dnd-list'>
+              <div key={i} className='dnd-list mt-3'>
                 <div className='fotoContainer'>
                     <img 
                     id={i}
@@ -412,6 +412,7 @@ const CreateSpecOffer = observer(() => {
                               Разместите фото в нужном порядке, первое станет заглавным.
                             <input type="file"
                                 onChange={onInputChange}
+                                accept="image/*"
                                 className="form-control"
                                 multiple/>
                                 {listItems()}

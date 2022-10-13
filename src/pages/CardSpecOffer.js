@@ -15,7 +15,7 @@ import {Context} from "../index";
 import SpecOfferAskFiz from '../components/SpecOfferAskFiz';
 import SpecOfferAskOrg from '../components/SpecOfferAskOrg';
 import {useHistory,useLocation} from 'react-router-dom'
-import { CARDSPECOFFER } from '../utils/routes';
+import { CARDSPECOFFER,ORGINFO } from '../utils/routes';
 import { Cart4} from 'react-bootstrap-icons';
 import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
 
@@ -143,7 +143,9 @@ const CardSpecOffer = observer(() => {
                     <span>Организация:</span>
                 </div>
                 <div className="specContactData">
+                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + specOffer.Author)}>
                     <span>{specOffer.NameOrg} ИНН {specOffer.Inn}</span>
+                    </a>
                 </div>
                 <div className="specContact">
                     <span>Контактное лицо:</span>
