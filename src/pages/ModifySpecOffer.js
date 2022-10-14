@@ -116,9 +116,11 @@ const ModifySpecOffer = observer(() => {
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((result)=>{
+            result = result.specoffer
             let formErrors = specOffer.formErrors;
             let data = Object.assign(specOffer.data, result);
             setCheckedRegion(result.Region);
+            setCheckedCat(result.Category);
             setSpecOffer({ data, formErrors}); 
             result?.Files?.map((item)=>{
               fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
