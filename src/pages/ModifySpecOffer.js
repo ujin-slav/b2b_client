@@ -238,7 +238,7 @@ const ModifySpecOffer = observer(() => {
 
       return sortedList.map((item, i) => {
         return(
-              <div key={i} className='dnd-list'>
+              <div key={i} className='dnd-list mt-3'>
                 <div className='fotoContainer'>
                     <img 
                     id={i}
@@ -340,7 +340,7 @@ const ModifySpecOffer = observer(() => {
         <Container>
           <Form onSubmit={onSubmit}>
           <h3>Редактировать спец. предложение</h3> 
-          <Table striped hover  className="createAsk">
+          <Table className="createAsk">
             <col style={{"width":"15%"}}/>
           	<col style={{"width":"85%"}}/>
                         <tbody>
