@@ -65,7 +65,7 @@ const CardSpecOffer = observer(() => {
                     onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
                  <div className='parentSpec'>
-                {specOffer.Files.map((item,index)=>
+                {specOffer.FilesMini?.map((item,index)=>
                     <div key={index} className='childSpec'>
                         <img className='miniFotoSpecCard'
                         onClick={()=>setFotoFocus(index)} 

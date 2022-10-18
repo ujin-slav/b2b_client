@@ -82,7 +82,7 @@ const MySpecOffers = observer(() => {
                     </div>
                     <img 
                     className="fotoSpec"
-                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
+                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.FilesPreview[0]?.filename} />
                     <div className="specName">
                         {item.Name}
                     </div>
