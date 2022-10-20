@@ -132,6 +132,13 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const sumStatusAsk=()=>{
+        if(chat.statusAskUnread > 0){
+            return chat.statusAskUnread
+        }else{
+            return ""
+        } 
+    }
     const classNameLink=(route)=>{
         return location.pathname===route ? "activeLink" : ""
     }
@@ -244,7 +251,12 @@ const NavBar = observer(() => {
                         </li>
                         <li className="job-sub-tabs">
                             <NavDropdown.Item  onClick={()=>activeLink(LENTSTATUS)}className={classNameLink(LENTSTATUS)}>
-                                Cтатус заявок
+                                <div className="parentAnswer">
+                                <div>Cтатус заявок</div>
+                                    <div className="countQuest">
+                                        <div className='yellowtext'>{sumStatusAsk()}</div>
+                                    </div>
+                                </div>
                             </NavDropdown.Item>
                         </li>
                       </ul>

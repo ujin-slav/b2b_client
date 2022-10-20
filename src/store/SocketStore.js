@@ -8,6 +8,7 @@ export default class SocketStore {
     invitedUnread = 0
     invitedPriceUnread = 0
     specOfferAskUnread = 0
+    statusAskUnread = 0
     connected = false
     socket
     limit = 20
@@ -46,6 +47,9 @@ export default class SocketStore {
     getSpecOfferAskUnread(){
         return this.specOfferAskUnread 
     }
+    getStatusAskUnread(){
+        return this.statusAskUnread 
+    }
 
     setQuestUnread(questUnread){
         this.questUnread = questUnread; 
@@ -58,6 +62,9 @@ export default class SocketStore {
     }
     setSpecOfferAskUnread(specOfferAskUnread){
         this.specOfferAskUnread = specOfferAskUnread; 
+    }
+    setStatusAskUnread(statusAskUnread){
+        this.statusAskUnread = statusAskUnread; 
     }
 
     getQuestUnread(questUnread){
@@ -100,6 +107,9 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   
+          })
+          this.socket.on("get_unread_statusAsk", (data) => { 
+            this.setStatusAskUnread(data)   
           })
     }
     connectNotAuth(){
