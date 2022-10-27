@@ -29,8 +29,11 @@ const ChatPage = observer(() => {
     const messageBox = useRef(null)
     const {myalert} = useContext(Context);
     const userBox = useRef(null)
-    //const [users, setUsers] = useState([]);
-    const [userPage, setUserPage] = useState(1);
+    const [fetching,setFetching] = useState(true) 
+
+    const [totalDocsUser,setTotalDocsUser] = useState(0) 
+    const [currentPageUser,setCurrentPageUser] = useState(1) 
+
     const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
     const {user} = useContext(Context);
@@ -78,10 +81,10 @@ const ChatPage = observer(() => {
                 } else {
                     chat.setUnread(data);
                 }
-                UserService.fetchUsers(8,userPage,user.user.id,searchUser).then((response)=>{
+                UserService.fetchUsers(8,1,user.user.id,searchUser).then((response)=>{
                     if(response.status===200){
-                        chat.totalPageUser = response.data.totalPages
-                        chat.currentPageUser = response.data.page
+                        chat.totalDocsUser = response.data.totalDocs
+                        chat.currentPageUser = chat.currentPageUser + 1
                         chat.setUsers(response.data.docs)
                     }            
                 })
@@ -147,16 +150,8 @@ const ChatPage = observer(() => {
     }
 
     const scrollHandlerUser = (e) =>{
-        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
-            if(chat.currentPageUser<chat.totalPageUser){
-                chat.currentPageUser = chat.currentPageUser + 1
-                UserService.fetchUsers(8,userPage+1,user.user.id,searchUser).then((response)=>{
-                    if(response.status===200){
-                        chat.totalDocsUser = response.data.totalDocs
-                        chat.setUsers(old=>[...old,...response.data.docs])  
-                    }            
-                })
-            }
+        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1){
+            setFetching(true)
         }    
     }
 
@@ -176,16 +171,18 @@ const ChatPage = observer(() => {
     }
     
     useEffect(() => {
-        if(user.user.id!==undefined){
-            UserService.fetchUsers(8,userPage,user.user.id,searchUser).then((response)=>{
+        if(fetching){
+            console.log(chat.currentPageUser)
+            if(chat.users.length===0 || chat.users.length<totalDocsUser)
+            UserService.fetchUsers(8,currentPageUser,user.user.id,searchUser).then((response)=>{
                 if(response.status===200){
-                    chat.totalPageUser = response.data.totalPages
-                    chat.currentPageUser = response.data.page
-                    chat.setUsers(response.data.docs)
+                    setTotalDocsUser(response.data.totalDocs)
+                    setCurrentPageUser(prevState=>prevState + 1)
+                    chat.setUsers([...chat.users,...response.data.docs])
                 }            
-            })
+            }).finally(()=>setFetching(false))
     }
-    }, [user.user]);
+    }, [fetching]);
 
     const handleRecevier =(iD,name)=>{
         const data = {
@@ -291,10 +288,10 @@ const ChatPage = observer(() => {
 
     const handleUserSearch=(text)=>{
         if(user.user.id!==undefined){
-            UserService.fetchUsers(8,userPage,user.user.id,text).then((response)=>{
+            UserService.fetchUsers(8,1,user.user.id,text).then((response)=>{
                 if(response.status===200){
-                    chat.totalPageUser = response.data.totalPages
-                    chat.currentPageUser = response.data.page
+                    chat.totalDocsUser = response.data.totalDocs
+                    chat.currentPageUser = 2
                     chat.setUsers(response.data.docs)
                     setSearchUser(text)
                 }            
