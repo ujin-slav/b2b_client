@@ -3,7 +3,6 @@ import io from "socket.io-client";
 
 export default class SocketStore {
     unread = []
-    users = []
     questUnread = 0
     invitedUnread = 0
     invitedPriceUnread = 0
@@ -14,9 +13,6 @@ export default class SocketStore {
     limit = 20
     limitUser = 8
     totalDocs
-    totalDocsUser
-    totalPageUser
-    currentPageUser
 
     constructor(){
         makeAutoObservable(this);

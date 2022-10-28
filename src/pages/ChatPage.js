@@ -32,7 +32,8 @@ const ChatPage = observer(() => {
     const [fetching,setFetching] = useState(true) 
 
     const [totalDocsUser,setTotalDocsUser] = useState(0) 
-    const [currentPageUser,setCurrentPageUser] = useState(1) 
+    const [currentPageUser,setCurrentPageUser] = useState(1)
+    const [contacts,setContacts] = useState([])
 
     const [recevier, setRecevier] = useState(localStorage.getItem('recevier'));
     const [recevierName, setRecevierName] = useState(localStorage.getItem('recevierName'));
@@ -81,11 +82,12 @@ const ChatPage = observer(() => {
                 } else {
                     chat.setUnread(data);
                 }
-                UserService.fetchUsers(8,1,user.user.id,searchUser).then((response)=>{
+                UserService.fetchUsers({limit:8,page:1,user:user.user.id,search:searchUser})
+                .then((response)=>{
                     if(response.status===200){
                         chat.totalDocsUser = response.data.totalDocs
                         chat.currentPageUser = chat.currentPageUser + 1
-                        chat.setUsers(response.data.docs)
+                        setContacts(response.data.docs)
                     }            
                 })
             }    
@@ -95,23 +97,23 @@ const ChatPage = observer(() => {
             newMessage(data);
         })
         chat.socket.on("user_disconnected", (data) => { 
-            let newUsers = chat.getUsers().map((item)=>{
+            let newUsers = contacts.map((item)=>{
                 if(item.contact._id===data){
                     item.statusLine = false
                     item.lastVisit = new Date()
                 }
                 return item 
             })
-            chat.setUsers(newUsers)
+            setContacts(newUsers)
         })
         chat.socket.on("user_connected", (data) => { 
-            let newUsers = chat.getUsers().map((item)=>{
+            let newUsers = contacts.map((item)=>{
                 if(item.contact._id===data){
                     item.statusLine = true
                 }
                 return item 
             })
-            chat.setUsers(newUsers)
+            setContacts(newUsers)
         })
         chat.socket.emit("get_unread"); 
         localStorage.removeItem('recevier');
@@ -150,8 +152,9 @@ const ChatPage = observer(() => {
     }
 
     const scrollHandlerUser = (e) =>{
-        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1){
+        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
             setFetching(true)
+            console.log("scroll")
         }    
     }
 
@@ -172,13 +175,14 @@ const ChatPage = observer(() => {
     
     useEffect(() => {
         if(fetching){
-            console.log(chat.currentPageUser)
-            if(chat.users.length===0 || chat.users.length<totalDocsUser)
-            UserService.fetchUsers(8,currentPageUser,user.user.id,searchUser).then((response)=>{
+            if(contacts.length===0 || contacts.length<totalDocsUser)
+            UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser})
+            .then((response)=>{
                 if(response.status===200){
+                    console.log(response)
                     setTotalDocsUser(response.data.totalDocs)
                     setCurrentPageUser(prevState=>prevState + 1)
-                    chat.setUsers([...chat.users,...response.data.docs])
+                    setContacts([...contacts,...response.data.docs])
                 }            
             }).finally(()=>setFetching(false))
     }
@@ -261,7 +265,6 @@ const ChatPage = observer(() => {
         fileInput.current.value = null
     };
     const deleteMessage = (messageContent) => {
-        console.log(messageContent);
         chat.socket.emit("delete_message", {...messageContent,iD:user.user.id});
     }
 
@@ -288,11 +291,12 @@ const ChatPage = observer(() => {
 
     const handleUserSearch=(text)=>{
         if(user.user.id!==undefined){
-            UserService.fetchUsers(8,1,user.user.id,text).then((response)=>{
+            UserService.fetchUsers({limit:8,page:1,user:user.user.id,search:text}).
+            then((response)=>{
                 if(response.status===200){
-                    chat.totalDocsUser = response.data.totalDocs
-                    chat.currentPageUser = 2
-                    chat.setUsers(response.data.docs)
+                    setTotalDocsUser(response.data.totalDocs)
+                    setCurrentPageUser(2)
+                    setContacts(response.data.docs)
                     setSearchUser(text)
                 }            
         })
@@ -303,7 +307,7 @@ const ChatPage = observer(() => {
                 <Row className="overflow-auto">
                     <Col className="col-3"> 
                     <div className="userBox" ref={userBox}>
-                        {chat.getUsers().map((item,index)=>{
+                        {contacts.map((item,index)=>{
                             return(
                                 <div key={index} className={item.contact?._id===recevier?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
                                     onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
@@ -325,14 +329,14 @@ const ChatPage = observer(() => {
                                     <div className="offline"></div>}
                                 </div>)
                         })}
-                    <InputGroup className="mt-2 position-absolute bottom-0 mb-3">
+                    </div>
+                    <InputGroup className="mt-2 bottom-0 mb-3">
                                 <Form.Control 
                                     type="nameOrder" 
                                     placeholder="Поиск по имени автора или организации" 
                                     onChange={(e)=>handleUserSearch(e.target.value)}
                                 />
                     </InputGroup>
-                    </div>
                     </Col>
                     <Col className="col-9">
                         <InputGroup className="mb-2 mt-2">
