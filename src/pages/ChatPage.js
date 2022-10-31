@@ -31,6 +31,7 @@ const ChatPage = observer(() => {
     const userBox = useRef(null)
     const [fetching,setFetching] = useState(true) 
 
+    const [totalDocsMessage,setTotalDocsMessage] = useState(0) 
     const [totalDocsUser,setTotalDocsUser] = useState(0) 
     const [currentPageUser,setCurrentPageUser] = useState(1)
     const [contacts,setContacts] = useState([])
@@ -45,6 +46,7 @@ const ChatPage = observer(() => {
     const fileInput = useRef(null);
     let formUpload = useRef(null);
     let uploader = useRef(null);
+    let limitUser = 4
 
     const sendMessage = async () => {
     if (currentMessage !== "" && recevier!=="") {
@@ -63,9 +65,8 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (user.user.id!==undefined) {
-        uploader.current  = new SocketIOFileClient(chat.socket)
         chat.socket.on("receive_message", (data) => {  
-            chat.setTotalDocs(data.totalDocs)
+            setTotalDocsMessage(data.totalDocs)
             const reversed = data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
             setMessageList(reversed);
         });
@@ -85,8 +86,8 @@ const ChatPage = observer(() => {
                 UserService.fetchUsers({limit:8,page:1,user:user.user.id,search:searchUser})
                 .then((response)=>{
                     if(response.status===200){
-                        chat.totalDocsUser = response.data.totalDocs
-                        chat.currentPageUser = chat.currentPageUser + 1
+                        setTotalDocsUser(response.data.totalDocs)
+                        setCurrentPageUser(currentPageUser + 1)
                         setContacts(response.data.docs)
                     }            
                 })
@@ -132,6 +133,7 @@ const ChatPage = observer(() => {
         }
         if (userBox && userBox.current) {
             userBox.current.addEventListener('scroll',scrollHandlerUser,false);
+            limitUser = Math.ceil(userBox.current.clientHeight / 76)
         }
       })
 
@@ -200,7 +202,14 @@ const ChatPage = observer(() => {
         chat.setLimit(10);
         setRecevier(iD)
         setRecevierName(name)
-        chat.socket.emit("get_message", {...data,limit:10});
+        //chat.socket.emit("get_message", {...data,limit:10});
+        MessageService.getMessage({...data,limit:10,page:1})
+            .then((response)=>{
+                console.log(response)
+                setTotalDocsMessage(response.data.totalDocs)
+                const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
+                setMessageList(reversed);
+            })
         if(chat.unread){
             const index = chat.unread.findIndex(item=>item.ID===iD)
             if(index!==-1){
@@ -299,7 +308,9 @@ const ChatPage = observer(() => {
                     setContacts(response.data.docs)
                     setSearchUser(text)
                 }            
-        })
+        }).finally(
+            ()=>setFetching(false)
+        )
     }}
 
     return (
@@ -309,8 +320,8 @@ const ChatPage = observer(() => {
                     <div className="userBox" ref={userBox}>
                         {contacts.map((item,index)=>{
                             return(
-                                <div key={index} className={item.contact?._id===recevier?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
-                                    onClick={(e)=>handleRecevier(item.contact?._id,item.contact.name)}>
+                                <div key={index} id="userCard" className={item.contact?._id===recevier?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
+                                    onClick={(e)=>handleRecevier(item.contact?.id,item.contact.name)}>
                                     <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.contact?.logo?.filename} />
                                     <div>
                                         <div>{item.contact?.name}</div>
