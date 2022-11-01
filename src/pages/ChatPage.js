@@ -30,8 +30,10 @@ const ChatPage = observer(() => {
     const {myalert} = useContext(Context);
     const userBox = useRef(null)
     const [fetching,setFetching] = useState(true) 
+    const [fetchingMessage,setFetchingMessage] = useState(false)
 
     const [totalDocsMessage,setTotalDocsMessage] = useState(0) 
+    const [currentPageMessage,setCurrentPageMessage] = useState(1)
     const [totalDocsUser,setTotalDocsUser] = useState(0) 
     const [currentPageUser,setCurrentPageUser] = useState(1)
     const [contacts,setContacts] = useState([])
@@ -47,6 +49,8 @@ const ChatPage = observer(() => {
     let formUpload = useRef(null);
     let uploader = useRef(null);
     let limitUser = 4
+    let limitMessage = 4
+    let scrollTopChat = 0
 
     const sendMessage = async () => {
     if (currentMessage !== "" && recevier!=="") {
@@ -129,34 +133,45 @@ const ChatPage = observer(() => {
 
     useEffect(() => {
         if (messageBox && messageBox.current) {
-            messageBox.current.addEventListener('scroll',scrollHandler,false);
+            messageBox.current.addEventListener('scroll',scrollHandler,false)
+            limitMessage = Math.ceil(messageBox.current.clientHeight / 86)
         }
         if (userBox && userBox.current) {
-            userBox.current.addEventListener('scroll',scrollHandlerUser,false);
+            userBox.current.addEventListener('scroll',scrollHandlerUser,false)
             limitUser = Math.ceil(userBox.current.clientHeight / 76)
         }
-      })
+    })
+
+    useEffect(() => {
+        if(fetchingMessage){
+            const data = {
+                No:2,
+                UserId: user.user.id,
+                RecevierId:localStorage.getItem('recevier'),
+                SearchText: searchMessage
+            }
+            console.log(currentPageMessage)
+            MessageService.getMessage({...data,limit:10,page:currentPageMessage})
+            .then((response)=>{
+                setTotalDocsMessage(response.data.totalDocs)
+                setCurrentPageMessage(prevState=>prevState+1)
+                const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
+                setMessageList([...response.data.docs,...reversed])
+            }).finally(()=>setFetchingMessage(false))
+        }
+    },[fetchingMessage])
+
 
     const scrollHandler = (e,list) =>{
-        const getMessage = {
-            No:2,
-            UserId: user.user.id,
-            RecevierId:localStorage.getItem('recevier'),
-            SearchText: searchMessage
-        }
-        if(e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight+1) {
-            if(chat.limit<chat.totalDocs){
-                chat.socket.emit("get_message", {...getMessage,page:1,limit:chat.limit}); 
-                document.getElementById("chat").scrollTop = document.getElementById("chat").scrollTop - 1000
-                chat.setLimit(chat.limit + 10)
-            }
+        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+            setFetchingMessage(true)
+            console.log("scroll")
         }    
     }
 
     const scrollHandlerUser = (e) =>{
         if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
             setFetching(true)
-            console.log("scroll")
         }    
     }
 
@@ -202,11 +217,10 @@ const ChatPage = observer(() => {
         chat.setLimit(10);
         setRecevier(iD)
         setRecevierName(name)
-        //chat.socket.emit("get_message", {...data,limit:10});
         MessageService.getMessage({...data,limit:10,page:1})
             .then((response)=>{
-                console.log(response)
                 setTotalDocsMessage(response.data.totalDocs)
+                setCurrentPageMessage(2)
                 const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
                 setMessageList(reversed);
             })
