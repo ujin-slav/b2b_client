@@ -10,9 +10,8 @@ export default class SocketStore {
     statusAskUnread = 0
     connected = false
     socket
-    limit = 20
-    limitUser = 8
-    totalDocs
+    currentMessagePage = 0
+    totalDocsMessage = 0
 
     constructor(){
         makeAutoObservable(this);
