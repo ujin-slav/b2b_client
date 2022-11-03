@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable,runInAction } from "mobx";
 import io from "socket.io-client";
 
 export default class SocketStore {
@@ -10,11 +10,18 @@ export default class SocketStore {
     statusAskUnread = 0
     connected = false
     socket
+
+    fetchingMessage = false
     currentMessagePage = 0
     totalDocsMessage = 0
+    messageList = [] 
 
     constructor(){
         makeAutoObservable(this);
+    }
+
+    setFetchingMessage(bool){
+        runInAction(() => {this.fetchingMessage = !this.fetchingMessage})
     }
 
     setUnread(unread){
@@ -68,6 +75,9 @@ export default class SocketStore {
 
     setLimit(num){
         this.limit = num
+    }
+    setMessageList(list){
+        this.messageList = list
     }
     
     setTotalDocs(num){

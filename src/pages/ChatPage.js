@@ -22,7 +22,6 @@ import SocketIOFileClient from 'socket.io-file-client';
 
 const ChatPage = observer(() => {
     const [currentMessage, setCurrentMessage] = useState("");
-    const [messageList, setMessageList] = useState([]);
     const [progress, setProgress] = useState(0);
     const [searchMessage, setSearchMessage] = useState("");
     const [searchUser, setSearchUser] = useState("");
@@ -61,7 +60,7 @@ const ChatPage = observer(() => {
         Date: new Date()
         };
       await chat.socket.emit("send_message", messageData);
-      setMessageList(old=>[...old,messageData])
+      chat.setMessageList(old=>[...old,messageData])
       setCurrentMessage("");
       inputEl.current.value = "";
         }
@@ -72,7 +71,7 @@ const ChatPage = observer(() => {
         chat.socket.on("receive_message", (data) => {  
             setTotalDocsMessage(data.totalDocs)
             const reversed = data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
-            setMessageList(reversed);
+            chat.setMessageList(reversed);
         });
         chat.socket.on("new_message", (data) => {   
             newMessage(data);
@@ -142,29 +141,6 @@ const ChatPage = observer(() => {
         }
     },[messageBox.current,userBox.current])
 
-    useEffect(() => {
-        if(fetchingMessage){
-            const data = {
-                No:2,
-                UserId: user.user.id,
-                RecevierId:localStorage.getItem('recevier'),
-                SearchText: searchMessage
-            }
-            console.log(currentPageMessage)
-            if(messageList.length < totalDocsMessage){
-                MessageService.getMessage({...data,limit:10,page:currentPageMessage})
-                .then((response)=>{
-                    setTotalDocsMessage(response.data.totalDocs)
-                    setCurrentPageMessage(prevState=>prevState+1)
-                    const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
-                    setMessageList(prevState=>[...reversed,...prevState])
-                    console.log(messageList)
-                }).finally(()=>setFetchingMessage(false))
-            }
-        }
-    },[fetchingMessage])
-
-
     const scrollHandler = (e) =>{
         if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
             const data = {
@@ -173,14 +149,17 @@ const ChatPage = observer(() => {
                 RecevierId:localStorage.getItem('recevier'),
                 SearchText: searchMessage
             }
-            MessageService.getMessage({...data,limit:10,page:chat.currentPageMessage})
+            if(chat.messageList.length < chat.totalDocsMessage){
+                MessageService.getMessage({...data,limit:10,page:chat.currentPageMessage})
                 .then((response)=>{
                     chat.totalDocsMessage=response.data.totalDocs
                     chat.currentPageMessage=chat.currentPageMessage+1
                     const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
-                    setMessageList(prevState=>[...reversed,...prevState])
-            })
-        }    
+                    chat.setMessageList([...reversed,...chat.messageList])
+                    messageBox.current.scrollTo(0,messageBox.current.scrollHeight - 86)
+                }).finally((data)=>chat.setFetchingMessage(false))
+            }
+        } 
     }
 
     const scrollHandlerUser = (e) =>{
@@ -234,7 +213,8 @@ const ChatPage = observer(() => {
                 chat.totalDocsMessage=response.data.totalDocs
                 chat.currentPageMessage=2
                 const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
-                setMessageList(reversed);
+                chat.setMessageList(reversed)
+                messageBox.current.scrollTo(0,0)
         })
         if(chat.unread){
             const index = chat.unread.findIndex(item=>item.ID===iD)
@@ -384,7 +364,7 @@ const ChatPage = observer(() => {
                         </InputGroup>
                         <div className="chat" id="chat"  ref={messageBox}>
                         <div className="messageBox">
-                            {messageList.map((messageContent, index) => {
+                            {chat.messageList.map((messageContent, index) => {
                                 if(recevierName){
                                 return (
                                 <div key={index} >
