@@ -11,17 +11,8 @@ export default class SocketStore {
     connected = false
     socket
 
-    fetchingMessage = false
-    currentMessagePage = 0
-    totalDocsMessage = 0
-    messageList = [] 
-
     constructor(){
         makeAutoObservable(this);
-    }
-
-    setFetchingMessage(bool){
-        runInAction(() => {this.fetchingMessage = !this.fetchingMessage})
     }
 
     setUnread(unread){

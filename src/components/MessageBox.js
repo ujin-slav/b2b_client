@@ -24,13 +24,12 @@ const MessageBox = ({author,setActive}) => {
             Recevier: author._id, 
             Text: currentMessage,
             Date: new Date()
-            };
-        console.log(author)
+        }
           await chat.socket.emit("send_message", messageData);
           setCurrentMessage("");
           inputEl.current.value = "";
           setActive(false)
-            }
+        }
     };
     
 
