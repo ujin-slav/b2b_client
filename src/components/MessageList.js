@@ -1,14 +1,17 @@
 import React,{useState,useContext,useRef,useEffect} from 'react';
+import {useLocation} from "react-router-dom";
 import {Context} from "../index";
 import {
     Form,
     ProgressBar,
     InputGroup,
 } from "react-bootstrap";
+import {CHAT} from "../utils/routes";
 import {Envelope,Paperclip,X,Eye} from 'react-bootstrap-icons';
 import dateFormat from "dateformat";
 import ChatService from '../services/ChatService';
 import MessageService from '../services/MessageService';
+
 
 const MessageList = ({recevier}) => {
 
@@ -18,6 +21,7 @@ const MessageList = ({recevier}) => {
     const [totalDocsMessage,setTotalDocsMessage] = useState(0) 
     const [currentPageMessage,setCurrentPageMessage] = useState(1)
     const [fetchingMessage,setFetchingMessage] = useState(false) 
+    const [fetchingNewMessage,setFetchingNewMessage] = useState(false) 
     const [progress, setProgress] = useState(0)
     const inputEl = useRef(null)
     const messageBox = useRef(null)
@@ -25,14 +29,17 @@ const MessageList = ({recevier}) => {
     const {myalert} = useContext(Context);
     const {user} = useContext(Context)
     const {chat} = useContext(Context)
+    const location = useLocation();
 
     useEffect(() => {
-        chat.socket.on("new_message", (data) => {   
-            newMessage(data);
+        chat.socket.on("new_message", (data) => {  
+            if(location.pathname===CHAT){
+                newMessage(data)
+            }
         })
         chat.socket.on("unread_message", (data) => {  
             if(chat.unread){
-                const index = data.findIndex(item=>item.ID===localStorage.getItem('recevier'))
+                const index = data.findIndex(item=>item.ID===chat.recevier.id)
                 if(index!==-1){
                     const newUnread = data;
                     newUnread[index]={ID:data.ID,count:0}
@@ -80,18 +87,19 @@ const MessageList = ({recevier}) => {
             }).finally(()=>setFetchingMessage(false))
         }
     },[recevier])
+
+    useEffect(() => {},[])
     
     useEffect(() => {
         if(fetchingMessage){
             const data = {
                 UserId: user.user.id,
-                RecevierId:recevier.id,
+                RecevierId:chat.recevier.id,
                 SearchText: searchMessage
             }
             if(messageList.length===0 || messageList.length<totalDocsMessage){
                 MessageService.getMessage({...data,limit:10,page:currentPageMessage})
                 .then((response)=>{
-                    console.log(response)
                     setTotalDocsMessage(response.data.totalDocs)
                     setCurrentPageMessage(prevState=>prevState + 1)
                     const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
@@ -102,9 +110,27 @@ const MessageList = ({recevier}) => {
         }
     },[fetchingMessage])
 
+    useEffect(() => {
+        if(fetchingNewMessage){
+            const data = {
+                UserId: user.user.id,
+                RecevierId:chat.recevier.id,
+                SearchText: searchMessage
+            }
+            MessageService.getMessage({...data,limit:10,page:1})
+            .then((response)=>{
+                setTotalDocsMessage(response.data.totalDocs)
+                setCurrentPageMessage(2)
+                const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
+                setMessageList(reversed)
+                messageBox.current.scrollTo(0,0)
+            }).finally(()=>setFetchingNewMessage(false))
+        }
+    },[fetchingNewMessage])
+
     const newMessage = (data) => {
-        if(data.Author===recevier.id||data.Author===user.user.id){
-            setFetchingMessage(true)
+        if(data.Author===chat.recevier.id||data.Author===user.user.id){
+            setFetchingNewMessage(true)
         } else {
             chat.socket.emit("get_unread");  
         }
@@ -119,7 +145,7 @@ const MessageList = ({recevier}) => {
     const handleMessageSearch=(text)=>{
         const data = {
             UserId: user.user.id,
-            RecevierId: recevier.id,
+            RecevierId: chat.recevier.id,
             SearchText: text
         }
         MessageService.getMessage({...data,limit:10,page:1})
@@ -129,7 +155,7 @@ const MessageList = ({recevier}) => {
             const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
             setMessageList(reversed)
             setSearchMessage(text)
-            messageBox.current.scrollTo(0,messageBox.current.scrollHeight - 86)
+            messageBox.current.scrollTo(0,0)
         }).finally(()=>setFetchingMessage(false))
     }
 
@@ -137,7 +163,7 @@ const MessageList = ({recevier}) => {
         if (currentMessage !== "") {
           const messageData = {
             Author: user.user.id,
-            Recevier: recevier.id, 
+            Recevier: chat.recevier.id, 
             Text: currentMessage,
             Date: new Date()
             };
@@ -152,7 +178,7 @@ const MessageList = ({recevier}) => {
         if(author===user.user.id){
             return user.user.name.match(/[A-Z]|[А-Я]/g)
         } else {
-            return recevier?.name?.match(/[A-Z]|[А-Я]/g)
+            return chat.recevier.name?.match(/[A-Z]|[А-Я]/g)
         }
     }
 
@@ -177,10 +203,11 @@ const MessageList = ({recevier}) => {
             if (result.status!==200){
                 myalert.setMessage(result?.data?.message)
             }else{
+                console.log(result)
                 chat.socket.emit("uploadcomplete", 
                     {
-                        Author: localStorage.getItem('userId'),
-                        Recevier: localStorage.getItem('recevier'), 
+                        Author: user.user.id,
+                        Recevier: chat.recevier.id, 
                         Date: new Date(),
                         File: result.data
                     }

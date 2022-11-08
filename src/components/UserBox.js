@@ -7,11 +7,11 @@ import {
     InputGroup,
   } from "react-bootstrap";
 import dateFormat from "dateformat";
+import {observer} from "mobx-react-lite";
 
-const UserBox = ({recevier,setRecevier}) => {
+const UserBox = observer(({recevier,setRecevier}) => {
 
     const [fetching,setFetching] = useState(true) 
-    const [contacts,setContacts] = useState([])
     const [totalDocsUser,setTotalDocsUser] = useState(0) 
     const [currentPageUser,setCurrentPageUser] = useState(1)
     const [searchUser, setSearchUser] = useState("")
@@ -21,35 +21,35 @@ const UserBox = ({recevier,setRecevier}) => {
 
     useEffect(()=>{
         chat.socket.on("user_disconnected", (data) => { 
-            let newUsers = contacts.map((item)=>{
-                if(item.contact._id===data){
+            let newUsers = chat.contacts.map((item)=>{
+                if(item.contact.id===data){
                     item.statusLine = false
                     item.lastVisit = new Date()
                 }
                 return item 
             })
-            setContacts(newUsers)
+            chat.contacts = newUsers
         })
         chat.socket.on("user_connected", (data) => { 
-            let newUsers = contacts.map((item)=>{
-                if(item.contact._id===data){
+            let newUsers = chat.contacts.map((item)=>{
+                if(item.contact.id===data){
                     item.statusLine = true
                 }
                 return item 
             })
-            setContacts(newUsers)
+            chat.contacts = newUsers
         })
     },[])
 
     useEffect(() => {
         if(fetching){
-            if(contacts.length===0 || contacts.length<totalDocsUser)
+            if(chat.contacts.length===0 || chat.contacts.length<totalDocsUser)
             UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser})
             .then((response)=>{
                 if(response.status===200){
                     setTotalDocsUser(response.data.totalDocs)
                     setCurrentPageUser(prevState=>prevState + 1)
-                    setContacts([...contacts,...response.data.docs])
+                    chat.contacts = [...chat.contacts,...response.data.docs]
                 }            
             }).finally(()=>setFetching(false))
         }
@@ -71,6 +71,7 @@ const UserBox = ({recevier,setRecevier}) => {
 
     const handleRecevier =(contact)=>{
         setRecevier(contact)
+        chat.recevier=contact
         if(chat.unread){
             const index = chat.unread.findIndex(item=>item.ID===contact.id)
             if(index!==-1){
@@ -104,7 +105,7 @@ const UserBox = ({recevier,setRecevier}) => {
             if(response.status===200){
                 setTotalDocsUser(response.data.totalDocs)
                 setCurrentPageUser(2)
-                setContacts(response.data.docs)
+                chat.contacts = response.data.docs
                 setSearchUser(text)
             }            
         }).finally(
@@ -115,7 +116,7 @@ const UserBox = ({recevier,setRecevier}) => {
     return (
         <div>
             <div className="userBox" ref={userBox}>
-                {contacts.map((item,index)=>{
+                {chat.contacts.map((item,index)=>{
                     return(
                         <div key={index} id="userCard" className={item.contact?.id===recevier?.id?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
                             onClick={(e)=>handleRecevier(item.contact)}>
@@ -124,7 +125,7 @@ const UserBox = ({recevier,setRecevier}) => {
                                 <div>{item.contact?.name}</div>
                                 <div>{item.contact?.nameOrg}</div>
                             </div>
-                            {searchUnread(item?.contact?._id)}
+                            {searchUnread(item?.contact?.id)}
                             {item?.statusLine ? 
                             <div></div>
                             :
@@ -147,6 +148,6 @@ const UserBox = ({recevier,setRecevier}) => {
                 </InputGroup>
         </div>
     );
-};
+});
 
 export default UserBox;

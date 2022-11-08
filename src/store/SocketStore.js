@@ -11,6 +11,9 @@ export default class SocketStore {
     connected = false
     socket
 
+    contacts=[]
+    recevier
+
     constructor(){
         makeAutoObservable(this);
     }

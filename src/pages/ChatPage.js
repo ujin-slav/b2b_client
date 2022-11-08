@@ -1,16 +1,25 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState,useContext} from 'react';
 import {
     Container,
     Row,
     Col
   } from "react-bootstrap";
 import MessageList from '../components/MessageList';
+import {Context} from "../index";
 import UserBox from '../components/UserBox';
 
 
 const ChatPage = () => {
 
-    const [recevier, setRecevier] = useState();
+    const [recevier, setRecevier] = useState()
+    const {chat} = useContext(Context)
+
+    useEffect(()=>{
+
+        return ()=>{
+            chat.contacts = []
+        }
+    },[])
 
     return (
             <Container fluid>
