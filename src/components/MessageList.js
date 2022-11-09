@@ -33,9 +33,7 @@ const MessageList = ({recevier}) => {
 
     useEffect(() => {
         chat.socket.on("new_message", (data) => {  
-            if(location.pathname===CHAT){
-                newMessage(data)
-            }
+            newMessage(data)
         })
         chat.socket.on("unread_message", (data) => {  
             if(chat.unread){
@@ -129,10 +127,10 @@ const MessageList = ({recevier}) => {
     },[fetchingNewMessage])
 
     const newMessage = (data) => {
-        if(data.Author===chat.recevier.id||data.Author===user.user.id){
+        if(data.Author===chat?.recevier?.id||data.Author===user.user.id){
             setFetchingNewMessage(true)
         } else {
-            chat.socket.emit("get_unread");  
+            chat.socket.emit("get_unread_message");  
         }
     }
 

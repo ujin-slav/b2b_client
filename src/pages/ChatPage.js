@@ -18,6 +18,7 @@ const ChatPage = () => {
 
         return ()=>{
             chat.contacts = []
+            chat.recevier = {}
         }
     },[])
 

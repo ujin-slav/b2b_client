@@ -60,6 +60,7 @@ const OrderStatus = observer(({priceAskId}) => {
     const [status,setStatus] = useState(1)
     const[prevStatus,setPrevStatus] = useState(1)
     const [author, setAuthor] = useState()
+    const [askTo, setAskTo] = useState()
     const [fiz, setFiz] = useState(false)
     const [filesBils, setFilesBils] = useState([])
     const [fileSizeBils, setFileSizeBils] = useState(0);
@@ -81,6 +82,7 @@ const OrderStatus = observer(({priceAskId}) => {
     const [modalActive,setModalActive] = useState(false);
     const [progress, setProgress] = useState(0)
     const [deletingFile,setDeletingFile] = useState({});
+    const {chat} =  useContext(Context)
 
     const send=async()=>{
         const options = {
@@ -103,14 +105,17 @@ const OrderStatus = observer(({priceAskId}) => {
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
         data.append("Author", user.user.id)
+        data.append("AuthorAsk", author)
+        data.append("AskTo", askTo)
         data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
-        const result = await PriceService.setStatus(data)
+        const result = await PriceService.setStatus(data,options)
         if (result.status===200){
             getStatus()
             myalert.setMessage("Успешно");
             setPrevStatus(status)
             setProgress(0)
+            chat.socket.emit("unread_changeStatus", {To:user.user.id===author? askTo : author})
           } else {
             myalert.setMessage(result?.data?.message)
         }
@@ -136,8 +141,10 @@ const OrderStatus = observer(({priceAskId}) => {
                 setFiz(result.Fiz)
                 setAuthor(result.author)
             }
+            setAskTo(result.To)
             setFiz(result.Fiz)
-            setAuthor(result.author)
+            setAuthor(result.Author)
+            console.log(result)
         }).finally(()=>setLoading(false))
     }
 

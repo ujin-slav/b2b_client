@@ -11,8 +11,9 @@ import { CARDASK, CARDPRICEASK } from '../utils/routes';
 
 const LentStatus = observer(() => {
     const [lent, setLent] = useState([])
-    const {user} = useContext(Context);
-    const {myalert} = useContext(Context);
+    const {user} = useContext(Context)
+    const {myalert} = useContext(Context)
+    const {chat} =  useContext(Context)
     const history = useHistory();
     const [pageCount, setpageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
@@ -25,6 +26,7 @@ const LentStatus = observer(() => {
                 setLent(data.docs)
                 setpageCount(data.totalPages);
             })
+            chat.socket.emit("get_unread");
         }
       },[user.user,loading]);
 

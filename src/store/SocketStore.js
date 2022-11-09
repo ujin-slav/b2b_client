@@ -90,10 +90,16 @@ export default class SocketStore {
           })
           this.socket.on("connect", () => {
             this.connected = true;
-            this.socket.emit("get_unread") 
           })
           this.socket.on("unread_message", (data) => {   
             this.setUnread(data)
+          })
+          this.socket.on("unread_rest", (data) => {   
+            this.setQuestUnread(data.unreadQuest) 
+            this.setInvitedUnread(data.unreadInvited) 
+            this.setInvitedPriceUnread(data.unreadInvitedPrice)
+            this.setSpecOfferAskUnread(data.UnreadSpecAsk)  
+            this.setStatusAskUnread(data.UnreadStatusAsk)           
           })
           this.socket.on("get_unread_quest", (data) => {   
             this.setQuestUnread(data)              
@@ -110,6 +116,7 @@ export default class SocketStore {
           this.socket.on("get_unread_statusAsk", (data) => { 
             this.setStatusAskUnread(data)   
           })
+
     }
     connectNotAuth(){
         this.socket = io.connect()

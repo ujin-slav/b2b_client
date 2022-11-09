@@ -83,7 +83,8 @@ const AskStatus = observer(({askId}) => {
     const [author, setAuthor] = useState()
     const [winner, setWinner] = useState()
     const [progress, setProgress] = useState(0)
-    const {user} = useContext(Context);  
+    const {user} = useContext(Context)  
+    const {chat} =  useContext(Context)
 
     const send=async()=>{
         const options = {
@@ -105,6 +106,7 @@ const AskStatus = observer(({askId}) => {
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("AskId", askId)
         data.append("Author", user.user.id)
+        data.append("AuthorAsk", author)
         data.append("Winner", winner)
         data.append("PrevStatus", JSON.stringify(statusOrder.find(item=>item.value==prevStatus)))
         data.append("Status", JSON.stringify(statusOrder.find(item=>item.value==status)))
@@ -114,6 +116,7 @@ const AskStatus = observer(({askId}) => {
             myalert.setMessage("Успешно");
             setPrevStatus(status)
             setProgress(0)
+            chat.socket.emit("unread_changeStatus", {To:user.user.id===winner? author : winner})
           } else {
             myalert.setMessage(result?.data?.message)
         }
