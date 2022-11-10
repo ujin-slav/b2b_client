@@ -261,7 +261,7 @@ const OrderStatus = observer(({priceAskId}) => {
     }
 
     const getChoise =()=>{
-        if(user.user._id === author){
+        if(user.user._id !== author){
             return (
                 <Form.Control
                 as="select" 

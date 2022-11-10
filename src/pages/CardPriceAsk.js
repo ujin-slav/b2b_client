@@ -183,7 +183,7 @@ const CardPriceAsk = () => {
         <ModalCT 
                   header="Сообщение" 
                   active={modalActiveMessage}
-                  component={<MessageBox author={author?._id} setActive={setModalActiveMessage}/>}
+                  component={<MessageBox author={author} setActive={setModalActiveMessage}/>}
                   setActive={setModalActiveMessage}   
         />
         </div>

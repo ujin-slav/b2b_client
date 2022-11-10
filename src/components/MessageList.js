@@ -85,8 +85,6 @@ const MessageList = ({recevier}) => {
             }).finally(()=>setFetchingMessage(false))
         }
     },[recevier])
-
-    useEffect(() => {},[])
     
     useEffect(() => {
         if(fetchingMessage){
@@ -176,7 +174,7 @@ const MessageList = ({recevier}) => {
         if(author===user.user.id){
             return user.user.name.match(/[A-Z]|[А-Я]/g)
         } else {
-            return chat.recevier.name?.match(/[A-Z]|[А-Я]/g)
+            return chat.recevier?.name?.match(/[A-Z]|[А-Я]/g)
         }
     }
 

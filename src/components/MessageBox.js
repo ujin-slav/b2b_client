@@ -1,21 +1,18 @@
 import React, {useState,
     useContext,
-    useRef,
-    useEffect,
-    createRef} from "react";
-import { Form,
-    InputGroup,
-    Button,
-    Card,
-    ListGroup,
- } from "react-bootstrap";
+    useRef
+} from "react";
+import { Form,Button} from "react-bootstrap";
  import {Context} from "../index";
+ import {useHistory} from 'react-router-dom';
+ import {CHAT} from "../utils/routes";
 
 const MessageBox = ({author,setActive}) => {
     const [currentMessage, setCurrentMessage] = useState("");
-    const {user} = useContext(Context);
-    const {chat} = useContext(Context);
-    const inputEl = useRef(null);
+    const {user} = useContext(Context)
+    const {chat} = useContext(Context)
+    const inputEl = useRef(null)
+    const history = useHistory()
 
     const sendMessage = async () => {
         if (currentMessage !== "" && author!=="") {
@@ -32,6 +29,9 @@ const MessageBox = ({author,setActive}) => {
         }
     };
     
+    const openChat = () => {
+        history.push(CHAT + '/' + author._id)
+    }
 
     return (
         <div>
@@ -45,6 +45,9 @@ const MessageBox = ({author,setActive}) => {
                     }}
                     style={{height:"120px"}}
             />
+            <div>
+                <a href="javascript:void(0)" onClick={()=>openChat()}>Открыть переписку</a>
+            </div>
             <Button style={{marginTop:"10px"}} onClick={sendMessage}>Отправить</Button>
         </div>
     );

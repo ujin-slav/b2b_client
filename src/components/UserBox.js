@@ -20,25 +20,27 @@ const UserBox = observer(({recevier,setRecevier}) => {
     const userBox = useRef(null)
 
     useEffect(()=>{
-        chat.socket.on("user_disconnected", (data) => { 
-            let newUsers = chat.contacts.map((item)=>{
-                if(item.contact.id===data){
-                    item.statusLine = false
-                    item.lastVisit = new Date()
-                }
-                return item 
+        if(chat.socket){
+            chat.socket.on("user_disconnected", (data) => { 
+                let newUsers = chat.contacts.map((item)=>{
+                    if(item.contact.id===data){
+                        item.statusLine = false
+                        item.lastVisit = new Date()
+                    }
+                    return item 
+                })
+                chat.contacts = newUsers
             })
-            chat.contacts = newUsers
-        })
-        chat.socket.on("user_connected", (data) => { 
-            let newUsers = chat.contacts.map((item)=>{
-                if(item.contact.id===data){
-                    item.statusLine = true
-                }
-                return item 
+            chat.socket.on("user_connected", (data) => { 
+                let newUsers = chat.contacts.map((item)=>{
+                    if(item.contact.id===data){
+                        item.statusLine = true
+                    }
+                    return item 
+                })
+                chat.contacts = newUsers
             })
-            chat.contacts = newUsers
-        })
+        }
     },[])
 
     useEffect(() => {

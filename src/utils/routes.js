@@ -176,7 +176,7 @@ export const authRoutes = [
         Component: MyContr
     },
     {
-        path: CHAT,
+        path: CHAT + '/:idorg?',
         Component: ChatPage
     },
     {
