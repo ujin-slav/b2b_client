@@ -19,7 +19,9 @@ import {
  import waiting from "../waiting.gif";
 
 const Prices = observer(() => {
+    const [readMoreName,setReadMoreName] = useState(false) 
     const [loading,setLoading] = useState(true) 
+    const [width,setWidth] = useState() 
     const {user} = useContext(Context);
     const[price,setPrice] = useState([]);
     const [pageCount, setpageCount] = useState(0);
@@ -29,6 +31,14 @@ const Prices = observer(() => {
     const[search,setSearch] = useState("");
     const history = useHistory();
     let limit = 30
+
+    useEffect(()=>{
+        window.addEventListener('resize',resizeWindow)
+        setWidth(window.innerWidth)
+        return ()=>{
+            window.removeEventListener('resize',resizeWindow) 
+        }
+    },[])
 
     useEffect(() => {
         if(visible){
@@ -43,6 +53,9 @@ const Prices = observer(() => {
         }  
     },[visible]);
 
+    const resizeWindow = () => {
+        setWidth(window.innerWidth)
+    }
 
     const fetchComments = async (currentPage) => {
         PriceService.getPrice({page:currentPage,limit,search}).then(
@@ -96,42 +109,85 @@ const Prices = observer(() => {
             <div>
             <PlusCircleFill onClick={()=>history.push(UPLOADPRICE)}  className="addNew"/>
                  <span className="createNew">Загрузить свой прайс</span>
-            <Table>
-             <thead>
-                <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Цена</th>
-                    <th>Остаток</th>
-                    <th>Организация</th>
-                    <th>Дата</th>
-                    <th>+</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {price?.map((item,index)=>
-                    
-                        <tr key={index}>
-                            <td>{item?.Code}</td>
-                            <td>{item?.Name}</td>
-                            <td>{item?.Price}</td>
-                            <td>{item?.Balance}</td>
-                            <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
-                                {item?.User?.nameOrg}</a></td>
-                            <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
-                            <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
-                            onClick={()=>{
-                                if(user.isAuth){
-                                    history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
-                                }else{
-                                    history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
-                                }
-                            }}
-                            /></td>
-                        </tr>
-                    )}
-                 </tbody>
-            </Table>
+            {width>650 ? 
+                   <Table>
+                   <thead>
+                      <tr>
+                          <th>Артикул</th>
+                          <th>Наименование</th>
+                          <th>Цена</th>
+                          <th>Остаток</th>
+                          <th>Организация</th>
+                          <th>Дата</th>
+                          <th>+</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                          {price?.map((item,index)=>
+                          
+                              <tr key={index}>
+                                  <td>{item?.Code}</td>
+                                  <td>{item?.Name}</td>
+                                  <td>{item?.Price}</td>
+                                  <td>{item?.Balance}</td>
+                                  <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
+                                      {item?.User?.nameOrg}</a></td>
+                                  <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                                  <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                                  onClick={()=>{
+                                      if(user.isAuth){
+                                          history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                      }else{
+                                          history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
+                                      }
+                                  }}
+                                  /></td>
+                              </tr>
+                          )}
+                       </tbody>
+                  </Table>
+            : 
+                <div>
+                    <div className='parentPrice'>
+                        {price?.map((item,index)=>
+                        <div key={index} className='childPrice'>
+                            <div className='specInfo'>
+                                <div>
+                                    {item?.Code}
+                                </div>
+                                <div>
+                                    {readMoreName ? item.Name : `${item.Name.substring(0, 50)}...`}
+                                    <a href="javascript:void(0)" onClick={() => setReadMoreName(!readMoreName)}> 
+                                    {readMoreName ? 'Свернуть' : 'Показать больше'} </a>
+                                </div>
+                                <div>
+                                    Цена: {item?.Price} ₽
+                                    <Cart4 color="#0D55FD" className='iconCartMobile'
+                                    onClick={()=>{
+                                        if(user.isAuth){
+                                            history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                        }else{
+                                            history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
+                                        }
+                                    }}
+                                    />
+                                </div>
+                                <div>
+                                    Остаток: {item?.Balance}
+                                </div>
+                                <div>
+                                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
+                                      {item?.User?.nameOrg}
+                                    </a>
+                                </div>
+                                <div className="specCloudy">
+                                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                </div>
+                            </div>
+                        </div>)}
+                    </div>
+                </div>
+            }
             <ReactPaginate
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}

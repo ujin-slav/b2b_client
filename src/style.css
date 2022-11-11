@@ -550,6 +550,19 @@ td.tdRed{
     box-sizing: border-box;
     position: relative;
   }
+  .parentPrice {
+    display: flex;
+    flex-wrap: wrap;
+    background-color:white;
+  }
+  .childPrice {
+    overflow-wrap: break-word;
+    width: 50%;
+    height: 25%;
+    padding:10px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
+  }
   .cardPadding{
     padding:10px;
   }
@@ -947,4 +960,22 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 }
 .eye{
   cursor:pointer;
+}
+.iconCartMobile{
+  position: absolute;
+  right:0;
+  bottom: 0;
+  width:  40px; 
+  height: 40px;
+}
+@media (max-width: 650px) {
+  .container-mycontr{
+    width: 95%; 
+  }
+  .childSpecAsk {
+    width: 50%;
+  }
+  .childSpec {
+    width: 50%;
+  }
 }
