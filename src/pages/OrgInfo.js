@@ -12,7 +12,7 @@ import Prices from "../components/Price";
 import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
 import ReviewOrgItems from '../components/ReviewOrgItems';
-import '../fontawesome.min.css';
+import '../fontawesome.css';
 import { CREATEASK } from '../utils/routes';
 import {useHistory} from 'react-router-dom'
 

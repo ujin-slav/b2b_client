@@ -2,7 +2,7 @@ import React, {useContext,useEffect,useState,useRef} from 'react';
 import {Context} from "../index";
 import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
-import '../fontawesome.min.css';
+import '../fontawesome.css';
 import {LOGIN_ROUTE,
         CREATEASK, 
         MYORDERS, 

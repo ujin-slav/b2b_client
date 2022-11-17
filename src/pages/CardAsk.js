@@ -17,7 +17,7 @@ import ModalAlert from '../components/ModalAlert';
 import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
 import { checkAccessAsk } from '../utils/CheckAccessAsk';
-import '../fontawesome.min.css';
+import '../fontawesome.css';
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;

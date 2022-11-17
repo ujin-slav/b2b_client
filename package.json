@@ -1,6 +1,7 @@
 {
   "name": "auth",
   "version": "0.1.0",
+  "homepage": "http://www.my-react-app.com",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.11.2",
