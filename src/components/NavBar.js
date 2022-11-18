@@ -27,6 +27,7 @@ import {LOGIN_ROUTE,
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
+import comment from "../icons/comment.svg";
 import calendar from "../icons/calendar.svg";
 import quest from "../icons/question-circle.svg";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
@@ -158,9 +159,16 @@ const NavBar = observer(() => {
             </NavLink >
             <Nav className="me-auto">
                 <Nav.Link onClick={()=>activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
-                <NavDropdown title="Мои">
+                <NavDropdown title="Меню">
                 <div className="dropdown-menu-wrapper">
                     <div>
+                      <NavDropdown.Item onClick={()=>activeLink(CHAT)} className={"pLeftMessage " + classNameLink(CHAT)}>
+                        <div className="parentAnswer">
+                            <div><img className="awesomeIcon" src={comment}/></div>
+                            <div>&nbsp;&nbsp;Сообщения</div>
+                            <div className="countQuest">{sumUnread()}</div>
+                        </div>
+                      </NavDropdown.Item>
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
@@ -245,6 +253,22 @@ const NavBar = observer(() => {
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
+                            <div><img className="awesomeIcon" src={quest}/></div>
+                            <div><b>&nbsp;&nbsp;О сервисе</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs">
+                            <NavDropdown.Item onClick={()=>activeLink(HELP)}className={classNameLink(HELP)}>Помощь</NavDropdown.Item>
+                        </li>
+                        <li className="job-sub-tabs"> 
+                            <NavDropdown.Item onClick={()=>activeLink(ABOUT)}className={classNameLink(ABOUT)}>О сервисе</NavDropdown.Item>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
                             <div><img className="awesomeIcon" src={calendar}/></div>
                             <div><b>&nbsp;&nbsp;События</b></div>
                           </div>
@@ -266,15 +290,16 @@ const NavBar = observer(() => {
                 <div className="parentAnswer myNoti">
                        <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>
                 </div>
+                {window.innerWidth > 650 ?
                 <Nav.Link onClick={()=>activeLink(CHAT)}className={classNameLink(CHAT)}>
                 <div className="parentAnswer">
-                       <div>Сообщения</div>
-                       <div className="countQuest">{sumUnread()}</div>
-                    </div>
+                        <div>Сообщения</div>
+                        <div className="countQuest">{sumUnread()}</div>
+                </div>
                 </Nav.Link>
-                <Nav.Link onClick={()=>activeLink(PRICES)}className={classNameLink(PRICES)}>Прайс</Nav.Link>
-                <Nav.Link onClick={()=>activeLink(HELP)}className={classNameLink(HELP)}>Помощь</Nav.Link>
-                <Nav.Link onClick={()=>activeLink(ABOUT)}className={classNameLink(ABOUT)}>О сервисе</Nav.Link>
+                :
+                <div></div>
+                }
             </Nav>
         </div>
         <NavLink to="/profile">

@@ -514,6 +514,15 @@ td.tdRed{
     position: relative;   
     border-radius: 20px 20px 20px 20px !important;                               
   }
+  .sectionHeaderSearch.card-header{
+    background-color: white;
+    height: 55px;
+    color: gray !important;
+    font-size: 20px;
+    cursor: pointer; 
+    position: relative;   
+    border:4px solid;                             
+  }
   .sectionHeaderOffer.card-header{
     background-color: #FF6A00;
     height: 55px;
@@ -968,6 +977,9 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   width:  40px; 
   height: 40px;
 }
+.pLeftMessage{
+  padding-left: 2.8rem !important;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 
@@ -977,5 +989,19 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   }
   .childSpec {
     width: 50%;
+  }
+  body {
+    margin: 0px !important;
+    margin-right: 3px !important;
+  }
+  .sectionName{    
+    width: 95% !important;             
+  }
+  .searchForm {
+    padding: 15px;
+    padding-bottom: 0px !important;
+  }
+  .searchForm div.row{
+    display: block !important;
   }
 }
