@@ -382,6 +382,12 @@ td.tdRed{
     box-sizing: border-box;
     position: relative;
   }
+  .albumSpec {
+    overflow-wrap: break-word;
+    padding:10px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
+  }
   .fotoSpec{
     display: block;
     border-radius: 20px 20px 20px 20px;
@@ -441,11 +447,38 @@ td.tdRed{
     -khtml-user-select: none; 
     user-select: none;       
   }
+  .fotoSliderMobile{
+    position: fixed; /* фиксированное положение */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.5); /* цвет фона */
+    z-index: 1050;
+    -webkit-transition: opacity 200ms ease-in; 
+    -moz-transition: opacity 200ms ease-in;
+    transition: opacity 200ms ease-in; /* анимация перехода */    
+    -moz-user-select: none;
+    -khtml-user-select: none; 
+    user-select: none;       
+  }
   .leftNav{
+    display: inline-block;
     margin: auto;
   }
   .rightNav{
+    display: inline-block;
     margin: auto;
+  }
+  .closeNav{
+    display: inline-block;
+    margin: auto;
+  }
+  .navContainer{
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    text-align: center; 
   }
   .cardSpecPrice{
     font-size: 50px;
@@ -891,9 +924,9 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .userList{
   height:400px;
 }
-.lentStatus{
+/* .lentStatus{
   height:600px;
-}
+} */
 .container-mycontr{
   width: 70%; 
   margin: 0 auto; 
@@ -1003,5 +1036,32 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   }
   .searchForm div.row{
     display: block !important;
+  }
+  .dropdown-menu{
+    position: fixed !important;
+    left:3%;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  .dropdown-menu-wrapper{
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+  .container-priceask-center{
+    width: 98%;
+  }
+  div.mx-auto.my-4.container{
+    width: 100%;
+  }
+  .foto{
+    height: fit-content;
+  }
+  .userCardListUserFlex{
+    display: block;
+  }
+  .chatRow{
+    display: block !important;
+  }
+  .chatCol{
+    width: 100% !important;
   }
 }

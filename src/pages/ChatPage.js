@@ -38,11 +38,11 @@ const ChatPage = () => {
 
     return (
             <Container fluid>
-                <Row className="overflow-auto">
-                    <Col className="col-3"> 
+                <Row className='chatRow'>
+                    <Col className="col-3 chatCol"> 
                         <UserBox recevier={recevier} setRecevier={setRecevier}/>
                     </Col>
-                    <Col className="col-9">
+                    <Col className="col-9 chatCol">
                         <MessageList recevier={recevier} setRecevier={setRecevier}/>
                     </Col>
                 </Row>

@@ -92,33 +92,38 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
     },[fetching]);
 
     return (
-        <div class="parentCarousel" id="slider" ref={slider}>
-        {specOffers.map((item,index)=>
-                <div key={index} class="childCarouselSimilar">
-                    <img 
-                    className="logo"
-                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
-                    <div className="specName" onClick={(e)=>redirect(e,item._id)}>
-                        {item.Name}
-                    </div>
-                    <div className="specPrice">
-                        {item.Price} ₽
-                    </div>
-                    <div className="specNameOrg">
-                        {item.NameOrg}
-                    </div>
-                    <div className="specCloudy">
-                        {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                        `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
-                        :
-                        getCategoryName(item.Region, regionNodes).join(", ")
-                        }
-                    </div>
-                    <div className="specCloudy">
-                        {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                    </div>
+        <div>
+            <div className="specContact">
+                <span>Похожие предложения</span>
             </div>
-        )}
+            <div class="parentCarousel" id="slider" ref={slider}>
+            {specOffers.map((item,index)=>
+                    <div key={index} class="childCarouselSimilar">
+                        <img 
+                        className="logo"
+                        src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
+                        <div className="specName" onClick={(e)=>redirect(e,item._id)}>
+                            {item.Name}
+                        </div>
+                        <div className="specPrice">
+                            {item.Price} ₽
+                        </div>
+                        <div className="specNameOrg">
+                            {item.NameOrg}
+                        </div>
+                        <div className="specCloudy">
+                            {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                            `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                            :
+                            getCategoryName(item.Region, regionNodes).join(", ")
+                            }
+                        </div>
+                        <div className="specCloudy">
+                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                        </div>
+                </div>
+            )}
+            </div>
         </div>
     )
 

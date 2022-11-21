@@ -56,6 +56,27 @@ const CardSpecOffer = observer(() => {
         window.scrollTo(0, 0) 
         history.push(CARDSPECOFFER + '/' + id)
     }
+
+    const cartPrice = ()=>{
+        return(
+            <div>
+                <div className="cardSpecPrice">
+                     {specOffer.Price} ₽
+                </div>  
+                <div className="cartContainer">  
+                    <Cart4 className="specOfferCart"
+                                onClick={()=>{
+                                    if(user.isAuth){
+                                        history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
+                                    }else{
+                                        history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
+                                    }
+                                }}
+                    />
+                </div> 
+            </div>
+        )
+    }
   
     return (
         <Container className="mx-auto my-4">
@@ -64,15 +85,16 @@ const CardSpecOffer = observer(() => {
                 <img className='fotoSpecCard' 
                     onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
-                 <div className='parentSpec'>
+                <div className='parentSpec'>
                 {specOffer.FilesMini?.map((item,index)=>
-                    <div key={index} className='childSpec'>
+                    <div key={index} className='albumSpec'>
                         <img className='miniFotoSpecCard'
                         onClick={()=>setFotoFocus(index)} 
                         src={process.env.REACT_APP_API_URL + `getpic/` + item.filename}/>
                     </div>
                 )}
                 </div>
+                {window.innerWidth < 650 ? cartPrice() : <div></div>}
                 <div className="specContact">
                     <span>Описание</span>
                 </div>
@@ -91,25 +113,9 @@ const CardSpecOffer = observer(() => {
                 <div className="specContactData">
                     <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
                 </div>
-                <div className="specContact">
-                    <span>Похожие предложения</span>
-                </div>
             </Col>
             <Col>
-                <div className="cardSpecPrice">
-                    {specOffer.Price} ₽
-                </div>  
-                <div className="cartContainer">  
-                    <Cart4 className="specOfferCart"
-                                onClick={()=>{
-                                    if(user.isAuth){
-                                        history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
-                                    }else{
-                                        history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
-                                    }
-                                }}
-                    />
-                </div> 
+                {window.innerWidth > 650 ? cartPrice() : <div></div>}
                 {user.isAuth ?
                 <div>
                     {/* <Button style={{
@@ -130,14 +136,7 @@ const CardSpecOffer = observer(() => {
                     </Button>
                 </div>
                 :
-                <Button style={{
-                    fontSize:"20px",
-                    padding:"10px 35px 10px 35px",
-                    marginTop:"30px"
-                }} 
-                onClick={()=>setModalActiveAskFiz(true)}>
-                Заказать
-                </Button>
+                <div></div>
                 }
                 <div className="specContact">
                     <span>Организация:</span>
@@ -165,7 +164,7 @@ const CardSpecOffer = observer(() => {
                     categoryFilter={checkedCat}
                     regionFilter={checkedRegion} 
                     redirect={redirect}
-                />
+            />
            <FotoSlider 
             fotoArray={specOffer?.Files}
             setShow={setShowSlider}
