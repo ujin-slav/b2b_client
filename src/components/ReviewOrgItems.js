@@ -97,7 +97,6 @@ const ReviewOrgItems = observer(({...props})=>{
     }
 
     return (
-        <div>
         <Card className='section'>
             <Card.Header className='sectionHeader headerPrices'
              onClick={()=>setVisible(!visible)}>
@@ -110,7 +109,6 @@ const ReviewOrgItems = observer(({...props})=>{
                 Отзывы
             </div>
             </Card.Header>
-        </Card>  
         {visible ?
         <div>
         <div className='formReviewOrg'>
@@ -195,8 +193,8 @@ const ReviewOrgItems = observer(({...props})=>{
         </div>
         :
         <div></div>
-        }              
-        </div>
+        }   
+        </Card>          
     );
     })
   

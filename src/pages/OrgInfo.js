@@ -124,12 +124,12 @@ const OrgInfo = () => {
                 </Col>
             </Row>
             <Row>
-            <Row>
                 <UserAsk idorg={idorg}/>
             </Row>
             <Row>
                 <UserSpecOfferTable idorg={idorg}/>
             </Row>
+            <Row>
                 <UserPrice idorg={idorg} idprod={idprod}/>
             </Row>
             <Row>

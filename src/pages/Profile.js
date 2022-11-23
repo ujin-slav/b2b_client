@@ -201,7 +201,7 @@ const Profile =  observer(() => {
     
     return (
         <div>
-            <Container style={{width: "70%"}} className="mx-auto my-4">
+            <Container className="profile">
             <Row>
                 <Col>
                 <Form onSubmit={onSubmit}>

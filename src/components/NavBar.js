@@ -230,25 +230,6 @@ const NavBar = observer(() => {
                         </NavDropdown.Item></li>
                       </ul>
                     </div>
-                    {/* <div>
-                      <ul>
-                        <li className="dropdown-header">
-                          <div className="menu-icon-wrapper">
-                            <div><img className="awesomeIcon" src={quest}/></div>
-                            <div><b>&nbsp;&nbsp;Вопросы</b></div>
-                          </div>
-                        </li>
-                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(QUESTFROMME)}className={classNameLink(QUESTFROMME)}>Вопросы от меня</NavDropdown.Item></li>
-                        <li className="job-sub-tabs"> 
-                        <NavDropdown.Item onClick={()=>activeLink(QUESTFORME)}className={classNameLink(QUESTFORME)}>
-                        <div className="parentAnswer">
-                           <div>Вопросы для меня</div>
-                           <div className="countQuest">{sumUnreadQuest()}</div>
-                        </div>
-                        </NavDropdown.Item>
-                        </li>
-                      </ul>
-                    </div> */}
                     <div>
                       <ul>
                         <li className="dropdown-header">
@@ -305,10 +286,7 @@ const NavBar = observer(() => {
         <NavLink to="/profile">
         <img
                     src={profileLogo}
-                    width="50"
-                    height="50"
-                    className="d-inline-block align-top"
-                    alt = ""
+                    className="profileLogo"
                 />
         </NavLink>
         <div className="navbar-nav ml-auto">

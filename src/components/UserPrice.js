@@ -1,18 +1,23 @@
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,useContext} from 'react';
 import {Card, Table,Form} from "react-bootstrap";
 import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import waiting from "../waiting.gif";
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
+import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
 import {useHistory} from 'react-router-dom';
 import ReactPaginate from "react-paginate";
+import { Cart4} from 'react-bootstrap-icons';
+import {Context} from "../index";
 
 const UserPrice = ({idorg,idprod}) => {
     
     const history = useHistory();
     const [loading,setLoading] = useState(true) 
+    const [readMoreName,setReadMoreName] = useState([]) 
     const [price,setPrice] = useState([]); 
+    const [width,setWidth] = useState() 
     const[visible,setVisible] = useState(false);
     const[totalDocs,setTotalDocs] = useState(0);
     const[fetching,setFetching] = useState(true);
@@ -20,7 +25,20 @@ const UserPrice = ({idorg,idprod}) => {
     const[search,setSearch] = useState("");
     const [pageCount, setpageCount] = useState(0);
     const input = useRef(null);
+    const {user} = useContext(Context);
     let limit = 30
+
+    const resizeWindow = () => {
+        setWidth(window.innerWidth)
+    }
+
+    useEffect(()=>{
+        window.addEventListener('resize',resizeWindow)
+        setWidth(window.innerWidth)
+        return ()=>{
+            window.removeEventListener('resize',resizeWindow) 
+        }
+    },[])
 
     useEffect(() => {
         if(loading || fetching){
@@ -109,8 +127,33 @@ const UserPrice = ({idorg,idprod}) => {
         await fetchComments(data.selected + 1);
     };
 
+    const readMoreHandler = (id) => {
+        if(readMoreName.includes(id)){
+            setReadMoreName(readMoreName.filter(el=>el!==id))
+        }else{
+            setReadMoreName([...readMoreName,id])
+        }
+    }
+
+    const readMoreGetText = (item) => {
+        if(item.Name.length>50){
+            return(
+                <div>
+                    {readMoreName.includes(item._id) ? item.Name : `${item.Name.substring(0, 50)}...`}
+                    <a href="javascript:void(0)" onClick={() => readMoreHandler(item._id)}> 
+                    {readMoreName.includes(item._id) ? 'Свернуть' : 'Показать больше'} </a>
+                </div>
+            )
+        }else{
+            return(
+                <div>
+                    {item.Name}
+                </div>
+            )
+        }
+    }
+
     return (
-        <div>
              <Card className='section'>
                 <Card.Header className='sectionHeader headerPrices' 
                 onClick={()=>setVisible(!visible)}>
@@ -133,6 +176,7 @@ const UserPrice = ({idorg,idprod}) => {
                      placeholder="Начните набирать артикул или название продукта"
                  />
                 </Form.Group>
+                {width>650 ? 
                 <Table>
                     <thead>
                         <tr>
@@ -164,6 +208,46 @@ const UserPrice = ({idorg,idprod}) => {
                             )}
                         </tbody>
                  </Table>
+                 :
+                 <div className='parentPrice'>
+                 {price?.map((item,index)=>{
+                    return(
+                        <div key={index} className='childPrice'>
+                            <div className='specInfo'>
+                                <div>
+                                    {item?.Code}
+                                </div>
+                                <div>
+                                    {readMoreGetText(item)}
+                                </div>
+                                <div>
+                                    Цена: {item?.Price} ₽
+                                    <Cart4 color="#0D55FD" className='iconCartMobile'
+                                    onClick={()=>{
+                                        if(user.isAuth){
+                                            history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                        }else{
+                                            history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
+                                        }
+                                    }}
+                                    />
+                                </div>
+                                <div>
+                                    Остаток: {item?.Balance}
+                                </div>
+                                <div>
+                                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
+                                    {item?.User?.nameOrg}
+                                    </a>
+                                </div>
+                                <div className="specCloudy">
+                                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                </div>
+                            </div>
+                        </div>
+                        )})}
+                </div>
+                }
                  <ReactPaginate
                     previousLabel={"предыдущий"}
                     nextLabel={"следующий"}
@@ -188,7 +272,6 @@ const UserPrice = ({idorg,idprod}) => {
                  <div></div>
                 }
                 </Card>
-        </div>
     );
 };
 
