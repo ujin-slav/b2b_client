@@ -185,6 +185,7 @@ const UserPrice = ({idorg,idprod}) => {
                             <th>Цена</th>
                             <th>Остаток</th>
                             <th>Дата</th>
+                            <th>+</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -204,6 +205,14 @@ const UserPrice = ({idorg,idprod}) => {
                                     <td>{item?.Price}</td>
                                     <td>{item?.Balance}</td>
                                     <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                                    <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                                        onClick={()=>{
+                                        if(user.isAuth){
+                                            history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                        }else{
+                                            history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
+                                        }}}/>
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
@@ -249,8 +258,8 @@ const UserPrice = ({idorg,idprod}) => {
                 </div>
                 }
                  <ReactPaginate
-                    previousLabel={"предыдущий"}
-                    nextLabel={"следующий"}
+                    previousLabel={"<"}
+                    nextLabel={">"}
                     breakLabel={"..."}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}

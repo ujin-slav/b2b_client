@@ -210,11 +210,9 @@ const CardAsk = observer(() => {
                                 <span>
                                 <button className="myButtonMessage"
                                 onClick={()=>setModalActiveMessage(true)}>
-                                  <div>
                                   Написать сообщение
-                                </div>
+                                  <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
                                 </button>
-                                <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
                                 </span>
                                 }
                                 </td>

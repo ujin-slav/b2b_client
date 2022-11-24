@@ -117,6 +117,13 @@ const UserBox = observer(({recevier,setRecevier}) => {
 
     return (
         <div>
+            <InputGroup className="mt-2 bottom-0 mb-3">
+                        <Form.Control 
+                            type="nameOrder" 
+                            placeholder="Поиск по имени автора или организации" 
+                            onChange={(e)=>handleUserSearch(e.target.value)}
+                        />
+            </InputGroup>
             <div className="userBox" ref={userBox}>
                 {chat.contacts.map((item,index)=>{
                     return(
@@ -141,13 +148,6 @@ const UserBox = observer(({recevier,setRecevier}) => {
                         </div>)
                 })}
             </div>
-                <InputGroup className="mt-2 bottom-0 mb-3">
-                            <Form.Control 
-                                type="nameOrder" 
-                                placeholder="Поиск по имени автора или организации" 
-                                onChange={(e)=>handleUserSearch(e.target.value)}
-                            />
-                </InputGroup>
         </div>
     );
 });
