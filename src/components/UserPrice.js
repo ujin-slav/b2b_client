@@ -86,18 +86,19 @@ const UserPrice = ({idorg,idprod}) => {
     //         }
     // }
 
-    const handleSearch = (value) =>{
-        PriceService.getPrice({page:1,limit,search,org:idorg}).
+    const handleSearch = (text) =>{
+        PriceService.getPrice({page:1,limit,search:text,org:idorg}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setpageCount(data.totalPages);
                 setCurrentPage(prevState=>prevState + 1)
-                setSearch(value)
+                setSearch(text)
         }).finally(
             ()=>setFetching(false)
         )
     }
+
 
     if (loading){
         return(
