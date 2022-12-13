@@ -111,29 +111,23 @@ const ReviewOrgItems = observer(({...props})=>{
             </Card.Header>
         {visible ?
         <div>
-        <div className='formReviewOrg'>
-                    <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                        <div>Написать отзыв.</div>
-                        <div>Сообщение:</div>
-                        <Form.Control
-                        name="Text"
-                        placeholder="Текст сообщения"
-                        as="textarea"
-                        ref={inputEl}
-                        onChange={(e)=>setText(e.target.value)}
-                        />
-                        {/* <button className="myButton" type="submit" >
-                            <div>
-                                Отправить
-                            </div>
-                        </button> */}
-                        <Button className="mt-3" type="submit">
-                            Отправить
-                        </Button>
-                    </Form.Group>
-                    </Form>
-        </div> 
+        {user.user.id !== id ?
+            <div className='formReviewOrg'>
+                <div>Написать отзыв.</div>
+                <div>Сообщение:</div>
+                <Form.Control
+                name="Text"
+                placeholder="Текст сообщения"
+                as="textarea"
+                ref={inputEl}
+                onChange={(e)=>setText(e.target.value)} />
+                <Button className="mt-3" onClick={handleSubmit}>
+                    Отправить
+                </Button>
+            </div> 
+            :
+            <div></div>
+        }
         {review?.map((item,index)=>
         <div key={index}>
             <Card className="reviewCard">

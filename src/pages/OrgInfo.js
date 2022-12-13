@@ -1,15 +1,11 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
 import {fetchUser} from '../http/askAPI';
-import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
-import PriceService from '../services/PriceService'
-import dateFormat, { masks } from "dateformat";
+import {Table, Col, Container, Row} from "react-bootstrap";
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
 import {Context} from "../index";
-import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import UserSpecOfferTable from "../components/UserSpecOfferTable";
-import Prices from "../components/Price";
 import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
 import ReviewOrgItems from '../components/ReviewOrgItems';
@@ -136,7 +132,7 @@ const OrgInfo = () => {
                 <UserPrice idorg={idorg} idprod={idprod}/>
             </Row>
             <Row>
-                <ReviewOrgItems idorg={idorg}/>
+                <ReviewOrgItems id={idorg}/>
             </Row>
             <ModalCT 
                 header="Сообщение" 
