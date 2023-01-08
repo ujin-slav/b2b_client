@@ -1,7 +1,6 @@
 import {React,useEffect,useState,useRef} from 'react'
 import {Card} from "react-bootstrap"
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons'
-import waiting from "../waiting.gif"
 import CarouselService from '../services/CarouselService'
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";

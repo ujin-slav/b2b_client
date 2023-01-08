@@ -18,7 +18,7 @@ import "../style.css";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
-import waiting from "../waiting.gif";
+
 import SocketIOFileClient from 'socket.io-file-client';
 
 const ChatPage = observer(() => {
@@ -229,7 +229,7 @@ const ChatPage = observer(() => {
     if (chat.connected===false){
         return(
             <p className="waiting">
-                <img height="320" src={waiting}/>
+                <div class="loader">Loading...</div>
             </p>
         )
     }

@@ -9,7 +9,7 @@ import AskStatus from './AskStatus';
 import dateFormat, { masks } from "dateformat";
 import {Eye,StarFill} from 'react-bootstrap-icons';
 import "../style.css";
-import waiting from "../waiting.gif";
+
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
@@ -128,7 +128,7 @@ const CardAsk = observer(() => {
     if(user===undefined || ask===undefined){
       return(
         <p className="waiting">
-            <img height="320" src={waiting}/>
+            <div class="loader">Loading...</div>
         </p>
     )
     }

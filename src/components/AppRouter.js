@@ -2,7 +2,6 @@ import React, { useContext,useEffect } from 'react';
 import {Switch, Route, useLocation} from 'react-router-dom'
 import {authRoutes, publicRoutes} from '../utils/routes'
 import {Context} from "../index";
-import waiting from "../waiting.gif";
 import {observer} from "mobx-react-lite";
 
 const AppRouter = observer(() => {

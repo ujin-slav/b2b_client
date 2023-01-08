@@ -10,7 +10,7 @@ import {
     Button,
     ProgressBar
  } from "react-bootstrap";
- import waiting from "../waiting.gif";
+ 
 
 export const statusOrder = [
     // {
@@ -289,7 +289,7 @@ const AskStatus = observer(({askId}) => {
     if(loading){
         return(
             <p className="waiting">
-                <img height="320" src={waiting}/>
+                <div class="loader">Loading...</div>
             </p>
         )
     }
