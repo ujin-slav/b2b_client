@@ -36,6 +36,8 @@ import InvitedSpecOffer from "../pages/InvitedSpecOffer";
 import QuestForMe from "../pages/QuestForMe";
 import QuestFromMe from "../pages/QuestFromMe";
 import LentStatus from "../pages/LentStatus";
+import ReviewAboutMe from "../pages/ReviewAboutMe";
+import ReviewWriteMe from "../pages/ReviewWriteMe";
 
 export const ADMIN_ROUTE = '/admin'
 export const LOGIN_ROUTE = '/login'
@@ -77,6 +79,8 @@ export const INVITEDPRICE = '/invitedprice'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
+export const REVIEWABOUTME = '/reviewaboutme'
+export const REVIEWWRITEME = '/reviewwriteme'
 
 export const authRoutes = [
     {
@@ -236,13 +240,21 @@ export const authRoutes = [
         Component: LentStatus
     },
     {
+        path: REVIEWABOUTME,
+        Component: ReviewAboutMe
+    },
+    {
+        path: REVIEWWRITEME,
+        Component: ReviewWriteMe
+    },
+    {
         path: TEST,
         Component: Test
     },
     {
         path: "*",
         Component: B2B
-    }
+    },
 ]
 
 export const publicRoutes = [

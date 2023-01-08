@@ -23,13 +23,16 @@ import {LOGIN_ROUTE,
         INVITEDSPECOFFER,
         QUESTFROMME,
         QUESTFORME,
-        LENTSTATUS} from "../utils/routes";
+        LENTSTATUS,
+        REVIEWABOUTME,
+        REVIEWWRITEME} from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
 import comment from "../icons/comment.svg";
 import calendar from "../icons/calendar.svg";
 import quest from "../icons/question-circle.svg";
+import starHalf from "../icons/starHalf.svg";
 import {useHistory,NavLink,useLocation } from 'react-router-dom';
 import { Container,Navbar,Nav, NavDropdown,Dropdown,NavItem } from "react-bootstrap";
 import logo from '../b2blogo.png'
@@ -162,6 +165,7 @@ const NavBar = observer(() => {
                 <NavDropdown title="Меню">
                 <div className="dropdown-menu-wrapper">
                     <div>
+                      {window.innerWidth < 650 ?
                       <NavDropdown.Item onClick={()=>activeLink(CHAT)} className={"pLeftMessage " + classNameLink(CHAT)}>
                         <div className="parentAnswer">
                             <div><img className="awesomeIcon" src={comment}/></div>
@@ -169,6 +173,9 @@ const NavBar = observer(() => {
                             <div className="countQuest">{sumUnread()}</div>
                         </div>
                       </NavDropdown.Item>
+                      :
+                      <div></div>
+                      }
                       <ul>
                         <li className="dropdown-header">
                           <div className="menu-icon-wrapper">
@@ -260,6 +267,34 @@ const NavBar = observer(() => {
                                 <div>Cтатус заявок</div>
                                     <div className="countQuest">
                                         <div className='yellowtext'>{sumStatusAsk()}</div>
+                                    </div>
+                                </div>
+                            </NavDropdown.Item>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><img className="awesomeIcon" src={starHalf}/></div>
+                            <div><b>&nbsp;&nbsp;Отзывы</b></div>
+                          </div>
+                        </li>
+                        <li className="job-sub-tabs">
+                            <NavDropdown.Item onClick={()=>activeLink(REVIEWABOUTME)}className={classNameLink(REVIEWABOUTME)}>
+                                <div className="parentAnswer">
+                                <div>Обо мне</div>
+                                    <div className="countQuest">
+                                        <div className='yellowtext'></div>
+                                    </div>
+                                </div>
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>activeLink(REVIEWWRITEME)}className={classNameLink(REVIEWWRITEME)}>
+                                <div className="parentAnswer">
+                                <div>Написаны мной</div>
+                                    <div className="countQuest">
+                                        <div className='yellowtext'></div>
                                     </div>
                                 </div>
                             </NavDropdown.Item>
