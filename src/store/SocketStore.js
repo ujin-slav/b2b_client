@@ -114,6 +114,7 @@ export default class SocketStore {
             this.setSpecOfferAskUnread(data)   
           })
           this.socket.on("get_unread_statusAsk", (data) => { 
+            console.log(data)
             this.setStatusAskUnread(data)   
           })
 

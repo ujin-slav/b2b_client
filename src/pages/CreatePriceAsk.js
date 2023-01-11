@@ -134,7 +134,7 @@ const CreatePriceAsk = () => {
                 const data = {
                     To:idorg
                 }
-                chat.socket.emit("unread_invitedPrice", {data});
+                chat.socket.emit("unread_invitedPrice", data);
             }
         } else {
             myalert.setMessage(res?.data?.message);
