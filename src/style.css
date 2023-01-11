@@ -268,6 +268,10 @@ td.tdRed{
   color: transparent;
   text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
+.blurry-text-head {
+  color: transparent !important;
+  text-shadow: 0 0 10px #0d6efd;
+}
 
 .tableAsk {
   table-layout:fixed;

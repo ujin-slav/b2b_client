@@ -3,7 +3,6 @@ import {Card, Table,Form} from "react-bootstrap";
 import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
-import waiting from "../waiting.gif";
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
 import {useHistory} from 'react-router-dom';
@@ -115,7 +114,7 @@ const UserPrice = ({idorg,idprod}) => {
             </div>
             </Card.Header>
               {visible ?
-                  <img className="gifWaiting" src={waiting}/>
+                  <div class="loader">Loading...</div>
                 :
                 <div></div>
               }

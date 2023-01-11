@@ -4,10 +4,12 @@ import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import * as XLSX from 'xlsx';
 
 const MyPrice = observer(() => {
     const {user} = useContext(Context);
     const [org, setOrg] = useState();
+    const[loadingFull,setLoadingFull] = useState(false);
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
@@ -54,6 +56,36 @@ const MyPrice = observer(() => {
             }
     }
 
+    const loadPrice = () =>{
+        setLoadingFull(true)
+        console.log(totalDocs)
+        PriceService.getPrice({page:1,limit:totalDocs,search:'',org:user.user.id}).then((data)=>{
+            const fileName = `Price.xlsx`;
+            const aoa = []
+            data.docs.map((item)=>{
+                aoa.push([item.Code,item.Name,item.Price,item.Balance])
+            })
+            const ws = XLSX.utils.aoa_to_sheet(aoa);
+            var wscols = [
+                {wch:25},
+                {wch:60},
+                {wch:15},
+                {wch:15},
+            ];
+            ws['!cols'] = wscols
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'price');
+    
+            XLSX.writeFile(wb, fileName);
+        }).finally(()=>setLoadingFull(false))
+    }
+
+    if(loadingFull){
+        return (
+            <div class="loader">Loading...</div>
+        )
+    }
+
     return (
         <Container>             
                 <Row>
@@ -63,6 +95,13 @@ const MyPrice = observer(() => {
                             onChange={handleSearch}
                             placeholder="Начните набирать артикул или название продукта"
                         />
+                        <Button
+                        variant="primary"
+                        className="btn btn-success mt-3 mx-3"
+                        onClick={()=>loadPrice(true)}
+                        >
+                            Скачать загруженный прайс
+                        </Button>
                     </Form.Group>
             </Row>
             <Table>

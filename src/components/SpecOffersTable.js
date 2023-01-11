@@ -11,7 +11,7 @@ import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
 import {CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
-import waiting from "../waiting.gif";
+
 
 const SpecOffersTable = observer(() => {
     const [loading,setLoading] = useState(true) 
@@ -71,7 +71,7 @@ const SpecOffersTable = observer(() => {
               </div>
             </Card.Header>
               {visible ?
-                  <img className="gifWaiting" src={waiting}/>
+                  <div class="loader">Loading...</div>
                 :
                 <div></div>
               }

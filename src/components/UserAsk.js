@@ -16,7 +16,7 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import { PlusCircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
-import waiting from "../waiting.gif";
+
 
 const UserAsk = observer(({id}) => {
     const [loading,setLoading] = useState(true) 
@@ -76,7 +76,7 @@ const UserAsk = observer(({id}) => {
               </div>
             </Card.Header>
             {visible ?
-                <img className="gifWaiting" src={waiting}/>
+                <div class="loader">Loading...</div>
               :
               <div></div>
             }

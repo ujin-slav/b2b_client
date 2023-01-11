@@ -12,7 +12,6 @@ import {
 import { uploadPrice } from '../http/askAPI';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import waiting from "../waiting.gif";
 import * as XLSX from 'xlsx';
 import PriceService from '../services/PriceService'
 import ModalAlert from '../components/ModalAlert';
@@ -96,7 +95,7 @@ const UploadPrice = observer(() => {
     if(fetch){
         return(
             <p className="waiting">
-                <img height="320" src={waiting}/>
+                <div class="loader">Loading...</div>
             </p> 
         )
     }
@@ -132,18 +131,6 @@ const UploadPrice = observer(() => {
       setPrice([])
       setFetch(false)
     }  
-
-    const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).
-            then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
-                setSearch(e.target.value)
-        }).finally(
-            ()=>setFetching(false)
-        )
-    }
 
     return (
         <div>

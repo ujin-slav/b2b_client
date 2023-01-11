@@ -16,10 +16,9 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import { PlusCircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
-import waiting from "../waiting.gif";
 
 const TableAsk = observer(({authorId}) => {
-    const [loading,setLoading] = useState(true) 
+    const [loading,setLoading] = useState(false) 
     const {ask} = useContext(Context);
     const {myalert} = useContext(Context);
     const history = useHistory();
@@ -31,6 +30,7 @@ const TableAsk = observer(({authorId}) => {
 
     useEffect(() => {
       if(visible){
+        setLoading(true)
         fetchFilterAsks({
           filterCat:ask.categoryFilter,
           filterRegion:ask.regionFilter,
@@ -44,6 +44,7 @@ const TableAsk = observer(({authorId}) => {
       },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible]);
 
     const fetchComments = async (currentPage) => {
+      setLoading(true)
       fetchFilterAsks({
         filterCat:ask.categoryFilter,
         filterRegion:ask.regionFilter,
@@ -82,7 +83,7 @@ const TableAsk = observer(({authorId}) => {
               </div>
             </Card.Header>
             {visible ?
-                <img className="gifWaiting" src={waiting}/>
+                <div class="loader">Loading...</div>
               :
               <div></div>
             }
@@ -112,36 +113,45 @@ const TableAsk = observer(({authorId}) => {
           if(!checkAccessAsk(user,item).Open){
             return (
               <div onClick={()=>redirect(item)} className='childSpecAsk'>
-              <div className="blurry-text">
-                  Название
+              <Card>
+              <Card.Header>
+                <div className="specName blurry-text-head">
+                     Название 
+                </div>
+              </Card.Header>
+              <div className='cardPadding'>
+                <div className="blurry-text">
+                    Название
+                </div>
+                <div className="blurry-text">
+                    Текст
+                </div>
+                <div className="blurry-text">
+                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                        <div style={{color:"green"}}>
+                        Активная
+                        </div>
+                        :
+                        <div style={{color:"red"}}>
+                        Истек срок
+                        </div>
+                        } 
+                </div>
+                <div className="blurry-text">
+                        <div>ИНН: 8888888888</div>
+                        <div>Орг: Название</div>
+                </div>
+                <div className="blurry-text">
+                    Регионы
+                </div>
+                <div className="blurry-text">
+                    Категории
+                </div>
+                <div className="blurry-text">
+                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                </div>
               </div>
-              <div className="blurry-text">
-                  Текст
-              </div>
-              <div className="blurry-text">
-                      {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                      <div style={{color:"green"}}>
-                      Активная
-                      </div>
-                      :
-                      <div style={{color:"red"}}>
-                      Истек срок
-                      </div>
-                      } 
-              </div>
-              <div className="blurry-text">
-                      <div>ИНН: 8888888888</div>
-                      <div>Орг: Название</div>
-              </div>
-              <div className="blurry-text">
-                  Регионы
-              </div>
-              <div className="blurry-text">
-                  Категории
-              </div>
-              <div className="blurry-text">
-                  {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-              </div>
+              </Card>
               </div>
             )
           }else{

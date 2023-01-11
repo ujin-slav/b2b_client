@@ -2,7 +2,6 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Container,Col,Row,Button} from "react-bootstrap";
 import SpecOfferService from '../services/SpecOfferService'
 import {useParams} from 'react-router-dom';
-import waiting from "../waiting.gif";
 import {observer} from "mobx-react-lite";
 import FotoSlider from '../components/FotoSlider';
 import ModalCT from '../components/ModalCT';
@@ -47,7 +46,7 @@ const CardSpecOffer = observer(() => {
     if (loading){
         return(
             <p className="waiting">
-                <img height="320" src={waiting}/>
+                <div class="loader">Loading...</div>
             </p>
         )
     }

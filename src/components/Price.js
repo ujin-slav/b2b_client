@@ -16,7 +16,6 @@ import {
  import ModalCT from '../components/ModalCT';
  import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
  import ReactPaginate from "react-paginate";
- import waiting from "../waiting.gif";
 
 const Prices = observer(() => {
     const [readMoreName,setReadMoreName] = useState(false) 
@@ -84,7 +83,7 @@ const Prices = observer(() => {
               </div>
             </Card.Header>
               {visible ?
-                  <img className="gifWaiting" src={waiting}/>
+                  <div class="loader">Loading...</div>
                 :
                 <div></div>
               }
