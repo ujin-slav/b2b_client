@@ -140,7 +140,8 @@ const CreateAsk = observer(() => {
           if(result.ask){
             myalert.setMessage("Заявка успешно добавлена");
             if(checkedEmail.length>0){
-                chat.socket.emit("unread_invited", {checkedEmail});
+                chat.socket.emit("unread_invited", checkedEmail);
+                console.log(checkedEmail)
             }
             history.push(B2B_ROUTE)
           } else if(result.errors){
@@ -175,7 +176,6 @@ const CreateAsk = observer(() => {
         default:
           break;
       }
-      console.log(data)
       setAsk({ data, formErrors});
     }
 

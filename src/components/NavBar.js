@@ -143,6 +143,18 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const sumAll=()=>{
+        const sumAll = 
+                Number(sumInvited())+
+                Number(sumInvitedPrice())+
+                Number(sumInvitedSpecOffers())+
+                Number(sumStatusAsk())
+        if(sumAll > 0){
+            return sumAll
+        }else{
+            return ""
+        } 
+    }
     const classNameLink=(route)=>{
         return location.pathname===route ? "activeLink" : ""
     }
@@ -206,14 +218,15 @@ const NavBar = observer(() => {
                         </li>
                         <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={classNameLink(MYSPECOFFERS)}>Мои специальные предложения</NavDropdown.Item></li>
                         <li className="job-sub-tabs"> 
-                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
+                        {/* <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
                         <div className="parentAnswer">
-                           <div>Мне заказали по спец. предложению</div>
+                           <div>Заявки частных лиц</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvitedSpecOffers()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item></li>
+                        </NavDropdown.Item> */}
+                        </li>
                       </ul>
                     </div>
                     <div>
@@ -304,7 +317,7 @@ const NavBar = observer(() => {
                  </div>
                 </NavDropdown>
                 <div className="parentAnswer myNoti">
-                       <div className="countQuest">{sumInvited()+sumInvitedPrice()}</div>
+                       <div className="countQuest">{sumAll()}</div>
                 </div>
                 {window.innerWidth > 650 ?
                 <Nav.Link onClick={()=>activeLink(CHAT)}className={classNameLink(CHAT)}>

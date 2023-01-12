@@ -4,6 +4,7 @@ import {observer} from "mobx-react-lite";
 import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK, MODIFYASK } from '../utils/routes';
+import DatePicker, { registerLocale } from 'react-datepicker'
 import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
@@ -14,38 +15,53 @@ import dateFormat, { masks } from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import {Form} from "react-bootstrap";
 
 const TableAsk = observer(() => {
-    const {askUser} = useContext(Context);
+    var curr = new Date();
+    var date = curr.setDate(curr.getDate() + 3);
+
+    const [ask, setAsk] = useState([])
     const {user} = useContext(Context);
     const {myalert} = useContext(Context);
     const [deleteId,setDeleteId] = useState();
     const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
-    const [pageCount, setpageCount] = useState(0)
-    const [currentPage,setCurrentPage] = useState(1)
-    const [loading,setLoading] = useState(false)
+    const[totalDocs,setTotalDocs] = useState(0);
+    const[fetching,setFetching] = useState(true);
+    const[currentPage,setCurrentPage] = useState(1);
+    const [startDate, setStartDate] = useState(date);
+    const [endDate, setEndDate] = useState(date);
+    const[search,setSearch] = useState("");
+    const [pageCount, setpageCount] = useState(0);
     let limit = 10;
 
     useEffect(() => {
-        if(user?.user?.id){
-            fetchAsks({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
-                askUser.setAsk(data.docs)
-                setpageCount(data.totalPages);
-            })
-        }
-      },[loading]);
+        AskService.fetchAsks({
+            authorId:user.user.id,
+            limit,
+            search,
+            page:currentPage,
+            startDate,
+            endDate
+            }).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setAsk(data.docs);
+                    setpageCount(data.totalPages);
+                    setCurrentPage(prevState=>prevState + 1)
+        })
+    },[fetching]);
 
     const fetchPage = async (currentPage) => {
-      fetchAsks({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
-        askUser.setAsk(data.docs)
-    })};
+        AskService.fetchAsks({authorId:user.user.id,limit,search,page:currentPage}).then((data)=>{
+            setAsk(data.docs)}
+    )};
 
     const deleteAsk = async () =>{
       const result = await AskService.deleteAsk(deleteId);
       if (result.status===200){
         myalert.setMessage("Успешно"); 
-        setLoading(!loading)
+        setFetching(!fetching)
       } else {
         myalert.setMessage(result.data.message);
       }
@@ -61,10 +77,45 @@ const TableAsk = observer(() => {
         history.push(CARDASK + '/' + item._id)
     }
 
+    const handleSearch = (text) =>{
+      AskService.fetchAsks({authorId:user.user.id,limit,search:text,page:1}).
+          then((data)=>{
+              setTotalDocs(data.totalDocs);
+              setAsk(data.docs);
+              setpageCount(data.totalPages);
+              setCurrentPage(prevState=>prevState + 1)
+              setSearch(text)
+      }).finally(
+          ()=>setFetching(false)
+      )
+  }
+
     return (
       <div>
       <div className='parentSpecAsk'>
-        {askUser?.getAsk().map((item, index)=>
+        <Form.Control
+              onChange={(e)=>handleSearch(e.target.value)}
+              placeholder="Начните набирать артикул или название продукта"
+          />
+        <DatePicker
+             locale="ru"
+             selected={startDate}
+             name="EndDateOffers"
+             timeInputLabel="Время:"
+             dateFormat="dd/MM/yyyy HH:mm"
+             onChange={(date) => {setStartDate(date)}}
+             showTimeInput
+         />
+        <DatePicker
+             locale="ru"
+             selected={endDate}
+             name="EndDateOffers"
+             timeInputLabel="Время:"
+             dateFormat="dd/MM/yyyy HH:mm"
+             onChange={(date) => {setEndDate(date)}}
+             showTimeInput
+         />
+        {ask.map((item, index)=>
                <div onClick={()=>redirect(item)} className='childSpecAsk'>
                <Card>
                  <Card.Header>

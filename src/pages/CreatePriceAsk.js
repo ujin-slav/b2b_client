@@ -1,4 +1,5 @@
 import React,{useState,useEffect,useContext,useRef} from 'react';
+import {useHistory} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
 import {InputGroup, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
@@ -6,6 +7,7 @@ import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
+import { MYORDERSPRICE } from '../utils/routes';
 
 const CreatePriceAsk = () => {
     const {chat} =  useContext(Context)
@@ -14,6 +16,7 @@ const CreatePriceAsk = () => {
     const [org, setOrg] = useState();
     const[fetching,setFetching] = useState(true);
     const [price,setPrice] = useState([]); 
+    const history = useHistory();
     const [sumTotal,setSumTotal] = useState(0); 
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
@@ -136,6 +139,7 @@ const CreatePriceAsk = () => {
                 }
                 chat.socket.emit("unread_invitedPrice", data);
             }
+            history.push(MYORDERSPRICE)
         } else {
             myalert.setMessage(res?.data?.message);
         }

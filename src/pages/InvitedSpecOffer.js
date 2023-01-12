@@ -5,7 +5,6 @@ import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { MODIFYPRICEASK,CARDPRICEASK } from '../utils/routes';
 import SpecOfferService from '../services/SpecOfferService'
-import { fetchAsks } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from '../components/ModalAlert';

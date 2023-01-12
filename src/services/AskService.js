@@ -3,7 +3,7 @@ import $api from "../http";
 export default class AskService {
 
     static async fetchAsks(formData){
-        const {data} = await $api.post(`/getask`,{formData});
+        const {data} = await $api.post(`/getask`,formData);
         return data
     }
     
