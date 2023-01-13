@@ -1,11 +1,11 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Card} from "react-bootstrap";
+import {Card,InputGroup,Button,Col,Row} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { CARDASK, MODIFYASK } from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
-import { fetchAsks } from "../http/askAPI";
+import ru from "date-fns/locale/ru"
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from './ModalAlert';
@@ -16,10 +16,10 @@ import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {Form} from "react-bootstrap";
+import {Search} from 'react-bootstrap-icons';
 
 const TableAsk = observer(() => {
-    var curr = new Date();
-    var date = curr.setDate(curr.getDate() + 3);
+    registerLocale("ru", ru)
 
     const [ask, setAsk] = useState([])
     const {user} = useContext(Context);
@@ -30,8 +30,8 @@ const TableAsk = observer(() => {
     const[totalDocs,setTotalDocs] = useState(0);
     const[fetching,setFetching] = useState(true);
     const[currentPage,setCurrentPage] = useState(1);
-    const [startDate, setStartDate] = useState(date);
-    const [endDate, setEndDate] = useState(date);
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
     const [pageCount, setpageCount] = useState(0);
     let limit = 10;
@@ -47,15 +47,26 @@ const TableAsk = observer(() => {
             }).then((data)=>{
                     setTotalDocs(data.totalDocs);
                     setAsk(data.docs);
-                    setpageCount(data.totalPages);
+                    setpageCount(data.page);
                     setCurrentPage(prevState=>prevState + 1)
         })
     },[fetching]);
 
     const fetchPage = async (currentPage) => {
-        AskService.fetchAsks({authorId:user.user.id,limit,search,page:currentPage}).then((data)=>{
-            setAsk(data.docs)}
-    )};
+        AskService.fetchAsks({
+            authorId:user.user.id,
+            limit,
+            search,
+            page:currentPage,
+            startDate,
+            endDate
+            }).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setAsk(data.docs);
+                setpageCount(data.page);
+                setCurrentPage(prevState=>prevState + 1)
+        })
+    };
 
     const deleteAsk = async () =>{
       const result = await AskService.deleteAsk(deleteId);
@@ -69,7 +80,6 @@ const TableAsk = observer(() => {
     }
 
     const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1)
       await fetchPage(data.selected + 1);
     };
     
@@ -78,43 +88,85 @@ const TableAsk = observer(() => {
     }
 
     const handleSearch = (text) =>{
-      AskService.fetchAsks({authorId:user.user.id,limit,search:text,page:1}).
-          then((data)=>{
+      AskService.fetchAsks({
+        authorId:user.user.id,
+        limit,
+        search:text,
+        page:1,
+        startDate,
+        endDate}).then((data)=>{
               setTotalDocs(data.totalDocs);
               setAsk(data.docs);
-              setpageCount(data.totalPages);
-              setCurrentPage(prevState=>prevState + 1)
+              setpageCount(data.page);
+              setCurrentPage(1)
               setSearch(text)
       }).finally(
           ()=>setFetching(false)
       )
-  }
+    }
+
+    const handleChangeStart = (date) =>{
+        AskService.fetchAsks({
+            authorId:user.user.id,
+            limit,
+            search,
+            page:1,
+            startDate:date,
+            endDate
+                }).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setAsk(data.docs);
+                    setpageCount(data.totalPages);
+                    setCurrentPage(data.page)
+        }).finally(
+            ()=>setFetching(false)
+        )
+    }
+    const handleChangeEnd = (date) =>{
+        AskService.fetchAsks({
+            authorId:user.user.id,
+            limit,
+            search,
+            page:1,
+            startDate,
+            endDate:date
+                }).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setAsk(data.docs);
+                    setpageCount(data.totalPages);
+                    setCurrentPage(data.page)
+        }).finally(
+            ()=>setFetching(false)
+        )
+    }
 
     return (
       <div>
+         <Form className="searchForm">
+            <Row>
+                <Form.Control
+                    onChange={(e)=>handleSearch(e.target.value)}
+                    placeholder="Название, текст или комментарий"
+                />
+                <DatePicker
+                    locale="ru"
+                    selected={startDate}
+                    name="StartDateOffers"
+                    className='form-control datePicker'
+                    dateFormat="dd.MM.yyyy"
+                    onChange={(date)=>{handleChangeStart(date);setStartDate(date)}}
+                />
+                <DatePicker
+                    locale="ru"
+                    selected={endDate}
+                    name="EndDateOffers"
+                    className='form-control datePicker'
+                    dateFormat="dd.MM.yyyy"
+                    onChange={(date)=>{handleChangeEnd(date);setEndDate(date)}}
+                />
+            </Row>
+        </Form>
       <div className='parentSpecAsk'>
-        <Form.Control
-              onChange={(e)=>handleSearch(e.target.value)}
-              placeholder="Начните набирать артикул или название продукта"
-          />
-        <DatePicker
-             locale="ru"
-             selected={startDate}
-             name="EndDateOffers"
-             timeInputLabel="Время:"
-             dateFormat="dd/MM/yyyy HH:mm"
-             onChange={(date) => {setStartDate(date)}}
-             showTimeInput
-         />
-        <DatePicker
-             locale="ru"
-             selected={endDate}
-             name="EndDateOffers"
-             timeInputLabel="Время:"
-             dateFormat="dd/MM/yyyy HH:mm"
-             onChange={(date) => {setEndDate(date)}}
-             showTimeInput
-         />
         {ask.map((item, index)=>
                <div onClick={()=>redirect(item)} className='childSpecAsk'>
                <Card>
@@ -202,6 +254,7 @@ const TableAsk = observer(() => {
         )}  
      </div> 
       <ReactPaginate
+      forcePage = {currentPage-1}
       previousLabel={"предыдущий"}
       nextLabel={"следующий"}
       breakLabel={"..."}

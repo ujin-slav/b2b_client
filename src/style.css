@@ -1012,6 +1012,13 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   width:50px;
   height: 50px;
 }
+.inputWithIcon {
+  position: relative;
+}
+ 
+.searchForm.react-datepicker-wrapper{
+  width: unset !important;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 

@@ -62,8 +62,8 @@ const UserPrice = ({idorg,idprod}) => {
     const getPrice = () =>{
         PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
             setTotalDocs(data.totalDocs);
-            setPrice([...price, ...data.docs]);
-            setCurrentPage(prevState=>prevState + 1)
+            setPrice(data.docs);
+            setCurrentPage(data.page)
             setpageCount(data.totalPages);
         }).finally(()=>{
             setLoading(false)
@@ -74,7 +74,11 @@ const UserPrice = ({idorg,idprod}) => {
     const fetchComments = async (currentPage) => {
         PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then(
             (data)=>{
-            setPrice(data.docs);
+            setPrice(data.docs)
+            setTotalDocs(data.totalDocs);
+            setPrice(data.docs)
+            setCurrentPage(data.page)
+            setpageCount(data.totalPages)
         }).finally(()=>setLoading(false))
     };
 
@@ -91,40 +95,15 @@ const UserPrice = ({idorg,idprod}) => {
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setpageCount(data.totalPages);
-                setCurrentPage(prevState=>prevState + 1)
+                setCurrentPage(1)
                 setSearch(text)
         }).finally(
             ()=>setFetching(false)
         )
     }
-
-
-    if (loading){
-        return(
-            <Card className='section'>
-            <Card.Header className='sectionHeader headerPrices' 
-            onClick={()=>setVisible(!visible)}>
-            <div className='sectionName'>
-             {visible ?
-                    <CaretUpFill className='caret'/>
-                    :
-                    <CaretDownFill className='caret'/>
-                }
-                Прайс
-            </div>
-            </Card.Header>
-              {visible ?
-                  <div class="loader">Loading...</div>
-                :
-                <div></div>
-              }
-              </Card>
-        )
-       }
     
     const handlePageClick = async (data) => {
-        setCurrentPage(data.selected + 1)
-        await fetchComments(data.selected + 1);
+        await fetchComments(data.selected+1);
     };
 
     const readMoreHandler = (id) => {
@@ -151,6 +130,29 @@ const UserPrice = ({idorg,idprod}) => {
                 </div>
             )
         }
+    }
+
+    if (loading){
+        return(
+            <Card className='section'>
+            <Card.Header className='sectionHeader headerPrices' 
+            onClick={()=>setVisible(!visible)}>
+            <div className='sectionName'>
+             {visible ?
+                    <CaretUpFill className='caret'/>
+                    :
+                    <CaretDownFill className='caret'/>
+                }
+                Прайс
+            </div>
+            </Card.Header>
+              {visible ?
+                  <div class="loader">Loading...</div>
+                :
+                <div></div>
+              }
+              </Card>
+        )
     }
 
     return (
@@ -258,6 +260,7 @@ const UserPrice = ({idorg,idprod}) => {
                 </div>
                 }
                  <ReactPaginate
+                    forcePage = {currentPage-1}
                     previousLabel={"<"}
                     nextLabel={">"}
                     breakLabel={"..."}
