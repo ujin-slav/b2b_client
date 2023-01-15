@@ -29,6 +29,7 @@ const TableAsk = observer(() => {
     const history = useHistory();
     const[totalDocs,setTotalDocs] = useState(0);
     const[fetching,setFetching] = useState(true);
+    const[loading,setLoading] = useState(false);
     const[currentPage,setCurrentPage] = useState(1);
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
@@ -37,6 +38,7 @@ const TableAsk = observer(() => {
     let limit = 10;
 
     useEffect(() => {
+        setLoading(true)
         AskService.fetchAsks({
             authorId:user.user.id,
             limit,
@@ -49,10 +51,13 @@ const TableAsk = observer(() => {
                     setAsk(data.docs);
                     setpageCount(data.page);
                     setCurrentPage(prevState=>prevState + 1)
-        })
+        }).finally(
+            ()=>setLoading(false)
+        )
     },[fetching]);
 
     const fetchPage = async (currentPage) => {
+        setLoading(true)
         AskService.fetchAsks({
             authorId:user.user.id,
             limit,
@@ -65,7 +70,9 @@ const TableAsk = observer(() => {
                 setAsk(data.docs);
                 setpageCount(data.page);
                 setCurrentPage(prevState=>prevState + 1)
-        })
+        }).finally(
+            ()=>setLoading(false)
+        )
     };
 
     const deleteAsk = async () =>{
@@ -88,24 +95,26 @@ const TableAsk = observer(() => {
     }
 
     const handleSearch = (text) =>{
-      AskService.fetchAsks({
-        authorId:user.user.id,
-        limit,
-        search:text,
-        page:1,
-        startDate,
-        endDate}).then((data)=>{
-              setTotalDocs(data.totalDocs);
-              setAsk(data.docs);
-              setpageCount(data.page);
-              setCurrentPage(1)
-              setSearch(text)
-      }).finally(
-          ()=>setFetching(false)
-      )
+        setLoading(true)
+        AskService.fetchAsks({
+            authorId:user.user.id,
+            limit,
+            search:text,
+            page:1,
+            startDate,
+            endDate}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setAsk(data.docs);
+                setpageCount(data.page);
+                setCurrentPage(1)
+                setSearch(text)
+        }).finally(
+            ()=>setLoading(false)
+    )
     }
 
     const handleChangeStart = (date) =>{
+        setLoading(true)
         AskService.fetchAsks({
             authorId:user.user.id,
             limit,
@@ -119,10 +128,11 @@ const TableAsk = observer(() => {
                     setpageCount(data.totalPages);
                     setCurrentPage(data.page)
         }).finally(
-            ()=>setFetching(false)
+            ()=>setLoading(false)
         )
     }
     const handleChangeEnd = (date) =>{
+        setLoading(true)
         AskService.fetchAsks({
             authorId:user.user.id,
             limit,
@@ -136,147 +146,183 @@ const TableAsk = observer(() => {
                     setpageCount(data.totalPages);
                     setCurrentPage(data.page)
         }).finally(
-            ()=>setFetching(false)
+            ()=>setLoading(false)
         )
     }
 
     return (
       <div>
-         <Form className="searchForm">
+         <Form className="searchFormMenu">
+            <Row> 
+                <InputGroup>
+                    <Form.Control
+                        onChange={(e)=>handleSearch(e.target.value)}
+                        placeholder="Название, текст или комментарий"
+                    />
+                    <Button variant="outline-secondary">
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+            </Row>   
             <Row>
-                <Form.Control
-                    onChange={(e)=>handleSearch(e.target.value)}
-                    placeholder="Название, текст или комментарий"
-                />
-                <DatePicker
-                    locale="ru"
-                    selected={startDate}
-                    name="StartDateOffers"
-                    className='form-control datePicker'
-                    dateFormat="dd.MM.yyyy"
-                    onChange={(date)=>{handleChangeStart(date);setStartDate(date)}}
-                />
-                <DatePicker
-                    locale="ru"
-                    selected={endDate}
-                    name="EndDateOffers"
-                    className='form-control datePicker'
-                    dateFormat="dd.MM.yyyy"
-                    onChange={(date)=>{handleChangeEnd(date);setEndDate(date)}}
-                />
+            <div className='inputGroupMenuSelect'>
+                    <span className='captionMenuSelect'>Период:</span>
+                    <InputGroup>
+                        <DatePicker
+                            locale="ru"
+                            selected={startDate}
+                            name="StartDateOffers"
+                            className='form-control datePicker'
+                            dateFormat="dd.MM.yyyy"
+                            onChange={(date)=>{handleChangeStart(date);setStartDate(date)}}
+                        />
+                        <Button variant="outline-secondary" className='buttonSearchDataPicker'>
+                            <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                        </Button>
+                    </InputGroup>
+                    <InputGroup>
+                        <DatePicker
+                            locale="ru"
+                            selected={endDate}
+                            name="EndDateOffers"
+                            className='form-control datePicker'
+                            dateFormat="dd.MM.yyyy"
+                            onChange={(date)=>{handleChangeEnd(date);setEndDate(date)}}
+                        />
+                        <Button variant="outline-secondary" className='buttonSearchDataPicker'>
+                            <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                        </Button>
+                    </InputGroup>
+                    <span className='captionMenuSelect'>Показать:</span>
+                    <Form.Control
+                        as="select"  
+                        className='searchFormMenuSelect'  
+                    >       
+                            <option>10</option>
+                            <option value='25'>25</option>
+                            <option value='50'>50</option>
+                            <option value='100'>100</option>
+                    </Form.Control>
+            </div>
             </Row>
         </Form>
-      <div className='parentSpecAsk'>
-        {ask.map((item, index)=>
-               <div onClick={()=>redirect(item)} className='childSpecAsk'>
-               <Card>
-                 <Card.Header>
-                 <span className="cardMenu">
-                 <XCircle color="red"  className='menuIcon'
-                    onClick={(e)=>{
-                    e.stopPropagation();
-                    setModalActive(true);
-                    setDeleteId(item._id)
-                    }} />
-                 </span> 
-                 <div className="specName">
-                       {item.Name.length>15 ?
-                       `${item.Name.substring(0, 15)}...`
-                       :
-                       item.Name
-                       }
-               </div>
-               </Card.Header>
-               <div className='cardPadding'>
-               <div>
-               Текст: {item.Text.length>50 ?
-               `${item.Text.substring(0, 50)}...`
-                :
-                item.Text
-                }
-               </div>
-               <div>
-                       {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                       <div style={{color:"green"}}>
-                       Активная
-                       </div>
-                       :
-                       <div style={{color:"red"}}>
-                       Истек срок
-                       </div>
-                       } 
-               </div>
-               <div>
-                       <div>ИНН: {item.Author.inn}</div>
-                       <div>Орг: {item.Author.nameOrg}</div>
-               </div>
-               <div className="specCloudy">
-                   {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                   `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
-                   :
-                   getCategoryName(item.Region, regionNodes).join(", ")
-                   }
-               </div>
-               <div className="specCloudy">
-                   {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
-                   `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
-                   :
-                   getCategoryName(item.Category, categoryNodes).join(", ")
-                   }
-               </div>
-                <div>
-                <a href="javascript:void(0)" 
-                    onClick={(e)=>{
+        {!loading ? 
+        <div>
+            <div className='parentSpecAsk'>
+            {ask.map((item, index)=>
+                <div onClick={()=>redirect(item)} className='childSpecAsk'>
+                <Card>
+                    <Card.Header>
+                    <span className="cardMenu">
+                    <XCircle color="red"  className='menuIcon'
+                        onClick={(e)=>{
                         e.stopPropagation();
-                        history.push(MODIFYASK + '/' + item._id)
-                }}>
-                Редактировать
-                </a>
-                <Pen  className="changeSpecOffer"/>
+                        setModalActive(true);
+                        setDeleteId(item._id)
+                        }} />
+                    </span> 
+                    <div className="specName">
+                        {item.Name.length>15 ?
+                        `${item.Name.substring(0, 15)}...`
+                        :
+                        item.Name
+                        }
+                </div>
+                </Card.Header>
+                <div className='cardPadding'>
+                <div>
+                Текст: {item.Text.length>50 ?
+                `${item.Text.substring(0, 50)}...`
+                    :
+                    item.Text
+                    }
                 </div>
                 <div>
-                <a href="javascript:void(0)" 
-                    onClick={(e)=>{
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
-                        myalert.setMessage("Ссылка скопирована");
-                    }}>
-                Скопировать ссылку
-                </a>
-                <Link45deg  className="changeSpecOffer"/>
+                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                        <div style={{color:"green"}}>
+                        Активная
+                        </div>
+                        :
+                        <div style={{color:"red"}}>
+                        Истек срок
+                        </div>
+                        } 
+                </div>
+                <div>
+                        <div>ИНН: {item.Author.inn}</div>
+                        <div>Орг: {item.Author.nameOrg}</div>
                 </div>
                 <div className="specCloudy">
-                   {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-               </div>
-               </div>
-               </Card>
-               </div>
-        )}  
-     </div> 
-      <ReactPaginate
-      forcePage = {currentPage-1}
-      previousLabel={"предыдущий"}
-      nextLabel={"следующий"}
-      breakLabel={"..."}
-      pageCount={pageCount}
-      marginPagesDisplayed={2}
-      pageRangeDisplayed={3}
-      onPageChange={handlePageClick}
-      containerClassName={"pagination justify-content-center"}
-      pageClassName={"page-item"}
-      pageLinkClassName={"page-link"}
-      previousClassName={"page-item"}
-      previousLinkClassName={"page-link"}
-      nextClassName={"page-item"}
-      nextLinkClassName={"page-link"}
-      breakClassName={"page-item"}
-      breakLinkClassName={"page-link"}
-      activeClassName={"active"}
-    />
-    <ModalAlert header="Вы действительно хотите удалить" 
-        active={modalActive} 
-        setActive={setModalActive} funRes={deleteAsk}/>
-    </div>
+                    {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                    `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                    :
+                    getCategoryName(item.Region, regionNodes).join(", ")
+                    }
+                </div>
+                <div className="specCloudy">
+                    {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
+                    `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
+                    :
+                    getCategoryName(item.Category, categoryNodes).join(", ")
+                    }
+                </div>
+                    <div>
+                    <a href="javascript:void(0)" 
+                        onClick={(e)=>{
+                            e.stopPropagation();
+                            history.push(MODIFYASK + '/' + item._id)
+                    }}>
+                    Редактировать
+                    </a>
+                    <Pen  className="changeSpecOffer"/>
+                    </div>
+                    <div>
+                    <a href="javascript:void(0)" 
+                        onClick={(e)=>{
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
+                            myalert.setMessage("Ссылка скопирована");
+                        }}>
+                    Скопировать ссылку
+                    </a>
+                    <Link45deg  className="changeSpecOffer"/>
+                    </div>
+                    <div className="specCloudy">
+                    {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                </div>
+                </div>
+                </Card>
+                </div>
+            )}  
+            </div> 
+            <ReactPaginate
+            forcePage = {currentPage-1}
+            previousLabel={"предыдущий"}
+            nextLabel={"следующий"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+            />
+            <ModalAlert header="Вы действительно хотите удалить" 
+                active={modalActive} 
+                setActive={setModalActive} funRes={deleteAsk}/>
+            </div>
+         :
+         <div class="loader">Loading...</div>
+        }
+        </div>
     );
 });
 

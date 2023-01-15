@@ -643,6 +643,41 @@ td.tdRed{
   .searchForm{
     padding: 30px 120px 10px 120px;
   }
+  .searchFormMenu{
+    padding: 20px 20px 0px 20px;
+  }
+  .searchFormMenu .input-group .react-datepicker-wrapper{
+    margin-top: 10px;
+    margin-left: 10px;
+    width:unset;
+  }
+  .searchFormMenuSelect{
+    margin-top: 10px;
+    margin-left: 10px;
+    flex:none !important;
+    width:10% !important;
+    appearance: auto !important;
+  }
+  .captionMenuSelect{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .inputGroupMenuSelect{
+    display: flex;
+    width: unset;
+  }
+  .inputGroupMenuSelect .input-group{
+    width: unset;
+  }
+  .buttonSearchDataPicker{
+    margin-top: 10px;
+    height: fit-content;
+  }
   .dropdown-menu-wrapper li {
     list-style-type: none;
   }
