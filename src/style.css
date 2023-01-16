@@ -646,7 +646,7 @@ td.tdRed{
   .searchFormMenu{
     padding: 20px 20px 0px 20px;
   }
-  .searchFormMenu .input-group .react-datepicker-wrapper{
+  .searchFormMenu .react-datepicker-wrapper{
     margin-top: 10px;
     margin-left: 10px;
     width:unset;
@@ -654,14 +654,12 @@ td.tdRed{
   .searchFormMenuSelect{
     margin-top: 10px;
     margin-left: 10px;
-    flex:none !important;
     width:10% !important;
     appearance: auto !important;
   }
   .captionMenuSelect{
-    margin-top: 10px;
     margin-left: 10px;
-    margin-right: 10px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1049,10 +1047,6 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 }
 .inputWithIcon {
   position: relative;
-}
- 
-.searchForm.react-datepicker-wrapper{
-  width: unset !important;
 }
 @media (max-width: 650px) {
   .container-mycontr{

@@ -10,7 +10,7 @@ import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
-import { XCircle, Pen,Link45deg } from 'react-bootstrap-icons';
+import { XCircle, Pen,Link45deg,Eye } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
@@ -27,15 +27,14 @@ const TableAsk = observer(() => {
     const [deleteId,setDeleteId] = useState();
     const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
-    const[totalDocs,setTotalDocs] = useState(0);
     const[fetching,setFetching] = useState(true);
     const[loading,setLoading] = useState(false);
     const[currentPage,setCurrentPage] = useState(1);
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
-    const [pageCount, setpageCount] = useState(0);
-    let limit = 10;
+    const [pageCount, setPageCount] = useState(0);
+    const[limit,setLimit] = useState(10);
 
     useEffect(() => {
         setLoading(true)
@@ -47,32 +46,18 @@ const TableAsk = observer(() => {
             startDate,
             endDate
             }).then((data)=>{
-                    setTotalDocs(data.totalDocs);
+                    console.log(data)
                     setAsk(data.docs);
-                    setpageCount(data.page);
-                    setCurrentPage(prevState=>prevState + 1)
+                    setPageCount(data.totalPages);
+                    setCurrentPage(data.page)
         }).finally(
             ()=>setLoading(false)
         )
     },[fetching]);
 
     const fetchPage = async (currentPage) => {
-        setLoading(true)
-        AskService.fetchAsks({
-            authorId:user.user.id,
-            limit,
-            search,
-            page:currentPage,
-            startDate,
-            endDate
-            }).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setAsk(data.docs);
-                setpageCount(data.page);
-                setCurrentPage(prevState=>prevState + 1)
-        }).finally(
-            ()=>setLoading(false)
-        )
+        setCurrentPage(currentPage)
+        setFetching(!fetching)
     };
 
     const deleteAsk = async () =>{
@@ -83,7 +68,6 @@ const TableAsk = observer(() => {
       } else {
         myalert.setMessage(result.data.message);
       }
-       console.log(user.user.id);
     }
 
     const handlePageClick = async (data) => {
@@ -94,60 +78,19 @@ const TableAsk = observer(() => {
         history.push(CARDASK + '/' + item._id)
     }
 
-    const handleSearch = (text) =>{
-        setLoading(true)
-        AskService.fetchAsks({
-            authorId:user.user.id,
-            limit,
-            search:text,
-            page:1,
-            startDate,
-            endDate}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setAsk(data.docs);
-                setpageCount(data.page);
-                setCurrentPage(1)
-                setSearch(text)
-        }).finally(
-            ()=>setLoading(false)
-    )
+    const handleSearch = () =>{
+        setCurrentPage(1)
+        setFetching(!fetching)
     }
 
-    const handleChangeStart = (date) =>{
-        setLoading(true)
-        AskService.fetchAsks({
-            authorId:user.user.id,
-            limit,
-            search,
-            page:1,
-            startDate:date,
-            endDate
-                }).then((data)=>{
-                    setTotalDocs(data.totalDocs);
-                    setAsk(data.docs);
-                    setpageCount(data.totalPages);
-                    setCurrentPage(data.page)
-        }).finally(
-            ()=>setLoading(false)
-        )
+    const handleClickDate = () =>{
+         setCurrentPage(1)
+        setFetching(!fetching)
     }
-    const handleChangeEnd = (date) =>{
-        setLoading(true)
-        AskService.fetchAsks({
-            authorId:user.user.id,
-            limit,
-            search,
-            page:1,
-            startDate,
-            endDate:date
-                }).then((data)=>{
-                    setTotalDocs(data.totalDocs);
-                    setAsk(data.docs);
-                    setpageCount(data.totalPages);
-                    setCurrentPage(data.page)
-        }).finally(
-            ()=>setLoading(false)
-        )
+
+    const handleSelect = (value) =>{
+        setLimit(value)
+        setFetching(!fetching)
     }
 
     return (
@@ -156,47 +99,56 @@ const TableAsk = observer(() => {
             <Row> 
                 <InputGroup>
                     <Form.Control
-                        onChange={(e)=>handleSearch(e.target.value)}
+                        onChange={(e)=>setSearch(e.target.value)}
                         placeholder="Название, текст или комментарий"
                     />
-                    <Button variant="outline-secondary">
+                    <Button variant="outline-secondary" onClick={()=>handleSearch()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
             </Row>   
             <Row>
             <div className='inputGroupMenuSelect'>
-                    <span className='captionMenuSelect'>Период:</span>
-                    <InputGroup>
-                        <DatePicker
-                            locale="ru"
-                            selected={startDate}
-                            name="StartDateOffers"
-                            className='form-control datePicker'
-                            dateFormat="dd.MM.yyyy"
-                            onChange={(date)=>{handleChangeStart(date);setStartDate(date)}}
-                        />
-                        <Button variant="outline-secondary" className='buttonSearchDataPicker'>
-                            <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                        </Button>
-                    </InputGroup>
-                    <InputGroup>
-                        <DatePicker
-                            locale="ru"
-                            selected={endDate}
-                            name="EndDateOffers"
-                            className='form-control datePicker'
-                            dateFormat="dd.MM.yyyy"
-                            onChange={(date)=>{handleChangeEnd(date);setEndDate(date)}}
-                        />
-                        <Button variant="outline-secondary" className='buttonSearchDataPicker'>
-                            <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                        </Button>
-                    </InputGroup>
-                    <span className='captionMenuSelect'>Показать:</span>
+                    <div className='captionMenuSelect'>Период:</div>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={startDate}
+                                name="StartDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setStartDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary"
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={endDate}
+                                name="EndDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setEndDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary" 
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                    <div className='captionMenuSelect'>Показать:</div>
                     <Form.Control
                         as="select"  
-                        className='searchFormMenuSelect'  
+                        className='searchFormMenuSelect'
+                        onChange={(e)=>handleSelect(e.target.value)} 
                     >       
                             <option>10</option>
                             <option value='25'>25</option>
@@ -209,7 +161,7 @@ const TableAsk = observer(() => {
         {!loading ? 
         <div>
             <div className='parentSpecAsk'>
-            {ask.map((item, index)=>
+            {ask?.map((item, index)=>
                 <div onClick={()=>redirect(item)} className='childSpecAsk'>
                 <Card>
                     <Card.Header>
@@ -248,10 +200,6 @@ const TableAsk = observer(() => {
                         </div>
                         } 
                 </div>
-                <div>
-                        <div>ИНН: {item.Author.inn}</div>
-                        <div>Орг: {item.Author.nameOrg}</div>
-                </div>
                 <div className="specCloudy">
                     {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
                     `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
@@ -287,6 +235,14 @@ const TableAsk = observer(() => {
                     </a>
                     <Link45deg  className="changeSpecOffer"/>
                     </div>
+                    <div>
+                        <div><span className="specCloudy">Файлы: </span></div>
+                        {item?.Files?.map((item,index)=><div key={index}>
+                                        <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
+                                        <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                        ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
+                                    </div>)}
+                        </div>
                     <div className="specCloudy">
                     {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
                 </div>

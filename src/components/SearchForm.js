@@ -44,7 +44,7 @@ const SearchForm = () => {
             <div>
                 <Form className="searchForm">
                 <Row>
-                <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Group as={Col}>
                         <InputGroup className="mb-3">
                             <Form.Control type="nameOrder" placeholder="Наименование или текст закупки" 
                                 onChange={(e)=>setSearchText(e.target.value)}/>
@@ -55,7 +55,7 @@ const SearchForm = () => {
                             </Button>
                         </InputGroup>
                 </Form.Group>
-                <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Group as={Col}>
                         <InputGroup className="mb-3">
                             <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика" 
                                 onChange={(e)=>setSearchInn(e.target.value)}/>
