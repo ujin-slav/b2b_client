@@ -45,6 +45,7 @@ const TableOffer = observer(() => {
                   setOffers(data.docs);
                   setPageCount(data.totalPages);
                   setCurrentPage(data.page)
+                  console.log(data)
       }).finally(
           ()=>setLoading(false)
       )
@@ -91,7 +92,7 @@ const TableOffer = observer(() => {
                 <InputGroup>
                     <Form.Control
                         onChange={(e)=>setSearch(e.target.value)}
-                        placeholder="Название, текст или комментарий"
+                        placeholder="Текст или назавние(инн) организации"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearch()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
@@ -150,7 +151,7 @@ const TableOffer = observer(() => {
             </Row>
         </Form>
         <div className='parentSpecAsk'>
-        {offers.map((item,index)=>
+        {offers?.map((item,index)=>
           <div key={index} className='childSpecAsk'>
             <Card>
               <Card.Header onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >

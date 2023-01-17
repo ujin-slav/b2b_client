@@ -78,6 +78,7 @@ const CardAsk = observer(() => {
             data.append("Text", offer.data.Text)
             data.append("Ask", id)
             data.append("UserId", user.user.id)
+            data.append("AuthorAsk", ask.Author._id)
             setLoading(true)
             uploadOffer(data).then((response)=>{
               fetchOffers(id).then((data)=>{ 
