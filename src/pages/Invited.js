@@ -1,62 +1,167 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Card} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
+import {Card, Form, InputGroup,Button,Row} from "react-bootstrap";
 import { CARDASK } from '../utils/routes';
 import { fetchInvitedAsks} from "../http/askAPI";
+import dateFormat, { masks } from "dateformat";
+import ru from "date-fns/locale/ru"
 import "../style.css";
 import ReactPaginate from "react-paginate";
-import dateFormat, { masks } from "dateformat";
+import {Search} from 'react-bootstrap-icons';
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
+import DatePicker, { registerLocale } from 'react-datepicker'
 import { CircleFill } from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
 
 const Invited = observer(({authorId}) => {
-    const {ask} = useContext(Context);
-    const {myalert} = useContext(Context);
-    const history = useHistory();
-    const [pageCount, setpageCount] = useState(0);
+    registerLocale("ru", ru)
+
+    const [ask,setAsk] = useState([])
+    const {myalert} = useContext(Context)
+    const history = useHistory()
+    const [pageCount, setPageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
-    const {user} = useContext(Context);
-    const {chat} =  useContext(Context)
-    let limit = 10;
+    const [fetching,setFetching] = useState(true)
+    const [search,setSearch] = useState("")
+    const {user} = useContext(Context)
+    const {chat} = useContext(Context)
+    const [limit,setLimit] = useState(10)
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+    const [loading,setLoading] = useState(false)
 
+    // useEffect(() => {
+    //     fetchInvitedAsks({
+    //       email:user.user.email,
+    //       limit,
+    //       page:currentPage,
+    //       userId:user.user.id
+    //       }).then((data)=>{
+    //       ask.setAsk(data.docs)
+    //       setpageCount(data.totalPages);
+    //       chat.socket.emit("get_unread");
+    //     })
+    //   },[]);
     useEffect(() => {
-        fetchInvitedAsks({
-          email:user.user.email,
+      setLoading(true)
+      fetchInvitedAsks({
+          userId:user.user.id,
           limit,
+          search,
           page:currentPage,
-          userId:user.user.id
+          startDate,
+          endDate
           }).then((data)=>{
-          ask.setAsk(data.docs)
-          setpageCount(data.totalPages);
-          chat.socket.emit("get_unread");
-        })
-      },[]);
+                  console.log(data)
+                  setAsk(data.docs);
+                  setPageCount(data.totalPages);
+                  setCurrentPage(data.page)
+                  chat.socket.emit("get_unread")
+      }).finally(
+          ()=>setLoading(false)
+      )
+    },[fetching]);
 
-    const fetchComments = async (currentPage) => {
-        fetchInvitedAsks({
-        email:user.user.email,
-        limit,page:currentPage}).then((data)=>{
-        ask.setAsk(data.docs)
-    })};
+
+    const fetchPage = async (currentPage) => {
+      setCurrentPage(currentPage)
+      setFetching(!fetching)
+    };
 
     const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1);
-      await fetchComments(data.selected + 1);
-    };
+      await fetchPage(data.selected + 1);
+    }
 
     const redirect = (item)=>{
         history.push(CARDASK + '/' + item._id)
     }
 
+    const handleSearch = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleClickDate = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleSelect = (value) =>{
+      setLimit(value)
+      setFetching(!fetching)
+  }
+
     return (
       <div>
+        <Form className="searchFormMenu">
+            <Row> 
+                <InputGroup>
+                    <Form.Control
+                        onChange={(e)=>setSearch(e.target.value)}
+                        placeholder="Текст или назавние(инн) организации"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearch()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+            </Row>   
+            <Row>
+            <div className='inputGroupMenuSelect'>
+                    <div className='captionMenuSelect'>Период:</div>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={startDate}
+                                name="StartDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setStartDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary"
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={endDate}
+                                name="EndDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setEndDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary" 
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                    <div className='captionMenuSelect'>Показать:</div>
+                    <Form.Control
+                        as="select"  
+                        className='searchFormMenuSelect'
+                        onChange={(e)=>handleSelect(e.target.value)} 
+                    >       
+                            <option>10</option>
+                            <option value='25'>25</option>
+                            <option value='50'>50</option>
+                            <option value='100'>100</option>
+                    </Form.Control>
+            </div>
+            </Row>
+        </Form>
       <div className='parentSpecAsk'>
-        {ask?.getAsk()?.map((item,index)=>{
+        {ask?.map((item,index)=>{
           return (
             <div onClick={()=>redirect(item)} className='childSpecAsk'>
             <Card>
