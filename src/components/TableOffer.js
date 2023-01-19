@@ -27,6 +27,7 @@ const TableOffer = observer(() => {
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
+    const[searchInn,setSearchInn] = useState("");
     const [currentPage,setCurrentPage] = useState(1)
     const [loading,setLoading] = useState(false)
     const[limit,setLimit] = useState(10);
@@ -37,15 +38,14 @@ const TableOffer = observer(() => {
           authorId:user.user.id,
           limit,
           search,
+          searchInn,
           page:currentPage,
           startDate,
           endDate
           }).then((data)=>{
-                  console.log(data)
                   setOffers(data.docs);
                   setPageCount(data.totalPages);
                   setCurrentPage(data.page)
-                  console.log(data)
       }).finally(
           ()=>setLoading(false)
       )
@@ -75,6 +75,11 @@ const TableOffer = observer(() => {
       setFetching(!fetching)
     }
 
+    const handleSearchInn = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
     const handleClickDate = () =>{
         setCurrentPage(1)
         setFetching(!fetching)
@@ -92,9 +97,18 @@ const TableOffer = observer(() => {
                 <InputGroup>
                     <Form.Control
                         onChange={(e)=>setSearch(e.target.value)}
-                        placeholder="Текст или назавние(инн) организации"
+                        placeholder="Текст сообщения"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearch()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchInn(e.target.value)}
+                        placeholder="Название или инн организации"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
@@ -150,7 +164,9 @@ const TableOffer = observer(() => {
             </div>
             </Row>
         </Form>
-        <div className='parentSpecAsk'>
+        {!loading ? 
+        <div>
+           <div className='parentSpecAsk'>
         {offers?.map((item,index)=>
           <div key={index} className='childSpecAsk'>
             <Card>
@@ -220,9 +236,13 @@ const TableOffer = observer(() => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
-      <ModalAlert header="Вы действительно хотите удалить" 
+          <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deleteOffer}/>
+        </div>
+        :
+        <div class="loader">Loading...</div>
+        }
     </div>
     );
 });

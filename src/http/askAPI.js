@@ -22,7 +22,7 @@ export const fetchUserAsks = async (formData) => {
 }
 
 export const fetchInvitedAsks = async (formData) => {
-    const {data} = await $api.post(`/getinvitedask`,{formData});
+    const {data} = await $api.post(`/getinvitedask`,formData);
     return data
 }
 

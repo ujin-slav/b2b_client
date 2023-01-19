@@ -27,6 +27,7 @@ const Invited = observer(({authorId}) => {
     const [currentPage,setCurrentPage] = useState(1)
     const [fetching,setFetching] = useState(true)
     const [search,setSearch] = useState("")
+    const [searchInn,setSearchInn] = useState("")
     const {user} = useContext(Context)
     const {chat} = useContext(Context)
     const [limit,setLimit] = useState(10)
@@ -34,24 +35,13 @@ const Invited = observer(({authorId}) => {
     const [endDate, setEndDate] = useState(new Date());
     const [loading,setLoading] = useState(false)
 
-    // useEffect(() => {
-    //     fetchInvitedAsks({
-    //       email:user.user.email,
-    //       limit,
-    //       page:currentPage,
-    //       userId:user.user.id
-    //       }).then((data)=>{
-    //       ask.setAsk(data.docs)
-    //       setpageCount(data.totalPages);
-    //       chat.socket.emit("get_unread");
-    //     })
-    //   },[]);
     useEffect(() => {
       setLoading(true)
       fetchInvitedAsks({
           userId:user.user.id,
           limit,
           search,
+          searchInn,
           page:currentPage,
           startDate,
           endDate
@@ -85,7 +75,12 @@ const Invited = observer(({authorId}) => {
       setFetching(!fetching)
     }
 
-    const handleClickDate = () =>{
+    const handleSearchInn = () =>{
+        setCurrentPage(1)
+        setFetching(!fetching)
+    }
+
+      const handleClickDate = () =>{
       setCurrentPage(1)
       setFetching(!fetching)
     }
@@ -102,9 +97,18 @@ const Invited = observer(({authorId}) => {
                 <InputGroup>
                     <Form.Control
                         onChange={(e)=>setSearch(e.target.value)}
-                        placeholder="Текст или назавние(инн) организации"
+                        placeholder="Текст или название заявки"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearch()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchInn(e.target.value)}
+                        placeholder="Назавние или инн организации"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
@@ -221,6 +225,7 @@ const Invited = observer(({authorId}) => {
        
      </div> 
      <ReactPaginate
+            forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
             breakLabel={"..."}
