@@ -27,6 +27,7 @@ const MyOrdersPrice = () => {
     const [pageCount, setPageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
     const[searchInn,setSearchInn] = useState("");
+    const[searchComment,setSearchComment] = useState("");
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [loading,setLoading] = useState(false)
@@ -39,10 +40,12 @@ const MyOrdersPrice = () => {
           authorId:user.user.id,
           limit,
           searchInn,
+          searchComment,
           page:currentPage,
           startDate,
           endDate
           }).then((data)=>{
+            console.log(data)
                   setAskPriceUser(data.docs);
                   setPageCount(data.totalPages);
                   setCurrentPage(data.page)
@@ -52,9 +55,8 @@ const MyOrdersPrice = () => {
     },[fetching]);
 
     const fetchPage = async (currentPage) => {
-       PriceService.getAskPrice({authorId:user.user.id,limit,page:currentPage}).then((data)=>{
-            setAskPriceUser(data.docs)
-        })
+      setCurrentPage(currentPage)
+      setFetching(!fetching)
     };
 
     const deletePriceAsk = async () =>{
@@ -72,6 +74,11 @@ const MyOrdersPrice = () => {
     }
 
     const handleSearchInn = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleSearchComment = () =>{
       setCurrentPage(1)
       setFetching(!fetching)
     }
@@ -96,6 +103,15 @@ const MyOrdersPrice = () => {
                         placeholder="Название или инн организации"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchComment(e.target.value)}
+                        placeholder="Комментарий к закупке"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchComment()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
@@ -151,7 +167,9 @@ const MyOrdersPrice = () => {
             </div>
             </Row>
         </Form>
-        <div className='parentSpecAsk'>
+        {!loading ? 
+        <div>
+            <div className='parentSpecAsk'>
         {askPriceUser?.map((item, index)=>
           <div key={index}  
             className='childSpecAsk'
@@ -195,7 +213,20 @@ const MyOrdersPrice = () => {
                     :
                     <span  style={{"color":"red"}}>
                     Нет</span>
-                    }</div>
+            }</div>
+            {item?.Sent ?
+              <div><span className="specCloudy">Статус: </span>{item?.Status?.Status?.labelRu}</div>
+              :
+              <div></div>
+            }
+            <div>
+              <span className="specCloudy">Комментарий к закупке: </span>
+              {item?.Comment?.length > 50 ? 
+              `${item?.Comment?.substring(0,50)}...`
+              :
+              item?.Comment
+              }
+            </div>
             <div>
             </div>
           </div>
@@ -226,6 +257,10 @@ const MyOrdersPrice = () => {
           <ModalAlert header="Вы действительно хотите удалить" 
               active={modalActive} 
               setActive={setModalActive} funRes={deletePriceAsk}/>
+        </div>
+        :
+        <div class="loader">Loading...</div>
+        }
      </div> 
     );
 };
