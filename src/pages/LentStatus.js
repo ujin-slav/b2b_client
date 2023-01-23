@@ -1,13 +1,15 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {Card} from "react-bootstrap";
+import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import { fetchLentStatus } from "../http/askAPI";
 import "../style.css";
 import ReactPaginate from "react-paginate";
+import { XCircle, Search} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import { CARDASK, CARDPRICEASK } from '../utils/routes';
+import DatePicker, { registerLocale } from 'react-datepicker'
 
 const LentStatus = observer(() => {
     const [lent, setLent] = useState([])
@@ -15,30 +17,69 @@ const LentStatus = observer(() => {
     const {myalert} = useContext(Context)
     const {chat} =  useContext(Context)
     const history = useHistory();
-    const [pageCount, setpageCount] = useState(0)
+    const[searchInn,setSearchInn] = useState("");
+    const[searchDoc,setSearchDoc] = useState("");
+    const[searchStatus,setSearchStatus] = useState("");
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+    const [pageCount, setPageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
     const [loading,setLoading] = useState(false)
-    let limit = 10;
+    const[fetching,setFetching] = useState(true);
+    const[limit,setLimit] = useState(10);
 
     useEffect(() => {
-        if(user?.user?.id){
-            fetchLentStatus({userId:user.user.id,limit,page:currentPage}).then((data)=>{
-                setLent(data.docs)
-                setpageCount(data.totalPages);
-            })
-            chat.socket.emit("get_unread");
-        }
-      },[user.user,loading]);
+      setLoading(true)
+      fetchLentStatus({
+          userId:user.user.id,
+          limit,
+          searchInn,
+          page:currentPage,
+          startDate,
+          endDate
+          }).then((data)=>{
+                  setLent(data.docs);
+                  setPageCount(data.totalPages);
+                  setCurrentPage(data.page)
+                  chat.socket.emit("get_unread");
+      }).finally(
+          ()=>setLoading(false)
+      )
+    },[fetching]);
+
 
     const fetchPage = async (currentPage) => {
-        fetchLentStatus({userId:user.user.id,limit,page:currentPage}).then((data)=>{
-          setLent(data.docs)
-    })};
-
+      setCurrentPage(currentPage)
+      setFetching(!fetching)
+    };
 
     const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1)
       await fetchPage(data.selected + 1);
+    }
+
+    const handleSearchInn = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleSearchDoc = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleSearchStatus = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleClickDate = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+   
+    const handleSelect = (value) =>{
+      setLimit(value)
+      setFetching(!fetching)
     }
 
     const redirect = (item)=>{
@@ -50,8 +91,93 @@ const LentStatus = observer(() => {
     }
 
     return (
-      <div className='container-mycontr mt-3'>
-       <div class="lentStatus overflow-auto">
+      <div className='container-mycontr mt-1'>
+        <Form className="searchFormMenu">
+            <Row> 
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchInn(e.target.value)}
+                        placeholder="Название или инн организации"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+            </Row>   
+            <Row> 
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchDoc(e.target.value)}
+                        placeholder="Номер документа"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchDoc()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+            </Row>   
+            <Row> 
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchStatus(e.target.value)}
+                        placeholder="Номер документа"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchStatus()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+            </Row>  
+            <Row>
+            <div className='inputGroupMenuSelect'>
+                    <div className='captionMenuSelect'>Период:</div>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={startDate}
+                                name="StartDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setStartDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary"
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                        <InputGroup>
+                            <DatePicker
+                                locale="ru"
+                                selected={endDate}
+                                name="EndDateOffers"
+                                className='form-control datePicker'
+                                dateFormat="dd.MM.yyyy"
+                                onChange={date=>setEndDate(date)}
+                            />
+                            <Button 
+                                variant="outline-secondary" 
+                                className='buttonSearchDataPicker'
+                                onClick={()=>handleClickDate()}
+                            >
+                                <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                            </Button>
+                        </InputGroup>
+                    <div className='captionMenuSelect'>Показать:</div>
+                    <Form.Control
+                        as="select"  
+                        className='searchFormMenuSelect'
+                        onChange={(e)=>handleSelect(e.target.value)} 
+                    >       
+                            <option>10</option>
+                            <option value='25'>25</option>
+                            <option value='50'>50</option>
+                            <option value='100'>100</option>
+                    </Form.Control>
+            </div>
+            </Row>
+        </Form>
+       <div class="lentStatus overflow-auto mt-2">
           {lent?.map((item,index)=>
             <div key={index} class="userCardListUser">
               <div class="userCardListUserFlex">

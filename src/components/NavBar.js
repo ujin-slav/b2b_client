@@ -25,7 +25,8 @@ import {LOGIN_ROUTE,
         QUESTFORME,
         LENTSTATUS,
         REVIEWABOUTME,
-        REVIEWWRITEME} from "../utils/routes";
+        REVIEWWRITEME,
+        INVITEDPRICEFIZ} from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
@@ -128,7 +129,13 @@ const NavBar = observer(() => {
             return ""
         } 
     }
-
+    const sumInvitedPriceFiz=()=>{
+        if(chat.invitedPriceFizUnread > 0){
+            return chat.invitedPriceFizUnread
+        }else{
+            return ""
+        } 
+    }
     const sumInvitedSpecOffers=()=>{
         if(chat.specOfferAskUnread > 0){
             return chat.specOfferAskUnread
@@ -247,7 +254,17 @@ const NavBar = observer(() => {
                                <div className='yellowtext'>{sumInvitedPrice()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item></li>
+                        </NavDropdown.Item>
+                        </li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICEFIZ)}className={classNameLink(INVITEDPRICEFIZ)}>
+                        <div className="parentAnswer">
+                           <div>Заказы физ.лиц</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'>{sumInvitedPriceFiz()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item>
+                        </li>
                       </ul>
                     </div>
                     <div>

@@ -6,6 +6,7 @@ export default class SocketStore {
     questUnread = 0
     invitedUnread = 0
     invitedPriceUnread = 0
+    invitedPriceFizUnread = 0
     specOfferAskUnread = 0
     statusAskUnread = 0
     connected = false
@@ -38,7 +39,10 @@ export default class SocketStore {
         return this.invitedUnread 
     }
     getInvitedPriceUnread(){
-        return this.invitedUnread 
+        return this.invitedPriceUnread 
+    }
+    getInvitedPriceFizUnread(){
+        return this.invitedPriceFizUnread 
     }
     getSpecOfferAskUnread(){
         return this.specOfferAskUnread 
@@ -55,6 +59,9 @@ export default class SocketStore {
     }
     setInvitedPriceUnread(invitedPriceUnread){
         this.invitedPriceUnread = invitedPriceUnread; 
+    }
+    setInvitedPriceFizUnread(invitedPriceFizUnread){
+        this.invitedPriceFizUnread = invitedPriceFizUnread; 
     }
     setSpecOfferAskUnread(specOfferAskUnread){
         this.specOfferAskUnread = specOfferAskUnread; 
@@ -98,6 +105,7 @@ export default class SocketStore {
             this.setQuestUnread(data.unreadQuest) 
             this.setInvitedUnread(data.unreadInvited) 
             this.setInvitedPriceUnread(data.unreadInvitedPrice)
+            this.setInvitedPriceFizUnread(data.unreadInvitedPriceFiz)
             this.setSpecOfferAskUnread(data.UnreadSpecAsk)  
             this.setStatusAskUnread(data.UnreadStatusAsk)           
           })
@@ -109,6 +117,9 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_invitedPrice", (data) => {   
             this.setInvitedPriceUnread(data)   
+          })
+          this.socket.on("get_unread_invitedPriceFiz", (data) => {   
+            this.setInvitedPriceFizUnread(data)   
           })
           this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   

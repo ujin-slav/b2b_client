@@ -169,7 +169,7 @@ const CreatePriceAskFiz = () => {
             if (res.status===200){
                 myalert.setMessage("Успешно"); 
                 if(Sent){
-                    chat.socket.emit("unread_invitedPrice", {To:idorg});
+                    chat.socket.emit("unread_invitedPriceFiz", {To:idorg});
                 }
             } else {
                 myalert.setMessage(res?.data?.message);

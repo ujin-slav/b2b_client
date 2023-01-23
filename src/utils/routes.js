@@ -27,6 +27,7 @@ import About from "../pages/About";
 import Activate from "../pages/Activate";
 import Invited from "../pages/Invited";
 import InvitedPrice from "../pages/InvitedPrice";
+import InvitedPriceFiz from "../pages/InvitedPriceFiz";
 import Test from "../pages/Test";
 import UploadPrice from "../pages/UploadPrice";
 import Prices from "../pages/Prices";
@@ -76,6 +77,7 @@ export const PRICES = '/prices'
 export const LENTSTATUS = '/lentstatus'
 export const INVITED = '/invited'
 export const INVITEDPRICE = '/invitedprice'
+export const INVITEDPRICEFIZ = '/invitedpricefiz'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
@@ -218,6 +220,10 @@ export const authRoutes = [
     {
         path: INVITEDPRICE,
         Component: InvitedPrice
+    },
+    {
+        path: INVITEDPRICEFIZ,
+        Component: InvitedPriceFiz
     },
     {
         path: INVITEDSPECOFFER,

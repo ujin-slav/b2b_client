@@ -27,6 +27,11 @@ export default class PriceService {
         return $api.post(`/deletepriceask`, {id});
     }
 
+    static async getAskPriceFiz(formData){
+        const {data} = await $api.post(`/getaskpricefiz`,formData);
+        return data
+    }
+
     static async getAskPrice(formData){
         const {data} = await $api.post(`/getaskprice`,formData);
         return data
