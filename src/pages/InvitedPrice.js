@@ -83,6 +83,7 @@ const InvitedPriceAsk =  observer(() => {
     }
    
     const handleSelect = (value) =>{
+      setCurrentPage(1)
       setLimit(value)
       setFetching(!fetching)
     }
@@ -213,7 +214,7 @@ const InvitedPriceAsk =  observer(() => {
               setActive={setModalActive} funRes={deletePriceAsk}/>
         </div>
         :
-        <div></div>
+        <div class="loader">Loading...</div>
         }
      </div> 
     );

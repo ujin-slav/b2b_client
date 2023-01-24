@@ -89,6 +89,7 @@ const MyOrdersPrice = () => {
     }
    
     const handleSelect = (value) =>{
+      setCurrentPage(1)
       setLimit(value)
       setFetching(!fetching)
     }

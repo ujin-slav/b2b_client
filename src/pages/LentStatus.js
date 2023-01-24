@@ -18,7 +18,6 @@ const LentStatus = observer(() => {
     const {chat} =  useContext(Context)
     const history = useHistory();
     const[searchInn,setSearchInn] = useState("");
-    const[searchDoc,setSearchDoc] = useState("");
     const[searchStatus,setSearchStatus] = useState("");
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
@@ -34,6 +33,7 @@ const LentStatus = observer(() => {
           userId:user.user.id,
           limit,
           searchInn,
+          searchStatus,
           page:currentPage,
           startDate,
           endDate
@@ -62,11 +62,6 @@ const LentStatus = observer(() => {
       setFetching(!fetching)
     }
 
-    const handleSearchDoc = () =>{
-      setCurrentPage(1)
-      setFetching(!fetching)
-    }
-
     const handleSearchStatus = () =>{
       setCurrentPage(1)
       setFetching(!fetching)
@@ -78,6 +73,7 @@ const LentStatus = observer(() => {
     }
    
     const handleSelect = (value) =>{
+      setCurrentPage(1)
       setLimit(value)
       setFetching(!fetching)
     }
@@ -103,23 +99,12 @@ const LentStatus = observer(() => {
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
-            </Row>   
-            <Row> 
-                <InputGroup className='mt-2'>
-                    <Form.Control
-                        onChange={(e)=>setSearchDoc(e.target.value)}
-                        placeholder="Номер документа"
-                    />
-                    <Button variant="outline-secondary" onClick={()=>handleSearchDoc()}>
-                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                    </Button>
-                </InputGroup>
-            </Row>   
+            </Row>    
             <Row> 
                 <InputGroup className='mt-2'>
                     <Form.Control
                         onChange={(e)=>setSearchStatus(e.target.value)}
-                        placeholder="Номер документа"
+                        placeholder="Статус(в настоящий момент)"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearchStatus()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
@@ -177,50 +162,57 @@ const LentStatus = observer(() => {
             </div>
             </Row>
         </Form>
-       <div class="lentStatus overflow-auto mt-2">
-          {lent?.map((item,index)=>
-            <div key={index} class="userCardListUser">
-              <div class="userCardListUserFlex">
-                <div className='mx-3'> 
-                    <span className="specNameDoc" onClick={()=>redirect(item)}>№{dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}</span> 
-                    <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+        {!loading ? 
+          <div>
+            <div class="lentStatus overflow-auto mt-2">
+                  {lent?.map((item,index)=>
+                    <div key={index} class="userCardListUser">
+                      <div class="userCardListUserFlex">
+                        <div className='mx-3'> 
+                            <span className="specNameDoc" onClick={()=>redirect(item)}>№{dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "ddmmyyyyHHMMss")}</span> 
+                            <div>от {dateFormat(item?.Ask?.Date || item?.PriceAsk?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+                        </div>
+                        <div>Изменил статус:</div>
+                        <div>
+                          <span className="specCloudy">{item?.Author?.name} {item?.Author?.nameOrg}</span>
+                        </div>
+                        <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
+                        <div>
+                        Стало:
+                        <span className="specCloudy"> {item?.Ask?.Status?.Status?.labelRu || item?.PriceAsk?.Status?.Status?.labelRu}</span> 
+                        </div>
+                        <div>
+                          Дата изменения:  
+                          <span className="specCloudy"> {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
+                        </div>
+                      </div>
+                    </div>
+                    )}  
                 </div>
-                <div>Изменил статус:</div>
-                <div>
-                  <span className="specCloudy">{item?.Author?.name} {item?.Author?.nameOrg}</span>
-                </div>
-                <div>Было: <span className="specCloudy">{item?.PrevStatus?.labelRu}</span></div>
-                <div>
-                Стало:
-                <span className="specCloudy"> {item?.Ask?.Status?.Status?.labelRu || item?.PriceAsk?.Status?.Status?.labelRu}</span> 
-                </div>
-                <div>
-                  Дата изменения:  
-                  <span className="specCloudy"> {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
-                </div>
-              </div>
-            </div>
-            )}  
-        </div>
-      <ReactPaginate
-      previousLabel={"предыдущий"}
-      nextLabel={"следующий"}
-      breakLabel={"..."}
-      pageCount={pageCount}
-      marginPagesDisplayed={2}
-      pageRangeDisplayed={3}
-      onPageChange={handlePageClick}
-      containerClassName={"pagination justify-content-center"}
-      pageClassName={"page-item"}
-      pageLinkClassName={"page-link"}
-      previousClassName={"page-item"}
-      previousLinkClassName={"page-link"}
-      nextClassName={"page-item"}
-      nextLinkClassName={"page-link"}
-      breakClassName={"page-item"}
-      breakLinkClassName={"page-link"}
-      activeClassName={"active"}
-    />
+              <ReactPaginate
+              forcePage = {currentPage-1}
+              previousLabel={"предыдущий"}
+              nextLabel={"следующий"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination justify-content-center"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              previousClassName={"page-item"}
+              previousLinkClassName={"page-link"}
+              nextClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              breakClassName={"page-item"}
+              breakLinkClassName={"page-link"}
+              activeClassName={"active"}
+            />
+          </div> 
+        : 
+          <div class="loader">Loading...</div>
+        }
     </div>
     );
 })
