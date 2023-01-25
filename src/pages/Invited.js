@@ -80,7 +80,7 @@ const Invited = observer(({authorId}) => {
         setFetching(!fetching)
     }
 
-      const handleClickDate = () =>{
+    const handleClickDate = () =>{
       setCurrentPage(1)
       setFetching(!fetching)
     }
@@ -89,7 +89,7 @@ const Invited = observer(({authorId}) => {
       setCurrentPage(1)
       setLimit(value)
       setFetching(!fetching)
-  }
+    }
 
     return (
       <div>
