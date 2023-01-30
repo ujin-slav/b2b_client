@@ -46,7 +46,6 @@ const TableAsk = observer(() => {
             startDate,
             endDate
             }).then((data)=>{
-                    console.log(data)
                     setAsk(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
@@ -148,6 +147,7 @@ const TableAsk = observer(() => {
                     <div className='captionMenuSelect'>Показать:</div>
                     <Form.Control
                         as="select"  
+                        value={limit}
                         className='searchFormMenuSelect'
                         onChange={(e)=>handleSelect(e.target.value)} 
                     >       

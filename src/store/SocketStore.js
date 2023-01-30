@@ -4,6 +4,7 @@ import io from "socket.io-client";
 export default class SocketStore {
     unread = []
     questUnread = 0
+    iWinnerUnread = 0
     invitedUnread = 0
     invitedPriceUnread = 0
     invitedPriceFizUnread = 0
@@ -35,6 +36,9 @@ export default class SocketStore {
         return unread; 
     }
 
+    getIWinnerUnread(){
+        return this.iWinnerUnread 
+    }
     getInvitedUnread(){
         return this.invitedUnread 
     }
@@ -51,6 +55,9 @@ export default class SocketStore {
         return this.statusAskUnread 
     }
 
+    setIWinnerUnread(iWinnerUnread){
+        this.iWinnerUnread = iWinnerUnread; 
+    }
     setQuestUnread(questUnread){
         this.questUnread = questUnread; 
     }
@@ -103,6 +110,7 @@ export default class SocketStore {
           })
           this.socket.on("unread_rest", (data) => {   
             this.setQuestUnread(data.unreadQuest) 
+            this.setIWinnerUnread(data.iWinnerUnread) 
             this.setInvitedUnread(data.unreadInvited) 
             this.setInvitedPriceUnread(data.unreadInvitedPrice)
             this.setInvitedPriceFizUnread(data.unreadInvitedPriceFiz)
@@ -111,6 +119,9 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_quest", (data) => {   
             this.setQuestUnread(data)              
+          })
+          this.socket.on("get_unread_iwinner", (data) => {   
+            this.setIWinnerUnread(data)          
           })
           this.socket.on("get_unread_invited", (data) => {   
             this.setInvitedUnread(data)          
@@ -125,7 +136,6 @@ export default class SocketStore {
             this.setSpecOfferAskUnread(data)   
           })
           this.socket.on("get_unread_statusAsk", (data) => { 
-            console.log(data)
             this.setStatusAskUnread(data)   
           })
 

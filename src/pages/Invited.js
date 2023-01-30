@@ -154,6 +154,7 @@ const Invited = observer(({authorId}) => {
                     <div className='captionMenuSelect'>Показать:</div>
                     <Form.Control
                         as="select"  
+                        value={limit}
                         className='searchFormMenuSelect'
                         onChange={(e)=>handleSelect(e.target.value)} 
                     >       

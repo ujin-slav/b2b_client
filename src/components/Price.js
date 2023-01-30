@@ -1,35 +1,37 @@
 import React,{useEffect, useState,useContext} from 'react';
 import PriceService from '../services/PriceService'
-import {
-    Table,
-    Card
-  } from "react-bootstrap";
- import CardOrg from '../components/CardOrg'; 
- import {Context} from "../index";
- import dateFormat, { masks } from "dateformat";
- import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
- import {useHistory} from 'react-router-dom';
- import {observer} from "mobx-react-lite";
- import {getCategoryName} from '../utils/Convert'
- import RegionTree from '../components/RegionTree';
- import { regionNodes } from '../config/Region';
- import ModalCT from '../components/ModalCT';
- import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
- import ReactPaginate from "react-paginate";
+import DatePicker, { registerLocale } from 'react-datepicker'
+import CardOrg from '../components/CardOrg'; 
+import {Context} from "../index";
+import dateFormat, { masks } from "dateformat";
+import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
+import {Card,InputGroup,Button,Col,Row,Form,Table} from "react-bootstrap";
+import {useHistory} from 'react-router-dom';
+import {observer} from "mobx-react-lite";
+import {getCategoryName} from '../utils/Convert'
+import RegionTree from '../components/RegionTree';
+import { regionNodes } from '../config/Region';
+import ModalCT from '../components/ModalCT';
+import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
+import ReactPaginate from "react-paginate";
 
 const Prices = observer(() => {
+    const {ask} = useContext(Context);
     const [readMoreName,setReadMoreName] = useState(false) 
     const [loading,setLoading] = useState(true) 
     const [width,setWidth] = useState() 
     const {user} = useContext(Context);
     const[price,setPrice] = useState([]);
-    const [pageCount, setpageCount] = useState(0);
     const[visible,setVisible] = useState(false);
-    const[currentPage,setCurrentPage] = useState(1);
     const[totalDocs,setTotalDocs] = useState(0);
+    const[fetching,setFetching] = useState(true);
     const[search,setSearch] = useState("");
+    const [pageCount, setPageCount] = useState(0);
     const history = useHistory();
-    let limit = 30
+    const [currentPage,setCurrentPage] = useState(1)
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+    const[limit,setLimit] = useState(10);
 
     useEffect(()=>{
         window.addEventListener('resize',resizeWindow)
@@ -41,32 +43,45 @@ const Prices = observer(() => {
 
     useEffect(() => {
         if(visible){
-            if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
-                setpageCount(data.totalPages);
+            setLoading(true)
+            PriceService.getPrice({
+              filterCat:ask.categoryFilter,
+              filterRegion:ask.regionFilter,
+              searchText:ask.searchText,
+              searchInn:ask.searchInn,
+              startDate,
+              endDate,
+              limit,page:currentPage}).then((data)=>{
+                    setPrice(data.docs);
+                    setPageCount(data.totalPages);
+                    setCurrentPage(data.page)
             }).finally(()=>setLoading(false))
-            }
-        }  
-    },[visible]);
+        }
+    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible,fetching]);
 
     const resizeWindow = () => {
         setWidth(window.innerWidth)
     }
 
-    const fetchComments = async (currentPage) => {
-        PriceService.getPrice({page:currentPage,limit,search}).then(
-            (data)=>{
-            setPrice(data.docs);
-        }).finally(()=>setLoading(false))
+    const fetchPage = async (currentPage) => {
+        setCurrentPage(currentPage)
+        setFetching(!fetching)
     };
     
     const handlePageClick = async (data) => {
-        setCurrentPage(data.selected + 1)
-        await fetchComments(data.selected + 1);
-      };
+        await fetchPage(data.selected + 1);
+    };
+  
+    const handleClickDate = () =>{
+        setCurrentPage(1)
+        setFetching(!fetching)
+    }
+  
+    const handleSelect = (value) =>{
+            setCurrentPage(1)
+            setLimit(value)
+            setFetching(!fetching)
+    }
 
       if (loading){
         return(
@@ -106,6 +121,59 @@ const Prices = observer(() => {
         </Card.Header>
             {visible ?
             <div>
+            <Form className="searchFormMenu searchFormMenuMain">
+              <Row>
+              <div className='inputGroupMenuSelect'>
+                      <div className='captionMenuSelect'>Период:</div>
+                          <InputGroup>
+                              <DatePicker
+                                  locale="ru"
+                                  selected={startDate}
+                                  name="StartDateOffers"
+                                  className='form-control datePicker'
+                                  dateFormat="dd.MM.yyyy"
+                                  onChange={date=>setStartDate(date)}
+                              />
+                              <Button 
+                                  variant="outline-secondary"
+                                  className='buttonSearchDataPicker'
+                                  onClick={()=>handleClickDate()}
+                              >
+                                  <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                              </Button>
+                          </InputGroup>
+                          <InputGroup>
+                              <DatePicker
+                                  locale="ru"
+                                  selected={endDate}
+                                  name="EndDateOffers"
+                                  className='form-control datePicker'
+                                  dateFormat="dd.MM.yyyy"
+                                  onChange={date=>setEndDate(date)}
+                              />
+                              <Button 
+                                  variant="outline-secondary" 
+                                  className='buttonSearchDataPicker'
+                                  onClick={()=>handleClickDate()}
+                              >
+                                  <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                              </Button>
+                          </InputGroup>
+                      <div className='captionMenuSelect'>Показать:</div>
+                      <Form.Control
+                          as="select"  
+                          value={limit}
+                          className='searchFormMenuSelect'
+                          onChange={(e)=>handleSelect(e.target.value)} 
+                      >       
+                              <option>10</option>
+                              <option value='25'>25</option>
+                              <option value='50'>50</option>
+                              <option value='100'>100</option>
+                      </Form.Control>
+              </div>
+              </Row>
+            </Form>
             <PlusCircleFill onClick={()=>history.push(UPLOADPRICE)}  className="addNew"/>
                  <span className="createNew">Загрузить свой прайс</span>
             {width>650 ? 

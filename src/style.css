@@ -646,6 +646,9 @@ td.tdRed{
   .searchFormMenu{
     padding: 20px 20px 0px 20px;
   }
+  .searchFormMenuMain{
+    padding: 5px 20px 0px 20px !important;
+  }
   .searchFormMenu .react-datepicker-wrapper{
     margin-top: 10px;
     margin-left: 10px;

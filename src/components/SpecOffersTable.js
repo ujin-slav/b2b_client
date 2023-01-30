@@ -1,5 +1,5 @@
 import {React,useContext,useEffect,useState} from 'react';
-import {Card,Col,Row} from "react-bootstrap";
+import {Card,InputGroup,Button,Col,Row,Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
 import {useHistory} from 'react-router-dom';
@@ -7,10 +7,11 @@ import {Context} from "../index";
 import dateFormat from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
+import DatePicker, { registerLocale } from 'react-datepicker'
 import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
-import {CaretDownFill,CaretUpFill,PlusCircleFill} from 'react-bootstrap-icons';
+import {CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
 
 
 const SpecOffersTable = observer(() => {
@@ -19,42 +20,52 @@ const SpecOffersTable = observer(() => {
     const [specOffers, setSpecOffers] = useState([]);
     const[visible,setVisible] = useState(false);
     const {myalert} = useContext(Context);
+    const[fetching,setFetching] = useState(true);
     const history = useHistory();
-    const [pageCount, setpageCount] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
     const {user} = useContext(Context);
     const [currentPage,setCurrentPage] = useState(1)
-    let limit = 10;
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+    const[limit,setLimit] = useState(10);
 
     useEffect(() => {
     if(visible){
+        setLoading(true)
         SpecOfferService.getFilterSpecOffer({
           filterCat:ask.categoryFilter,
           filterRegion:ask.regionFilter,
           searchText:ask.searchText,
           searchInn:ask.searchInn,
+          startDate,
+          endDate,
           limit,page:currentPage}).then((data)=>{
-          setSpecOffers(data.docs)
-          setpageCount(data.totalPages)
+                setSpecOffers(data.docs)
+                setPageCount(data.totalPages);
+                setCurrentPage(data.page)
         }).finally(()=>setLoading(false))
     }
-      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible]);
+      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible,fetching]);
 
-    const fetchComments = async (currentPage) => {
-        SpecOfferService.getFilterSpecOffer({
-        filterCat:ask.categoryFilter,
-        filterRegion:ask.regionFilter,
-        searchText:ask.searchText,
-        searchInn:ask.searchInn,
-        limit,page:currentPage}).then((data)=>{
-        setSpecOffers(data.docs)
-        }).finally(()=>setLoading(false))
+    const fetchPage = async (currentPage) => {
+        setCurrentPage(currentPage)
+        setFetching(!fetching)
     };
 
     const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1)
-      await fetchComments(data.selected + 1);
+      await fetchPage(data.selected + 1);
     };
 
+    const handleClickDate = () =>{
+      setCurrentPage(1)
+      setFetching(!fetching)
+    }
+
+    const handleSelect = (value) =>{
+          setCurrentPage(1)
+          setLimit(value)
+          setFetching(!fetching)
+    }
     
     if (loading){
         return(
@@ -94,6 +105,59 @@ const SpecOffersTable = observer(() => {
         </Card.Header>
         {visible ?
         <div>
+              <Form className="searchFormMenu searchFormMenuMain">
+              <Row>
+              <div className='inputGroupMenuSelect'>
+                      <div className='captionMenuSelect'>Период:</div>
+                          <InputGroup>
+                              <DatePicker
+                                  locale="ru"
+                                  selected={startDate}
+                                  name="StartDateOffers"
+                                  className='form-control datePicker'
+                                  dateFormat="dd.MM.yyyy"
+                                  onChange={date=>setStartDate(date)}
+                              />
+                              <Button 
+                                  variant="outline-secondary"
+                                  className='buttonSearchDataPicker'
+                                  onClick={()=>handleClickDate()}
+                              >
+                                  <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                              </Button>
+                          </InputGroup>
+                          <InputGroup>
+                              <DatePicker
+                                  locale="ru"
+                                  selected={endDate}
+                                  name="EndDateOffers"
+                                  className='form-control datePicker'
+                                  dateFormat="dd.MM.yyyy"
+                                  onChange={date=>setEndDate(date)}
+                              />
+                              <Button 
+                                  variant="outline-secondary" 
+                                  className='buttonSearchDataPicker'
+                                  onClick={()=>handleClickDate()}
+                              >
+                                  <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                              </Button>
+                          </InputGroup>
+                      <div className='captionMenuSelect'>Показать:</div>
+                      <Form.Control
+                          as="select"  
+                          value={limit}
+                          className='searchFormMenuSelect'
+                          onChange={(e)=>handleSelect(e.target.value)} 
+                      >       
+                              <option>10</option>
+                              <option value='25'>25</option>
+                              <option value='50'>50</option>
+                              <option value='100'>100</option>
+                      </Form.Control>
+              </div>
+              </Row>
+          </Form>
           <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addNew"/>
           <span className="createNew">Создать новое</span>
         <div className='parentSpec'>
@@ -129,6 +193,7 @@ const SpecOffersTable = observer(() => {
             })}
         </div>
         <ReactPaginate
+            forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
             breakLabel={"..."}

@@ -26,6 +26,7 @@ import Help from "../pages/Help";
 import About from "../pages/About";
 import Activate from "../pages/Activate";
 import Invited from "../pages/Invited";
+import IWinner from "../pages/IWinner";
 import InvitedPrice from "../pages/InvitedPrice";
 import InvitedPriceFiz from "../pages/InvitedPriceFiz";
 import Test from "../pages/Test";
@@ -76,6 +77,7 @@ export const MYPRICE = '/myprice'
 export const PRICES = '/prices'
 export const LENTSTATUS = '/lentstatus'
 export const INVITED = '/invited'
+export const IWINNER= '/iwinner'
 export const INVITEDPRICE = '/invitedprice'
 export const INVITEDPRICEFIZ = '/invitedpricefiz'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
@@ -216,6 +218,10 @@ export const authRoutes = [
     {
         path: INVITED,
         Component: Invited
+    },
+    {
+        path: IWINNER,
+        Component: IWinner
     },
     {
         path: INVITEDPRICE,

@@ -26,7 +26,8 @@ import {LOGIN_ROUTE,
         LENTSTATUS,
         REVIEWABOUTME,
         REVIEWWRITEME,
-        INVITEDPRICEFIZ} from "../utils/routes";
+        INVITEDPRICEFIZ,
+        IWINNER} from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
@@ -122,6 +123,13 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const sumIWinner=()=>{
+        if(chat.iWinnerUnread > 0){
+            return chat.iWinnerUnread
+        }else{
+            return ""
+        } 
+    }
     const sumInvitedPrice=()=>{
         if(chat.invitedPriceUnread > 0){
             return chat.invitedPriceUnread
@@ -205,14 +213,26 @@ const NavBar = observer(() => {
                         <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYORDERS)}className={classNameLink(MYORDERS)}>Мои заявки</NavDropdown.Item></li>
                         <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYOFFERS)}className={classNameLink(MYOFFERS)}>Мои предложения</NavDropdown.Item></li>
                         <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYCONTR)}className={classNameLink(MYCONTR)}>Мои контрагенты</NavDropdown.Item></li>
-                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(INVITED)}className={classNameLink(INVITED)}>
+                        <li className="job-sub-tabs">
+                        <NavDropdown.Item onClick={()=>activeLink(INVITED)}className={classNameLink(INVITED)}>
                         <div className="parentAnswer" id="invited">
                            <div>Мои приглашения</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvited()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item></li>
+                        </NavDropdown.Item>
+                        </li>
+                        <li className="job-sub-tabs">
+                        <NavDropdown.Item onClick={()=>activeLink(IWINNER)}className={classNameLink(IWINNER)}>
+                        <div className="parentAnswer" id="invited">
+                           <div>Я победил</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'>{sumIWinner()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item>
+                        </li>
                       </ul>
                     </div>
                     <div>

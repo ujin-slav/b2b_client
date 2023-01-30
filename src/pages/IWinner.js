@@ -1,41 +1,44 @@
-import React,{useEffect,useState,useContext} from 'react';
-import {useHistory} from 'react-router-dom';
-import ru from "date-fns/locale/ru"
-import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
+import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
-import ModalAlert from './ModalAlert';
-import AskService from '../services/AskService'
-import { XCircle, Search} from 'react-bootstrap-icons';
-import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
-import {Eye} from 'react-bootstrap-icons';
+import {useHistory} from 'react-router-dom';
+import {Card, Form, InputGroup,Button,Row} from "react-bootstrap";
+import { CARDASK } from '../utils/routes';
+import { fetchIWinnerAsks} from "../http/askAPI";
 import dateFormat, { masks } from "dateformat";
-import { CARDASK} from '../utils/routes';
+import ru from "date-fns/locale/ru"
+import "../style.css";
+import ReactPaginate from "react-paginate";
+import {Search} from 'react-bootstrap-icons';
+import {getCategoryName} from '../utils/Convert'
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
 import DatePicker, { registerLocale } from 'react-datepicker'
+import { CircleFill } from 'react-bootstrap-icons';
+import {checkAccessAsk} from '../utils/CheckAccessAsk'
 
-const TableOffer = observer(() => {
+const IWinner = observer(({authorId}) => {
     registerLocale("ru", ru)
 
-    const [offers,setOffers] = useState([]);;
-    const [modalActive,setModalActive] = useState(false);
-    const [deleteId,setDeleteId] = useState();
-    const history = useHistory();
-    const {user} = useContext(Context);  
-    const {myalert} = useContext(Context);
-    const[fetching,setFetching] = useState(true);
-    const [pageCount, setPageCount] = useState(0);
+    const [ask,setAsk] = useState([])
+    const {myalert} = useContext(Context)
+    const history = useHistory()
+    const [pageCount, setPageCount] = useState(0)
+    const [currentPage,setCurrentPage] = useState(1)
+    const [fetching,setFetching] = useState(true)
+    const [search,setSearch] = useState("")
+    const [searchInn,setSearchInn] = useState("")
+    const {user} = useContext(Context)
+    const {chat} = useContext(Context)
+    const [limit,setLimit] = useState(10)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
-    const[search,setSearch] = useState("");
-    const[searchInn,setSearchInn] = useState("");
-    const [currentPage,setCurrentPage] = useState(1)
     const [loading,setLoading] = useState(false)
-    const[limit,setLimit] = useState(10);
 
     useEffect(() => {
       setLoading(true)
-      AskService.fetchUserOffers({
-          authorId:user.user.id,
+      fetchIWinnerAsks({
+          userId:user.user.id,
           limit,
           search,
           searchInn,
@@ -43,31 +46,27 @@ const TableOffer = observer(() => {
           startDate,
           endDate
           }).then((data)=>{
-                  setOffers(data.docs);
+                  setAsk(data.docs);
                   setPageCount(data.totalPages);
                   setCurrentPage(data.page)
+                  chat.socket.emit("get_unread")
       }).finally(
           ()=>setLoading(false)
       )
     },[fetching]);
+
 
     const fetchPage = async (currentPage) => {
       setCurrentPage(currentPage)
       setFetching(!fetching)
     };
 
-    const deleteOffer = async () =>{
-      const result = await AskService.deleteOffer(deleteId);
-      if (result.status===200){
-        myalert.setMessage("Успешно"); 
-        setLoading(!fetching)
-      } else {
-        myalert.setMessage(result.data.message);
-      }
-    }
-
     const handlePageClick = async (data) => {
       await fetchPage(data.selected + 1);
+    }
+
+    const redirect = (item)=>{
+        history.push(CARDASK + '/' + item._id)
     }
 
     const handleSearch = () =>{
@@ -76,29 +75,29 @@ const TableOffer = observer(() => {
     }
 
     const handleSearchInn = () =>{
+        setCurrentPage(1)
+        setFetching(!fetching)
+    }
+
+    const handleClickDate = () =>{
       setCurrentPage(1)
       setFetching(!fetching)
     }
 
-    const handleClickDate = () =>{
-        setCurrentPage(1)
-        setFetching(!fetching)
-    }
-
     const handleSelect = (value) =>{
-        setCurrentPage(1)
-        setLimit(value)
-        setFetching(!fetching)
+      setCurrentPage(1)
+      setLimit(value)
+      setFetching(!fetching)
     }
 
     return (
       <div>
-          <Form className="searchFormMenu">
+        <Form className="searchFormMenu">
             <Row> 
                 <InputGroup>
                     <Form.Control
                         onChange={(e)=>setSearch(e.target.value)}
-                        placeholder="Текст сообщения"
+                        placeholder="Текст или название заявки"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearch()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
@@ -107,7 +106,7 @@ const TableOffer = observer(() => {
                 <InputGroup className='mt-2'>
                     <Form.Control
                         onChange={(e)=>setSearchInn(e.target.value)}
-                        placeholder="Название или инн организации"
+                        placeholder="Назавние или инн организации"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
@@ -166,59 +165,67 @@ const TableOffer = observer(() => {
             </div>
             </Row>
         </Form>
-        {!loading ? 
-        <div>
-           <div className='parentSpecAsk'>
-        {offers?.map((item,index)=>
-          <div key={index} className='childSpecAsk'>
+      <div className='parentSpecAsk'>
+        {ask?.map((item,index)=>{
+          return (
+            <div onClick={()=>redirect(item)} className='childSpecAsk'>
             <Card>
-              <Card.Header onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >
-              <div className="specNameDoc">№ 
-                  {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
-                </div>
-              <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
-              <span className="cardMenu">
-                     <XCircle color="red"  className='menuIcon'
-                    onClick={(e)=>{
-                    e.stopPropagation();
-                    setModalActive(true);
-                    setDeleteId(item._id)
-              }}/>     
-            </span> 
-             </Card.Header>
+              <Card.Header>
+              <div className="specName">
+                    {item.Name.length>15 ?
+                    `${item.Name.substring(0, 15)}...`
+                    :
+                    item.Name
+                    }
+            </div>
+            </Card.Header>
             <div className='cardPadding'>
             <div>
-            <div>{item?.Ask?.Author?.name}</div> 
-            <div>{item?.Ask?.Author?.nameOrg}</div>
+            Текст: {item.Text.length>50 ?
+            `${item.Text.substring(0, 50)}...`
+             :
+             item.Text
+             }
             </div>
-            <div className="tdText">
-            {item?.Ask?.Text?.length > 50 ? 
-              `${item?.Ask?.Text?.substring(0,50)}...`
-              :
-              item?.Ask?.Text
-            }
-            </div>
-            <div><span className="specCloudy">Текст: </span>{item?.Text?.length > 30 ? 
-              `${item?.Text?.substring(0,30)}...`
-              :
-              item?.Text
-              }</div>
-            <div><span className="specCloudy">Стоимость: </span>{item?.Price}</div>
             <div>
-            <div><span className="specCloudy">Файлы: </span></div>
-            {item?.Files?.map((item,index)=><div key={index}>
-                              <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                              ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
-                          </div>)}
+                    {Date.parse(item.EndDateOffers) > new Date().getTime() ?
+                    <div style={{color:"green"}}>
+                    Активная
+                    </div>
+                    :
+                    <div style={{color:"red"}}>
+                    Истек срок
+                    </div>
+                    } 
             </div>
-            <div className="specCloudy">{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</div>
+            <div>
+                    <div>ИНН: {item.Author.inn}</div>
+                    <div>Орг: {item.Author.nameOrg}</div>
+            </div>
+            <div className="specCloudy">
+                {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                :
+                getCategoryName(item.Region, regionNodes).join(", ")
+                }
+            </div>
+            <div className="specCloudy">
+                {getCategoryName(item.Category, categoryNodes).join(", ").length>40 ?
+                `${getCategoryName(item.Category, categoryNodes).join(", ").substring(0, 40)}...`
+                :
+                getCategoryName(item.Category, categoryNodes).join(", ")
+                }
+            </div>
+            <div className="specCloudy">
+                {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+            </div>
             </div>
             </Card>
-          </div>
-        )}  
-      </div> 
-      <ReactPaginate
+            </div>
+        )})}  
+       
+     </div> 
+     <ReactPaginate
             forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
@@ -238,15 +245,8 @@ const TableOffer = observer(() => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
           />
-          <ModalAlert header="Вы действительно хотите удалить" 
-              active={modalActive} 
-              setActive={setModalActive} funRes={deleteOffer}/>
-        </div>
-        :
-        <div class="loader">Loading...</div>
-        }
-    </div>
+     </div>
     );
 });
 
-export default TableOffer;
+export default IWinner;
