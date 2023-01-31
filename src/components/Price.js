@@ -44,7 +44,7 @@ const Prices = observer(() => {
     useEffect(() => {
         if(visible){
             setLoading(true)
-            PriceService.getPrice({
+            PriceService.getFilterPrice({
               filterCat:ask.categoryFilter,
               filterRegion:ask.regionFilter,
               searchText:ask.searchText,
@@ -256,6 +256,7 @@ const Prices = observer(() => {
                 </div>
             }
             <ReactPaginate
+            forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
             breakLabel={"..."}

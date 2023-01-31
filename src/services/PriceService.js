@@ -6,6 +6,10 @@ export default class PriceService {
         const {data} = await $api.post(`/getprice`,formData);
         return data
     }
+    static async getFilterPrice(formData){
+        const {data} = await $api.post(`/getfilterprice`,formData);
+        return data
+    }
     static async getPriceUnit(id){
         const {data} = await $api.post(`/getpriceunit`,{id});
         return data
