@@ -16,6 +16,27 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
     const[page,setPage] = useState(1)
     const history = useHistory()
     const slider = useRef(null)
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+
+    useEffect(() => {
+        if(fetching){
+            if(specOffers.length===0 || specOffers.length<totalDocs) {
+            SpecOfferService.getFilterSpecOffer({
+              filterCat:categoryFilter,
+              filterRegion:regionFilter,
+              startDate,
+              endDate,    
+              searchText:"",
+              searchInn:"",      
+              limit,page:1}).then((data)=>{
+              setSpecOffers([...specOffers, ...data.docs])
+              setTotalDocs(data.totalDocs)
+              setPage(prevState=>prevState + 1)
+            }).finally(()=>setLoading(false))
+            }
+        }  
+    },[fetching]);
 
     let isDown = false
     let startX
@@ -74,22 +95,6 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
         }
       },[])
 
-    useEffect(() => {
-        if(fetching){
-            if(specOffers.length===0 || specOffers.length<totalDocs) {
-            SpecOfferService.getFilterSpecOffer({
-              filterCat:categoryFilter,
-              filterRegion:regionFilter,          
-              searchText:"",
-              searchInn:"",
-              limit,page:1}).then((data)=>{
-              setSpecOffers([...specOffers, ...data.docs])
-              setTotalDocs(data.totalDocs)
-              setPage(prevState=>prevState + 1)
-            }).finally(()=>setLoading(false))
-            }
-        }  
-    },[fetching]);
 
     return (
         <div>

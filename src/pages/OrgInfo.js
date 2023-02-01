@@ -126,7 +126,7 @@ const OrgInfo = () => {
                 <UserAsk idorg={idorg}/>
             </Row>
             <Row>
-                <UserSpecOfferTable idorg={idorg}/>
+                <UserSpecOfferTable id={idorg}/>
             </Row>
             <Row>
                 <UserPrice idorg={idorg} idprod={idprod}/>

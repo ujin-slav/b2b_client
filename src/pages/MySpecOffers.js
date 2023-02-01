@@ -207,6 +207,7 @@ const MySpecOffers = observer(() => {
                 })}
             </div>
             <ReactPaginate
+                forcePage = {currentPage-1}
                 previousLabel={"предыдущий"}
                 nextLabel={"следующий"}
                 breakLabel={"..."}

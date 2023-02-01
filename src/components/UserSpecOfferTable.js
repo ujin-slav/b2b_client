@@ -19,33 +19,43 @@ const UserSpecOffersTable = observer(({id}) => {
     const[visible,setVisible] = useState(false);
     const {myalert} = useContext(Context);
     const history = useHistory();
-    const [pageCount, setpageCount] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
     const {user} = useContext(Context);
+    const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [endDate, setEndDate] = useState(new Date());
+    const [fetching,setFetching] = useState(true)
     const [currentPage,setCurrentPage] = useState(1)
     let limit = 10;
 
     useEffect(() => {
     if(visible){
+        setLoading(true)
         SpecOfferService.getSpecOfferUser({
-          id,limit,page:currentPage}).then((data)=>{
-          setSpecOffers(data.docs)
-          setpageCount(data.totalPages)
-        }).finally(()=>setLoading(false))
+            id,
+            limit,
+            search:"",
+            page:currentPage,
+            startDate,
+            endDate
+            }).then((data)=>{
+                    setSpecOffers(data.docs);
+                    setPageCount(data.totalPages);
+                    setCurrentPage(data.page)
+        }).finally(
+            ()=>setLoading(false)
+        )
     }
-      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible]);
+      },[fetching,visible]);
 
-    const fetchComments = async (currentPage) => {
-        SpecOfferService.getSpecOfferUser({
-            id,limit,page:currentPage}).then((data)=>{
-            setSpecOffers(data.docs)
-            setpageCount(data.totalPages)
-        }).finally(()=>setLoading(false))
+
+    const fetchPage = async (currentPage) => {
+        setCurrentPage(currentPage)
+        setFetching(!fetching)
     };
 
     const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1)
-      await fetchComments(data.selected + 1);
-    };
+        await fetchPage(data.selected + 1);
+    }
 
     
     if (loading){
@@ -118,6 +128,7 @@ const UserSpecOffersTable = observer(({id}) => {
         </div>
         {pageCount>2 ?
         <ReactPaginate
+            forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
             nextLabel={"следующий"}
             breakLabel={"..."}
