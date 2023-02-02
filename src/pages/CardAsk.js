@@ -153,7 +153,8 @@ const CardAsk = observer(() => {
     }
 
     const winnerDef = () => {
-      if(user.user.id === ask?.Author._id && !ask?.Winner){
+      if((user.user.id === ask?.Author._id && !ask?.Winner) &&
+          Date.parse(ask?.EndDateOffers) > new Date().getTime()){
         return (
           <div className='exampleWinner'>
           <StarFill className='starFillExample'/>
@@ -278,15 +279,27 @@ const CardAsk = observer(() => {
                         <th>Дата</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    {offers?.length > 0 ? 
+                      <tbody>
                       {offers?.map((item,index)=>{
                          if(!ask?.Hiden || user.user.id === ask?.Author._id){
                           return(offersRender(item,index))
                         }else if(item.AuthorID===user.user.id){
                           return(offersRender(item,index))
+                        }else{
+                          return (
+                            <tbody className='notOffers'>
+                                <div>Нет предложений</div>
+                            </tbody>
+                          )
                         }
                       })}
+                      </tbody>
+                    :
+                    <tbody className='notOffers'>
+                      <div>Нет предложений</div>
                     </tbody>
+                    }
                   </Table>
             </Card>   
                 <Question ask={ask} 

@@ -6,6 +6,7 @@
 
 table {
   background-color: white  !important;
+  caret-color: transparent; 
 }
 
 .container {
@@ -1050,6 +1051,12 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 }
 .inputWithIcon {
   position: relative;
+}
+.notOffers{
+  display: table-caption;
+  text-align: center;
+  padding-top: 10px;
+  font-weight: 700;
 }
 @media (max-width: 650px) {
   .container-mycontr{
