@@ -34,11 +34,13 @@ const Profile =  observer(() => {
             nameOrg:  null,
             adressOrg: null,
             telefon: null,
+            site:null,
             inn: null,
             description:null,
             notiInvited:true,
             notiMessage:true,
-            notiAsk:true
+            notiAsk:true,
+            getAskFromFiz:true
           },
           formErrors: {
             name: "",
@@ -62,6 +64,7 @@ const Profile =  observer(() => {
         data.notiInvited = user.user.notiInvited
         data.notiMessage = user.user.notiMessage 
         data.notiAsk = user.user.notiAsk 
+        data.getAskFromFiz = user.user.getAskFromFiz 
         setProfile({ data, formErrors});
         if(user.user.logo){
             fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
@@ -133,6 +136,7 @@ const Profile =  observer(() => {
             formData.append("nameOrg",data.nameOrg)
             formData.append("adressOrg",data.adressOrg)
             formData.append("telefon",data.telefon)
+            formData.append("site",data.site)
             formData.append("description",data.description)
             formData.append("inn",data.inn)
             formData.append("region",JSON.stringify(checkedRegion))
@@ -140,6 +144,7 @@ const Profile =  observer(() => {
             formData.append("notiInvited",data.notiInvited)
             formData.append("notiMessage",data.notiMessage)
             formData.append("notiAsk",data.notiAsk)
+            formData.append("getAskFromFiz",data.getAskFromFiz)
             if(file.length!==0){
                 formData.append("file", blobToFile(file))
             }else{
@@ -282,6 +287,17 @@ const Profile =  observer(() => {
                                 <span className="errorMessage" style={{color:"red"}}>{profile.formErrors.telefon}</span></td>
                             </tr>
                             <tr>
+                            <td>Сайт</td>
+                            <td> 
+                                <Form.Control
+                                    name="site"
+                                    type="text"
+                                    onChange={handleChange}
+                                    defaultValue={user.user.site}
+                                />  
+                            </td>
+                            </tr>
+                            <tr>
                             <td>Категории</td>
                             <td>
                             <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
@@ -337,6 +353,19 @@ const Profile =  observer(() => {
                                         name="notiAsk"
                                         type="checkbox"
                                         checked={profile.data.notiAsk}
+                                        onChange={handleChecked}>
+                                    </Form.Check>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Получать заявки от физ.лиц              
+                                </td>
+                                <td>
+                                    <Form.Check
+                                        name="getAskFromFiz"
+                                        type="checkbox"
+                                        checked={profile.data.getAskFromFiz}
                                         onChange={handleChecked}>
                                     </Form.Check>
                                 </td>

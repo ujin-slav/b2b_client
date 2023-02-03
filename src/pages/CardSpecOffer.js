@@ -62,16 +62,18 @@ const CardSpecOffer = observer(() => {
                 <div className="cardSpecPrice">
                      {specOffer.Price} ₽
                 </div>  
-                <div className="cartContainer">  
-                    <Cart4 className="specOfferCart"
-                                onClick={()=>{
-                                    if(user.isAuth){
-                                        history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
-                                    }else{
-                                        history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
-                                    }
-                                }}
-                    />
+                <div>  
+                    <button className="myButtonMessage mt-4"
+                            onClick={()=>{
+                                if(user.isAuth){
+                                    history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
+                                }else{
+                                    history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
+                                }
+                            }}>
+                                Сделать заявку
+                        <Cart4 className="specOfferCart"/>
+                    </button>
                 </div> 
             </div>
         )
@@ -125,14 +127,11 @@ const CardSpecOffer = observer(() => {
                     onClick={()=>setModalActiveAskOrg(true)}>
                     Заказать
                     </Button> */}
-                    <Button style={{
-                        fontSize:"20px",
-                        padding:"10px 35px 10px 35px",
-                        marginTop:"30px"
-                    }} 
+                    <button className="myButtonMessage mt-2"
                     onClick={()=>setModalActiveMessage(true)}>
-                    Написать сообщение
-                    </Button>
+                      Написать сообщение
+                     <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
+                    </button>
                 </div>
                 :
                 <div></div>

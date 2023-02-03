@@ -921,8 +921,8 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   text-decoration: underline;
 }
 .specOfferCart{
-  width:70px;
-  height:70px;
+  width:25px;
+  height:25px;
   color:hsl(222, 98%, 52%);
   cursor: pointer;
 }
@@ -1057,6 +1057,10 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   text-align: center;
   padding-top: 10px;
   font-weight: 700;
+}
+.emptyButton{
+  border:transparent;
+  background-color: transparent;
 }
 @media (max-width: 650px) {
   .container-mycontr{

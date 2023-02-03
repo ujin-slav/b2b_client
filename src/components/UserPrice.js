@@ -195,7 +195,7 @@ const UserPrice = ({idorg,idprod}) => {
                                 <tr key={index}>
                                     <td>{item?.Code}</td>
                                     <td>{item?.SpecOffer ? 
-                                    <button className="myButtonMessage"
+                                    <button className='emptyButton'
                                       onClick={()=>history.push(CARDSPECOFFER + '/' + item?.SpecOffer)}>
                                          <span className='text-decoration-underline text-primary'>{item?.Name}</span> 
                                          <span className="text-danger"> Спецпредложение</span>
@@ -231,6 +231,14 @@ const UserPrice = ({idorg,idprod}) => {
                                 <div>
                                     {readMoreGetText(item)}
                                 </div>
+                                {item?.SpecOffer ? 
+                                <button className='emptyButton'
+                                    onClick={()=>history.push(CARDSPECOFFER + '/' + item?.SpecOffer)}>
+                                    <span className="text-danger">Спецпредложение</span>
+                                </button>
+                                :
+                                <span></span>
+                                }
                                 <div>
                                     Цена: {item?.Price} ₽
                                     <Cart4 color="#0D55FD" className='iconCartMobile'
