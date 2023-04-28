@@ -53,6 +53,7 @@ const Profile =  observer(() => {
     );
 
     useEffect(() => {
+        console.log(user.user.isAdmin)
         if(user.user.category){
             setCheckedCat(Object.values(user.user.category))
         }

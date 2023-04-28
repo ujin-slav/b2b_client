@@ -40,8 +40,11 @@ import QuestFromMe from "../pages/QuestFromMe";
 import LentStatus from "../pages/LentStatus";
 import ReviewAboutMe from "../pages/ReviewAboutMe";
 import ReviewWriteMe from "../pages/ReviewWriteMe";
+import Admin from '../pages/Admin';
+import AdminAsk from '../pages/AdminAsk';
+import AdminPrice from "../pages/AdminPrice";
 
-export const ADMIN_ROUTE = '/admin'
+
 export const LOGIN_ROUTE = '/login'
 export const RESET = '/reset'
 export const FORGOT = '/forgot'
@@ -85,6 +88,24 @@ export const TEST = '/test'
 export const ACTIVATE = '/activate'
 export const REVIEWABOUTME = '/reviewaboutme'
 export const REVIEWWRITEME = '/reviewwriteme'
+export const ADMIN = '/admin'
+export const ADMIN_ASK = '/admin/ask'
+export const ADMIN_PRICE = '/admin/price'
+
+export const adminRoutes = [
+    {
+        path: ADMIN,
+        Component: Admin
+    },
+    {
+        path: ADMIN_ASK,
+        Component: AdminAsk
+    },
+    {
+        path: ADMIN_PRICE,
+        Component: AdminPrice
+    }
+]
 
 export const authRoutes = [
     {
