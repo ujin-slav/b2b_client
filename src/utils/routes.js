@@ -43,6 +43,7 @@ import ReviewWriteMe from "../pages/ReviewWriteMe";
 import Admin from '../pages/Admin';
 import AdminAsk from '../pages/AdminAsk';
 import AdminPrice from "../pages/AdminPrice";
+import AdminUploadPrice from "../pages/AdminUploadPrice";
 
 
 export const LOGIN_ROUTE = '/login'
@@ -91,6 +92,7 @@ export const REVIEWWRITEME = '/reviewwriteme'
 export const ADMIN = '/admin'
 export const ADMIN_ASK = '/admin/ask'
 export const ADMIN_PRICE = '/admin/price'
+export const ADMIN_UPLOADPRICE = '/admin/uploadprice'
 
 export const adminRoutes = [
     {
@@ -104,6 +106,18 @@ export const adminRoutes = [
     {
         path: ADMIN_PRICE,
         Component: AdminPrice
+    },
+    {
+        path: ADMIN,
+        Component: Admin
+    },
+    {
+        path: ADMIN_ASK,
+        Component: AdminAsk
+    },
+    {
+        path: ADMIN_UPLOADPRICE,
+        Component: AdminUploadPrice
     }
 ]
 

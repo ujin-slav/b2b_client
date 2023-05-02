@@ -7,6 +7,7 @@ import dateFormat, { masks } from "dateformat";
 import {ORGINFO,CREATEPRICEASK, CREATEPRICEASKFIZ, UPLOADPRICE} from "../utils/routes";
 import {Card,InputGroup,Button,Col,Row,Form,Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
+import AdminService from '../services/AdminService'
 import {observer} from "mobx-react-lite";
 import {getCategoryName} from '../utils/Convert'
 import RegionTree from '../components/RegionTree';
@@ -46,12 +47,15 @@ const AdminPrice = () => {
 
     useEffect(() => {
         setLoading(true)
-        PriceService.getFilterPrice({
-            searchText:ask.searchText,
-            searchInn:ask.searchInn,
+        AdminService.getPrice({
+            searchText:search,
+            searchInn,
             startDate,
             endDate,
-            limit,page:currentPage}).then((data)=>{
+            limit,
+            filterCat:[],
+            filterRegion:[],
+            page:currentPage}).then((data)=>{
                 setPrice(data.docs);
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
@@ -89,12 +93,6 @@ const AdminPrice = () => {
             setCurrentPage(1)
             setLimit(value)
             setFetching(!fetching)
-    }
-
-      if (loading){
-        return(
-            <div class="loader">Loading...</div>
-        )
     }
 
     return (
@@ -172,8 +170,6 @@ const AdminPrice = () => {
               </div>
               </Row>
             </Form>
-            <PlusCircleFill onClick={()=>history.push(UPLOADPRICE)}  className="addNew"/>
-                 <span className="createNew">Загрузить свой прайс</span>
             {width>650 ? 
                    <Table>
                    <thead>

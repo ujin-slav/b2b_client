@@ -10,7 +10,7 @@ import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
 import {Eye} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
-import {ADMIN_ASK, ADMIN_PRICE} from '../utils/routes';
+import {ADMIN_ASK, ADMIN_PRICE,ADMIN_UPLOADPRICE} from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import {
   Table
@@ -84,6 +84,7 @@ const Admin = () => {
       <div>
           <Button onClick={()=>history.push(ADMIN_ASK)}>Заявки</Button>
           <Button onClick={()=>history.push(ADMIN_PRICE)}>Прайс</Button>
+          <Button onClick={()=>history.push(ADMIN_UPLOADPRICE)}>Загрузка прайса</Button>
           <Form className="searchFormMenu pb-3">
             <Row> 
                 <InputGroup>

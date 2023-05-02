@@ -12,4 +12,10 @@ export default class AdminService {
         return data
     }
 
+    static async getPrice(formData){
+        const {data} = await $api.post(`/getfilterprice`,formData);
+        return data
+    }
+
+
 }
