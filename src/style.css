@@ -645,7 +645,7 @@ td.tdRed{
     padding: 30px 120px 10px 120px;
   }
   .searchFormMenu{
-    padding: 20px 20px 0px 20px;
+    padding: 10px 20px 0px 20px;
   }
   .searchFormMenuMain{
     padding: 5px 20px 0px 20px !important;
@@ -1061,6 +1061,10 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .emptyButton{
   border:transparent;
   background-color: transparent;
+}
+.navigator{
+  font-style: italic;
+  color:chocolate; 
 }
 @media (max-width: 650px) {
   .container-mycontr{

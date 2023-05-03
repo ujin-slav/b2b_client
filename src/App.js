@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 import AlertCustom from './components/AlertCustom';
 import io from "socket.io-client";
+import Navigator from './components/Navigator';
 
 export const SocketContext  = createContext(null);
 
@@ -30,6 +31,7 @@ const App = ()=> {
     <SocketContext.Provider>
       <BrowserRouter>
         <NavBar/>
+        <Navigator/>
         <AlertCustom/>
         <AppRouter/>
       </BrowserRouter>
