@@ -14,6 +14,7 @@ import { XCircle, Search} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import bin from "../icons/bin.svg";
 
 const MyOrdersPrice = () => {
     registerLocale("ru", ru)
@@ -189,12 +190,15 @@ const MyOrdersPrice = () => {
               </div>
               <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               <span className="cardMenu">
-                     <XCircle color="red"  className='menuIcon'
-                    onClick={(e)=>{
-                    e.stopPropagation();
-                    setModalActive(true);
-                    setDeleteId(item._id)
-              }} />     
+                    <img 
+                      className="awesomeIcon binIcon" 
+                      src={bin}
+                      onClick={(e)=>{
+                        e.stopPropagation();
+                        setModalActive(true);
+                        setDeleteId(item._id)
+                      }}
+                    />   
               </span> 
               </Card.Header>
             <div className='cardPadding'>

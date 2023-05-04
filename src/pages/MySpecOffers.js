@@ -14,6 +14,7 @@ import { CARDSPECOFFER,CREATESPECOFFER, MODIFYSPECOFFER } from '../utils/routes'
 import ReactPaginate from "react-paginate";
 import { PlusCircleFill,XCircle,Pen} from 'react-bootstrap-icons';
 import ModalAlert from '../components/ModalAlert';
+import bin from "../icons/bin.svg";
 
 const MySpecOffers = observer(() => {
 
@@ -160,14 +161,22 @@ const MySpecOffers = observer(() => {
                 return(
                     <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
                         <div  className="delSpecOfferContainer">
-                            <XCircle className="delSpecOffer"
+                            {/* <XCircle className="delSpecOffer"
                                 onClick={(e)=>{
                                     e.stopPropagation()
-                                    console.log(item)
                                     setModalActive(true);
                                     setDeleteId(item._id)
                                 }}
-                            />
+                            /> */}
+                            <img 
+                                className="delSpecOffer" 
+                                src={bin}
+                                onClick={(e)=>{
+                                    e.stopPropagation();
+                                    setModalActive(true);
+                                    setDeleteId(item._id)
+                                }}
+                            /> 
                         </div>
                         <img 
                         className="fotoSpec"

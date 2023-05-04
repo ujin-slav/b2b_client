@@ -17,6 +17,7 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {Form} from "react-bootstrap";
 import {Search} from 'react-bootstrap-icons';
+import bin from "../icons/bin.svg";
 
 const TableAsk = observer(() => {
     registerLocale("ru", ru)
@@ -167,12 +168,15 @@ const TableAsk = observer(() => {
                 <Card>
                     <Card.Header>
                     <span className="cardMenu">
-                    <XCircle color="red"  className='menuIcon'
-                        onClick={(e)=>{
+                    <img 
+                      className="awesomeIcon binIcon" 
+                      src={bin}
+                      onClick={(e)=>{
                         e.stopPropagation();
                         setModalActive(true);
                         setDeleteId(item._id)
-                        }} />
+                      }}
+                    />   
                     </span> 
                     <div className="specName">
                         {item.Name.length>15 ?

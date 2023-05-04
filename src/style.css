@@ -242,7 +242,9 @@ td.tdRed{
 
 .xcircleQuest{
   position:absolute;
-  right:0;
+  margin-right: 5px;
+  margin-top: 5px;
+  right: 0;
   top: 0;
   width: 20px;
   height: 20px;
@@ -523,10 +525,8 @@ td.tdRed{
     display: inline-block;
   }
   .delSpecOffer:hover{
-    width: 25px; 
-    height: 25px;
-    color:red;
-    display: inline-block;
+    height: 50px;
+    filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
   }
   .changeSpecOffer{
     width: 20px; 
@@ -1065,6 +1065,11 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .navigator{
   font-style: italic;
   color:chocolate; 
+}
+.binIcon{
+  padding-top: 5px;
+  padding-right: 5px;
+  cursor:pointer;
 }
 @media (max-width: 650px) {
   .container-mycontr{

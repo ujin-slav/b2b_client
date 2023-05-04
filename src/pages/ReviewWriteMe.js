@@ -11,6 +11,8 @@ import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import ReactPaginate from "react-paginate";
+import bin from "../icons/bin.svg";
+
 
 const ReviewWriteMe = () => {
     
@@ -102,7 +104,14 @@ const ReviewWriteMe = () => {
                     <Card.Header>
                         <span className="boldtext">Автор:</span> {item.Author?.name}, {item.Author?.nameOrg}
                         {item.Author?._id===user.user.id ?
-                        <XCircle color="red" className="xcircleReview"  onClick={e=>delReview(item)} /> : <div></div>}
+                         <img 
+                            className="xcircleReview" 
+                            src={bin}
+                            onClick={e=>delReview(item)}
+                        />   
+                        : 
+                        <div></div>
+                        }
                         <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
                     </Card.Header>
                     <Card.Text className="m-3"> 
@@ -125,7 +134,14 @@ const ReviewWriteMe = () => {
                                 <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                                 <span style={{"float": "right"}}>
                                 {item.Author===user.user.id ?
-                                        <XCircle color="red" className="xcircleQuest"  onClick={e=>delAnswer(item)} /> : <div></div>} 
+                                    <img 
+                                        className="xcircleQuest" 
+                                        src={bin}
+                                        onClick={e=>delAnswer(item)}
+                                    />  
+                                    : 
+                                    <div></div>
+                                    } 
                                 </span>
                                 </Card.Text>
                             </Card> 

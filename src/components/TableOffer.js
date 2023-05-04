@@ -12,6 +12,7 @@ import {Eye} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import { CARDASK} from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
+import bin from "../icons/bin.svg";
 
 const TableOffer = observer(() => {
     registerLocale("ru", ru)
@@ -63,6 +64,12 @@ const TableOffer = observer(() => {
         setLoading(!fetching)
       } else {
         myalert.setMessage(result.data.message);
+      }
+    }
+
+    const redirect=(route)=>{
+      if(route){
+        history.push(CARDASK + '/' + route)
       }
     }
 
@@ -172,18 +179,21 @@ const TableOffer = observer(() => {
         {offers?.map((item,index)=>
           <div key={index} className='childSpecAsk'>
             <Card>
-              <Card.Header onClick={()=>history.push(CARDASK + '/' + item?.Ask)} >
+              <Card.Header onClick={()=>redirect(item?.Ask)} >
               <div className="specNameDoc">№ 
                   {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
                 </div>
               <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               <span className="cardMenu">
-                     <XCircle color="red"  className='menuIcon'
-                    onClick={(e)=>{
-                    e.stopPropagation();
-                    setModalActive(true);
-                    setDeleteId(item._id)
-              }}/>     
+                    <img 
+                      className="awesomeIcon binIcon" 
+                      src={bin}
+                      onClick={(e)=>{
+                        e.stopPropagation();
+                        setModalActive(true);
+                        setDeleteId(item._id)
+                      }}
+                    />   
             </span> 
              </Card.Header>
             <div className='cardPadding'>
