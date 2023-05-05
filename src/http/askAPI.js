@@ -31,7 +31,7 @@ export const fetchIWinnerAsks = async (formData) => {
 }
 
 export const fetchOneAsk = async (id) => {
-    const {data} = await $api.post(`/getoneask`,{id});
+    const data = await $api.post(`/getoneask`,{id});
     return data
 }
 export const fetchOffers = async (id) => {

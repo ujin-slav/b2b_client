@@ -1071,6 +1071,27 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   padding-right: 5px;
   cursor:pointer;
 }
+.binIcon:hover{
+  padding-top: 6px;
+  height: 30px;
+  filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+}
+.xcircleQuest:hover{
+  cursor:pointer;
+  padding-top: 4px;
+  filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+}
+.xcircleReview:hover{
+  cursor:pointer;
+  padding-top: 2px;
+  filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+}
+.errorNotFound{
+  display: table-cell !important;
+vertical-align: middle;
+text-align: center;
+  font-size: xx-large;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 

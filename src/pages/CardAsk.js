@@ -59,14 +59,25 @@ const CardAsk = observer(() => {
     const [files, setFiles] = useState([]);
     const {id} = useParams();
     const {chat} =  useContext(Context)
+    const [error, setError] = useState();
 
     useEffect(() => {
+        setLoading(true)
         fetchOneAsk(id).then((data)=>{
-            setAsk(data)
+            if(data.status===200){
+              setAsk(data.data)
+            }else{
+              console.log(data)
+              setError(data.data.errors)
+            }
+        }).finally(()=>{
+          setLoading(false)
         })
         fetchOffers(id).then((data)=>{ 
-          setOffers(data);
-        })
+            setOffers(data);
+        }).catch((error)=>{
+            setError(error)
+      })
       },[]);
 
     const onSubmit = e => {
@@ -91,7 +102,6 @@ const CardAsk = observer(() => {
         }
       };  
       const removeFile = (id) => {
-        console.log(id);
         const newFiles = files.filter((item,index,array)=>index!==id);
         setFiles(newFiles);
       }
@@ -125,14 +135,7 @@ const CardAsk = observer(() => {
       formErrors.Price = e.target.value <= 0 ? "Должно быть больше 0" : "";
       setOffer({data,formErrors});
     } 
-  
-    if(user===undefined || ask===undefined){
-      return(
-        <p className="waiting">
-            <div class="loader">Loading...</div>
-        </p>
-    )
-    }
+
 
     const setWinner = ()=>{
       setWinnerAPI({winnerDTO,id}).then((result)=>{
@@ -192,6 +195,20 @@ const CardAsk = observer(() => {
           </div>)}</td>
           <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
         </tr>
+      )
+    }
+
+    if(loading){
+      return(
+        <p className="waiting">
+            <div class="loader">Loading...</div>
+        </p>
+      )
+    }
+
+    if(error){
+      return(
+        <div className='errorNotFound'>Ошибка!!</div>
       )
     }
 
