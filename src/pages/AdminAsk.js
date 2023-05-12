@@ -3,7 +3,7 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {Card,InputGroup,Button,Col,Row} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { CARDASK, MODIFYASK } from '../utils/routes';
+import { ADMIN_ASKSPAMLIST, CARDASK, MODIFYASK } from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ru from "date-fns/locale/ru"
 import "../style.css";
@@ -239,6 +239,15 @@ const AdminAsk = () => {
                     Редактировать
                     </a>
                     <Pen  className="changeSpecOffer"/>
+                    </div>
+                    <div>
+                    <a href="javascript:void(0)" 
+                        onClick={(e)=>{
+                            e.stopPropagation();
+                            history.push(ADMIN_ASKSPAMLIST + '/' + item._id)
+                    }}>
+                    Лист организаций
+                    </a>
                     </div>
                     <div>
                     <a href="javascript:void(0)" 

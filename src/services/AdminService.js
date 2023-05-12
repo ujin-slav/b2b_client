@@ -16,6 +16,9 @@ export default class AdminService {
         const {data} = await $api.post(`/getfilterprice`,formData);
         return data
     }
-
+    static async getSpamList(formData){
+        const {data} = await $api.post(`/admin/getspamlist`,formData);
+        return data
+    }
 
 }
