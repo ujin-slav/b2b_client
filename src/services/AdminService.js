@@ -20,5 +20,13 @@ export default class AdminService {
         const {data} = await $api.post(`/admin/getspamlist`,formData);
         return data
     }
+    static async sendSpamByAsk(formData){
+        const data = await $api.post(`/admin/sendspambyask`,formData);
+        return data
+    }
+    static async getSentSpamByAsk(formData){
+        const {data} = await $api.post(`/admin/getsentspambyask`,formData);
+        return data
+    }
 
 }

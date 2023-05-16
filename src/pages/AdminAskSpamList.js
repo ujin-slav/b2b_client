@@ -16,6 +16,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import {
   Table
 } from "react-bootstrap";
+import SentSpam from '../components/SentSpam';
 
 const AdminAskSpamList = () => {
     registerLocale("ru", ru)
@@ -43,6 +44,7 @@ const AdminAskSpamList = () => {
             search,
             page:currentPage,
             }).then((data)=>{
+                    console.log(data)
                     setListOrg(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
@@ -69,6 +71,23 @@ const AdminAskSpamList = () => {
         setCurrentPage(1)
         setLimit(value)
         setFetching(!fetching)
+    }
+
+    const sendSpam= async ()=>{
+        const result = await AdminService.sendSpamByAsk({id,listOrg,limit,currentPage});
+        console.log(result)
+        if (result.status===200){
+          myalert.setMessage("Успешно"); 
+          setLoading(!loading)
+        } else {
+          myalert.setMessage(result?.data?.message);
+        }
+    }
+
+    if(loading){
+        return (
+            <div class="loader">Loading...</div>
+        )
     }
 
     return (
@@ -101,8 +120,11 @@ const AdminAskSpamList = () => {
                     </Form.Control>
             </div>
             </Row>
+            <Row>
+                
+            </Row>
         </Form>
-            <Table striped bordered hover>
+            {/* <Table striped bordered hover>
                 <thead>
                 <tr>
                     <th>#</th>
@@ -135,7 +157,18 @@ const AdminAskSpamList = () => {
                     </tr>
                 )}
                 </tbody>
-            </Table>
+            </Table> */}
+            <Card className="mx-2 my-2">
+                <Card.Header></Card.Header>
+                <div className='cardPadding'>
+                    {listOrg.map((item,index)=>
+                        <div key={index}>{item._id}</div>
+                    )}
+                </div>
+                <Button onClick={()=>sendSpam()} className="mx-1 my-1">
+                    Отправить
+                </Button>
+            </Card>
             <ReactPaginate
             forcePage = {currentPage-1}
             previousLabel={"предыдущий"}
@@ -156,6 +189,7 @@ const AdminAskSpamList = () => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
             />
+            <SentSpam Ask={id}/>
         </div>
     );
 };

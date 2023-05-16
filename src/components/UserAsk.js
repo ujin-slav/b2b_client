@@ -76,7 +76,7 @@ const UserAsk = observer(({id}) => {
               </div>
             </Card.Header>
             {visible ?
-                <div class="loader">Loading...</div>
+              <div class="loader">Loading...</div>
               :
               <div></div>
             }
