@@ -9,7 +9,7 @@ import ReactPaginate from "react-paginate";
 
 const SentSpam = ({Ask,SpecOffer}) => {
 
-    const [list,setList] = useState([]);
+    const [pack,setPack] = useState([]);
     const [modalActive,setModalActive] = useState(false);
     const {myalert} = useContext(Context);
     const[fetching,setFetching] = useState(true);
@@ -27,10 +27,9 @@ const SentSpam = ({Ask,SpecOffer}) => {
             limit,
             page:currentPage,
             }).then((data)=>{
-                    console.log(data)
-                    // setList(data.docs);
-                    // setPageCount(data.totalPages);
-                    // setCurrentPage(data.page)
+                    setPack(data.docs);
+                    setPageCount(data.totalPages);
+                    setCurrentPage(data.page)
         }).finally(
             ()=>setLoading(false)
         )
@@ -45,13 +44,27 @@ const SentSpam = ({Ask,SpecOffer}) => {
         await fetchPage(data.selected + 1);
     }
 
+    if(loading){
+        return (
+            <div class="loader">Loading...</div>
+        )
+    }
+    
+    if(!pack){
+        return (
+            <div></div>
+        )
+    }
+
     return (    
         <div className='my-2 mx-2'>
-            {list?.map((item,index)=>{
-                <Card className="mx-2 my-1">
-                    {item}
+            {pack?.map((item,index)=>
+                <Card key={index} className="mx-2 my-1">
+                    <div>{item.To}</div>
+                    <div>Лимит: {item.Limit}</div>
+                    <div>Страница: {item.CurrentPage}</div>
                 </Card>
-            })}
+            )}
             <ReactPaginate
             forcePage = {currentPage-1}
             previousLabel={"предыдущий"}

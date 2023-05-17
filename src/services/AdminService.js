@@ -11,7 +11,10 @@ export default class AdminService {
         const {data} = await $api.post(`/admin/getasks`,formData);
         return data
     }
-
+    static async getSpecOffers(formData){
+        const {data} = await $api.post(`/admin/getspecoffers`,formData);
+        return data
+    }
     static async getPrice(formData){
         const {data} = await $api.post(`/getfilterprice`,formData);
         return data

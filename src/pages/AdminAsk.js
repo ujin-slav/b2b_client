@@ -249,6 +249,9 @@ const AdminAsk = () => {
                     Лист организаций
                     </a>
                     </div>
+                        <div>
+                        Отправлено пакетов {item?.CountSentMailPack}
+                        </div>
                     <div>
                     <a href="javascript:void(0)" 
                         onClick={(e)=>{

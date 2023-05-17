@@ -73,12 +73,11 @@ const AdminAskSpamList = () => {
         setFetching(!fetching)
     }
 
-    const sendSpam= async ()=>{
-        const result = await AdminService.sendSpamByAsk({id,listOrg,limit,currentPage});
-        console.log(result)
+    const sendSpam = async ()=>{
+        const list = listOrg.map(item=>item._id) 
+        const result = await AdminService.sendSpamByAsk({id,list,limit,currentPage});
         if (result.status===200){
           myalert.setMessage("Успешно"); 
-          setLoading(!loading)
         } else {
           myalert.setMessage(result?.data?.message);
         }
@@ -165,9 +164,11 @@ const AdminAskSpamList = () => {
                         <div key={index}>{item._id}</div>
                     )}
                 </div>
-                <Button onClick={()=>sendSpam()} className="mx-1 my-1">
-                    Отправить
-                </Button>
+                <div>
+                    <Button onClick={()=>sendSpam()} className="mx-1 my-1">
+                        Отправить
+                    </Button>
+                </div>
             </Card>
             <ReactPaginate
             forcePage = {currentPage-1}
