@@ -18,7 +18,7 @@ import {
 } from "react-bootstrap";
 import SentSpam from '../components/SentSpam';
 
-const AdminAskSpamList = () => {
+const AdminSpecOfferSpamList = () => {
     registerLocale("ru", ru)
 
     const [listOrg,setListOrg] = useState([]);;
@@ -38,13 +38,12 @@ const AdminAskSpamList = () => {
 
     useEffect(() => {
         setLoading(true)
-        AdminService.getSpamListAsk({
+        AdminService.getSpamListSpecOffer({
             id,
             limit,
             search,
             page:currentPage,
             }).then((data)=>{
-                    console.log(data)
                     setListOrg(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
@@ -75,7 +74,7 @@ const AdminAskSpamList = () => {
 
     const sendSpam = async ()=>{
         const list = listOrg.map(item=>item._id) 
-        const result = await AdminService.sendSpamByAsk({id,list,limit,currentPage});
+        const result = await AdminService.sendSpamBySpecOffer({id,list,limit,currentPage});
         if (result.status===200){
           myalert.setMessage("Успешно"); 
         } else {
@@ -190,9 +189,9 @@ const AdminAskSpamList = () => {
             breakLinkClassName={"page-link"}
             activeClassName={"active"}
             />
-            <SentSpam Ask={id}/>
+            <SentSpam SpecOffer={id}/>
         </div>
     );
 };
 
-export default AdminAskSpamList;
+export default AdminSpecOfferSpamList;

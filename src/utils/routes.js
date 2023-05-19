@@ -45,6 +45,7 @@ import AdminAsk from '../pages/AdminAsk';
 import AdminPrice from "../pages/AdminPrice";
 import AdminUploadPrice from "../pages/AdminUploadPrice";
 import AdminAskSpamList from "../pages/AdminAskSpamList";
+import AdminSpecOfferSpamList from "../pages/AdminSpecOfferSpamList";
 import AdminSpecOffers from "../pages/AdminSpecOffers";
 
 
@@ -96,6 +97,7 @@ export const ADMIN_ASK = '/admin/ask'
 export const ADMIN_PRICE = '/admin/price'
 export const ADMIN_UPLOADPRICE = '/admin/uploadprice'
 export const ADMIN_ASKSPAMLIST = '/admin/askspamlist'
+export const ADMIN_SPECOFFERSPAMLIST = '/admin/specofferspamlist'
 export const ADMIN_SPECOFFERS = '/admin/specoffers'
 
 export const adminRoutes = [
@@ -130,7 +132,11 @@ export const adminRoutes = [
     {
         path: ADMIN_SPECOFFERS,
         Component: AdminSpecOffers
-    }
+    },
+    {
+        path: ADMIN_SPECOFFERSPAMLIST + '/:id',
+        Component: AdminSpecOfferSpamList
+    },
 ]
 
 export const authRoutes = [

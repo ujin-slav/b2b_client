@@ -3,6 +3,7 @@ import {Card,InputGroup,Button,Col,Row,Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
 import {useHistory} from 'react-router-dom';
+import { ADMIN_SPECOFFERSPAMLIST} from '../utils/routes';
 import {Context} from "../index";
 import dateFormat from "dateformat";
 import {getCategoryName} from '../utils/Convert'
@@ -140,6 +141,15 @@ const AdminSpecOffers = () => {
                       </div>
                       <div className="specNameOrg">
                           {item.NameOrg}
+                      </div>
+                      <div>
+                        <a href="javascript:void(0)" 
+                            onClick={(e)=>{
+                                e.stopPropagation();
+                                history.push(ADMIN_SPECOFFERSPAMLIST + '/' + item._id)
+                        }}>
+                        Лист организаций
+                        </a>
                       </div>
                       <div className="specCloudy">
                           {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?

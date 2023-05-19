@@ -22,17 +22,31 @@ const SentSpam = ({Ask,SpecOffer}) => {
 
     useEffect(() => {
         setLoading(true)
-        AdminService.getSentSpamByAsk({
-            Ask,
-            limit,
-            page:currentPage,
-            }).then((data)=>{
-                    setPack(data.docs);
-                    setPageCount(data.totalPages);
-                    setCurrentPage(data.page)
-        }).finally(
-            ()=>setLoading(false)
-        )
+        if(Ask){
+            AdminService.getSentSpamByAsk({
+                Ask,
+                limit,
+                page:currentPage,
+                }).then((data)=>{
+                        setPack(data.docs);
+                        setPageCount(data.totalPages);
+                        setCurrentPage(data.page)
+            }).finally(
+                ()=>setLoading(false)
+            )
+        }else if(SpecOffer){
+            AdminService.getSentSpamBySpecOffer({
+                SpecOffer,
+                limit,
+                page:currentPage,
+                }).then((data)=>{
+                        setPack(data.docs);
+                        setPageCount(data.totalPages);
+                        setCurrentPage(data.page)
+            }).finally(
+                ()=>setLoading(false)
+            )
+        }
     },[fetching]);
 
     const fetchPage = async (currentPage) => {

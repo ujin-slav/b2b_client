@@ -47,6 +47,7 @@ const AdminAsk = () => {
             startDate,
             endDate
             }).then((data)=>{
+                    console.log(data)
                     setAsk(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)

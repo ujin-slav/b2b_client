@@ -19,17 +19,28 @@ export default class AdminService {
         const {data} = await $api.post(`/getfilterprice`,formData);
         return data
     }
-    static async getSpamList(formData){
-        const {data} = await $api.post(`/admin/getspamlist`,formData);
+    static async getSpamListAsk(formData){
+        const {data} = await $api.post(`/admin/getspamlistask`,formData);
+        return data
+    }
+    static async getSpamListSpecOffer(formData){
+        const {data} = await $api.post(`/admin/getspamlistspecoffer`,formData);
         return data
     }
     static async sendSpamByAsk(formData){
         const data = await $api.post(`/admin/sendspambyask`,formData);
         return data
     }
+    static async sendSpamBySpecOffer(formData){
+        const data = await $api.post(`/admin/sendspambyspecoffer`,formData);
+        return data
+    }
     static async getSentSpamByAsk(formData){
         const {data} = await $api.post(`/admin/getsentspambyask`,formData);
         return data
     }
-
+    static async getSentSpamBySpecOffer(formData){
+        const {data} = await $api.post(`/admin/getsentspambyspecoffer`,formData);
+        return data
+    }
 }

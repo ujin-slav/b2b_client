@@ -5,7 +5,7 @@ import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from '../components/ModalAlert';
 import AdminService from '../services/AdminService'
-import { XCircle, Search} from 'react-bootstrap-icons';
+import { CircleFill, Search} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
 import {Eye} from 'react-bootstrap-icons';
@@ -19,7 +19,7 @@ import {
 const Admin = () => {
     registerLocale("ru", ru)
 
-    const [users,setUsers] = useState([]);;
+    const [users,setUsers] = useState([]);
     const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
     const {user} = useContext(Context);  
@@ -42,9 +42,10 @@ const Admin = () => {
           startDate,
           endDate
           }).then((data)=>{
-                  setUsers(data.docs);
-                  setPageCount(data.totalPages);
-                  setCurrentPage(data.page)
+                console.log(data)
+                setUsers(data.docs);
+                setPageCount(data.totalPages);
+                setCurrentPage(data.page)
       }).finally(
           ()=>setLoading(false)
       )
@@ -158,16 +159,26 @@ const Admin = () => {
                   <th>Name</th>
                   <th>NameOrg</th>
                   <th>Inn</th>
+                  <th>Online</th>
+                  <th>Last visit</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((item,index)=>
+                {users?.map((item,index)=>
                   <tr key={index}>
                     <td>{index+1}</td>
                     <td>{item.email}</td>
                     <td>{item.name}</td>
                     <td>{item.nameOrg}</td>
                     <td>{item.inn}</td>
+                    <td>{
+                          item.onLine ?
+                          <CircleFill className='circleFillOnline'/>
+                          :
+                          <CircleFill/>
+                        }
+                    </td>
+                    <td>{dateFormat(item.LastVisit, "dd/mm/yyyy HH:MM:ss")}</td>
                   </tr>
                 )}
               </tbody>

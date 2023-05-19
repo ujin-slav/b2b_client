@@ -1092,6 +1092,9 @@ vertical-align: middle;
 text-align: center;
   font-size: xx-large;
 }
+.circleFillOnline{
+  color:green;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 
