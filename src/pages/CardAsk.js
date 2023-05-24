@@ -7,7 +7,7 @@ import {Context} from "../index";
 import Question from '../components/Question';
 import AskStatus from './AskStatus';
 import dateFormat, { masks } from "dateformat";
-import {Eye,StarFill} from 'react-bootstrap-icons';
+import {Eye,Award, Trophy} from 'react-bootstrap-icons';
 import "../style.css";
 
 import {useHistory} from 'react-router-dom';
@@ -141,6 +141,7 @@ const CardAsk = observer(() => {
       setWinnerAPI({winnerDTO,id}).then((result)=>{
         if (result.status===200){
           myalert.setMessage("Успешно");
+          chat.socket.emit("unread_iwinner", winnerDTO);
         } else {
           myalert.setMessage(result?.data?.message)
         }
@@ -149,7 +150,7 @@ const CardAsk = observer(() => {
 
     const possChoise = (item) => {
       if(user.user.id === ask?.Author._id && !ask?.Winner){
-        return (<StarFill className='starFillSetWinner' onClick={(e)=>{setWinnerDTO(item);setModalActive(true)}}/>)
+        return (<Award className='starFillSetWinner' onClick={(e)=>{setWinnerDTO(item);setModalActive(true)}}/>)
       }else{
         return (<div></div>)
       }
@@ -160,7 +161,7 @@ const CardAsk = observer(() => {
           Date.parse(ask?.EndDateOffers) > new Date().getTime()){
         return (
           <div className='exampleWinner'>
-          <StarFill className='starFillExample'/>
+          <Award className='starFillExample'/>
             - Выбрать победителя(после этого торги будут прекращены).
           </div>
         )
@@ -179,8 +180,7 @@ const CardAsk = observer(() => {
     const offersRender = (item,index) =>{
       return(
         <tr key={index}>
-          <td>{index+1}{possChoise(item)}
-          </td>
+          <td>{index+1}</td>
           <td>
             <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item.AuthorID)}>
               {item.AuthorName} 
@@ -194,6 +194,7 @@ const CardAsk = observer(() => {
               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
           </div>)}</td>
           <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+          <td>{possChoise(item)}</td>
         </tr>
       )
     }
@@ -294,6 +295,7 @@ const CardAsk = observer(() => {
                         <th>Сообщение</th>
                         <th>Файлы</th>
                         <th>Дата</th>
+                        <th><Trophy style={{"width": "20px", "height": "20px"}}/></th>
                       </tr>
                     </thead>
                     {offers?.length > 0 ? 
@@ -324,9 +326,9 @@ const CardAsk = observer(() => {
                           id={id} 
                           user={user}/>
             { checkAccessAsk(user,ask).AddOffer  ?       
-            <Card>
+            <Card className='my-3'>
             <Card.Header style={{"background":"#282C34", "color":"white"}}>Мое предложение</Card.Header>
-            <Card.Body>
+            <Card.Body className='pb-1'>
                 <Form onSubmit={onSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                     <Form.Label>Цена</Form.Label>
@@ -337,7 +339,7 @@ const CardAsk = observer(() => {
                     <Form.Label>Сообщение:</Form.Label>
                     <Form.Control as="textarea" name="Text"  onChange={handleChange} rows={3} />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <Form.Group>
                     <div className="form-group files">
                     <label>Файлы(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</label>
                     <input type="file"
@@ -350,8 +352,10 @@ const CardAsk = observer(() => {
                     </div>
                     )}   
                     <Button
-                    variant="primary"
-                    type="submit"  >
+                        variant="primary"
+                        type="submit" 
+                        className='my-2'
+                    >
                     Отправить
                 </Button>
                 </Form.Group>

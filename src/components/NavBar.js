@@ -124,6 +124,7 @@ const NavBar = observer(() => {
         } 
     }
     const sumIWinner=()=>{
+        console.log(chat)
         if(chat.iWinnerUnread > 0){
             return chat.iWinnerUnread
         }else{
@@ -161,6 +162,7 @@ const NavBar = observer(() => {
     const sumAll=()=>{
         const sumAll = 
                 Number(sumInvited())+
+                Number(sumIWinner())+
                 Number(sumInvitedPrice())+
                 Number(sumInvitedSpecOffers())+
                 Number(sumStatusAsk())

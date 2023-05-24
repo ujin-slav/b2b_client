@@ -932,12 +932,12 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .starFillExample{
   width:40px;
   height:40px;
-  color:rgb(255, 230, 0);
+  color:green;
 }
 .starFillSetWinner{
-  width:20px;
-  height:20px;
-  color:rgb(255, 230, 0);
+  width:25px;
+  height:25px;
+  color:green;
   cursor: pointer;
 }
 .exampleWinner{

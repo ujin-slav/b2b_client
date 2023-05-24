@@ -110,7 +110,7 @@ export default class SocketStore {
           })
           this.socket.on("unread_rest", (data) => {   
             this.setQuestUnread(data.unreadQuest) 
-            this.setIWinnerUnread(data.iWinnerUnread) 
+            this.setIWinnerUnread(data.unreadIWinner) 
             this.setInvitedUnread(data.unreadInvited) 
             this.setInvitedPriceUnread(data.unreadInvitedPrice)
             this.setInvitedPriceFizUnread(data.unreadInvitedPriceFiz)
@@ -120,7 +120,8 @@ export default class SocketStore {
           this.socket.on("get_unread_quest", (data) => {   
             this.setQuestUnread(data)              
           })
-          this.socket.on("get_unread_iwinner", (data) => {   
+          this.socket.on("get_unread_iwinner", (data) => {  
+            console.log(data) 
             this.setIWinnerUnread(data)          
           })
           this.socket.on("get_unread_invited", (data) => {   
