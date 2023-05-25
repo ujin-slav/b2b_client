@@ -1,6 +1,6 @@
 import {React,useEffect,useState,useRef} from 'react'
 import {Card} from "react-bootstrap"
-import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons'
+import {CaretDownFill,CaretUpFill,PlusCircle} from 'react-bootstrap-icons'
 import CarouselService from '../services/CarouselService'
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
@@ -101,11 +101,12 @@ const Carousel = () => {
         <div class="parentCarousel" id="slider" ref={slider}>
         {carousel.map((item,index)=>
             <div key={index} class="childCarousel">
-                <div className="carouselHead">
+                <div className="cardContrHead">
                     <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
                     <div>{item?.nameOrg}</div>
                     </a>
                     <div>{item?.inn}</div>
+                    <PlusCircle class='plusContr'/>
                 </div>
                 <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
             </div>

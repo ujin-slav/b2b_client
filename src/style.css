@@ -524,6 +524,43 @@ td.tdRed{
     color:gray;
     display: inline-block;
   }
+  .delContr{
+    position: absolute;
+    width: 25px; 
+    height: 25px;
+    top:50%;
+    right:0%;
+    transform: translate(-50%, -50%);
+  }
+  .delContr:hover{
+    position: absolute;
+    width: 25px; 
+    height: 50px;
+    top:50%;
+    right:0%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+  }
+  .plusContr{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    height: 25px;
+    width: 25px;
+    color: green;
+  }
+  .plusContr:hover{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    height: 25px;
+    width: 25px;
+    color: red;
+    cursor: pointer;
+  }
   .delSpecOffer:hover{
     height: 50px;
     filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
@@ -824,6 +861,13 @@ td.tdRed{
   margin: 10px 3px 10px 3px;
   padding: 3px 3px 3px 5px;
 }
+.cardContrHead{
+  position: relative;
+  background-color:white;
+  border-radius: 20px;
+  margin: 10px 3px 10px 3px;
+  padding: 3px 3px 3px 5px;
+}
 .formReviewOrg {
   padding: 20px 0px 15px 0px;
   /* border: 1px solid !important;
@@ -1094,6 +1138,10 @@ text-align: center;
 }
 .circleFillOnline{
   color:green;
+}
+.logo{
+  max-width: 200px;
+  max-height: 200px;
 }
 @media (max-width: 650px) {
   .container-mycontr{
