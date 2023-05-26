@@ -1,9 +1,11 @@
-import {React,useEffect,useState,useRef} from 'react'
+import {React,useEffect,useState,useRef,useContext} from 'react'
 import {Card} from "react-bootstrap"
 import {CaretDownFill,CaretUpFill,PlusCircle} from 'react-bootstrap-icons'
 import CarouselService from '../services/CarouselService'
+import ContrService from '../services/ContrService';
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
+import {Context} from "../index";
 
 const Carousel = () => {
 
@@ -12,6 +14,8 @@ const Carousel = () => {
     const[carousel,setCarousel] = useState([])
     const[fetching,setFetching] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
+    const {user} = useContext(Context);
+    const {myalert} = useContext(Context);
     const[page,setPage] = useState(1)
     const slider = useRef(null)
 
@@ -76,7 +80,7 @@ const Carousel = () => {
     useEffect(() => {
         if(fetching){
             if(carousel.length===0 || carousel.length<totalDocs) {
-                CarouselService.getCarousel({search:"",limit,page}).then((data)=>{
+                CarouselService.getCarousel({search:"",limit,page,user:user.user.id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setCarousel([...carousel, ...data.docs]);
                 setPage(prevState=>prevState + 1)
@@ -84,6 +88,24 @@ const Carousel = () => {
             }
         }  
     },[fetching]);
+
+    const addContr = async(item)=>{
+        console.log(item)
+        const result = await ContrService.addContr({contragent:item._id,userid:user.user.id})
+        if (result.errors){
+            myalert.setMessage(result.message); 
+        } else {
+            myalert.setMessage("Успешно") 
+            const newCarousel = carousel.map((el)=>{
+                if(el._id === item._id){
+                    el.contrIs = true
+                }
+                return el
+            })
+            console.log(newCarousel)
+            setCarousel(newCarousel)
+        }
+    }
 
     return (
         <Card className='section sectionOffers'>
@@ -106,7 +128,14 @@ const Carousel = () => {
                     <div>{item?.nameOrg}</div>
                     </a>
                     <div>{item?.inn}</div>
-                    <PlusCircle class='plusContr'/>
+                    {user.isAuth && !item.contrIs ? 
+                        <PlusCircle 
+                            class='plusContr'
+                            onClick={(e)=>addContr(item)}
+                        /> 
+                        : 
+                        <div></div>
+                    }
                 </div>
                 <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
             </div>

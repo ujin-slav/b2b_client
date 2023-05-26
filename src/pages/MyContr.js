@@ -57,9 +57,14 @@ const MyContr = () => {
           setFetching(!fetching)
      }
 
-     const deleteContr =()=>{
-        console.log()
-     }
+     const deleteContr =async () =>{
+        const result = await ContrService.delContr({id:deleteId})
+        if (result.errors){
+            myalert.setMessage(result.message); 
+        } else {
+            setFetching(!fetching)
+        }
+    }
 
     return (
         <div>
