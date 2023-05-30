@@ -32,10 +32,9 @@ const ReviewOrgItems = observer(({...props})=>{
     
     useEffect(() => {
         if(visible){
-            ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage}).then((response)=>{
+            ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage,user:user.user.id}).then((response)=>{
                 if(response.status===200){
                     setReview(response.data.docs)
-                    console.log(response)
                     setFetch(false)
                     setFetchAnswer(false)
                     setpageCount(response.data.totalPages);
@@ -72,7 +71,7 @@ const ReviewOrgItems = observer(({...props})=>{
         } else {
             inputEl.current.value="";
             setFetch(true)
-            chat.socket.emit("unread_quest_mail", {data});
+            chat.socket.emit("unread_review_org", {data});
         }
     }
 

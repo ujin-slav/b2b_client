@@ -14,7 +14,7 @@ import ReactPaginate from "react-paginate";
 import bin from "../icons/bin.svg";
 
 
-const ReviewAboutMe = () => {
+const ReviewAboutMe = observer(() => {
 
     const [text,setText] = useState('')
     const[visible,setVisible] = useState(false);
@@ -32,7 +32,7 @@ const ReviewAboutMe = () => {
     let limit = 10
     
     useEffect(() => {
-        ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage}).then((response)=>{
+        ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage,user:user.user.id}).then((response)=>{
             if(response.status===200){
                 setReview(response.data.docs)
                 console.log(response)
@@ -41,7 +41,7 @@ const ReviewAboutMe = () => {
                 setpageCount(response.data.totalPages);
             }                
         }).finally(()=>setLoading(false))
-    },[fetch,fetchAnswer,visible]);
+    },[fetch,fetchAnswer,visible,user.user]);
 
     const fetchComments = async (currentPage) => {
         ReviewOrgService.fetchReviewOrg({
@@ -168,6 +168,6 @@ const ReviewAboutMe = () => {
             />
         </div>
     );
-};
+});
 
 export default ReviewAboutMe;
