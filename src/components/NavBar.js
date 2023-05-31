@@ -130,6 +130,13 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const sumAnswerOrg=()=>{
+        if(chat.answerOrgUnread > 0){
+            return chat.answerOrgUnread
+        }else{
+            return ""
+        } 
+    }
     const sumIWinner=()=>{
         if(chat.iWinnerUnread > 0){
             return chat.iWinnerUnread
@@ -170,6 +177,7 @@ const NavBar = observer(() => {
                 Number(sumInvited())+
                 Number(sumIWinner())+
                 Number(sumReviewOrg())+
+                Number(sumAnswerOrg())+
                 Number(sumInvitedPrice())+
                 Number(sumInvitedSpecOffers())+
                 Number(sumStatusAsk())
@@ -353,7 +361,7 @@ const NavBar = observer(() => {
                                 <div className="parentAnswer">
                                 <div>Написаны мной</div>
                                     <div className="countQuest">
-                                        <div className='yellowtext'></div>
+                                        <div className='yellowtext'>{sumAnswerOrg()}</div>
                                     </div>
                                 </div>
                             </NavDropdown.Item>

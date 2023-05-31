@@ -33,13 +33,13 @@ const ReviewWriteMe = () => {
     let limit = 10
     
     useEffect(() => {
-        ReviewOrgService.fetchReviewOrg({author:id,limit,page:currentPage}).then((response)=>{
+        ReviewOrgService.fetchReviewOrg({author:id,limit,page:currentPage,user:user.user.id}).then((response)=>{
             if(response.status===200){
                 setReview(response.data.docs)
-                console.log(response)
                 setFetch(false)
                 setFetchAnswer(false)
                 setpageCount(response.data.totalPages);
+                chat.socket.emit("get_unread");
             }                
         }).finally(()=>setLoading(false))
     },[fetch,fetchAnswer,visible]);
@@ -91,6 +91,7 @@ const ReviewWriteMe = () => {
         if (result.status===200){
             myalert.setMessage("Успешно"); 
           } else {
+            console.log(result)
             myalert.setMessage(result.data.message);
           }
         setFetch(true)
@@ -133,7 +134,7 @@ const ReviewWriteMe = () => {
                                 <Card.Text>
                                 <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                                 <span style={{"float": "right"}}>
-                                {item.Author===user.user.id ?
+                                {item.Org===user.user.id ?
                                     <img 
                                         className="xcircleQuest" 
                                         src={bin}

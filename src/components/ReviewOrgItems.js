@@ -69,9 +69,9 @@ const ReviewOrgItems = observer(({...props})=>{
         if(result.data?.errors){
             myalert.setMessage(result.data.message);
         } else {
+            chat.socket.emit("unread_review_org", data);
             inputEl.current.value="";
             setFetch(true)
-            chat.socket.emit("unread_review_org", {data});
         }
     }
 

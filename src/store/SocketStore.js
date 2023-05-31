@@ -6,6 +6,7 @@ export default class SocketStore {
     questUnread = 0
     iWinnerUnread = 0
     reviewOrgUnread = 0
+    answerOrgUnread = 0
     invitedUnread = 0
     invitedPriceUnread = 0
     invitedPriceFizUnread = 0
@@ -39,6 +40,9 @@ export default class SocketStore {
     getReviewOrgUnread(unread){
         return unread; 
     }
+    getAnswerOrgUnread(unread){
+        return unread; 
+    }
     getIWinnerUnread(){
         return this.iWinnerUnread 
     }
@@ -59,6 +63,9 @@ export default class SocketStore {
     }
     setReviewOrgUnread(reviewOrgUnread){
         this.reviewOrgUnread = reviewOrgUnread
+    }
+    setAnswerOrgUnread(answerOrgUnread){
+        this.answerOrgUnread = answerOrgUnread
     }
     setIWinnerUnread(iWinnerUnread){
         this.iWinnerUnread = iWinnerUnread; 
@@ -115,7 +122,8 @@ export default class SocketStore {
           })
           this.socket.on("unread_rest", (data) => {   
             this.setQuestUnread(data.unreadQuest) 
-            this.setReviewOrgUnread(data.unreadReviewOrg) 
+            this.setReviewOrgUnread(data.unreadReviewOrg)
+            this.setAnswerOrgUnread(data.unreadAnswerOrg)  
             this.setIWinnerUnread(data.unreadIWinner) 
             this.setInvitedUnread(data.unreadInvited) 
             this.setInvitedPriceUnread(data.unreadInvitedPrice)
@@ -128,6 +136,9 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_review_org", (data) => {  
             this.setReviewOrgUnread(data)          
+          })
+          this.socket.on("get_unread_answer_org", (data) => {  
+            this.setAnswerOrgUnread(data)          
           })
           this.socket.on("get_unread_iwinner", (data) => {  
             this.setIWinnerUnread(data)          

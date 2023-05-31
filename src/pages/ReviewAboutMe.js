@@ -35,10 +35,10 @@ const ReviewAboutMe = observer(() => {
         ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage,user:user.user.id}).then((response)=>{
             if(response.status===200){
                 setReview(response.data.docs)
-                console.log(response)
                 setFetch(false)
                 setFetchAnswer(false)
                 setpageCount(response.data.totalPages);
+                chat.socket.emit("get_unread");
             }                
         }).finally(()=>setLoading(false))
     },[fetch,fetchAnswer,visible,user.user]);
@@ -132,7 +132,7 @@ const ReviewAboutMe = observer(() => {
                                 <Card.Text>
                                 <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
                                 <span style={{"float": "right"}}>
-                                {item.Author===user.user.id ?
+                                {item.Org===user.user.id ?
                                         <img 
                                             className="xcircleQuest" 
                                             src={bin}

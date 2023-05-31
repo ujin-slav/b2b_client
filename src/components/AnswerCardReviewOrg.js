@@ -14,13 +14,14 @@ const AnswerCardReviewOrg = ({...props}) => {
     const [textAnswer,setTextAnswer] = useState('')
     const [visible,setVisible] =  useState(false)
     const {myalert} = useContext(Context);
+    const {chat} =  useContext(Context)
     
     const handleAnswer=async(e)=>{
         e.preventDefault();
         const data = {
             Host:item.ID,
             Text: textAnswer,
-            Author:user.user.id,
+            Author:item.Author,
             Org:item.Org 
         }     
         const result = await ReviewOrgService.addReviewOrg(data)
@@ -28,6 +29,7 @@ const AnswerCardReviewOrg = ({...props}) => {
             myalert.setMessage(result.data.message);
         } else {
             inputEl.current.value = "";
+            chat.socket.emit("unread_answer_org", data);
             setVisible(false)
             setFetchAnswer(true)
         }
