@@ -1,5 +1,6 @@
 import Auth from "../pages/Auth";
 import B2B from "../pages/B2b"
+import Banned from "../pages/Banned"
 import CardAsk from "../pages/CardAsk";
 import CardPriceAsk from "../pages/CardPriceAsk";
 import CreateAsk from "../pages/CreateAsk";
@@ -52,6 +53,7 @@ import AdminSpecOffers from "../pages/AdminSpecOffers";
 export const LOGIN_ROUTE = '/login'
 export const RESET = '/reset'
 export const FORGOT = '/forgot'
+export const BANNED = '/banned'
 export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
@@ -136,6 +138,189 @@ export const adminRoutes = [
     {
         path: ADMIN_SPECOFFERSPAMLIST + '/:id',
         Component: AdminSpecOfferSpamList
+    },
+]
+
+export const bannedRoutes = [
+    {
+        path: LOGIN_ROUTE,
+        Component: Auth
+    },
+    {
+        path: REGISTRATION_ROUTE,
+        Component: Registration
+    },
+    {
+        path: B2B_ROUTE,
+        Component: B2B
+    },
+    {
+        path: RESET + "/:token",
+        Component: Reset
+    },
+    {
+        path: FORGOT,
+        Component: Forgot
+    },
+    {
+        path: CARDASK + '/:id',
+        Component: CardAsk
+    },
+    {
+        path: CARDPRICEASK + '/:id',
+        Component: CardPriceAsk
+    },
+    {
+        path: CARDSPECOFFER + '/:id',
+        Component: CardSpecOffer
+    },
+    {
+        path: CREATEASK,
+        Component: Banned
+    },
+    {
+        path: CREATEASK + '/:id',
+        Component: CreateAsk
+    },
+    {
+        path: CREATESPECOFFER,
+        Component: CreateSpecOffer
+    },
+    {
+        path: CREATEPRICEASK + '/:idorg/:idprod',
+        Component: CreatePriceAsk
+    },
+    {
+        path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
+        Component: CreatePriceAskFiz
+    },
+    {
+        path: DOWNLOAD,
+        Component: CreateAsk
+    },
+    {
+        path: MYORDERS,
+        Component: MyOrders
+    },
+    {
+        path: MYORDERSPRICE,
+        Component: MyOrdersPrice
+    },
+    {
+        path: PROFILE,
+        Component: Profile
+    },
+    {
+        path: MYOFFERS,
+        Component: MyOffers
+    },
+    {
+        path: MYSPECOFFERS,
+        Component: MySpecOffers
+    },
+    {
+        path: MODIFYASK + '/:id',
+        Component: ModifyAsk
+    },
+    {
+        path: MODIFYSPECOFFER + '/:id',
+        Component: ModifySpecOffer
+    },
+    {
+        path: MODIFYPRICEASK + '/:id',
+        Component: ModifyPriceAsk
+    },
+    {
+        path: CATORG,
+        Component: CatOrg
+    },
+    {
+        path: MYCONTR,
+        Component: MyContr
+    },
+    {
+        path: CHAT + '/:idorg?',
+        Component: ChatPage
+    },
+    {
+        path: QUEST,
+        Component: Quest
+    },
+    {
+        path: QUESTFORME,
+        Component: QuestForMe
+    },
+    {
+        path: QUESTFROMME,
+        Component: QuestFromMe
+    },
+    {
+        path: ORGINFO + '/:idorg/:idprod?',
+        Component: OrgInfo
+    },
+    {
+        path: ABOUT,
+        Component: About
+    },
+    {
+        path: HELP,
+        Component: Help
+    },
+    {
+        path: ACTIVATE +  '/:activationLink',
+        Component: Activate
+    },
+    {
+        path: INVITED,
+        Component: Invited
+    },
+    {
+        path: IWINNER,
+        Component: IWinner
+    },
+    {
+        path: INVITEDPRICE,
+        Component: InvitedPrice
+    },
+    {
+        path: INVITEDPRICEFIZ,
+        Component: InvitedPriceFiz
+    },
+    {
+        path: INVITEDSPECOFFER,
+        Component: InvitedSpecOffer
+    },
+    {
+        path: UPLOADPRICE,
+        Component: UploadPrice
+    },
+    {
+        path: PRICES,
+        Component: Prices
+    },
+    {
+        path: MYPRICE,
+        Component: MyPrice
+    },
+    {
+        path: LENTSTATUS,
+        Component: LentStatus
+    },
+    {
+        path: REVIEWABOUTME,
+        Component: ReviewAboutMe
+    },
+    {
+        path: REVIEWWRITEME,
+        Component: ReviewWriteMe
+    },
+    {
+        path: TEST,
+        Component: Test
+    },
+    {
+        path: "*",
+        Component: B2B
     },
 ]
 
