@@ -53,7 +53,6 @@ const Profile =  observer(() => {
     );
 
     useEffect(() => {
-        console.log(user.user.isAdmin)
         if(user.user.category){
             setCheckedCat(Object.values(user.user.category))
         }
@@ -62,10 +61,10 @@ const Profile =  observer(() => {
         } 
         let data = profile.data
         let formErrors = profile.formErrors
-        data.notiInvited = user.user.notiInvited
-        data.notiMessage = user.user.notiMessage 
-        data.notiAsk = user.user.notiAsk 
-        data.getAskFromFiz = user.user.getAskFromFiz 
+        !!user.user.notiInvited && (data.notiInvited = user.user.notiInvited)
+        !!user.user.notiMessage && (data.notiMessage = user.user.notiMessage)
+        !!user.user.notiAsk && (data.notiAsk = user.user.notiAsk) 
+        !!user.user.getAskFromFiz &&(data.getAskFromFiz = user.user.getAskFromFiz) 
         setProfile({ data, formErrors});
         if(user.user.logo){
             fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)

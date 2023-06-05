@@ -64,7 +64,14 @@ const NavBar = observer(() => {
                 setCountQuest(response.data)
             }                
         })
-      },[location]);
+    },[location]);
+
+    useEffect(() => {
+        if(Object.keys(chat.user).length !== 0){
+            user.setUser(chat.user)
+            chat.user = {}
+        }
+    },[chat.user]);
 
     const activeLink=(route)=>{
         history.push(route);

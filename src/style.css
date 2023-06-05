@@ -1143,6 +1143,18 @@ text-align: center;
   max-width: 200px;
   max-height: 200px;
 }
+.banned {
+  width: 25px;
+  height: 25px;
+  color:red;
+  cursor: pointer;
+}
+.notBanned {
+  width: 25px;
+  height: 25px;
+  color:green;
+  cursor: pointer;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 

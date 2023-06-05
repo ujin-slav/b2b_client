@@ -2,6 +2,7 @@ import { makeAutoObservable,runInAction } from "mobx";
 import io from "socket.io-client";
 
 export default class SocketStore {
+    user = {}
     unread = []
     questUnread = 0
     iWinnerUnread = 0
@@ -22,10 +23,12 @@ export default class SocketStore {
         makeAutoObservable(this);
     }
 
+    setUser(user){
+        this.user = user; 
+    }
     setUnread(unread){
         this.unread = unread; 
     }
-
     setSocket(socket){
         this.socket = socket;
     }
@@ -33,7 +36,9 @@ export default class SocketStore {
     getSocket(socket){
         return this.socket;
     }
-
+    getUser(user){
+        return this.user; 
+    }
     getUnread(unread){
         return unread; 
     }
@@ -130,6 +135,9 @@ export default class SocketStore {
             this.setInvitedPriceFizUnread(data.unreadInvitedPriceFiz)
             this.setSpecOfferAskUnread(data.UnreadSpecAsk)  
             this.setStatusAskUnread(data.UnreadStatusAsk)           
+          })
+          this.socket.on("get_refreshUser", (data) => {   
+            this.setUser(data)
           })
           this.socket.on("get_unread_quest", (data) => {   
             this.setQuestUnread(data)              

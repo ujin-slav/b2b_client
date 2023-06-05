@@ -5,7 +5,7 @@ import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from '../components/ModalAlert';
 import AdminService from '../services/AdminService'
-import { CircleFill, Search} from 'react-bootstrap-icons';
+import { CircleFill, Search,StopFill,PlayFill} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
 import {Eye} from 'react-bootstrap-icons';
@@ -30,6 +30,7 @@ const Admin = () => {
     const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
     const [currentPage,setCurrentPage] = useState(1)
+    const {chat} =  useContext(Context)
     const [loading,setLoading] = useState(false)
     const[limit,setLimit] = useState(10);
 
@@ -79,6 +80,30 @@ const Admin = () => {
         setCurrentPage(1)
         setLimit(value)
         setFetching(!fetching)
+    }
+
+    const ban = (id) =>{
+      AdminService.userBan({id,ban:true}).then((result)=>{
+        if (result.status===200){
+          myalert.setMessage("Успешно")
+          chat.socket.emit("refreshUser",id)
+          setFetching(!fetching)
+        } else {
+          myalert.setMessage(result?.data?.message)
+        }
+      })
+    }
+
+    const unban = (id) =>{
+      AdminService.userBan({id,ban:false}).then((result)=>{
+        if (result.status===200){
+          myalert.setMessage("Успешно");
+          chat.socket.emit("refreshUser",id);
+          setFetching(!fetching)
+        } else {
+          myalert.setMessage(result?.data?.message)
+        }
+      })
     }
 
     return (
@@ -161,6 +186,7 @@ const Admin = () => {
                   <th>Inn</th>
                   <th>Online</th>
                   <th>Last visit</th>
+                  <th>Banned</th>
                 </tr>
               </thead>
               <tbody>
@@ -179,6 +205,12 @@ const Admin = () => {
                         }
                     </td>
                     <td>{dateFormat(item.LastVisit, "dd/mm/yyyy HH:MM:ss")}</td>
+                    <th>{
+                          item.banned ?
+                          <StopFill className='banned' onClick={()=>unban(item._id)}/>
+                          :
+                          <PlayFill className='notBanned' onClick={()=>ban(item._id)}/>
+                        }</th>
                   </tr>
                 )}
               </tbody>
