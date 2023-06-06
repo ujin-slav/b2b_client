@@ -5,10 +5,9 @@ import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
 import {Context} from "../index";
 import ModalAlert from '../components/ModalAlert';
 import AdminService from '../services/AdminService'
-import { CircleFill, Search,StopFill,PlayFill} from 'react-bootstrap-icons';
+import { CircleFill, Search,StopFill,PlayFill,PlusCircleFill} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
 import {observer} from "mobx-react-lite";
-import {Eye} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import {ADMIN_ASK, ADMIN_PRICE,ADMIN_SPECOFFERS,ADMIN_UPLOADPRICE} from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -26,6 +25,7 @@ const Admin = () => {
     const {myalert} = useContext(Context);
     const[fetching,setFetching] = useState(true);
     const [pageCount, setPageCount] = useState(0);
+    const [bannedReason, setBannedReason] = useState();
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
@@ -83,7 +83,7 @@ const Admin = () => {
     }
 
     const ban = (id) =>{
-      AdminService.userBan({id,ban:true}).then((result)=>{
+      AdminService.userBan({id,ban:true,bannedReason}).then((result)=>{
         if (result.status===200){
           myalert.setMessage("Успешно")
           chat.socket.emit("refreshUser",id)
@@ -95,7 +95,7 @@ const Admin = () => {
     }
 
     const unban = (id) =>{
-      AdminService.userBan({id,ban:false}).then((result)=>{
+      AdminService.userBan({id,ban:false,bannedReason:""}).then((result)=>{
         if (result.status===200){
           myalert.setMessage("Успешно");
           chat.socket.emit("refreshUser",id);
@@ -106,12 +106,23 @@ const Admin = () => {
       })
     }
 
+    const handleChange = e => {
+        setBannedReason(e.target.value)
+    }
+
     return (
       <div>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_SPECOFFERS)}>Спец. предложения</Button>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_ASK)}>Заявки</Button>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_PRICE)}>Прайс</Button>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_UPLOADPRICE)}>Загрузка прайса</Button>
+           <Form.Control
+                                  className="mx-1 mt-2"
+                                  name="Text"
+                                  onChange={handleChange}
+                                  placeholder="Причина бана"
+                                  as="textarea"
+                        />
           <Form className="searchFormMenu pb-3">
             <Row> 
                 <InputGroup>
@@ -187,6 +198,7 @@ const Admin = () => {
                   <th>Online</th>
                   <th>Last visit</th>
                   <th>Banned</th>
+                  <th>ResBan</th>
                 </tr>
               </thead>
               <tbody>
@@ -205,12 +217,15 @@ const Admin = () => {
                         }
                     </td>
                     <td>{dateFormat(item.LastVisit, "dd/mm/yyyy HH:MM:ss")}</td>
-                    <th>{
+                    <td>
+                        {
                           item.banned ?
                           <StopFill className='banned' onClick={()=>unban(item._id)}/>
                           :
                           <PlayFill className='notBanned' onClick={()=>ban(item._id)}/>
-                        }</th>
+                        }
+                    </td>
+                    <td title={item.bannedReason}>{item?.bannedReason?.substring(0, 10)}</td>
                   </tr>
                 )}
               </tbody>

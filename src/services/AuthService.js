@@ -24,4 +24,8 @@ export default class AuthService {
     static async reset(token, password){
         return $api.post('/reset', {token, password})
     }
+
+    static async refreshUser(formData){
+        return $api.post('/refreshuser',formData)
+    }
 }

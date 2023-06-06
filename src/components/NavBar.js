@@ -45,6 +45,7 @@ import QuestService from '../services/QuestService';
 import faviconNewMessage from '../faviconNewMessage.ico'
 import faviconStd from '../favicon.ico'
 import QuestForMe from '../pages/QuestForMe';
+import AuthService from "../services/AuthService";
 
 const NavBar = observer(() => {
 
@@ -67,11 +68,12 @@ const NavBar = observer(() => {
     },[location]);
 
     useEffect(() => {
-        if(Object.keys(chat.user).length !== 0){
-            user.setUser(chat.user)
-            chat.user = {}
+        if(chat.refreshUser){
+            AuthService.refreshUser({id:user.user.id}).then((response)=>{ 
+                console.log(response)         
+            }).finally(chat.setRefreshUser(!chat.refreshUser)); 
         }
-    },[chat.user]);
+    },[chat.refreshUser]);
 
     const activeLink=(route)=>{
         history.push(route);

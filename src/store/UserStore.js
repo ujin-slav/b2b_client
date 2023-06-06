@@ -38,7 +38,6 @@ export default class UserStore {
             this.chat.connect(response.data.accessToken)
             return response;
         } catch (error) {
-            console.log(error);
             return error;
         }
     }

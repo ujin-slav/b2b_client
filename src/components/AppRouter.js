@@ -8,10 +8,17 @@ const AppRouter = observer(() => {
     const {user} = useContext(Context)
     const location = useLocation(); 
 
+    if(!user.user.isAdmin){
+        return(
+            <Switch>
+                {adminRoutes.map((element)=><Route key={element.path} path={element.path} component={element.Component} exact/>)}
+            </Switch>
+        )
+    }
+
     return (
         <Switch>
             {user.user.banned && bannedRoutes.map((element)=><Route key={element.path} path={element.path} component={element.Component} exact/>)}
-            {!user.user.isAdmin && adminRoutes.map((element)=><Route key={element.path} path={element.path} component={element.Component} exact/>)}
             {user.isAuth && authRoutes.map((element)=><Route key={element.path} path={element.path} component={element.Component} exact/>)}
             {publicRoutes.map((element)=><Route key={element.path} path={element.path} component={element.Component} exact/>)}
         </Switch>            
