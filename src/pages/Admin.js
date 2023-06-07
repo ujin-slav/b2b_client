@@ -16,6 +16,8 @@ import {
 } from "react-bootstrap";
 
 const Admin = () => {
+    var curr = new Date();
+    var date = curr.setDate(curr.getDate() + 3);
     registerLocale("ru", ru)
 
     const [users,setUsers] = useState([]);
@@ -27,6 +29,7 @@ const Admin = () => {
     const [pageCount, setPageCount] = useState(0);
     const [bannedReason, setBannedReason] = useState();
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
+    const [bannedTo,setBannedTo] = useState(date);
     const [endDate, setEndDate] = useState(new Date());
     const[search,setSearch] = useState("");
     const [currentPage,setCurrentPage] = useState(1)
@@ -83,7 +86,7 @@ const Admin = () => {
     }
 
     const ban = (id) =>{
-      AdminService.userBan({id,ban:true,bannedReason}).then((result)=>{
+      AdminService.userBan({id,ban:true,bannedReason,bannedTo}).then((result)=>{
         if (result.status===200){
           myalert.setMessage("Успешно")
           chat.socket.emit("refreshUser",id)
@@ -116,13 +119,28 @@ const Admin = () => {
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_ASK)}>Заявки</Button>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_PRICE)}>Прайс</Button>
           <Button className="mx-1 mt-2" onClick={()=>history.push(ADMIN_UPLOADPRICE)}>Загрузка прайса</Button>
-           <Form.Control
+          <Form className="searchFormMenu pb-3">
+            <Row> 
+             <InputGroup>
+                    <Form.Control
                                   className="mx-1 mt-2"
                                   name="Text"
                                   onChange={handleChange}
                                   placeholder="Причина бана"
                                   as="textarea"
-                        />
+                    />
+                    <div className='captionMenuSelect'>До:</div>
+                    <DatePicker
+                        locale="ru"
+                        selected={bannedTo}
+                        name="StartDateOffers"
+                        className='form-control datePicker'
+                        dateFormat="dd.MM.yyyy"
+                        onChange={date=>setBannedTo(date)}
+                    />
+              </InputGroup>
+            </Row>
+            </Form>
           <Form className="searchFormMenu pb-3">
             <Row> 
                 <InputGroup>
