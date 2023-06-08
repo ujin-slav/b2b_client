@@ -9,6 +9,7 @@ export default class UserStore {
     isLoading = false;
     chat;
     errorString = "";
+    noConnection = false
 
     constructor(chat){
         makeAutoObservable(this);
@@ -115,7 +116,6 @@ export default class UserStore {
         this.setLoading(true);
         try {
             const response = await axios.get(`${API_URL}/refresh`, {withCredentials:true});
-            console.log(response.status)
             localStorage.setItem('token', response.data.accessToken)
             this.setAuth(true);
             this.setUser(response.data.user);

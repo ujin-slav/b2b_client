@@ -18,9 +18,11 @@ $api.interceptors.request.use((config)=>{
 $api.interceptors.response.use((config) => {
     return config;
 },async (error) => {
+    if(error.toJSON().message === 'Network Error'){
+        return error
+    }
     const originalRequest = error.config;
-    console.log(error);
-    if (error.response.status === 401 && error.config && !error.config._isRetry) {
+    if (error?.response?.status === 401 && error?.config && !error?.config?._isRetry) {
         originalRequest._isRetry = true;
         try {
             const response = await axios.get(`${API_URL}/refresh`, {withCredentials: true})
@@ -28,7 +30,6 @@ $api.interceptors.response.use((config) => {
             return $api.request(originalRequest);
         } catch (e) {
             console.log('НЕ АВТОРИЗОВАН')
-            
         }
     }
     //throw error;
