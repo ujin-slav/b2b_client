@@ -28,7 +28,6 @@ const MyContr = () => {
         setLoading(true)
         ContrService.fetchContr({user:user.user.id,search,limit,page:currentPage})
         .then((data)=>{
-                    console.log(data)
                     setList(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)

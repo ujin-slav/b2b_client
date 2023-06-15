@@ -9,10 +9,12 @@ import 'font-awesome/css/font-awesome.min.css';
 import AlertCustom from './components/AlertCustom';
 import io from "socket.io-client";
 import Navigator from './components/Navigator';
+import NoConnection from './pages/NoConnection';
+import {observer} from "mobx-react-lite";
 
 export const SocketContext  = createContext(null);
 
-const App = ()=> {
+const App = observer(()=> {
   const {user} = useContext(Context);
   const {chat} = useContext(Context);
 
@@ -27,6 +29,12 @@ const App = ()=> {
     })();
   }, []);
 
+  if(chat.errorString === 'Network Error'){
+    return(
+      <NoConnection/>
+    )
+  } 
+
   return (
     <SocketContext.Provider>
       <BrowserRouter>
@@ -37,6 +45,6 @@ const App = ()=> {
       </BrowserRouter>
     </SocketContext.Provider>
   );
-}
+})
 
 export default App;

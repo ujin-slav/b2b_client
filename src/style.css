@@ -1158,6 +1158,15 @@ text-align: center;
   color:green;
   cursor: pointer;
 }
+.noConnection{
+    top: 20%;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    font-size: xx-large;
+    color:green;
+}
 @media (max-width: 650px) {
   .container-mycontr{
     width: 95%; 

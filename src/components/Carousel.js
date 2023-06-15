@@ -81,9 +81,11 @@ const Carousel = () => {
         if(fetching){
             if(carousel.length===0 || carousel.length<totalDocs) {
                 CarouselService.getCarousel({search:"",limit,page,user:user.user.id}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setCarousel([...carousel, ...data.docs]);
-                setPage(prevState=>prevState + 1)
+                if(data){
+                    setTotalDocs(data.totalDocs);
+                    setCarousel([...carousel, ...data.docs]);
+                    setPage(prevState=>prevState + 1)
+                }
             }).finally(()=>setFetching(false))
             }
         }  

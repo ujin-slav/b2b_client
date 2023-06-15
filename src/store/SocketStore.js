@@ -14,12 +14,17 @@ export default class SocketStore {
     specOfferAskUnread = 0
     statusAskUnread = 0
     connected = false
+    errorString = "";
     socket
 
     contacts=[]
     recevier
 
     constructor(){
+        if (SocketStore._instance) {
+            return SocketStore._instance
+        }
+        SocketStore._instance = this;
         makeAutoObservable(this);
     }
 
