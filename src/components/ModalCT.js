@@ -1,8 +1,7 @@
 import React,{useState} from 'react';
 import {Modal,Button} from "react-bootstrap";
 
-const CategoryTree = ({active, setActive, component, header}) => {
-
+const CategoryTree = ({active, setActive, component, header, text}) => {
     return (
         <div>
             <Modal show={active} onHide={()=>setActive(false)}>
@@ -10,6 +9,7 @@ const CategoryTree = ({active, setActive, component, header}) => {
                 <Modal.Title>{header}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    {text}
                     {component}
                 </Modal.Body>
                 <Modal.Footer>

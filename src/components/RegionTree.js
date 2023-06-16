@@ -9,15 +9,25 @@ import { PlusCircle,
         ChevronDown, 
         ChevronRight } from 'react-bootstrap-icons';
 
-const RegionTree =({checked, expanded, setChecked, setExpanded})=> {
+const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
+    
+    const res = checked.reduce((acc, cat) => {
+      const domain = cat.substring(0,cat.indexOf('_')+1)
+      if (!acc[domain]) {
+          acc[domain] = []
+      }
+      acc[domain].push(cat)
+      return acc ? acc : {} 
+    },{})
+    console.log(Object.keys(res).length)
+
     return (
       <CheckboxTree
         nodes={regionNodes}
         checked={checked}
         expanded={expanded}
-        onCheck={checked => {setChecked(checked) 
-        console.log(checked)}}
-        onExpand={expanded => setExpanded(expanded)}
+        onCheck={checked => {setChecked(checked)}}
+        onExpand={expanded =>{setExpanded(expanded)}}
         icons={{
             check: <DashCircleFill/>,
             uncheck: <PlusCircle />,

@@ -9,13 +9,25 @@ import { PlusCircle,
   ChevronRight } from 'react-bootstrap-icons';
 import { categoryNodes } from '../config/Category';
 
-const CategoryTree =({checked, expanded, setChecked, setExpanded})=> {
+const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
+
+  const prevChecked = checked
+  const res = checked.reduce((acc, cat) => {
+    const domain = cat.substring(0,cat.indexOf('_')+1)
+    if (!acc[domain]) {
+        acc[domain] = []
+    }
+    acc[domain].push(cat)
+    return acc ? acc : {} 
+  },{})
+  console.log(Object.keys(res).length > max ? 'больше' : 'меньше')
+
   return (
     <CheckboxTree
       nodes={categoryNodes}
       checked={checked}
       expanded={expanded}
-      onCheck={checked => {setChecked(checked)}}
+      onCheck={checked => {Object.keys(res).length < max ? setChecked(checked) : setChecked(prevChecked)}}
       onExpand={expanded => setExpanded(expanded)}
       icons={{
           check: <DashCircleFill/>,

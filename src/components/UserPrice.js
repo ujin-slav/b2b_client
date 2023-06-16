@@ -61,10 +61,12 @@ const UserPrice = ({idorg,idprod}) => {
 
     const getPrice = () =>{
         PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
-            setTotalDocs(data.totalDocs);
-            setPrice(data.docs);
-            setCurrentPage(data.page)
-            setpageCount(data.totalPages);
+            if(data){
+                setTotalDocs(data.totalDocs);
+                setPrice(data.docs);
+                setCurrentPage(data.page)
+                setpageCount(data.totalPages);
+            }
         }).finally(()=>{
             setLoading(false)
             setFetching(false)

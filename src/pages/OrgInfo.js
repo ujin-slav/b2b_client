@@ -24,14 +24,15 @@ const OrgInfo = () => {
 
     useEffect(() => {
         fetchUser(idorg).then((data)=>{
-            setOrg(data)
-            console.log(data)
-            if(data.logo){
-                fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
-                .then(res => res.blob())
-                .then(blob => {
-                  setFile(blob)
-                })
+            if(data){
+                setOrg(data)
+                if(data.logo){
+                    fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
+                    .then(res => res.blob())
+                    .then(blob => {
+                    setFile(blob)
+                    })
+                }
             }
         })
 

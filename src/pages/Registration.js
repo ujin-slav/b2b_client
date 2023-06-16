@@ -227,17 +227,27 @@ const RegistrationForm = () => {
         <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 
-                setActive={setModalActiveReg} 
+                setActive={setModalActiveReg}
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                    Не более 3
+                  </div>
+                } 
                 component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
+                checked={checkedRegion} expanded={expandedRegion} max={3} 
                 setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                 />}/>
            <ModalCT 
                 header="Категории" 
                 active={modalActiveCat} 
                 setActive={setModalActiveCat} 
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                    Не более 3
+                  </div>
+                }
                 component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
+                checked={checkedCat} expanded={expandedCat} max={3} 
                 setChecked={setCheckedCat} setExpanded={setExpandedCat}
           />}/>       
         </Container>

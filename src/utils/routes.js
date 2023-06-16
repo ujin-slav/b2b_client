@@ -537,7 +537,15 @@ export const publicRoutes = [
         Component: Auth
     },
     {
+        path: MYORDERSPRICE,
+        Component: Auth
+    },
+    {
         path: MYORDERS,
+        Component: Auth
+    },
+    {
+        path: REVIEWWRITEME,
         Component: Auth
     },
     {
@@ -545,11 +553,39 @@ export const publicRoutes = [
         Component: Auth
     },
     {
+        path: MYPRICE,
+        Component: Auth
+    },
+    {
         path: MYOFFERS,
         Component: Auth
     },
     {
+        path: INVITEDPRICEFIZ,
+        Component: Auth
+    },
+    {
+        path: MYSPECOFFERS,
+        Component: Auth
+    },
+    {
+        path: LENTSTATUS,
+        Component: Auth
+    },
+    {
         path: MODIFYASK + '/:id',
+        Component: Auth
+    },
+    {
+        path: INVITEDPRICE,
+        Component: Auth
+    },
+    {
+        path: IWINNER,
+        Component: Auth
+    },
+    {
+        path: REVIEWABOUTME,
         Component: Auth
     },
     {
@@ -558,6 +594,10 @@ export const publicRoutes = [
     },
     {
         path: MYCONTR,
+        Component: Auth
+    },
+    {
+        path: UPLOADPRICE,
         Component: Auth
     },
     {
@@ -589,7 +629,7 @@ export const publicRoutes = [
         Component: Prices
     },
     {
-        path: ORGINFO +  '/:id',
+        path: ORGINFO + '/:idorg/:idprod?',
         Component: OrgInfo
     },
     {
