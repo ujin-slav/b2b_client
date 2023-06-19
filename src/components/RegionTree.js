@@ -11,6 +11,7 @@ import { PlusCircle,
 
 const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
     
+    const prevChecked = checked
     const res = checked.reduce((acc, cat) => {
       const domain = cat.substring(0,cat.indexOf('_')+1)
       if (!acc[domain]) {
@@ -19,14 +20,25 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
       acc[domain].push(cat)
       return acc ? acc : {} 
     },{})
-    console.log(Object.keys(res).length)
+
+    const onCheck=(checked)=>{
+      if(Object.keys(res).length < max){
+        setChecked(checked)
+      }else{
+        if(checked.length>prevChecked.length){
+          setChecked(prevChecked)
+        }else{
+          setChecked(checked)
+        }
+      }
+    }
 
     return (
       <CheckboxTree
         nodes={regionNodes}
         checked={checked}
         expanded={expanded}
-        onCheck={checked => {setChecked(checked)}}
+        onCheck={checked => onCheck(checked)}
         onExpand={expanded =>{setExpanded(expanded)}}
         icons={{
             check: <DashCircleFill/>,

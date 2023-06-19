@@ -33,8 +33,8 @@ const Activate = () => {
                     className="d-flex justify-content-center align-items-center"
                     style={{height: window.innerHeight - 54}}
                     >
-                <Card style={{width: 600}} className="p-5">
-                    {result}
+                <Card style={{width: 600}} className="p-5 ">
+                    <h5>{result}</h5>
                 </Card> 
             </Container>
         </div>

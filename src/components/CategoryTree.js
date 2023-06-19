@@ -20,14 +20,25 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
     acc[domain].push(cat)
     return acc ? acc : {} 
   },{})
-  console.log(Object.keys(res).length > max ? 'больше' : 'меньше')
+
+  const onCheck=(checked)=>{
+    if(Object.keys(res).length < max){
+      setChecked(checked)
+    }else{
+      if(checked.length>prevChecked.length){
+        setChecked(prevChecked)
+      }else{
+        setChecked(checked)
+      }
+    }
+  }
 
   return (
     <CheckboxTree
       nodes={categoryNodes}
       checked={checked}
       expanded={expanded}
-      onCheck={checked => {Object.keys(res).length < max ? setChecked(checked) : setChecked(prevChecked)}}
+      onCheck={checked => onCheck(checked)}
       onExpand={expanded => setExpanded(expanded)}
       icons={{
           check: <DashCircleFill/>,

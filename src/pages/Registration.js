@@ -63,14 +63,14 @@ const RegistrationForm = () => {
           fiz: false
         },
         formErrors: {
-          name: "",
-          email: "",
-          nameOrg: "",
-          adressOrg: "",
-          telefon: "",
-          inn: "",
-          password: "",
-          confirmPassword: "",
+          name: "не заполнено",
+          email: "не заполнено",
+          nameOrg: "не заполнено",
+          adressOrg: "не заполнено",
+          telefon: "не заполнено",
+          inn: "не заполнено",
+          password: "не заполнено",
+          confirmPassword: "не заполнено",
         }
       }
     );
@@ -82,6 +82,8 @@ const RegistrationForm = () => {
       const [expandedRegion,setExpandedRegion] = useState([]);
       const [checkedCat,setCheckedCat] = useState([]);
       const [expandedCat,setExpandedCat] = useState([]);
+      const [successReg,setSuccessReg]= useState(false);
+      const [userDTO,setUserDTO]= useState({});
  
       const handleChecked = () => {
           let data = userReg.data
@@ -103,12 +105,14 @@ const RegistrationForm = () => {
                 myalert.setMessage(result.data.message);
               } 
               if(result.data?.user){
-                myalert.setMessage(<div>
-                    <div>Пользователь "{result.data?.user.email}" успешно добавлен.</div>
-                    <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
-                </div>
-                );
-                history.push(B2B_ROUTE);
+                setUserDTO(result.data.user)
+                setSuccessReg(true)
+                // myalert.setMessage(<div>
+                //     <div>Пользователь "{result.data?.user.email}" успешно добавлен.</div>
+                //     <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
+                // </div>
+                // );
+                // history.push(B2B_ROUTE);
               }
           } else {
             console.error("FORM INVALID");
@@ -157,6 +161,8 @@ const RegistrationForm = () => {
               ? ""
               : "Пароль слишком слабый. Пароль должен иметь 8-40 латинских символов,содержать не менее одной цифры" +
               ", хотя бы одну строчную букву, хотя бы одну заглавную букву.";
+              formErrors.confirmPassword =
+              data.confirmPassword !== data.password ? "Пароли не совпадают" : "";
             break;
           case "confirmPassword":
             formErrors.confirmPassword =
@@ -174,84 +180,93 @@ const RegistrationForm = () => {
         }
     }
     
-    return (
-    <Container style={{width: 800}}>
-        <Row>
-            <Col>
-            <h1 className="text-success">Регистрация</h1>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-            <Form onSubmit={handleSubmit}>
-                <RegInput value={{Name: "name", Label: "Имя, фамилия", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
-                <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />             
-                <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.nameOrg}} />
-                <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.inn}} />
-                <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: userReg.formErrors.adressOrg}} />
-                <RegInput value={{Name: "telefon", Label: "Контактный телефон", handleChange, PlaceHolder: "Контактный телефон", ErrorMessage: userReg.formErrors.telefon}} />
-                <Form.Group>
-                <Form.Label>Регионы</Form.Label>
-                <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
-                                Выбор
-                                </Button> 
-                </Form.Group>  
-                <Form.Group>         
-                <Form.Label>Категории</Form.Label>
-                <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
-                                Выбор
-                                </Button>
-                </Form.Group>
-                <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password, Type:"password"}} />
-                <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword, Type:"password"}} />
-                <div style={{"margin":"20px 0px 20px 0px"}}>
-                  <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>
-                </div>  
-                <Button
-                variant="primary"
-                type="submit"
-                className="btn btn-success ml-auto mr-1"
-                >
-                Отправить
-                </Button>
-                
-            </Form>
-            </Col>
-        </Row>    
-        <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg}
-                text={
-                  <div className='mx-3 pb-2 text-warning'>
-                    Не более 3
-                  </div>
-                } 
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} max={3} 
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-           <ModalCT 
-                header="Категории" 
-                active={modalActiveCat} 
-                setActive={setModalActiveCat} 
-                text={
-                  <div className='mx-3 pb-2 text-warning'>
-                    Не более 3
-                  </div>
-                }
-                component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} max={3} 
-                setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>       
-        </Container>
-    );
+    if(!successReg){
+      return (
+        <Container style={{width: 800}}>
+            <Row>
+                <Col>
+                <h1 className="text-success">Регистрация</h1>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                <Form onSubmit={handleSubmit}>
+                    <RegInput value={{Name: "name", Label: "Имя, фамилия", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
+                    <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />             
+                    <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.nameOrg}} />
+                    <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.inn}} />
+                    <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: userReg.formErrors.adressOrg}} />
+                    <RegInput value={{Name: "telefon", Label: "Контактный телефон", handleChange, PlaceHolder: "Контактный телефон", ErrorMessage: userReg.formErrors.telefon}} />
+                    <Form.Group>
+                    <Form.Label>Регионы в которых работает организация(не более 3-х)</Form.Label>
+                    <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
+                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                    Выбор
+                                    </Button> 
+                    </Form.Group>  
+                    <Form.Group>         
+                    <Form.Label>Категории в которых работает организация(не более 3-х)</Form.Label>
+                    <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
+                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                    Выбор
+                                    </Button>
+                    </Form.Group>
+                    <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password, Type:"password"}} />
+                    <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword, Type:"password"}} />
+                    <div style={{"margin":"20px 0px 20px 0px"}}>
+                      <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>
+                    </div>  
+                    <Button
+                    variant="primary"
+                    type="submit"
+                    className="btn btn-success ml-auto mr-1"
+                    >
+                    Зарегистрировать
+                    </Button>
+                    
+                </Form>
+                </Col>
+            </Row>    
+            <ModalCT 
+                    header="Регионы" 
+                    active={modalActiveReg} 
+                    setActive={setModalActiveReg}
+                    text={
+                      <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                      </div>
+                    } 
+                    component={<RegionTree 
+                    checked={checkedRegion} expanded={expandedRegion} max={3} 
+                    setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                    />}/>
+               <ModalCT 
+                    header="Категории" 
+                    active={modalActiveCat} 
+                    setActive={setModalActiveCat} 
+                    text={
+                      <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                      </div>
+                    }
+                    component={<CategoryTree 
+                    checked={checkedCat} expanded={expandedCat} max={3} 
+                    setChecked={setCheckedCat} setExpanded={setExpandedCat}
+              />}/>       
+            </Container>
+        );
+    }else{
+      return(
+        <div className="regSuccess">
+           <div>Пользователь {userDTO.name}({userDTO.email}) успешно добавлен.</div>
+           <div>Активируйте аккаунт по ссылке отправленной на электронный адрес.</div>
+        </div>
+      )
+    }
 };
 
 export default RegistrationForm;
