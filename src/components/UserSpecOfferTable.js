@@ -80,6 +80,31 @@ const UserSpecOffersTable = observer(({id}) => {
               </Card>
         )
        }
+    if(specOffers?.length===0){
+    return(
+        <Card className='section sectionOffers'>
+        <Card.Header className='sectionHeaderOffer headerOffers'
+        onClick={()=>setVisible(!visible)}>
+        <div className='sectionName'>
+        {visible ?
+                <CaretUpFill className='caret'/>
+                :
+                <CaretDownFill className='caret'/>
+            }
+            Специальные предложения
+        </div>
+        </Card.Header>
+        {
+            visible ?
+            <h5 className="text-center pt-1">
+                Записей нет.
+            </h5>
+            :
+            <div></div> 
+            }
+        </Card>
+    )
+    }
 
     return (
         <Card className='section sectionOffers'>

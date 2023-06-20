@@ -53,13 +53,16 @@ const UserPrice = ({idorg,idprod}) => {
                         }
                     })
                 }else{
-                    getPrice()
+                    if(visible){
+                        getPrice()
+                    }
                 }
             }
         }
     },[fetching,visible]);
 
     const getPrice = () =>{
+        setLoading(true)
         PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
             if(data){
                 setTotalDocs(data.totalDocs);
@@ -154,6 +157,31 @@ const UserPrice = ({idorg,idprod}) => {
                 <div></div>
               }
               </Card>
+        )
+    }
+    if(price?.length===0){
+        return(
+            <Card className='section'>
+            <Card.Header className='sectionHeader headerPrices' 
+            onClick={()=>setVisible(!visible)}>
+            <div className='sectionName'>
+            {visible ?
+                    <CaretUpFill className='caret'/>
+                    :
+                    <CaretDownFill className='caret'/>
+                }
+                Прайс
+            </div>
+            </Card.Header>
+            {
+                visible ?
+                <h5 className="text-center pt-1">
+                    Записей нет.
+                </h5>
+                :
+                <div></div> 
+                }
+            </Card>
         )
     }
 

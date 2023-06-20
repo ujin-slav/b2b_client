@@ -219,6 +219,7 @@ const Profile =  observer(() => {
                             <td>
                                 {logo()}
                                 <input type="file"
+                                accept="image/png, image/jpeg"
                                 onChange={onInputChange}
                                 className="form-control"
                                 single/>

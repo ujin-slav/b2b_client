@@ -32,6 +32,7 @@ const ReviewOrgItems = observer(({...props})=>{
     
     useEffect(() => {
         if(visible){
+            setVisible(true)
             ReviewOrgService.fetchReviewOrg({id,limit,page:currentPage,user:user.user.id}).then((response)=>{
                 if(response.status===200){
                     setReview(response.data.docs)
@@ -95,6 +96,32 @@ const ReviewOrgItems = observer(({...props})=>{
         setFetch(true)
     }
 
+    if(review?.length===0){
+        return(
+            <Card className='section'>
+            <Card.Header className='sectionHeader headerPrices' 
+            onClick={()=>setVisible(!visible)}>
+            <div className='sectionName'>
+            {visible ?
+                    <CaretUpFill className='caret'/>
+                    :
+                    <CaretDownFill className='caret'/>
+                }
+                Отзывы
+            </div>
+            </Card.Header>
+            {
+                visible ?
+                <h5 className="text-center pt-1">
+                    Записей нет.
+                </h5>
+                :
+                <div></div> 
+                }
+            </Card>
+        )
+    }
+
     return (
         <Card className='section'>
             <Card.Header className='sectionHeader headerPrices'
@@ -110,7 +137,7 @@ const ReviewOrgItems = observer(({...props})=>{
             </Card.Header>
         {visible ?
         <div>
-        {user.user.id !== id ?
+        {user.isAuth && user.user.id !== id ?
             <div className='formReviewOrg'>
                 <div>Написать отзыв.</div>
                 <div>Сообщение:</div>

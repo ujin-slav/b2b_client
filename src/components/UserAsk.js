@@ -14,7 +14,7 @@ import dateFormat, { masks } from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
-import { PlusCircleFill,CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
+import { PlusCircleFill,CaretDownFill,CaretUpFill, TypeH3} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
 
 
@@ -31,6 +31,7 @@ const UserAsk = observer(({id}) => {
 
     useEffect(() => {
       if(visible){
+        setLoading(true)
         fetchUserAsks({
           id,limit,page:currentPage}).then((data)=>{
           setAsk(data.docs)
@@ -83,6 +84,31 @@ const UserAsk = observer(({id}) => {
             </Card>
       )
      }
+    if(ask?.length===0){
+      return(
+        <Card className='section'>
+        <Card.Header className='sectionHeader headerAsks' 
+        onClick={()=>setVisible(!visible)}>
+          <div className='sectionName'>
+          {visible ?
+                <CaretUpFill className='caret'/>
+                :
+                <CaretDownFill className='caret'/>
+            }
+            Заявки
+          </div>
+        </Card.Header>
+          {
+            visible ?
+            <h5 className="text-center pt-1">
+                Записей нет.
+            </h5>
+            :
+            <div></div> 
+            }
+        </Card>
+      )
+    }
 
     return (
       <Card className='section'>
