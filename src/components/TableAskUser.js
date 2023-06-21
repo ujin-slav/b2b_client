@@ -3,14 +3,14 @@ import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {Card,InputGroup,Button,Col,Row} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { CARDASK, MODIFYASK } from '../utils/routes';
+import { CARDASK, MODIFYASK,CREATEASK} from '../utils/routes';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ru from "date-fns/locale/ru"
 import "../style.css";
 import ReactPaginate from "react-paginate";
 import ModalAlert from './ModalAlert';
 import AskService from '../services/AskService'
-import { XCircle, Pen,Link45deg,Eye } from 'react-bootstrap-icons';
+import { Pen,Link45deg,Eye,PlusCircleFill } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
@@ -160,6 +160,8 @@ const TableAsk = observer(() => {
             </div>
             </Row>
         </Form>
+        <PlusCircleFill onClick={()=>history.push(CREATEASK)}  className="addNew"/>
+          <span className="createNew">Создать новую</span>
         {!loading ? 
         <div>
             <div className='parentSpecAsk'>
@@ -255,27 +257,30 @@ const TableAsk = observer(() => {
                 </Card>
                 </div>
             )}  
-            </div> 
-            <ReactPaginate
-            forcePage = {currentPage-1}
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
-            breakLabel={"..."}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination justify-content-center"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link"}
-            breakClassName={"page-item"}
-            breakLinkClassName={"page-link"}
-            activeClassName={"active"}
-            />
+            </div>
+            {ask?.length!==0 ? 
+                <ReactPaginate
+                forcePage = {currentPage-1}
+                previousLabel={"предыдущий"}
+                nextLabel={"следующий"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination justify-content-center"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                breakClassName={"page-item"}
+                breakLinkClassName={"page-link"}
+                activeClassName={"active"}
+                />
+            :
+            <div></div>}
             <ModalAlert header="Вы действительно хотите удалить" 
                 active={modalActive} 
                 setActive={setModalActive} funRes={deleteAsk}/>

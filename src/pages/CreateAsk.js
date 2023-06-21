@@ -86,8 +86,8 @@ const CreateAsk = observer(() => {
         Party:""
       },
       formErrors: {
-        Name: "",
-        Text: "",
+        Name: "не заполнено",
+        Text: "не заполнено",
       }
     }
     );
@@ -149,7 +149,7 @@ const CreateAsk = observer(() => {
           }
         } else {
           console.error("FORM INVALID");
-          myalert.setMessage("Не заполнено поле текст заявки");
+          //myalert.setMessage("Не заполнено поле текст заявки");
         }
       }else{
         console.error("FORM INVALID");

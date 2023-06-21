@@ -8,6 +8,12 @@ table {
   background-color: white  !important;
   caret-color: transparent; 
 }
+input {
+  caret-color: black; 
+}
+textarea {
+  caret-color: black; 
+}
 
 .container {
   background-color: white  !important;

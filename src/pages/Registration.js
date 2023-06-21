@@ -57,6 +57,8 @@ const RegistrationForm = () => {
           nameOrg: null,
           adressOrg: null,
           telefon: null,
+          site:null,
+          description:null,
           inn: null,
           password: null,
           confirmPassword: null,
@@ -201,6 +203,20 @@ const RegistrationForm = () => {
                     <RegInput value={{Name: "inn", Label: "ИНН", handleChange, PlaceHolder: "ИНН", ErrorMessage: userReg.formErrors.inn}} />
                     <RegInput value={{Name: "adressOrg", Label: "Адрес организации", handleChange, PlaceHolder: "Адрес организации", ErrorMessage: userReg.formErrors.adressOrg}} />
                     <RegInput value={{Name: "telefon", Label: "Контактный телефон", handleChange, PlaceHolder: "Контактный телефон", ErrorMessage: userReg.formErrors.telefon}} />
+                    <RegInput value={{Name: "site", Label: "Сайт", handleChange, PlaceHolder: "Сайт организации", ErrorMessage: userReg.formErrors.site}} />
+                    <div>
+                      <Form.Group>
+                        <Form.Label>Описание</Form.Label>
+                        <Form.Control
+                            name="description"
+                            type="text"
+                            as="textarea"
+                            onChange={handleChange}
+                            PlaceHolder="Чем организация занимается"
+                        /> 
+                        <span className="errorMessage" style={{color:"red"}}>{userReg.formErrors.description}</span>
+                      </Form.Group>
+                    </div>
                     <Form.Group>
                     <Form.Label>Регионы в которых работает организация(не более 3-х)</Form.Label>
                     <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>

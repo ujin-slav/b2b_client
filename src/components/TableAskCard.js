@@ -173,7 +173,7 @@ const TableAsk = observer(({authorId}) => {
               </Row>
           </Form>
           <PlusCircleFill onClick={()=>history.push(CREATEASK)}  className="addNew"/>
-          <span className="createNew">Создать новое</span>
+          <span className="createNew">Создать новую</span>
         <div className='parentSpecAsk'>
         {asks.map((item,index)=>{
           if(!checkAccessAsk(user,item).Open){
