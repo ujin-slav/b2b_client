@@ -92,7 +92,6 @@ const ModifyAsk = observer((askId) => {
 
     const onSubmit = async(e) => {
       e.preventDefault();
-      console.log(id)
       if (formValid(ask)) {
         const data = new FormData();
         files.forEach((item)=>data.append("file", item));
@@ -183,10 +182,9 @@ const ModifyAsk = observer((askId) => {
 
     return (
         <div>
-           <Container style={{width: "70%"}}>
+          <Container>
           <Form onSubmit={onSubmit}>
-          <h3>Редактировать заявку</h3> 
-          <Table striped bordered hover size="sm">
+          <Table>
                         <tbody>
                             <tr>
                             <td>Название заявки</td>
@@ -326,22 +324,32 @@ const ModifyAsk = observer((askId) => {
             >
             Сохранить
             </Button>
-        <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg} 
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-          <ModalCT 
+            <ModalCT 
+                    header="Регионы" 
+                    active={modalActiveReg} 
+                    setActive={setModalActiveReg}
+                    text={
+                      <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                      </div>
+                    } 
+                    component={<RegionTree 
+                    checked={checkedRegion} expanded={expandedRegion} max={3} 
+                    setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                    />}/>
+            <ModalCT 
                 header="Категории" 
                 active={modalActiveCat} 
                 setActive={setModalActiveCat} 
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                    Не более 3
+                  </div>
+                }
                 component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
+                checked={checkedCat} expanded={expandedCat} max={3} 
                 setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>
+          />}/>  
            <ModalCT 
                 header="Участники" 
                 active={modalActiveMember}  

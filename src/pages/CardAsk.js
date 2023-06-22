@@ -255,7 +255,7 @@ const CardAsk = observer(() => {
                             </tr>
                             <tr>
                             <td>Контактные данные</td>
-                            <td>{ask?.Author?.telefon}</td>
+                            <td>{ask?.Telefon}</td>
                             </tr>
                             <tr>
                             <td>Время окончания предложений</td>

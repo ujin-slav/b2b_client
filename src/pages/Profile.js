@@ -385,21 +385,31 @@ const Profile =  observer(() => {
             </Row>
         </Container>
         <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg} 
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-           <ModalCT 
-                header="Категории" 
-                active={modalActiveCat} 
-                setActive={setModalActiveCat} 
-                component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
-                setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>       
+            header="Регионы" 
+            active={modalActiveReg} 
+            setActive={setModalActiveReg}
+            text={
+                <div className='mx-3 pb-2 text-warning'>
+                Не более 3
+                </div>
+            } 
+            component={<RegionTree 
+            checked={checkedRegion} expanded={expandedRegion} max={3} 
+            setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+            />}/>
+        <ModalCT 
+            header="Категории" 
+            active={modalActiveCat} 
+            setActive={setModalActiveCat} 
+            text={
+                <div className='mx-3 pb-2 text-warning'>
+                Не более 3
+                </div>
+            }
+            component={<CategoryTree 
+            checked={checkedCat} expanded={expandedCat} max={3} 
+            setChecked={setCheckedCat} setExpanded={setExpandedCat}
+        />}/>    
         </div>
     );
 });

@@ -181,8 +181,8 @@ const TableAsk = observer(() => {
                     />   
                     </span> 
                     <div className="specName">
-                        {item.Name.length>15 ?
-                        `${item.Name.substring(0, 15)}...`
+                        {item.Name.length>25 ?
+                        `${item.Name.substring(0, 25)}...`
                         :
                         item.Name
                         }

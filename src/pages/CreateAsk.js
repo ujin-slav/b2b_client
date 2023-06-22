@@ -27,6 +27,7 @@ import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
 import {useParams} from 'react-router-dom';
 import { fetchUser} from '../http/askAPI';
+import dateFormat, { masks } from "dateformat";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -68,6 +69,7 @@ const CreateAsk = observer(() => {
     const {myalert} = useContext(Context);
     const history = useHistory();
     const {chat} =  useContext(Context)
+    const inputName = useRef(null);
 
     const[ask,setAsk] = useState( {
       data: {
@@ -86,7 +88,7 @@ const CreateAsk = observer(() => {
         Party:""
       },
       formErrors: {
-        Name: "не заполнено",
+        Name: "",
         Text: "не заполнено",
       }
     }
@@ -123,9 +125,9 @@ const CreateAsk = observer(() => {
           const data = new FormData();
           files.forEach((item)=>data.append("file", item));
           data.append("Author", user.user.id)
-          data.append("Name", ask.data.Name)
+          data.append("Name", ask.data.Name || inputName.current.value)
           data.append("MaxPrice", ask.data.MaxPrice)
-          data.append("Telefon", ask.data.Telefon)
+          data.append("Telefon", ask.data.Telefon || user.user.telefon)
           data.append("EndDateOffers", ask.data.EndDateOffers)
           data.append("Text", ask.data.Text)
           data.append("Category", JSON.stringify(checkedCat))
@@ -225,6 +227,8 @@ const CreateAsk = observer(() => {
                                   type="text"
                                   name="Name"
                                   onChange={handleChange}
+                                  ref={inputName}
+                                  defaultValue={'Заявка №' + dateFormat(new Date(), "ddmmyyyyHHMMss")}
                                   placeholder="Название заявки"
                               />
                               <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Name}</span></td>
@@ -308,24 +312,37 @@ const CreateAsk = observer(() => {
                                 name="Telefon"
                                 onChange={handleChange}
                                 defaultValue={user.user.telefon}
-                                placeholder="Контактный телефон"
+                                placeholder="Контактные данные"
                             /></td>
                             </tr>
                             <tr>
                             <td>Категории</td>
                             <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                            <Card body>
+                              {getCategoryName(checkedCat, categoryNodes).join(", ")}
+                            </Card>
+                            <Button 
+                                variant="outline-secondary" 
+                                id="button-addon2" 
+                                onClick={()=>setModalActiveCat(true)
+                            }>
                                 Выбор
-                                </Button></td>
+                            </Button></td>
                             </tr>
                             <tr>
-                            <td>Регионы</td>
-                            <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
-                                Выбор
-                                </Button></td>
+                              <td>Регионы</td>
+                              <td>
+                              <Card body>
+                                {getCategoryName(checkedRegion, regionNodes).join(", ")}
+                              </Card>
+                              <Button 
+                                variant="outline-secondary"
+                                id="button-addon2" 
+                                onClick={()=>setModalActiveReg(true)
+                              }>
+                                  Выбор
+                              </Button>
+                              </td>
                             </tr>
                             <tr>
                             <td>Файлы(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
@@ -342,7 +359,7 @@ const CreateAsk = observer(() => {
                             <td>Комментарий</td>
                             <td>
                             <div style={{"color":"blue"}}>
-                              Комментарий будет виден только вам в разделе мои закупки,
+                              Комментарий будет виден только вам, в разделе мои закупки,
                                в нем например вы можете указать с какой целью производится закупка. 
                               </div>
                               <Form.Control
@@ -364,28 +381,32 @@ const CreateAsk = observer(() => {
             >
             Создать
             </Button>
-        <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg} 
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-          <ModalCT 
-                header="Категории" 
-                active={modalActiveCat} 
-                setActive={setModalActiveCat} 
-                component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
-                setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>
-          <ModalCT 
-                header="Участники" 
-                active={modalActiveMember}  
-                component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
-                setActive={setModalActiveMember} 
-          />
+            <ModalCT 
+                    header="Регионы" 
+                    active={modalActiveReg} 
+                    setActive={setModalActiveReg}
+                    text={
+                      <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                      </div>
+                    } 
+                    component={<RegionTree 
+                    checked={checkedRegion} expanded={expandedRegion} max={3} 
+                    setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                    />}/>
+              <ModalCT 
+                  header="Категории" 
+                  active={modalActiveCat} 
+                  setActive={setModalActiveCat} 
+                  text={
+                    <div className='mx-3 pb-2 text-warning'>
+                      Не более 3
+                    </div>
+                  }
+                  component={<CategoryTree 
+                  checked={checkedCat} expanded={expandedCat} max={3} 
+                  setChecked={setCheckedCat} setExpanded={setExpandedCat}
+            />}/>  
           </Form>
           </Container>
         </div>
