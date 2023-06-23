@@ -143,7 +143,6 @@ const CreateAsk = observer(() => {
             myalert.setMessage("Заявка успешно добавлена");
             if(checkedEmail.length>0){
                 chat.socket.emit("unread_invited", checkedEmail);
-                console.log(checkedEmail)
             }
             history.push(B2B_ROUTE)
           } else if(result.errors){
@@ -254,6 +253,9 @@ const CreateAsk = observer(() => {
                               В данном поле вы можете указать кому из ваших контрагентов придет уведомление на участие в торгах. Также вы можете 
                               жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.
                               </div>
+                              <div style={{"text-indent": "30px"}}>
+                                Чтобы пригласить на участие, можно скопировать ссылку из раздела мои заявки.
+                                </div>  
                               <Form.Control
                                   name="Party"
                                   defaultValue={checkedEmail.map((item)=>
@@ -263,7 +265,7 @@ const CreateAsk = observer(() => {
                                   onChange={handleChange}
                                   disabled={true}
                               />
-                               <Button variant="outline-secondary" id="button-addon2" onClick={()=>!id && setModalActiveMember(true)}>
+                               <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
                               <InputGroup>
@@ -407,6 +409,12 @@ const CreateAsk = observer(() => {
                   checked={checkedCat} expanded={expandedCat} max={3} 
                   setChecked={setCheckedCat} setExpanded={setExpandedCat}
             />}/>  
+             <ModalCT 
+                header="Участники" 
+                active={modalActiveMember}  
+                component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
+                setActive={setModalActiveMember} 
+              />
           </Form>
           </Container>
         </div>

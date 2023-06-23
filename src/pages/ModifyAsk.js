@@ -14,6 +14,7 @@ import {
     Table,
   } from "react-bootstrap";
 import {modifyAsk} from "../http/askAPI";
+import {useHistory} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
 import ModalCT from '../components/ModalCT';
 import RegionTree from '../components/RegionTree';
@@ -26,6 +27,8 @@ import AskService from '../services/AskService';
 import ModalAlert from '../components/ModalAlert';
 import EmailList from '../components/EmailList'
 import {observer} from "mobx-react-lite";
+import NoPermission from './NoPermission';
+import {B2B_ROUTE} from "../utils/routes";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -53,6 +56,7 @@ const ModifyAsk = observer((askId) => {
   registerLocale("ru", ru)
 
   const {user} = useContext(Context);  
+  const {chat} =  useContext(Context)
   const [files, setFiles] = useState([])
   const [modalActiveReg,setModalActiveReg] = useState(false)
   const [modalActiveCat,setModalActiveCat] = useState(false)
@@ -65,7 +69,9 @@ const ModifyAsk = observer((askId) => {
   const [checkedEmail,setCheckedEmail] =  useState([]);
   const [startDate, setStartDate] = useState(date);
   const [fileSize, setFileSize] = useState(0);
-   const [modalActiveMember,setModalActiveMember] = useState(false)
+  const [permission, setPermission] = useState(true);
+  const [modalActiveMember,setModalActiveMember] = useState(false)
+  const history = useHistory();
   const {id} = useParams();
 
   const[ask,setAsk] = useState( {
@@ -87,6 +93,9 @@ const ModifyAsk = observer((askId) => {
         setFiles(result.Files);
         setCheckedEmail(result.Party)
         ask.data.MaxPrice=0
+        if(ask?.data?.Author?._id!==user.user.id){
+          setPermission(false)
+        }
       })
     },[]);
 
@@ -114,6 +123,10 @@ const ModifyAsk = observer((askId) => {
         const result = await modifyAsk(data)
         if (result.ok===1){
           myalert.setMessage("Заявка успешно изменена"); 
+          if(checkedEmail.length>0){
+            chat.socket.emit("unread_invited", checkedEmail);
+          }
+          history.push(B2B_ROUTE)
         } else {
           myalert.setMessage(result?.message);
         }
@@ -180,6 +193,12 @@ const ModifyAsk = observer((askId) => {
       setAsk({ data, formErrors});
     }
 
+    if(!permission){
+      return(
+        <NoPermission/>
+      )
+    }
+
     return (
         <div>
           <Container>
@@ -213,11 +232,12 @@ const ModifyAsk = observer((askId) => {
                             <tr>
                             <td>Участники торгов</td>
                             <td>
-                              <div style={{"text-indent": "30px", "color":"blue"}}> В данном поле вы можете указать кто из ваших контрагентов будет участвовать в торгах, вы можете 
-                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.</div>
-                              <div style={{"text-indent": "30px"}}> Также вы можете поставить галочку разослать приглашение на участие в торгах от имени нашего сервиса.</div> 
+                              <div style={{"text-indent": "30px", "color":"blue"}}> 
+                              В данном поле вы можете указать кому из ваших контрагентов придет уведомление на участие в торгах. Также вы можете 
+                              жестко ограничить участников для того чтобы другие организации не имели возможность делать ценовые предложения.
+                              </div>
                               <div style={{"text-indent": "30px"}}>
-                                Но самым надежным способом будет если вы отправите приглашение на участие скопировав ссылку из раздела мои заявки.
+                                Чтобы пригласить на участие, можно скопировать ссылку из раздела мои заявки.
                                 </div>  
                                 <Form.Control
                                   name="Party"
@@ -231,7 +251,7 @@ const ModifyAsk = observer((askId) => {
                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveMember(true)}>
                                 Выбор
                               </Button>
-                              {/* <InputGroup>
+                              <InputGroup>
                                 <Form.Check
                                       name="Private"
                                       type="checkbox"
@@ -239,7 +259,7 @@ const ModifyAsk = observer((askId) => {
                                       onChange={handleChecked}>
                                 </Form.Check>
                                 Ограничить выбранными участниками.                    
-                              </InputGroup> */}
+                              </InputGroup>
                               <InputGroup>
                               <Form.Check
                                     name="Hiden"
