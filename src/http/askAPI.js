@@ -54,8 +54,8 @@ export const setWinnerAPI = async (formData) => {
     const data = await $api.post(`/setwinner`, formData);
     return data
 }
-export const uploadPrice = async (formData) => {
-    const {data} = await $api.post(`/addprice`, formData);
+export const uploadPrice = async (formData,options) => {
+    const {data} = await $api.post(`/addprice`, formData,options);
     return data
 }
 export const modifyAsk = async (formData) => {

@@ -207,7 +207,14 @@ const CardAsk = observer(() => {
               <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
           </div>)}</td>
-          <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+          <td>
+            <div>
+              {dateFormat(item.Date, "dd/mm/yyyy")}
+            </div>
+            <div>
+              {dateFormat(item.Date, "HH:MM:ss")}
+            </div>
+          </td>
           <td>{possChoise(item)}</td>
         </tr>
       )
@@ -231,8 +238,8 @@ const CardAsk = observer(() => {
         <Container className="mx-auto my-4">
             <Row>
                 <Col>
-                     <Table>
-                        <tbody>
+                     <Table className='tableLayoutFix'>
+                        <tbody className='breakWord'>
                             <tr>
                             <td>Автор</td>
                             <td>
@@ -294,12 +301,13 @@ const CardAsk = observer(() => {
             {winnerDef()}
             <Card>
                 <Card.Header style={{"background":"#282C34", "color":"white"}}>Предложения</Card.Header>
-                  <Table striped bordered hover>
+                  <Table striped bordered hover className='tableLayoutFix'>
                   <col style={{"width":"3%"}}/>
-                  <col style={{"width":"15%"}}/>
-                  <col style={{"width":"5%"}}/>
+                  <col style={{"width":"10%"}}/>
+                  <col style={{"width":"10%"}}/>
                   <col style={{"width":"30%"}}/>
-                  <col style={{"width":"40%"}}/>
+                  <col style={{"width":"30%"}}/>
+                  <col style={{"width":"10%"}}/>
                   <col style={{"width":"5%"}}/>
                     <thead>
                       <tr>
@@ -313,7 +321,7 @@ const CardAsk = observer(() => {
                       </tr>
                     </thead>
                     {offers?.length > 0 ? 
-                      <tbody>
+                      <tbody className='breakWord'>
                       {offers?.map((item,index)=>{
                          if(!ask?.Hiden || user.user.id === ask?.Author._id){
                           return(offersRender(item,index))
@@ -321,16 +329,22 @@ const CardAsk = observer(() => {
                           return(offersRender(item,index))
                         }else{
                           return (
-                            <tbody className='notOffers'>
-                                <div>Нет предложений</div>
-                            </tbody>
+                                <tr>
+                                  <td colspan="7"  class="text-center">
+                                    Автор скрыл возможность видеть предложения других участников
+                                  </td>
+                                </tr>
                           )
                         }
                       })}
                       </tbody>
                     :
-                    <tbody className='notOffers'>
-                      <div>Нет предложений</div>
+                    <tbody className='breakWord'>
+                        <tr>
+                          <td colspan="7"  class="text-center">
+                               Предложений нет
+                          </td>
+                        </tr>
                     </tbody>
                     }
                   </Table>

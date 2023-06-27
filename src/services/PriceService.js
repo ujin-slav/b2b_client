@@ -15,7 +15,7 @@ export default class PriceService {
         return data
     }
     static async clearPrice(formData){
-        const {data} = await $api.post(`/clearprice`,formData);
+        const data = await $api.post(`/clearprice`,formData);
         return data
     }
 

@@ -133,7 +133,7 @@ const CreateAsk = observer(() => {
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           data.append("Date", new Date())
-          data.append("Private", checkedEmail.length>0)
+          data.append("Private", ask.data.Private)
           data.append("Hiden", ask.data.Hiden)
           data.append("Comment", ask.data.Comment)
           data.append("Send", ask.data.Send)

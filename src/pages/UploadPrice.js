@@ -7,7 +7,7 @@ import {
     Button,
     Table,
     Card,
-
+    ProgressBar
   } from "react-bootstrap";
 import { uploadPrice } from '../http/askAPI';
 import {Context} from "../index";
@@ -30,6 +30,7 @@ const UploadPrice = observer(() => {
     const[fetching,setFetching] = useState(true);
     const[totalDocs,setTotalDocs] = useState(0);
     const[help,setHelp] = useState(false);
+    const [progress, setProgress] = useState(0)
     const[search,setSearch] = useState("");
     const input = useRef(null);
     let limit = 30
@@ -102,18 +103,26 @@ const UploadPrice = observer(() => {
 
     const onSubmit = async(e) => {
         e.preventDefault();
+        const options = {
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+              if( percent < 100 ){
+                setProgress(percent)
+              }
+            }
+        }
         if(file.length!==0){
             const data = new FormData()
             data.append("price",JSON.stringify(price))
             data.append("userID", user.user.id)
-            setFetch(true)
-            const result = await uploadPrice(data)
+            const result = await uploadPrice(data,options)
             if(result.result){
                 myalert.setMessage("Прайс загружен");
             } else if(result.errors){
                 myalert.setMessage(result.message);
             }
-            setFetch(false)
             setFile([])
         }else{
             myalert.setMessage("Выберите файл");
@@ -122,11 +131,10 @@ const UploadPrice = observer(() => {
     const clearPrice = async()=>{
       setFetch(true)
       const result = await PriceService.clearPrice({org:user.user.id});
-      console.log(result)
-      if (result.ok){
-        myalert.setMessage("Успешно"); 
+      if (result.status===200){
+        myalert.setMessage("Успешно");
       } else {
-        myalert.setMessage(result?.data?.message);
+        myalert.setMessage(result.data.message);
       }
       setPrice([])
       setFetch(false)
@@ -165,8 +173,9 @@ const UploadPrice = observer(() => {
                                     <ul>
                                     <li>1-я колонка - Артикул (не обязателен)</li>
                                     <li>2-я колонка - Наименование (обязательно)</li>
-                                    <li>3-я колонка - Цена (не обязательно)</li>
+                                    <li>3-я колонка - Цена (обязательно)</li>
                                     <li>4-я колонка - Остаток (обязательно)</li>
+                                    <li>5-я колонка - Единица измерения (не обязательно)</li>
                                     </ul>
                                     Заголовки колонок подписывать не нужно.<br/>
                                     Если данные отображаются как надо, нажимайте кнопку загрузить,
@@ -178,7 +187,12 @@ const UploadPrice = observer(() => {
                                 :
                                 <div></div>
                                 }
-                            </Card>   
+                            </Card>
+                                 {progress!==0 ? 
+                                    <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
+                                :
+                                    <div></div>
+                                }   
                                 <Button
                                     variant="primary"
                                     type="submit"
@@ -218,6 +232,7 @@ const UploadPrice = observer(() => {
                     <th>Наименование</th>
                     <th>Цена</th>
                     <th>Остаток</th>
+                    <th>Ед.изм</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -228,6 +243,7 @@ const UploadPrice = observer(() => {
                             <td>{item[1]||item.Name||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[2]||item.Price||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[3]||item.Balance||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[4]||item.Measure||<div style={{"color":"red"}}>нет</div>}</td>
                         </tr>
                     )}
                  </tbody>
