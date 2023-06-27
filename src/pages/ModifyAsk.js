@@ -28,7 +28,7 @@ import ModalAlert from '../components/ModalAlert';
 import EmailList from '../components/EmailList'
 import {observer} from "mobx-react-lite";
 import NoPermission from './NoPermission';
-import {B2B_ROUTE} from "../utils/routes";
+import {MYORDERS} from "../utils/routes";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -126,7 +126,7 @@ const ModifyAsk = observer((askId) => {
           if(checkedEmail.length>0){
             chat.socket.emit("unread_invited", checkedEmail);
           }
-          history.push(B2B_ROUTE)
+          history.push(MYORDERS)
         } else {
           myalert.setMessage(result?.message);
         }

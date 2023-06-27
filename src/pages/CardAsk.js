@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
 import { fetchOneAsk, fetchOffers, fetchUser} from '../http/askAPI';
-import {Card, Table, Col, Container, Row, Button,Form} from "react-bootstrap";
+import {Card, Table, Col, Container, Row, Button,Form,ProgressBar} from "react-bootstrap";
 import {uploadOffer,setWinnerAPI} from "../http/askAPI";
 import {Context} from "../index";
 import Question from '../components/Question';
@@ -11,7 +11,7 @@ import {Eye,Award, Trophy} from 'react-bootstrap-icons';
 import "../style.css";
 
 import {useHistory} from 'react-router-dom';
-import {ORGINFO} from "../utils/routes";
+import {ORGINFO,MYOFFERS} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
 import ModalAlert from '../components/ModalAlert';
 import {observer} from "mobx-react-lite";
@@ -44,6 +44,7 @@ const CardAsk = observer(() => {
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState([{}]);
     const [fileSize, setFileSize] = useState(0);
+    const [progress, setProgress] = useState(0)
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const {user} = useContext(Context);  
     const [offer, setOffer] = useState({
@@ -65,9 +66,13 @@ const CardAsk = observer(() => {
         setLoading(true)
         fetchOneAsk(id).then((data)=>{
             if(data.status===200){
-              setAsk(data.data)
+              if(data.data){
+                setAsk(data.data)
+              }else{
+                history.push(MYOFFERS)
+                myalert.setMessage("Заявка не существует, или удалена."); 
+              }
             }else{
-              console.log(data)
               setError(data.data.errors)
             }
         }).finally(()=>{
@@ -82,6 +87,15 @@ const CardAsk = observer(() => {
 
     const onSubmit = e => {
         e.preventDefault();
+        const options = {
+          onUploadProgress: (progressEvent) => {
+          const {loaded, total} = progressEvent;
+          let percent = Math.floor( (loaded * 100) / total )
+          if( percent < 100 ){
+              setProgress(percent)
+          }
+          }
+        }
         if (formValid(offer)) {
           const data = new FormData();
             files.forEach((item)=>data.append("file", item));
@@ -91,7 +105,7 @@ const CardAsk = observer(() => {
             data.append("UserId", user.user.id)
             data.append("AuthorAsk", ask.Author._id)
             setLoading(true)
-            uploadOffer(data).then((response)=>{
+            uploadOffer(data,options).then((response)=>{
               fetchOffers(id).then((data)=>{ 
                 setOffers(data);
                 myalert.setMessage("Предложение успешно опубликовано.");
@@ -350,7 +364,12 @@ const CardAsk = observer(() => {
                     {files.map((a,key)=><div key={key}>{a.name}
                     <button onClick={()=>removeFile(key)}>X</button>
                     </div>
-                    )}   
+                    )}
+                    {progress!==0 ? 
+                    <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
+                    :
+                    <div></div>
+                    } 
                     <Button
                         variant="primary"
                         type="submit" 

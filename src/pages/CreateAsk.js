@@ -24,7 +24,7 @@ import { regionNodes } from '../config/Region';
 import {observer} from "mobx-react-lite";
 import Captcha from "demos-react-captcha";
 import "../style.css";
-import {B2B_ROUTE} from "../utils/routes";
+import {MYORDERS} from "../utils/routes";
 import {useParams} from 'react-router-dom';
 import { fetchUser} from '../http/askAPI';
 import dateFormat, { masks } from "dateformat";
@@ -144,7 +144,7 @@ const CreateAsk = observer(() => {
             if(checkedEmail.length>0){
                 chat.socket.emit("unread_invited", checkedEmail);
             }
-            history.push(B2B_ROUTE)
+            history.push(MYORDERS)
           } else if(result.errors){
             myalert.setMessage(result.message);
           }
