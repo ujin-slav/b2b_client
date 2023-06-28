@@ -38,7 +38,7 @@ const MyPrice = observer(() => {
     },[]);
 
     const handleSearch = (e) =>{
-        PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).
+        PriceService.getPrice({page:1,limit,search,org:user.user.id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -111,6 +111,7 @@ const MyPrice = observer(() => {
                     <th>Наименование</th>
                     <th>Цена</th>
                     <th>Остаток</th>
+                    <th>Ед.изм</th>
                     <th>Дата</th>
                 </tr>
                 </thead>
@@ -121,6 +122,7 @@ const MyPrice = observer(() => {
                             <td>{item?.Name}</td>
                             <td>{item?.Price}</td>
                             <td>{item?.Balance}</td>
+                            <td>{item?.Measure}</td>
                             <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
                         </tr>
                     )}

@@ -215,7 +215,8 @@ const MySpecOffers = observer(() => {
                 )
                 })}
             </div>
-            <ReactPaginate
+            {specOffers?.length!==0 ? 
+                <ReactPaginate
                 forcePage = {currentPage-1}
                 previousLabel={"предыдущий"}
                 nextLabel={"следующий"}
@@ -234,7 +235,9 @@ const MySpecOffers = observer(() => {
                 breakClassName={"page-item"}
                 breakLinkClassName={"page-link"}
                 activeClassName={"active"}
-                />
+                        />
+                    :
+                <div></div>}
                 <ModalAlert header="Вы действительно хотите удалить" 
                 active={modalActive} 
                 setActive={setModalActive} funRes={deleteSpecOffer}/>

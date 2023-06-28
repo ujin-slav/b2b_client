@@ -236,6 +236,7 @@ const UserPrice = ({idorg,idprod}) => {
                                     </td>
                                     <td>{item?.Price}</td>
                                     <td>{item?.Balance}</td>
+                                    <td>{item?.Measure}</td>
                                     <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                                     <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
                                         onClick={()=>{
@@ -282,7 +283,7 @@ const UserPrice = ({idorg,idprod}) => {
                                     />
                                 </div>
                                 <div>
-                                    Остаток: {item?.Balance}
+                                    Остаток: {item?.Balance} {item?.Measure}
                                 </div>
                                 <div>
                                     <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>

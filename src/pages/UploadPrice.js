@@ -79,7 +79,6 @@ const UploadPrice = observer(() => {
                 /* Convert array of arrays */
                 const data = XLSX.utils.sheet_to_json(ws, { header: 1,blankrows: true, defval: '', });
                 /* Update state */
-                console.log(data)
                 setPrice(data);
                 input.current.value=null
                 };
@@ -101,11 +100,39 @@ const UploadPrice = observer(() => {
         )
     }
 
+    const checkPrice = () => {
+        price?.map((item,index)=>{
+            const numStr = index + 1 
+            if(!item[1]){
+                myalert.setMessage("В строке № " + numStr + " не заполнено поле наименование");
+                return false
+            }
+            if(!item[2]){
+                myalert.setMessage("В строке № " + numStr + " не заполнено поле цена");
+                return false
+            }
+            if(!item[3]){
+                myalert.setMessage("В строке № " + numStr + " не заполнено поле остаток");
+                return false
+            }
+            if(!Number(item[2])){
+                myalert.setMessage("В строке № " + numStr + " поле цена не является числом");
+                return false
+            }
+            if(!Number(item[3])){
+                myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
+                return false
+            }
+        })
+        return true
+    }
+
     const onSubmit = async(e) => {
         e.preventDefault();
         const options = {
             onUploadProgress: (progressEvent) => {
               const {loaded, total} = progressEvent;
+              console.log(loaded)
               let percent = Math.floor( (loaded * 100) / total )
               console.log( `${loaded}kb of ${total}kb | ${percent}%` );
               if( percent < 100 ){
@@ -114,16 +141,18 @@ const UploadPrice = observer(() => {
             }
         }
         if(file.length!==0){
-            const data = new FormData()
-            data.append("price",JSON.stringify(price))
-            data.append("userID", user.user.id)
-            const result = await uploadPrice(data,options)
-            if(result.result){
-                myalert.setMessage("Прайс загружен");
-            } else if(result.errors){
-                myalert.setMessage(result.message);
+            if(checkPrice()){
+                const data = new FormData()
+                data.append("price",JSON.stringify(price))
+                data.append("userID", user.user.id)
+                const result = await uploadPrice(data,options)
+                if(result.result){
+                    myalert.setMessage("Прайс загружен");
+                } else if(result.errors){
+                    myalert.setMessage(result.message);
+                }
+                setFile([])
             }
-            setFile([])
         }else{
             myalert.setMessage("Выберите файл");
         }
@@ -239,11 +268,11 @@ const UploadPrice = observer(() => {
                     {price?.map((item)=>
                     
                         <tr>
-                            <td>{item[0]||item.Code||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[0]||item.Code||<div style={{"color":"green"}}>нет</div>}</td>
                             <td>{item[1]||item.Name||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[2]||item.Price||<div style={{"color":"red"}}>нет</div>}</td>
                             <td>{item[3]||item.Balance||<div style={{"color":"red"}}>нет</div>}</td>
-                            <td>{item[4]||item.Measure||<div style={{"color":"red"}}>нет</div>}</td>
+                            <td>{item[4]||item.Measure||<div style={{"color":"green"}}>нет</div>}</td>
                         </tr>
                     )}
                  </tbody>

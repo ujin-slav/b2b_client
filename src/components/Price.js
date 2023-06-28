@@ -184,6 +184,7 @@ const Prices = observer(() => {
                           <th>Наименование</th>
                           <th>Цена</th>
                           <th>Остаток</th>
+                          <th>Ед.изм</th>
                           <th>Организация</th>
                           <th>Дата</th>
                           <th>+</th>
@@ -197,6 +198,7 @@ const Prices = observer(() => {
                                   <td>{item?.Name}</td>
                                   <td>{item?.Price}</td>
                                   <td>{item?.Balance}</td>
+                                  <td>{item?.Measure}</td>
                                   <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
                                       {item?.User?.nameOrg}</a></td>
                                   <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
@@ -240,7 +242,7 @@ const Prices = observer(() => {
                                     />
                                 </div>
                                 <div>
-                                    Остаток: {item?.Balance}
+                                    Остаток: {item?.Balance} {item?.Measure}
                                 </div>
                                 <div>
                                     <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
