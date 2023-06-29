@@ -184,7 +184,7 @@ const CreateSpecOffer = observer(() => {
     }
     
     const onInputChange = (e) => {
-      if(files.length+e.target.files.length<6){
+      if(files.length+e.target.files.length<9){
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
@@ -305,7 +305,6 @@ const CreateSpecOffer = observer(() => {
     return (
         <Container>
           <Form onSubmit={onSubmit}>
-          <h3>Создать спец. предложение</h3> 
           <Table className="createAsk">
             <col style={{"width":"15%"}}/>
           	<col style={{"width":"85%"}}/>
@@ -434,17 +433,27 @@ const CreateSpecOffer = observer(() => {
         <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 
-                setActive={setModalActiveReg} 
+                setActive={setModalActiveReg}
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                  Не более 3
+                  </div>
+                }  
                 component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
+                checked={checkedRegion} expanded={expandedRegion} max={3}
                 setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                 />}/>
           <ModalCT 
                 header="Категории" 
                 active={modalActiveCat} 
-                setActive={setModalActiveCat} 
+                setActive={setModalActiveCat}
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                  Не более 3
+                  </div>
+                }  
                 component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
+                checked={checkedCat} expanded={expandedCat} max={3}
                 setChecked={setCheckedCat} setExpanded={setExpandedCat}
           />}/>
           <ModalCT 

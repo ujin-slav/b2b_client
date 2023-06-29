@@ -97,7 +97,7 @@ const SearchForm = () => {
                     active={modalActiveReg} 
                     setActive={setModalActiveReg} 
                     component={<RegionTree 
-                    checked={checkedRegion} expanded={expandedRegion} 
+                    checked={checkedRegion} expanded={expandedRegion} max={999}
                     setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                     />}/>
                 <ModalCT 
@@ -105,7 +105,7 @@ const SearchForm = () => {
                         active={modalActiveCat} 
                         setActive={setModalActiveCat} 
                         component={<CategoryTree 
-                        checked={checkedCat} expanded={expandedCat} 
+                        checked={checkedCat} expanded={expandedCat} max={999}
                         setChecked={setCheckedCat} setExpanded={setExpandedCat}
                 />}/>
             </div>
@@ -181,9 +181,9 @@ const SearchForm = () => {
                 <ModalCT 
                     header="Регионы" 
                     active={modalActiveReg} 
-                    setActive={setModalActiveReg} 
+                    setActive={setModalActiveReg}
                     component={<RegionTree 
-                    checked={checkedRegion} expanded={expandedRegion} 
+                    checked={checkedRegion} expanded={expandedRegion} max={999} 
                     setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                     />}/>
               <ModalCT 
@@ -191,7 +191,7 @@ const SearchForm = () => {
                     active={modalActiveCat} 
                     setActive={setModalActiveCat} 
                     component={<CategoryTree 
-                    checked={checkedCat} expanded={expandedCat} 
+                    checked={checkedCat} expanded={expandedCat} max={999} 
                     setChecked={setCheckedCat} setExpanded={setExpandedCat}
               />}/>
             </Card>

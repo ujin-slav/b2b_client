@@ -15,6 +15,7 @@ const Carousel = () => {
     const[fetching,setFetching] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
     const {user} = useContext(Context);
+    const {ask} = useContext(Context);
     const {myalert} = useContext(Context);
     const[page,setPage] = useState(1)
     const slider = useRef(null)
@@ -80,7 +81,13 @@ const Carousel = () => {
     useEffect(() => {
         if(fetching){
             if(carousel.length===0 || carousel.length<totalDocs) {
-                CarouselService.getCarousel({search:"",limit,page,user:user.user.id}).then((data)=>{
+                CarouselService.getCarousel({
+                    filterCat:ask.categoryFilter,
+                    filterRegion:ask.regionFilter,
+                    searchInn:ask.searchInn,
+                    limit,
+                    page,
+                    user:user.user.id}).then((data)=>{
                 if(data){
                     setTotalDocs(data.totalDocs);
                     setCarousel([...carousel, ...data.docs]);
@@ -89,7 +96,7 @@ const Carousel = () => {
             }).finally(()=>setFetching(false))
             }
         }  
-    },[fetching]);
+    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,fetching]);
 
     const addContr = async(item)=>{
         console.log(item)

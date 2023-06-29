@@ -240,6 +240,7 @@ const CreatePriceAskFiz = () => {
                         <th>Наименование</th>
                         <th>Цена</th>
                         <th>Остаток</th>
+                        <th>Ед.изм</th>
                         <th>Дата</th>
                     </tr>
                 </thead>
@@ -250,6 +251,7 @@ const CreatePriceAskFiz = () => {
                                 <td>{item?.Name}</td>
                                 <td>{item?.Price}</td>
                                 <td>{item?.Balance}</td>
+                                <td>{item?.Measure}</td>
                                 <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                             </tr>
                         )}
@@ -266,6 +268,7 @@ const CreatePriceAskFiz = () => {
                         <th>Наименование</th>
                         <th>Цена</th>
                         <th>Кол-во</th>
+                        <th>Ед.изм</th>
                         <th>Сумма</th>
                         <th>Del</th>
                     </tr>
@@ -283,6 +286,7 @@ const CreatePriceAskFiz = () => {
                                         onChange={(e)=>changeInput(e,item)}
                                     />
                                 </td>
+                                <td>{item.Measure}</td>
                                 <td>{item.Count*item.Price}</td>
                                 <td><XCircle color="red" 
                                 style={{"width": "25px", "height": "20px"}} 
