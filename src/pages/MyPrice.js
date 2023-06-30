@@ -42,7 +42,7 @@ const MyPrice = observer(() => {
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
-                setCurrentPage(prevState=>prevState + 1)
+                setCurrentPage(2)
                 setSearch(e.target.value)
         }).finally(
             ()=>setFetching(false)

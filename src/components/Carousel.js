@@ -6,14 +6,17 @@ import ContrService from '../services/ContrService';
 import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
 import {Context} from "../index";
+import {observer} from "mobx-react-lite";
 
-const Carousel = () => {
+const Carousel =  observer(() => {
 
     const[visible,setVisible] = useState(true)
     const history = useHistory()
     const[carousel,setCarousel] = useState([])
     const[fetching,setFetching] = useState(true)
+    const[loading,setLoading] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
+    const[totalPage,setTotalPage] = useState(0)
     const {user} = useContext(Context);
     const {ask} = useContext(Context);
     const {myalert} = useContext(Context);
@@ -79,8 +82,24 @@ const Carousel = () => {
       },[])
 
     useEffect(() => {
-        if(fetching){
-            if(carousel.length===0 || carousel.length<totalDocs) {
+        if(!loading){
+                CarouselService.getCarousel({
+                    filterCat:ask.categoryFilter,
+                    filterRegion:ask.regionFilter,
+                    searchInn:ask.searchInn,
+                    limit,
+                    page:1,
+                    user:user.user.id}).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    console.log(data.totalDocs);
+                    console.log(carousel);
+                    setCarousel(data.docs);
+                    setPage(2)
+                })}  
+    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn]);
+
+    useEffect(() => {
+        if(carousel.length===0 || carousel.length<=totalDocs) {
                 CarouselService.getCarousel({
                     filterCat:ask.categoryFilter,
                     filterRegion:ask.regionFilter,
@@ -91,12 +110,14 @@ const Carousel = () => {
                 if(data){
                     setTotalDocs(data.totalDocs);
                     setCarousel([...carousel, ...data.docs]);
+                    setTotalPage(data.page)
                     setPage(prevState=>prevState + 1)
                 }
-            }).finally(()=>setFetching(false))
-            }
-        }  
-    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,fetching]);
+            }).finally(()=>{
+                setFetching(false)
+                setLoading(false)
+            })}
+    },[fetching]);
 
     const addContr = async(item)=>{
         console.log(item)
@@ -152,6 +173,6 @@ const Carousel = () => {
         </div>
         </Card>
     )
-}
+})
 
 export default Carousel
