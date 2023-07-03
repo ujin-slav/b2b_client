@@ -175,9 +175,19 @@ const UserPrice = ({idorg,idprod}) => {
             </Card.Header>
             {
                 visible ?
-                <h5 className="text-center pt-1">
-                    Записей нет.
-                </h5>
+                <div>
+                    <Form.Group className="mx-auto my-2">
+                    <Form.Label>Поиск:</Form.Label>
+                    <Form.Control
+                        ref={input}
+                        onChange={(e)=>handleSearch(e.target.value)}
+                        placeholder="Начните набирать артикул или название продукта"
+                    />
+                    </Form.Group>
+                    <h5 className="text-center pt-1">
+                        Записей нет.
+                    </h5>
+                </div>
                 :
                 <div></div> 
                 }

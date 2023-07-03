@@ -103,6 +103,12 @@ const TableAsk = observer(({authorId}) => {
             </Card>
       )
      }
+    
+    if(loading){
+      return(
+        <div class="loader">Loading...</div>
+      )
+    }
 
     return (
       <Card className='section'>
@@ -253,8 +259,8 @@ const TableAsk = observer(({authorId}) => {
                     } 
             </div>
             <div>
-                    <div>ИНН: {item.Author.inn}</div>
-                    <div>Орг: {item.Author.nameOrg}</div>
+                    <div>ИНН: {item?.Author?.inn}</div>
+                    <div>Орг: {item?.Author?.nameOrg}</div>
             </div>
             <div className="specCloudy">
                 {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
