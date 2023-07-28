@@ -1191,6 +1191,12 @@ text-align: center;
   transform: translate(-50%, -50%);
 }
 @media (max-width: 650px) {
+  .searchFormMenuSelect{
+    width: 100% !important;
+  } 
+  .inputGroupMenuSelect{
+    display:block;
+  }
   .container-mycontr{
     width: 95%; 
   }
