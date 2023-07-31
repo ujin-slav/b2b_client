@@ -132,7 +132,6 @@ const ModifyAsk = observer((askId) => {
         }
       } else {
         console.error("FORM INVALID");
-        myalert.setMessage("Не заполнено поле текст заявки");
       }
     };
 
@@ -280,6 +279,7 @@ const ModifyAsk = observer((askId) => {
                                   placeholder="Текст заявки"
                                   as="textarea"
                               />
+                              <span className="errorMessage" style={{color:"red"}}>{ask.formErrors.Text}</span>
                             </td>
                             </tr>
                             <tr>
