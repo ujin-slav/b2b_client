@@ -16,6 +16,7 @@ import { regionNodes } from '../config/Region';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { CircleFill } from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
+import StatusAsk from '../components/StatusAsk';
 
 const Invited = observer(({authorId}) => {
     registerLocale("ru", ru)
@@ -189,15 +190,10 @@ const Invited = observer(({authorId}) => {
              }
             </div>
             <div>
-                    {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                    <div style={{color:"green"}}>
-                    Активная
-                    </div>
-                    :
-                    <div style={{color:"red"}}>
-                    Истек срок
-                    </div>
-                    } 
+                <StatusAsk 
+                    EndDateOffers={item.EndDateOffers}
+                    Winner={item.Winner}
+                />
             </div>
             <div>
                     <div>ИНН: {item?.Author?.inn}</div>

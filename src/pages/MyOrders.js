@@ -18,6 +18,7 @@ import { regionNodes } from '../config/Region';
 import {Form} from "react-bootstrap";
 import {Search} from 'react-bootstrap-icons';
 import bin from "../icons/bin.svg";
+import StatusAsk from '../components/StatusAsk';
 
 const TableAsk = observer(() => {
     registerLocale("ru", ru)
@@ -197,15 +198,10 @@ const TableAsk = observer(() => {
                     }
                 </div>
                 <div>
-                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                        <div style={{color:"green"}}>
-                        Активная
-                        </div>
-                        :
-                        <div style={{color:"red"}}>
-                        Истек срок
-                        </div>
-                        } 
+                    <StatusAsk 
+                        EndDateOffers={item.EndDateOffers}
+                        Winner={item.Winner}
+                    />
                 </div>
                 <div className="specCloudy">
                     {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?

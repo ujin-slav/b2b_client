@@ -17,6 +17,7 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {Form} from "react-bootstrap";
 import {Search} from 'react-bootstrap-icons';
+import StatusAsk from '../components/StatusAsk';
 
 const AdminAsk = () => {
     registerLocale("ru", ru)
@@ -207,15 +208,10 @@ const AdminAsk = () => {
                     }
                 </div>
                 <div>
-                        {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                        <div style={{color:"green"}}>
-                        Активная
-                        </div>
-                        :
-                        <div style={{color:"red"}}>
-                        Истек срок
-                        </div>
-                        } 
+                    <StatusAsk 
+                        EndDateOffers={item.EndDateOffers}
+                        Winner={item.Winner}
+                    />
                 </div>
                 <div className="specCloudy">
                     {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?

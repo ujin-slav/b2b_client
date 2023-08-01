@@ -129,7 +129,7 @@ const AskStatus = observer(({askId}) => {
     const getStatus = () => {
         setLoading(true)
         AskService.getStatus(askId).then((result)=>{
-            if(result.Status){
+            if(result?.Status){
                 setStatus(result?.Status?.Status?.value)
                 setPrevStatus(result?.Status?.Status?.value)
                 setFilesCrContract(result?.Status?.CrContractfiles || [])

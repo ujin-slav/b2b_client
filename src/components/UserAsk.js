@@ -16,6 +16,7 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import { PlusCircleFill,CaretDownFill,CaretUpFill, TypeH3} from 'react-bootstrap-icons';
 import {checkAccessAsk} from '../utils/CheckAccessAsk'
+import StatusAsk from '../components/StatusAsk';
 
 
 const UserAsk = observer(({id}) => {
@@ -137,15 +138,10 @@ const UserAsk = observer(({id}) => {
                   Текст
               </div>
               <div className="blurry-text">
-                      {Date.parse(item.EndDateOffers) > new Date().getTime() ?
-                      <div style={{color:"green"}}>
-                      Активная
-                      </div>
-                      :
-                      <div style={{color:"red"}}>
-                      Истек срок
-                      </div>
-                      } 
+                  <StatusAsk 
+                    EndDateOffers={item.EndDateOffers}
+                    Winner={item.Winner}
+                  />
               </div>
               <div className="blurry-text">
                       <div>ИНН: 8888888888</div>
