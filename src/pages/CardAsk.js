@@ -9,7 +9,7 @@ import AskStatus from './AskStatus';
 import dateFormat, { masks } from "dateformat";
 import {Eye,Award, Trophy} from 'react-bootstrap-icons';
 import "../style.css";
-
+import {getCategoryName} from '../utils/Convert'
 import {useHistory} from 'react-router-dom';
 import {ORGINFO,MYOFFERS} from "../utils/routes";
 import ModalCT from '../components/ModalCT';
@@ -18,6 +18,8 @@ import {observer} from "mobx-react-lite";
 import MessageBox from '../components/MessageBox'
 import { checkAccessAsk } from '../utils/CheckAccessAsk';
 import '../fontawesome.css';
+import { regionNodes } from '../config/Region';
+import { categoryNodes } from '../config/Category';
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -41,6 +43,8 @@ const CardAsk = observer(() => {
     const {myalert} = useContext(Context);
     const [modalActive,setModalActive] = useState(false);
     const [winnerDTO,setWinnerDTO] = useState();
+    const [readMoreCategory,setReadMoreCategory] = useState(false);
+    const [readMoreRegion,setReadMoreRegion] = useState(false);
     const [ask, setAsk] = useState();
     const [offers, setOffers] = useState([{}]);
     const [fileSize, setFileSize] = useState(0);
@@ -230,7 +234,16 @@ const CardAsk = observer(() => {
 
     if(error){
       return(
-        <div className='errorNotFound'>Ошибка!!</div>
+          <div>
+            <Container
+                    className="d-flex justify-content-center align-items-center"
+                    style={{height: window.innerHeight - 54}}
+                    >
+                <Card style={{width: 600}} className="p-5 ">
+                    <h5>Заяка не существует, или удалена.</h5>
+                </Card> 
+            </Container>
+          </div>
       )
     }
 
@@ -285,6 +298,25 @@ const CardAsk = observer(() => {
                             <tr>
                             <td>Текст заявки</td>
                             <td>{ask?.Text}</td>
+                            </tr>
+                            <tr>
+                            <td>Категории заявки</td>
+                            <td>
+                              {readMoreCategory ? 
+                                  getCategoryName(ask?.Category, categoryNodes).join(", ") 
+                                : 
+                                  `${getCategoryName(ask?.Category, categoryNodes).join(", ").substring(0, 100)}...`
+                              }
+                              <a 
+                                href="javascript:void(0)" 
+                                onClick={() => setReadMoreCategory(!readMoreCategory)}> 
+                                {readMoreCategory ? 'Свернуть' : 'Показать больше'} 
+                              </a>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>Регионы заявки</td>
+                            <td>{getCategoryName(ask?.Region, regionNodes).join(", ")}</td>
                             </tr>
                             <tr>
                             <td>Файлы заявки</td>

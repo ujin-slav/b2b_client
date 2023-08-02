@@ -1,7 +1,7 @@
 export const getCategoryName = (checked,nodes) => {
     let resultArray = []
     
-    checked.map((itemChecked)=>{
+    checked?.map((itemChecked)=>{
         nodes.map((itemNodes)=>{
             if(itemChecked===itemNodes.value){
                 resultArray.push(itemNodes.label)

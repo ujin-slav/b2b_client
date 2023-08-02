@@ -8,7 +8,7 @@ export default class AskService {
     }
     
     static async fetchOneAsk(id){
-        const {data} = await $api.post(`/getoneask`,{id});
+        const data = await $api.post(`/getoneask`,{id});
         return data
     }
     static async fetchOffers(id){

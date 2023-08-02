@@ -71,6 +71,7 @@ const ModifyAsk = observer((askId) => {
   const [fileSize, setFileSize] = useState(0);
   const [permission, setPermission] = useState(true);
   const [modalActiveMember,setModalActiveMember] = useState(false)
+  const [error, setError] = useState();
   const history = useHistory();
   const {id} = useParams();
 
@@ -85,16 +86,20 @@ const ModifyAsk = observer((askId) => {
 
     useEffect(() => {
       AskService.fetchOneAsk(id).then((result)=>{
-        let formErrors = ask.formErrors;
-        let data = Object.assign(ask.data, result);
-        setCheckedRegion(result.Region);
-        setCheckedCat(result.Category);
-        setAsk({ data, formErrors});  
-        setFiles(result.Files);
-        setCheckedEmail(result.Party)
-        ask.data.MaxPrice=0
-        if(ask?.data?.Author?._id!==user.user.id){
-          setPermission(false)
+        if(result.status===200){
+          let formErrors = ask.formErrors;
+          let data = Object.assign(ask.data, result.data);
+          setCheckedRegion(result.data.Region);
+          setCheckedCat(result.data.Category);
+          setAsk({ data, formErrors});  
+          setFiles(result.data.Files);
+          setCheckedEmail(result.data.Party)
+          ask.data.MaxPrice=0
+          if(ask?.data?.Author?._id!==user.user.id){
+            setPermission(false)
+          }
+        }else{
+          setError(result.data.errors)
         }
       })
     },[]);
@@ -195,6 +200,21 @@ const ModifyAsk = observer((askId) => {
     if(!permission){
       return(
         <NoPermission/>
+      )
+    }
+
+    if(error){
+      return(
+          <div>
+            <Container
+                    className="d-flex justify-content-center align-items-center"
+                    style={{height: window.innerHeight - 54}}
+                    >
+                <Card style={{width: 600}} className="p-5 ">
+                    <h5>Заяка не существует, или удалена.</h5>
+                </Card> 
+            </Container>
+          </div>
       )
     }
 

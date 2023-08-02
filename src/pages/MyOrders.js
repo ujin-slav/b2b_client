@@ -217,27 +217,35 @@ const TableAsk = observer(() => {
                     getCategoryName(item.Category, categoryNodes).join(", ")
                     }
                 </div>
-                    <div>
-                    <a href="javascript:void(0)" 
-                        onClick={(e)=>{
-                            e.stopPropagation();
-                            history.push(MODIFYASK + '/' + item._id)
-                    }}>
-                    Редактировать
-                    </a>
-                    <Pen  className="changeSpecOffer"/>
-                    </div>
-                    <div>
-                    <a href="javascript:void(0)" 
-                        onClick={(e)=>{
-                            e.stopPropagation();
-                            navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
-                            myalert.setMessage("Ссылка скопирована");
+                    {!item.Winner ?
+                        <div>
+                        <a href="javascript:void(0)" 
+                            onClick={(e)=>{
+                                e.stopPropagation();
+                                history.push(MODIFYASK + '/' + item._id)
                         }}>
-                    Скопировать ссылку
-                    </a>
-                    <Link45deg  className="changeSpecOffer"/>
-                    </div>
+                        Редактировать
+                        </a>
+                        <Pen  className="changeSpecOffer"/>
+                        </div> 
+                        :
+                        <span></span>
+                    }
+                    {!item.Winner ?
+                        <div>
+                        <a href="javascript:void(0)" 
+                            onClick={(e)=>{
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(process.env.REACT_APP_URL + CARDASK + '/' + item._id)
+                                myalert.setMessage("Ссылка скопирована");
+                            }}>
+                        Скопировать ссылку
+                        </a>
+                        <Link45deg  className="changeSpecOffer"/>
+                        </div>
+                        :
+                        <span></span>
+                    }
                     <div>
                         <div><span className="specCloudy">Файлы: </span></div>
                         {item?.Files?.map((item,index)=><div key={index}>
