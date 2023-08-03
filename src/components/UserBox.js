@@ -9,7 +9,7 @@ import {
 import dateFormat from "dateformat";
 import {observer} from "mobx-react-lite";
 
-const UserBox = observer(({recevier,setRecevier}) => {
+const UserBox = observer(({recevier,setRecevier,idorg}) => {
 
     const [fetching,setFetching] = useState(true) 
     const [totalDocsUser,setTotalDocsUser] = useState(0) 
@@ -46,7 +46,7 @@ const UserBox = observer(({recevier,setRecevier}) => {
     useEffect(() => {
         if(fetching){
             if(chat.contacts.length===0 || chat.contacts.length<totalDocsUser)
-            UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser})
+            UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser,idorg})
             .then((response)=>{
                 if(response.status===200){
                     setTotalDocsUser(response.data.totalDocs)

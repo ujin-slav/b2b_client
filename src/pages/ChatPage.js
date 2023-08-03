@@ -60,7 +60,7 @@ const ChatPage = () => {
             <Container fluid>
                 <Row className='chatRow'>
                     <Col className="col-3 chatCol"> 
-                        <UserBox recevier={recevier} setRecevier={setRecevier}/>
+                        <UserBox recevier={recevier} setRecevier={setRecevier} idorg={idorg}/>
                     </Col>
                     <Col className="col-9 chatCol">
                         <MessageList recevier={recevier} setRecevier={setRecevier}/>

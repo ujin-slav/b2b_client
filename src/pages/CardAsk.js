@@ -224,6 +224,29 @@ const CardAsk = observer(() => {
       )
     }
 
+    const categoryRegionReadMore = (trigger,setTrigger, nodes, data) => {
+        if(getCategoryName(data, nodes)?.join(", ").length<=100){
+          return(
+            <span>{getCategoryName(data, nodes)?.join(", ")}</span>
+          )
+        }else{
+          return(
+            <span>
+              {trigger ? 
+                  getCategoryName(data, nodes).join(", ") 
+                : 
+                `${getCategoryName(data, nodes).join(", ").substring(0, 100)}...`
+              }
+              <a 
+                href="javascript:void(0)" 
+                onClick={() => setTrigger(!trigger)}> 
+                {trigger ? 'Свернуть' : 'Показать больше'}
+              </a> 
+            </span>
+          )
+        }
+    }
+
     if(loading){
       return(
         <p className="waiting">
@@ -302,21 +325,14 @@ const CardAsk = observer(() => {
                             <tr>
                             <td>Категории заявки</td>
                             <td>
-                              {readMoreCategory ? 
-                                  getCategoryName(ask?.Category, categoryNodes).join(", ") 
-                                : 
-                                  `${getCategoryName(ask?.Category, categoryNodes).join(", ").substring(0, 100)}...`
-                              }
-                              <a 
-                                href="javascript:void(0)" 
-                                onClick={() => setReadMoreCategory(!readMoreCategory)}> 
-                                {readMoreCategory ? 'Свернуть' : 'Показать больше'} 
-                              </a>
+                                {categoryRegionReadMore(readMoreCategory,setReadMoreCategory, categoryNodes, ask?.Category)}
                             </td>
                             </tr>
                             <tr>
                             <td>Регионы заявки</td>
-                            <td>{getCategoryName(ask?.Region, regionNodes).join(", ")}</td>
+                            <td>
+                                {categoryRegionReadMore(readMoreRegion,setReadMoreRegion, regionNodes, ask?.Region)}
+                            </td>
                             </tr>
                             <tr>
                             <td>Файлы заявки</td>
