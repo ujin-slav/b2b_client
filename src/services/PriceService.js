@@ -42,7 +42,7 @@ export default class PriceService {
     }
 
     static async getAskPriceId(id){
-        const {data} = await $api.post(`/getaskpriceid`,{id});
+        const data = await $api.post(`/getaskpriceid`,{id});
         return data
     }
 

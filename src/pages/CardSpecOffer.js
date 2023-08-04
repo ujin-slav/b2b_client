@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useContext} from 'react';
-import {Container,Col,Row,Button} from "react-bootstrap";
+import {Container,Col,Row,Card} from "react-bootstrap";
 import SpecOfferService from '../services/SpecOfferService'
 import {useParams} from 'react-router-dom';
 import {observer} from "mobx-react-lite";
@@ -31,15 +31,20 @@ const CardSpecOffer = observer(() => {
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const [modalActiveAskFiz,setModalActiveAskFiz] = useState(false)
     const [modalActiveAskOrg,setModalActiveAskOrg] = useState(false)
+    const [error, setError] = useState()
     const history = useHistory()
     const location = useLocation(); 
 
     useEffect(() => {
-        SpecOfferService.getSpecOfferId({id}).then((data)=>{
-            setPriceID(data.priceId)
-            setSpecOffer(data.specoffer)
-            setCheckedRegion(data.specoffer.Region)
-            setCheckedCat(data.specoffer.Category)
+        SpecOfferService.getSpecOfferId({id}).then((result)=>{
+            if(result.status===200){
+                setPriceID(result.data.priceId)
+                setSpecOffer(result.data.specoffer)
+                setCheckedRegion(result.data.specoffer.Region)
+                setCheckedCat(result.data.specoffer.Category)
+            }else{
+                setError(result.data.errors)
+            }
         }).finally(()=>setLoading(false))     
     },[location]);
 
@@ -78,6 +83,21 @@ const CardSpecOffer = observer(() => {
             </div>
         )
     }
+
+    if(error){
+        return(
+            <div>
+              <Container
+                      className="d-flex justify-content-center align-items-center"
+                      style={{height: window.innerHeight - 54}}
+                      >
+                  <Card style={{width: 600}} className="p-5 ">
+                      <h5>Спец.предложение не существует, или удалено.</h5>
+                  </Card> 
+              </Container>
+            </div>
+        )
+      }
   
     return (
         <Container className="mx-auto my-4">

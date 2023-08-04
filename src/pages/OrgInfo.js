@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useParams} from 'react-router-dom';
 import {fetchUser} from '../http/askAPI';
-import {Table, Col, Container, Row} from "react-bootstrap";
+import {Table, Col, Container, Row,Card} from "react-bootstrap";
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
 import {Context} from "../index";
@@ -19,20 +19,25 @@ const OrgInfo = () => {
     const [org, setOrg] = useState();
     const [file, setFile] = useState([])
     const {user} = useContext(Context);  
+    const [error, setError] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
-        fetchUser(idorg).then((data)=>{
-            if(data){
-                setOrg(data)
-                if(data.logo){
-                    fetch(process.env.REACT_APP_API_URL + `getlogo/` + data.logo?.filename)
-                    .then(res => res.blob())
-                    .then(blob => {
-                    setFile(blob)
-                    })
+        fetchUser(idorg).then((result)=>{
+            if(result.status===200){
+                if(result.data){
+                    setOrg(result.data)
+                    if(result.data.logo){
+                        fetch(process.env.REACT_APP_API_URL + `getlogo/` + result.data.logo?.filename)
+                        .then(res => res.blob())
+                        .then(blob => {
+                        setFile(blob)
+                        })
+                    }
                 }
+            }else{
+                setError(result.data.errors)    
             }
         })
 
@@ -56,6 +61,21 @@ const OrgInfo = () => {
             )
         }
     }
+
+    if(error){
+        return(
+            <div>
+              <Container
+                      className="d-flex justify-content-center align-items-center"
+                      style={{height: window.innerHeight - 54}}
+                      >
+                  <Card style={{width: 600}} className="p-5 ">
+                      <h5>Пользователь не существует</h5>
+                  </Card> 
+              </Container>
+            </div>
+        )
+      }
 
     return (
             <Container style={{widorgth: "80%"}}>

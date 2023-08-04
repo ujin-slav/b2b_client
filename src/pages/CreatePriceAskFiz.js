@@ -81,8 +81,8 @@ const CreatePriceAskFiz = () => {
                 addToResult(null,data)
             })
         }
-        fetchUser(idorg).then((data)=>{
-            setRecevier(data)
+        fetchUser(idorg).then((result)=>{
+            setRecevier(result.data)
         })
         const element = table.current;
         element.addEventListener('scroll',scrollHandler);

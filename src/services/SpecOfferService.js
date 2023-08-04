@@ -24,7 +24,7 @@ export default class SpecOfferService {
         return data
     }
     static async getSpecOfferId(formData){
-        const {data} = await $api.post(`/getspecofferid`,formData);
+        const data = await $api.post(`/getspecofferid`,formData);
         return data
     }
     static async deleteSpecOffer(formData){

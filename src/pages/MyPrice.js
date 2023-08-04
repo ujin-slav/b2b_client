@@ -4,6 +4,7 @@ import PriceService from '../services/PriceService'
 import dateFormat, { masks } from "dateformat";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import ModalAlert from '../components/ModalAlert';
 import * as XLSX from 'xlsx';
 
 const MyPrice = observer(() => {
@@ -11,11 +12,14 @@ const MyPrice = observer(() => {
     const [org, setOrg] = useState();
     const[loadingFull,setLoadingFull] = useState(false);
     const[fetching,setFetching] = useState(true);
+    const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
+    const {myalert} = useContext(Context);
     const[currentPage,setCurrentPage] = useState(1);
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const[search,setSearch] = useState("");
+    const [modalActive,setModalActive] = useState(false);
     let limit = 30
 
     useEffect(() => {
@@ -80,16 +84,30 @@ const MyPrice = observer(() => {
         }).finally(()=>setLoadingFull(false))
     }
 
-    if(loadingFull){
+    const clearPrice = async()=>{
+        setFetch(true)
+        const result = await PriceService.clearPrice({org:user.user.id});
+        if (result.status===200){
+          myalert.setMessage("Успешно");
+          setPrice([])
+        } else {
+          myalert.setMessage(result.data.message);
+        }
+        setFetch(false)
+    }  
+
+    if(loadingFull||fetch){
         return (
-            <div class="loader">Loading...</div>
+            <p className="waiting">
+                <div class="loader">Loading...</div>
+            </p> 
         )
     }
 
     return (
         <Container>             
                 <Row>
-                    <Form.Group className="mx-auto my-2">
+                    <Form.Group className="my-2">
                         <Form.Label>Поиск:</Form.Label>
                         <Form.Control
                             onChange={handleSearch}
@@ -101,6 +119,13 @@ const MyPrice = observer(() => {
                         onClick={()=>loadPrice(true)}
                         >
                             Скачать загруженный прайс
+                        </Button>
+                        <Button
+                            variant="primary"
+                            className="btn btn-success mt-3 mx-1"
+                            onClick={()=>setModalActive(true)}
+                        >
+                            Удалить данные на сервере
                         </Button>
                     </Form.Group>
             </Row>
@@ -128,6 +153,9 @@ const MyPrice = observer(() => {
                     )}
                  </tbody>
             </Table>
+            <ModalAlert header="Предыдущие данные будут удалены, продолжить?" 
+              active={modalActive} 
+              setActive={setModalActive} funRes={clearPrice}/>
         </Container>
     );
 });

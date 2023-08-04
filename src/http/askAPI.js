@@ -43,7 +43,7 @@ export const fetchUserOffers = async (id) => {
     return data
 }
 export const fetchUser = async (id) => {
-    const {data} = await $api.post(`/getuser`,{id});
+    const data = await $api.post(`/getuser`,{id});
     return data
 }
 export const upload = async (formData) => {

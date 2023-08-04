@@ -2,6 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Table,Form} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
+import {Card,Container} from "react-bootstrap";
 import {useParams} from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { FileEarmarkSpreadsheet } from 'react-bootstrap-icons';
@@ -29,24 +30,29 @@ const CardPriceAsk = () => {
     )
     const [sent,setSent] = useState(false); 
     const[comment,setComment] = useState("");
+    const [error, setError] = useState()
 
     useEffect(() => {
-        PriceService.getAskPriceId(id).then((data)=>{
-            setResult(data.Table)
-            setRecevier(data.To)
-            setSumTotal(data.Sum)
-            setComment(data.Comment)
-            setSent(data.Sent)
-            setDateDoc(data.Date)
-            setAuthor(data.Author)
-            setFiz(
-                {
-                    FIZ:data.FIZ,
-                    NameFiz:data.NameFiz,
-                    EmailFiz:data.EmailFiz,
-                    TelefonFiz:data.TelefonFiz
-                }
-            )
+        PriceService.getAskPriceId(id).then((result)=>{
+            if(result.status===200){
+                setResult(result.data.Table)
+                setRecevier(result.data.To)
+                setSumTotal(result.data.Sum)
+                setComment(result.data.Comment)
+                setSent(result.data.Sent)
+                setDateDoc(result.data.Date)
+                setAuthor(result.data.Author)
+                setFiz(
+                    {
+                        FIZ:result.data.FIZ,
+                        NameFiz:result.data.NameFiz,
+                        EmailFiz:result.data.EmailFiz,
+                        TelefonFiz:result.data.TelefonFiz
+                    }
+                )
+            }else{
+                setError(result.data.errors)
+            }
         })
     },[]);
 
@@ -82,6 +88,21 @@ const CardPriceAsk = () => {
 		XLSX.writeFile(wb, fileName);
     }
 
+    if(error){
+        return(
+            <div>
+              <Container
+                      className="d-flex justify-content-center align-items-center"
+                      style={{height: window.innerHeight - 54}}
+                      >
+                  <Card style={{width: 600}} className="p-5 ">
+                      <h5>Заяка не существует, или удалена.</h5>
+                  </Card> 
+              </Container>
+            </div>
+        )
+      }
+
     return (
         <div class="container-priceask">
         <div class="container-priceask-center"  id="productTable"> 
@@ -93,13 +114,11 @@ const CardPriceAsk = () => {
                     :
                     <span>
                         {author?.name + ", " + author?.nameOrg}
-                        <button className="myButtonMessage"
-                                    onClick={()=>setModalActiveMessage(true)}>
-                                    <div>
-                                    Написать сообщение
-                                    </div>
+                        <button className="myButtonMessage mx-1"
+                            onClick={()=>setModalActiveMessage(true)}>
+                            Написать сообщение
+                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
                         </button>
-                        <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
                     </span>
                     }
                 </span>

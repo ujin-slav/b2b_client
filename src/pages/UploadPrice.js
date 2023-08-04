@@ -25,15 +25,10 @@ const UploadPrice = observer(() => {
     const {user} = useContext(Context);  
     const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]);  
-    const [dats,setData] = useState(); 
-    const[currentPage,setCurrentPage] = useState(1);
     const[fetching,setFetching] = useState(true);
-    const[totalDocs,setTotalDocs] = useState(0);
     const[help,setHelp] = useState(false);
     const [progress, setProgress] = useState(0)
-    const[search,setSearch] = useState("");
     const input = useRef(null);
-    let limit = 30
 
     useEffect(() => {
         // if(user.user.id){
@@ -101,30 +96,31 @@ const UploadPrice = observer(() => {
     }
 
     const checkPrice = () => {
+        let result = true
         price?.map((item,index)=>{
             const numStr = index + 1 
             if(!item[1]){
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле наименование");
-                return false
+                result = false
             }
             if(!item[2]){
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле цена");
-                return false
+                result = false
             }
             if(!item[3]){
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле остаток");
-                return false
+                result = false
             }
             if(!Number(item[2])){
                 myalert.setMessage("В строке № " + numStr + " поле цена не является числом");
-                return false
+                result = false
             }
             if(!Number(item[3])){
                 myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
-                return false
+                result = false
             }
         })
-        return true
+        return result
     }
 
     const onSubmit = async(e) => {
@@ -228,13 +224,6 @@ const UploadPrice = observer(() => {
                                     className="btn btn-success mt-3"
                                 >
                                     Загрузить
-                                </Button>
-                                <Button
-                                    variant="primary"
-                                    className="btn btn-success mt-3 mx-3"
-                                    onClick={()=>setModalActive(true)}
-                                >
-                                    Удалить данные на сервере
                                 </Button>
                     </Form>
                     </Form.Group>
