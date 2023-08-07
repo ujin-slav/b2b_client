@@ -27,6 +27,7 @@ import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {observer} from "mobx-react-lite";
 import {useParams} from 'react-router-dom';
+import NoPermission from './NoPermission';
 import Captcha from "demos-react-captcha";
 import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
@@ -96,9 +97,11 @@ const ModifySpecOffer = observer(() => {
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const [permission, setPermission] = useState(true);
     const [checkedEmail,setCheckedEmail] =  useState([]);
     const [fileSize, setFileSize] = useState(0);
     const {myalert} = useContext(Context);
+    const [error, setError] = useState()
     const history = useHistory();
     let sourceElement = null
     const [sortedList, setSortedList] = useState([])
@@ -116,20 +119,27 @@ const ModifySpecOffer = observer(() => {
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((result)=>{
-            result = result.specoffer
-            let formErrors = specOffer.formErrors;
-            let data = Object.assign(specOffer.data, result);
-            setCheckedRegion(result.Region);
-            setCheckedCat(result.Category);
-            setSpecOffer({ data, formErrors}); 
-            result?.Files?.map((item)=>{
-              fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
-              .then(res => res.blob()) // Gets the response and returns it as a blob
-              .then(blob => {
-                setSortedList(((oldItems) => [...oldItems,blob]))
-            });
-            })
-          })
+          if(result.status===200){
+              result = result.data.specoffer
+              let formErrors = specOffer.formErrors;
+              let data = Object.assign(specOffer.data, result);
+              setCheckedRegion(result?.Region);
+              setCheckedCat(result?.Category);
+              setSpecOffer({ data, formErrors});
+              console.log(result.Author) 
+              console.log(user.user.id) 
+              if(result.Author!==user.user.id){
+                setPermission(false)
+              }
+              result?.Files?.map((item)=>{
+                fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
+                .then(res => res.blob()) // Gets the response and returns it as a blob
+                .then(blob => {
+                  setSortedList(((oldItems) => [...oldItems,blob]))
+              })})
+          }else{
+              setError(result.data.errors)
+          }})
     },[])
 
     const handleDragStart = (event) => {
@@ -335,6 +345,28 @@ const ModifySpecOffer = observer(() => {
         setCaptcha(true)
       }
     }
+
+    if(error){
+      return(
+          <div>
+            <Container
+                    className="d-flex justify-content-center align-items-center"
+                    style={{height: window.innerHeight - 54}}
+                    >
+                <Card style={{width: 600}} className="p-5 ">
+                    <h5>Спец.предложение не существует, или удалено.</h5>
+                </Card> 
+            </Container>
+          </div>
+      )
+    }
+
+    if(!permission){
+      return(
+        <NoPermission/>
+      )
+    }
+
 
     return (
         <Container>

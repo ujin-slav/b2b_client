@@ -5,8 +5,10 @@ import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
+import {useHistory} from 'react-router-dom';
 import {Context} from "../index";
 import Captcha from "demos-react-captcha";
+import { B2B_ROUTE } from '../utils/routes';
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -42,6 +44,7 @@ const CreatePriceAskFiz = () => {
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState(1);
     const[comment,setComment] = useState("");
+    const history = useHistory();
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
@@ -153,14 +156,18 @@ const CreatePriceAskFiz = () => {
         setResult([...result]) 
     }
 
-    const saveOrder=async(Sent)=>{
+    const sendOrder = async()=>{
+        if(!captcha){
+            console.error("FORM INVALID");
+            myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+            return false
+        }
         if (formValid(priceAsk)) {
             const res = await PriceService.saveAsk(
                 {Table:result,
                 To:idorg,
                 Comment:comment,
                 Sum:sumTotal,
-                Sent,
                 FIZ:true,
                 NameFiz:priceAsk.data.name,
                 EmailFiz:priceAsk.data.email,
@@ -168,9 +175,8 @@ const CreatePriceAskFiz = () => {
             })
             if (res.status===200){
                 myalert.setMessage("Успешно"); 
-                if(Sent){
-                    chat.socket.emit("unread_invitedPriceFiz", {To:idorg});
-                }
+                chat.socket.emit("unread_invitedPriceFiz", {To:idorg});
+                history.push(B2B_ROUTE)
             } else {
                 myalert.setMessage(res?.data?.message);
             }
@@ -335,7 +341,7 @@ const CreatePriceAskFiz = () => {
         <div class="right">
                 <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>     
                 <Button
-                    onClick={()=>saveOrder(true)}
+                    onClick={()=>sendOrder()}
                     variant="primary"
                     style={{"float": "right"}}
                     className="btn btn-success mt-3"

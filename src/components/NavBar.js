@@ -189,6 +189,7 @@ const NavBar = observer(() => {
                 Number(sumAnswerOrg())+
                 Number(sumInvitedPrice())+
                 Number(sumInvitedSpecOffers())+
+                Number(sumInvitedPriceFiz())+
                 Number(sumStatusAsk())
         if(sumAll > 0){
             return sumAll
