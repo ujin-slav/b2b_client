@@ -48,6 +48,8 @@
     "resize-observer-polyfill": "^1.5.1",
     "socket.io-client": "^4.3.2",
     "socket.io-file-client": "^2.0.2",
+    "videojs-contrib-quality-levels": "^4.1.0",
+    "videojs-http-source-selector": "^1.1.6",
     "web-vitals": "^1.0.1",
     "xlsx": "^0.18.5"
   },
@@ -74,5 +76,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "video.js": "^8.12.0"
   }
 }

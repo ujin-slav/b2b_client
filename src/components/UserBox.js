@@ -40,6 +40,16 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
                 })
                 chat.contacts = newUsers
             })
+            chat.socket.on("user_typing", (data) => { 
+                let newUsers = chat.contacts.map((item)=>{
+                    if(item.contact.id===data){
+                        item.typing = true
+                        setTimeout(()=>item.typing = false,5000)
+                    }
+                    return item 
+                })
+                chat.contacts = newUsers
+            })
         }
     },[])
 
@@ -133,6 +143,7 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
                             <div>
                                 <div>{item.contact?.name}</div>
                                 <div>{item.contact?.nameOrg}</div>
+                                <div className="typing">{item?.typing ? 'Печатает...' : <span></span>}</div>
                             </div>
                             {searchUnread(item?.contact?.id)}
                             {item?.statusLine ? 

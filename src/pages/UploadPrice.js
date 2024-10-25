@@ -1,4 +1,4 @@
-import React,{useContext,useState,useRef,useEffect} from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import {
     Container,
     Row,
@@ -8,10 +8,10 @@ import {
     Table,
     Card,
     ProgressBar
-  } from "react-bootstrap";
+} from "react-bootstrap";
 import { uploadPrice } from '../http/askAPI';
-import {Context} from "../index";
-import {observer} from "mobx-react-lite";
+import { Context } from "../index";
+import { observer } from "mobx-react-lite";
 import * as XLSX from 'xlsx';
 import PriceService from '../services/PriceService'
 import ModalAlert from '../components/ModalAlert';
@@ -19,15 +19,16 @@ import ModalAlert from '../components/ModalAlert';
 
 const UploadPrice = observer(() => {
 
-    const {myalert} = useContext(Context);
-    const [modalActive,setModalActive] = useState(false);
+    const { myalert } = useContext(Context);
+    const [modalActive, setModalActive] = useState(false);
     const [file, setFile] = useState([])
-    const {user} = useContext(Context);  
-    const [fetch,setFetch] = useState(false); 
-    const [price,setPrice] = useState([]);  
-    const[fetching,setFetching] = useState(true);
-    const[help,setHelp] = useState(false);
+    const { user } = useContext(Context);
+    const [fetch, setFetch] = useState(false);
+    const [price, setPrice] = useState([]);
+    const [fetching, setFetching] = useState(true);
+    const [help, setHelp] = useState(false);
     const [progress, setProgress] = useState(0)
+    const [loading, setLoading] = useState(false)
     const input = useRef(null);
 
     useEffect(() => {
@@ -42,14 +43,14 @@ const UploadPrice = observer(() => {
         //         }
         //     }
         // } 
-    },[fetching,user.user]);
+    }, [fetching, user.user]);
 
     useEffect(() => {
         // document.addEventListener('scroll',scrollHandler);
         // return function(){
         //     document.removeEventListener('scroll',scrollHandler);
         // }
-    },[]);
+    }, []);
 
     // const scrollHandler = (e) =>{
     //     if((e.target.documentElement.scrollHeight - 
@@ -59,63 +60,63 @@ const UploadPrice = observer(() => {
     // }
 
     const onInputChange = (e) => {
-        try{
-            if(e.target.files[0].size < 5242880){
+        try {
+            if (e.target.files[0].size < 5242880) {
                 setFile(e.target.files[0])
                 const reader = new FileReader();
                 const rABS = !!reader.readAsBinaryString;
                 reader.onload = e => {
-                /* Parse data */
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
-                /* Get first worksheet */
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_json(ws, { header: 1,blankrows: true, defval: '', });
-                /* Update state */
-                setPrice(data);
-                input.current.value=null
+                    /* Parse data */
+                    const bstr = e.target.result;
+                    const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
+                    /* Get first worksheet */
+                    const wsname = wb.SheetNames[0];
+                    const ws = wb.Sheets[wsname];
+                    /* Convert array of arrays */
+                    const data = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: true, defval: '', });
+                    /* Update state */
+                    setPrice(data);
+                    input.current.value = null
                 };
                 if (rABS) reader.readAsBinaryString(e.target.files[0]);
                 else reader.readAsArrayBuffer(e.target.files[0]);
             } else {
                 myalert.setMessage("Превышен размер файла");
-            }  
-        }catch(e){
+            }
+        } catch (e) {
             console.log(e)
         }
     };
 
-    if(fetch){
-        return(
+    if (fetch) {
+        return (
             <p className="waiting">
                 <div class="loader">Loading...</div>
-            </p> 
+            </p>
         )
     }
 
     const checkPrice = () => {
         let result = true
-        price?.map((item,index)=>{
-            const numStr = index + 1 
-            if(!item[1]){
+        price?.map((item, index) => {
+            const numStr = index + 1
+            if (!item[1]) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле наименование");
                 result = false
             }
-            if(!item[2]){
+            if (!item[2]) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле цена");
                 result = false
             }
-            if(!item[3]){
+            if (!item[3]) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле остаток");
                 result = false
             }
-            if(!Number(item[2])){
+            if (!Number(item[2])) {
                 myalert.setMessage("В строке № " + numStr + " поле цена не является числом");
                 result = false
             }
-            if(!Number(item[3])){
+            if (!Number(item[3])) {
                 myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
                 result = false
             }
@@ -123,101 +124,103 @@ const UploadPrice = observer(() => {
         return result
     }
 
-    const onSubmit = async(e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         const options = {
             onUploadProgress: (progressEvent) => {
               const {loaded, total} = progressEvent;
-              console.log(loaded)
               let percent = Math.floor( (loaded * 100) / total )
               console.log( `${loaded}kb of ${total}kb | ${percent}%` );
               if( percent < 100 ){
                 setProgress(percent)
               }
+              setInterval(percent,10)
             }
         }
-        if(file.length!==0){
-            if(checkPrice()){
+        if (file.length !== 0) {
+            if (checkPrice()) {
                 const data = new FormData()
-                data.append("price",JSON.stringify(price))
+                data.append("price", JSON.stringify(price))
                 data.append("userID", user.user.id)
-                const result = await uploadPrice(data,options)
-                if(result.result){
+                const result = await uploadPrice(data, options)
+                if (result.result) {
                     myalert.setMessage("Прайс загружен");
-                } else if(result.errors){
+                } else if (result.errors) {
                     myalert.setMessage(result.message);
                 }
                 setFile([])
             }
-        }else{
+        } else {
             myalert.setMessage("Выберите файл");
         }
-      };
-    const clearPrice = async()=>{
-      setFetch(true)
-      const result = await PriceService.clearPrice({org:user.user.id});
-      if (result.status===200){
-        myalert.setMessage("Успешно");
-      } else {
-        myalert.setMessage(result.data.message);
-      }
-      setPrice([])
-      setFetch(false)
-    }  
+    };
+
+    const clearPrice = async () => {
+        setFetch(true)
+        const result = await PriceService.clearPrice({ org: user.user.id });
+        if (result.status === 200) {
+            myalert.setMessage("Успешно");
+        } else {
+            myalert.setMessage(result.data.message);
+        }
+        setPrice([])
+        setFetch(false)
+    }
 
     return (
         <div>
             <Container>
                 <Row>
                     <Col>
-                    <Form.Group className="mx-auto my-2">
-                    <Form onSubmit={onSubmit}>
-                            <div class="mb-3">
-                                <label for="formFile" class="form-label">Загрузить фаил прайс листа.</label>
-                                <input 
-                                    onChange={onInputChange}
-                                    class="form-control" 
-                                    type="file" 
-                                    accept=".xlsx, .xls,"
-                                    ref={input}
-                                    id="formFile"/>
-                            </div>
-                            <Card>
-                                <Card.Header style={{"text-decoration": "underline",
-                                                     "color": "#EC4D3C",
-                                                     "cursor": "pointer"                                            
-                            }} onClick={()=>setHelp(!help)}>Инструкция</Card.Header>
-                                {help ?
-                                <div style={{"padding":"20px"}}>
-                                    Файл прайса можно загрузить в формате Excel *.xls, *xlsx.<br/>
-                                    После выбора файла вы увидите, каким образом будут отображаться данные
-                                    в системе.<br/>
-                                    Если колонки находятся не на своем месте, или строки пустые,
-                                    отредактируйте файл своего<br/>
-                                    прайса согласно образцу:<br/>
-                                    <ul>
-                                    <li>1-я колонка - Артикул (не обязателен)</li>
-                                    <li>2-я колонка - Наименование (обязательно)</li>
-                                    <li>3-я колонка - Цена (обязательно)</li>
-                                    <li>4-я колонка - Остаток (обязательно)</li>
-                                    <li>5-я колонка - Единица измерения (не обязательно)</li>
-                                    </ul>
-                                    Заголовки колонок подписывать не нужно.<br/>
-                                    Если данные отображаются как надо, нажимайте кнопку загрузить,
-                                    предыдущие данные будут <br/>
-                                    затерты новыми. Если в строке отсутствует наименование или остаток,
-                                    строка будет пропущена.<br/>
-                                    <a href={`${process.env.REACT_APP_API_URL}static/sample/price.xls`}>Образец файла.</a><br/>
+                        <Form.Group className="mx-auto my-2">
+                            <Form onSubmit={onSubmit}>
+                                <div class="mb-3">
+                                    <label for="formFile" class="form-label">Загрузить фаил прайс листа.</label>
+                                    <input
+                                        onChange={onInputChange}
+                                        class="form-control"
+                                        type="file"
+                                        accept=".xlsx, .xls,"
+                                        ref={input}
+                                        id="formFile" />
                                 </div>
-                                :
-                                <div></div>
-                                }
-                            </Card>
-                                 {progress!==0 ? 
-                                    <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>
-                                :
+                                <Card>
+                                    <Card.Header style={{
+                                        "text-decoration": "underline",
+                                        "color": "#EC4D3C",
+                                        "cursor": "pointer"
+                                    }} onClick={() => setHelp(!help)}>Инструкция</Card.Header>
+                                    {help ?
+                                        <div style={{ "padding": "20px" }}>
+                                            Файл прайса можно загрузить в формате Excel *.xls, *xlsx.<br />
+                                            После выбора файла вы увидите, каким образом будут отображаться данные
+                                            в системе.<br />
+                                            Если колонки находятся не на своем месте, или строки пустые,
+                                            отредактируйте файл своего<br />
+                                            прайса согласно образцу:<br />
+                                            <ul>
+                                                <li>1-я колонка - Артикул (не обязателен)</li>
+                                                <li>2-я колонка - Наименование (обязательно)</li>
+                                                <li>3-я колонка - Цена (обязательно)</li>
+                                                <li>4-я колонка - Остаток (обязательно)</li>
+                                                <li>5-я колонка - Единица измерения (не обязательно)</li>
+                                            </ul>
+                                            Заголовки колонок подписывать не нужно.<br />
+                                            Если данные отображаются как надо, нажимайте кнопку загрузить,
+                                            предыдущие данные будут <br />
+                                            затерты новыми. Если в строке отсутствует наименование или остаток,
+                                            строка будет пропущена.<br />
+                                            <a href={`${process.env.REACT_APP_API_URL}static/sample/price.xls`}>Образец файла.</a><br />
+                                        </div>
+                                        :
+                                        <div></div>
+                                    }
+                                </Card>
+                                {progress !== 0 ?
+                                    <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3" />
+                                    :
                                     <div></div>
-                                }   
+                                }
                                 <Button
                                     variant="primary"
                                     type="submit"
@@ -225,15 +228,15 @@ const UploadPrice = observer(() => {
                                 >
                                     Загрузить
                                 </Button>
-                    </Form>
-                    </Form.Group>
+                            </Form>
+                        </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                 </Row>
                 <Row>
                     <Col>
-                    {/* <Form.Group className="mx-auto my-2">
+                        {/* <Form.Group className="mx-auto my-2">
                         <Form.Label>Поиск:</Form.Label>
                         <Form.Control
                             onChange={handleSearch}
@@ -242,33 +245,33 @@ const UploadPrice = observer(() => {
                     </Form.Group> */}
                     </Col>
                 </Row>
-             </Container>
-             <Table>
-             <thead>
-                <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Цена</th>
-                    <th>Остаток</th>
-                    <th>Ед.изм</th>
-                </tr>
+            </Container>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Артикул</th>
+                        <th>Наименование</th>
+                        <th>Цена</th>
+                        <th>Остаток</th>
+                        <th>Ед.изм</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {price?.map((item)=>
-                    
+                    {price?.map((item) =>
+
                         <tr>
-                            <td>{item[0]||item.Code||<div style={{"color":"green"}}>нет</div>}</td>
-                            <td>{item[1]||item.Name||<div style={{"color":"red"}}>нет</div>}</td>
-                            <td>{item[2]||item.Price||<div style={{"color":"red"}}>нет</div>}</td>
-                            <td>{item[3]||item.Balance||<div style={{"color":"red"}}>нет</div>}</td>
-                            <td>{item[4]||item.Measure||<div style={{"color":"green"}}>нет</div>}</td>
+                            <td>{item[0] || item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
+                            <td>{item[1] || item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
+                            <td>{item[2] || item.Price || <div style={{ "color": "red" }}>нет</div>}</td>
+                            <td>{item[3] || item.Balance || <div style={{ "color": "red" }}>нет</div>}</td>
+                            <td>{item[4] || item.Measure || <div style={{ "color": "green" }}>нет</div>}</td>
                         </tr>
                     )}
-                 </tbody>
+                </tbody>
             </Table>
-            <ModalAlert header="Предыдущие данные будут удалены, продолжить?" 
-              active={modalActive} 
-              setActive={setModalActive} funRes={clearPrice}/>
+            <ModalAlert header="Предыдущие данные будут удалены, продолжить?"
+                active={modalActive}
+                setActive={setModalActive} funRes={clearPrice} />
         </div>
     );
 });

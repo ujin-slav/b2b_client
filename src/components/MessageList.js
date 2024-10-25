@@ -11,6 +11,8 @@ import {Envelope,Paperclip,X,Eye} from 'react-bootstrap-icons';
 import dateFormat from "dateformat";
 import ChatService from '../services/ChatService';
 import MessageService from '../services/MessageService';
+import videojs from 'video.js';
+import VideoJS from '../components/VideoJS';
 
 
 const MessageList = ({recevier}) => {
@@ -23,8 +25,10 @@ const MessageList = ({recevier}) => {
     const [fetchingMessage,setFetchingMessage] = useState(false) 
     const [fetchingNewMessage,setFetchingNewMessage] = useState(false) 
     const [progress, setProgress] = useState(0)
+    const [dragActive, setDragActive] = useState(false);
     const inputEl = useRef(null)
     const messageBox = useRef(null)
+    const playerRef = useRef(null);
     const fileInput = useRef(null)
     const {myalert} = useContext(Context);
     const {user} = useContext(Context)
@@ -37,7 +41,7 @@ const MessageList = ({recevier}) => {
         })
         chat.socket.on("unread_message", (data) => {  
             if(chat.unread){
-                const index = data.findIndex(item=>item.ID===chat.recevier.id)
+                const index = data.findIndex(item=>item.ID===chat.recevier?.id)
                 if(index!==-1){
                     const newUnread = data;
                     newUnread[index]={ID:data.ID,count:0}
@@ -79,9 +83,10 @@ const MessageList = ({recevier}) => {
             .then((response)=>{
                 setTotalDocsMessage(response.data.totalDocs)
                 setCurrentPageMessage(2)
+                //const reversed = response.data.docs
                 const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
                 setMessageList(reversed)
-                messageBox.current.scrollTo(0,0)
+                messageBox.current.scrollTo(0,messageBox.current.scrollHeight)
             }).finally(()=>setFetchingMessage(false))
         }
     },[recevier])
@@ -98,9 +103,10 @@ const MessageList = ({recevier}) => {
                 .then((response)=>{
                     setTotalDocsMessage(response.data.totalDocs)
                     setCurrentPageMessage(prevState=>prevState + 1)
+                    //const reversed = response.data.docs
                     const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
                     setMessageList([...reversed,...messageList])
-                    messageBox.current.scrollTo(0,messageBox.current.scrollHeight - 860)
+                    messageBox.current.scrollTo(0,messageBox.current.scrollHeight - 1000)
                 }).finally(()=>setFetchingMessage(false))
             }
         }
@@ -117,9 +123,10 @@ const MessageList = ({recevier}) => {
             .then((response)=>{
                 setTotalDocsMessage(response.data.totalDocs)
                 setCurrentPageMessage(2)
+                //const reversed = response.data.docs
                 const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
                 setMessageList(reversed)
-                messageBox.current.scrollTo(0,0)
+                messageBox.current.scrollTo(0,messageBox.current.scrollHeight)
             }).finally(()=>setFetchingNewMessage(false))
         }
     },[fetchingNewMessage])
@@ -133,7 +140,7 @@ const MessageList = ({recevier}) => {
     }
 
     const scrollHandler = (e) =>{
-        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+        if(e.target.scrollTop===0){
             setFetchingMessage(true)
         } 
     }
@@ -148,10 +155,11 @@ const MessageList = ({recevier}) => {
         .then((response)=>{
             setTotalDocsMessage(response.data.totalDocs)
             setCurrentPageMessage(2)
+            //const reversed = response.data.docs
             const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
             setMessageList(reversed)
             setSearchMessage(text)
-            messageBox.current.scrollTo(0,0)
+            messageBox.current.scrollTo(0,messageBox.current.scrollHeight)
         }).finally(()=>setFetchingMessage(false))
     }
 
@@ -167,6 +175,8 @@ const MessageList = ({recevier}) => {
           setMessageList(old=>[...old,messageData])
           setCurrentMessage("");
           inputEl.current.value = "";
+          inputEl.current.focus()
+          messageBox.current.scrollTo(0,messageBox.current.scrollHeight)
         }
     };
 
@@ -182,8 +192,11 @@ const MessageList = ({recevier}) => {
         chat.socket.emit("delete_message", {...messageContent,iD:user.user.id});
     }
 
-    const upload = (e) => {
-        e.preventDefault();
+    const uploadFile = (files)=>{
+        if(files[0].size > 5242880){
+            myalert.setMessage("Превышен размер файла");
+            return false
+        }  
         const options = {
             onUploadProgress: (progressEvent) => {
             const {loaded, total} = progressEvent;
@@ -194,12 +207,12 @@ const MessageList = ({recevier}) => {
             }
         }
         const data = new FormData();
-        data.append("file", e.target.files[0])
+        data.append("file", files[0])
         ChatService.upLoadFile(data,options).then((result)=>{
             if (result.status!==200){
                 myalert.setMessage(result?.data?.message)
+                //setProgress(0)
             }else{
-                console.log(result)
                 chat.socket.emit("uploadcomplete", 
                     {
                         Author: user.user.id,
@@ -211,8 +224,108 @@ const MessageList = ({recevier}) => {
             }
         })
         fileInput.current.value = null
+    }
+
+    const upload = (e) => {
+        e.preventDefault();
+        uploadFile(e.target.files)
     };
 
+    const showImageOrVideo = (file) =>{
+        const playerOptions = {
+            sourceUrl: `${process.env.REACT_APP_API_URL + `chatdownload/` + file?.filename}`,
+            width: 400,
+            controls: true,
+            fluid: true,
+            autoplay: false,
+            muted: false,
+            responsive: true,
+            playsinline: false,
+          };
+        const { width: playerWidth, sourceUrl: videoBaseUrl, controls, fluid, responsive, autoplay, muted, playsinline } = playerOptions;
+        const videoJsOptions = {
+          controls,
+          responsive,
+          fluid,
+          autoplay,
+          muted,
+          playsinline,
+          sources: [{
+            src: `${process.env.REACT_APP_API_URL + `chatdownload/` + file?.filename}${playerWidth ? `?tr=w-${playerWidth}` : ''}`,
+            type: 'video/mp4'
+          }]
+        }
+
+        const handlePlayerReady = (player) => {
+            playerRef.current = player;
+            player.on('waiting', () => {
+              videojs.log('player is waiting');
+            });
+            player.on('dispose', () => {
+              videojs.log('player will dispose');
+            });
+        };
+
+        if (file.filename.match(/\.(jpg|jpeg|png|gif)$/i)){
+            return(
+                <span>
+                    <div>
+                        <img 
+                            className="chatImage" 
+                            src={process.env.REACT_APP_API_URL + `chatdownload/` + file?.filename} 
+                        />
+                    </div>
+                    <div>
+                        <a href={process.env.REACT_APP_API_URL + `chatdownload/` + file.filename}>{file.originalname}</a>
+                        <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                        ${process.env.REACT_APP_API_URL}chatdownload/${file.filename}`)}/>
+                    </div>
+                </span>
+            )
+        }
+        if (file.filename.match(/\.(webm|mkv|flv|avi|mp4|mpg|mpeg|mp4|mov)$/i)){
+            return(
+                <span>
+                    <div style={{ 
+                        width: `${playerWidth}px`,
+                        "pointer-events":"all"
+                        }}>
+                        <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+                    </div>
+                </span>
+            )
+        }
+        return(
+            <span>
+                <a href={process.env.REACT_APP_API_URL + `chatdownload/` + file.filename}>{file.originalname}</a>
+                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                ${process.env.REACT_APP_API_URL}chatdownload/${file.filename}`)}/>
+            </span>
+        )
+    }
+
+    const handleDrag = function(e) {
+        if(recevier){
+            e.preventDefault();
+            e.stopPropagation();
+            //console.log(e)
+            if (e.type === "dragenter" || e.type === "dragover") {
+              setDragActive(true);
+            } else if (e.type === "dragleave") {
+              setDragActive(false);
+            }
+        }
+      };
+      
+      const handleDrop = function(e) {
+        if(recevier){
+            e.preventDefault();
+            e.stopPropagation();
+            setDragActive(false);
+            uploadFile(e.dataTransfer.files)
+        }
+      };
+    
     
     return (
         <div>
@@ -222,33 +335,38 @@ const MessageList = ({recevier}) => {
                     onChange={(e)=>handleMessageSearch(e.target.value)}
                 />
             </InputGroup>
+            <div onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}>
+            <input id="myInput" type="file" ref={fileInput} onChange={upload} style={{display:'none'}} className="form-control"/>
                 <div className="chat" id="chat"  ref={messageBox}>
-                <div className="messageBox">
+                <div className="messageBox" onDragLeave={(e)=>{e.preventDefault()}}>
                     {messageList.map((messageContent, index) => {
                         return (
                         <div key={index} >
                             <table className="messageTable">
                             <tbody>
                                 <tr>
-                                    <td><div className="avatar"> 
-                                    {getAvatar(messageContent.Author)} 
-                                    </div></td>
+                                    <td>
+                                        <div className="avatar"> 
+                                            {getAvatar(messageContent.Author)} 
+                                        </div>
+                                    </td>
                                     <td>
                                     <div className={messageContent.Author===user.user.id?"messageItem":"messageItemRecevier"}> 
-                                    {messageContent.File ?  
-                                    <span>
-                                        <a href={process.env.REACT_APP_API_URL + `download/` + messageContent.File.filename}>{messageContent.File.originalname}</a>
-                                        <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                                        ${process.env.REACT_APP_API_URL}download/${messageContent.File.filename}`)}/>
+                                    {messageContent.File ?
+                                        <span>
+                                            {showImageOrVideo(messageContent.File)}
                                         </span>
-                                    :
-                                    <div></div>
+                                        :
+                                        <div></div>
                                     }
                                     <div>{messageContent.Text}</div> 
                                 <div className="messageDate">
                                 <X color="red" 
-                                    style={{"width": "20px",
-                                "height": "20px"}}
+                                    style={{
+                                        "width": "30px",
+                                        "height": "30px",
+                                        "pointer-events":"all"
+                                }}
                                 onClick={(e)=>deleteMessage(messageContent)}/>   
                                     {dateFormat(messageContent.Date, "dd/mm/yyyy HH:MM:ss")}                                    
                                 </div> 
@@ -259,6 +377,15 @@ const MessageList = ({recevier}) => {
                         </div> 
                         )
                     })}
+                    {dragActive ? 
+                        <div className='modalDragFile' onMouseDown={()=>console.log("Down mouse")}>
+                            Перетащите сюда файлы.
+                        </div>
+                    :
+                        <span>
+                        </span>
+                    }
+                </div>
                 </div>
                 </div>
                 {progress!==0 ? 
@@ -273,12 +400,19 @@ const MessageList = ({recevier}) => {
                         </label>
                         <input id="myInput" type="file" ref={fileInput} onChange={upload} style={{display:'none'}} className="form-control"/>
                         <Form.Control as="textarea" rows={2} placeholder="Введите сообщение " style={{marginRight:"15px"}} ref={inputEl}
-                            onChange={(event) => {
-                                        setCurrentMessage(event.target.value);
+                                        onChange={(event) => {
+                                            setCurrentMessage(event.target.value);
                                         }}
                                         onKeyPress={(event) => {
-                                        event.key === "Enter" && sendMessage();
-                                    }}
+                                            if(event.key === "Enter"){
+                                                event.preventDefault();
+                                                sendMessage();
+                                            }    
+                                        }}
+                                        onKeyUp={(event)=>{
+                                            console.log(event)
+                                            chat.socket.emit("typing", {id:recevier.id,from: user?.user?.id});
+                                        }}
                         />
                         <div style={{display: "flex",justifyContent:"center",alignItems:"center"}}>
                         <Envelope color="blue" style={{"width": "50px","height": "50px"}} onClick={sendMessage}/>

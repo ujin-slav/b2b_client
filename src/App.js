@@ -29,11 +29,11 @@ const App = observer(()=> {
     })();
   }, []);
 
-  if(chat.errorString === 'Network Error'){
-    return(
-      <NoConnection/>
-    )
-  } 
+  // if(chat.errorString === 'Network Error'){
+  //   return(
+  //     <NoConnection/>
+  //   )
+  // } 
 
   return (
     <SocketContext.Provider>
