@@ -10,7 +10,7 @@ import {observer} from "mobx-react-lite";
 
 const Carousel =  observer(() => {
 
-    const[visible,setVisible] = useState(true)
+    const[visible,setVisible] = useState(false)
     const history = useHistory()
     const[carousel,setCarousel] = useState([])
     const[fetching,setFetching] = useState(true)
@@ -69,15 +69,17 @@ const Carousel =  observer(() => {
     }
 
     useEffect(() => {
-        const element = slider.current;
+        if(visible){
+            const element = slider.current;
 
-        element.addEventListener('mousedown', mouseDownHandler )
-        element.addEventListener('wheel', mouseWheelHandler )
-        element.addEventListener('scroll', scrollHandler )
-        return ()=>{
-            element.removeEventListener('mousedown', mouseDownHandler )
-            element.removeEventListener('wheel', mouseWheelHandler )
+            element.addEventListener('mousedown', mouseDownHandler )
+            element.addEventListener('wheel', mouseWheelHandler )
             element.addEventListener('scroll', scrollHandler )
+            return ()=>{
+                element.removeEventListener('mousedown', mouseDownHandler )
+                element.removeEventListener('wheel', mouseWheelHandler )
+                element.addEventListener('scroll', scrollHandler )
+            }
         }
       },[])
 
@@ -150,27 +152,34 @@ const Carousel =  observer(() => {
             Участники
           </div>
         </Card.Header>
-        <div class="parentCarousel" id="slider" ref={slider}>
-        {carousel.map((item,index)=>
-            <div key={index} class="childCarousel">
-                <div className="cardContrHead">
-                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
-                    <div>{item?.nameOrg}</div>
-                    </a>
-                    <div>{item?.inn}</div>
-                    {user.isAuth && !item.contrIs ? 
-                        <PlusCircle 
-                            class='plusContr'
-                            onClick={(e)=>addContr(item)}
-                        /> 
-                        : 
-                        <div></div>
-                    }
+        {visible ?
+            <div>
+                <div class="parentCarousel" id="slider" ref={slider}>
+                    {carousel.map((item,index)=>
+                        <div key={index} class="childCarousel">
+                            <div className="cardContrHead">
+                                <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
+                                <div>{item?.nameOrg}</div>
+                                </a>
+                                <div>{item?.inn}</div>
+                                {user.isAuth && !item.contrIs ? 
+                                    <PlusCircle 
+                                        class='plusContr'
+                                        onClick={(e)=>addContr(item)}
+                                    /> 
+                                    : 
+                                    <div></div>
+                                }
+                            </div>
+                            <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                        </div>
+                    )}
                 </div>
-                <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
             </div>
-        )}
-        </div>
+        :
+            <div>
+            </div>
+        }
         </Card>
     )
 })

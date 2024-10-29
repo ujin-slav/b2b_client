@@ -303,167 +303,141 @@ const CreateSpecOffer = observer(() => {
     }
 
     return (
-        <Container>
-          <Form onSubmit={onSubmit}>
-          <Table className="createAsk">
-            <col style={{"width":"15%"}}/>
-          	<col style={{"width":"85%"}}/>
-                        <tbody>
-                            <tr>
-                            <td>Название</td>
-                            <td><Form.Control
-                                  type="text"
-                                  name="Name"
-                                  onChange={handleChangeControl}
-                                  placeholder="Название"
-                              />
-                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
-                            </tr>
-                            <tr>
-                            <td>Цена</td>
-                            <td><Form.Control
-                                  type="number" 
-                                  name="Price"
-                                  step=".01"
-                                  onChange={handleChangeControl}
-                                  placeholder="Цена"
-                              />
-                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Price}</span></td>
-                            </tr>
-                            <tr>
-                            <td>Дата окончания предложения</td>
-                            <td>
-                            <DatePicker
-                                  locale="ru"
-                                  selected={startDate}
-                                  name="EndDateOffers"
-                                  timeInputLabel="Время:"
-                                  dateFormat="dd/MM/yyyy HH:mm"
-                                  onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
-                                  showTimeInput
-                                />
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>Артикул</td>
-                            <td> <Form.Control
-                                name="Code"
-                                onChange={handleChangeControl}
-                                placeholder="не обязательно"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Остаток</td>
-                            <td> <Form.Control
-                                name="Balance"
-                                onChange={handleChangeControl}
-                                placeholder="не обязательно"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Текст</td>
-                            <td><Form.Control
-                                  name="Text"
-                                  placeholder="Текст заявки"
-                                  onChange={handleChangeControl}
-                                  as="textarea"
-                              />
-                               <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Text}</span>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>Контактное лицо</td>
-                            <td> <Form.Control
-                                name="Telefon"
-                                onChange={handleChangeControl}
-                                defaultValue={user.user.name}
-                                placeholder="Контактный телефон"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Контактный телефон</td>
-                            <td> <Form.Control
-                                name="Telefon"
-                                onChange={handleChangeControl}
-                                defaultValue={user.user.telefon}
-                                placeholder="Контактный телефон"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Категории</td>
-                            <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
-                                Выбор
-                                </Button></td>
-                            </tr>
-                            <tr>
-                            <td>Регионы</td>
-                            <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
-                                Выбор
-                                </Button></td>
-                            </tr>
-                            <tr>
-                            <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
-                            <td>
-                              Разместите фото в нужном порядке, первое станет заглавным.
-                            <input type="file"
-                                onChange={onInputChange}
-                                accept="image/*"
-                                className="form-control"
-                                multiple/>
-                                {listItems()}
+      <div>
+        <Container className="profile">
+          <Row>
+            <Col>
+              <Form onSubmit={onSubmit}>
+              <Table>
+                <col style={{"width":"25%"}}/>
+                <col style={{"width":"75%"}}/>
+                            <tbody>
+                                <tr>
+                                <td>Название</td>
+                                <td><Form.Control
+                                      type="text"
+                                      name="Name"
+                                      onChange={handleChangeControl}
+                                      placeholder="Название"
+                                  />
+                                  <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
+                                </tr>
+                                <tr>
+                                <td>Цена</td>
+                                <td><Form.Control
+                                      type="number" 
+                                      name="Price"
+                                      step=".01"
+                                      onChange={handleChangeControl}
+                                      placeholder="Цена"
+                                  />
+                                  <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Price}</span></td>
+                                </tr>
+                                <tr>
+                                <td>Дата окончания предложения</td>
+                                <td>
+                                <DatePicker
+                                      locale="ru"
+                                      selected={startDate}
+                                      name="EndDateOffers"
+                                      timeInputLabel="Время:"
+                                      dateFormat="dd/MM/yyyy HH:mm"
+                                      onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
+                                      showTimeInput
+                                    />
                                 </td>
-                            </tr>
-                            <tr>
-                            </tr>
-                            
-                        </tbody>
-           </Table>   
-           <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
-            <Button
-            variant="primary"
-            type="submit"
-            className="btn btn-success ml-auto mr-1"
-            >
-            Создать
-            </Button>
-        <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg}
-                text={
-                  <div className='mx-3 pb-2 text-warning'>
-                  Не более 3
-                  </div>
-                }  
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} max={3}
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-          <ModalCT 
-                header="Категории" 
-                active={modalActiveCat} 
-                setActive={setModalActiveCat}
-                text={
-                  <div className='mx-3 pb-2 text-warning'>
-                  Не более 3
-                  </div>
-                }  
-                component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} max={3}
-                setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>
-          <ModalCT 
-                header="Участники" 
-                active={modalActiveMember}  
-                component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
-                setActive={setModalActiveMember} 
-          />
-          </Form>
+                                </tr>
+                                <tr>
+                                <td>Артикул</td>
+                                <td> <Form.Control
+                                    name="Code"
+                                    onChange={handleChangeControl}
+                                    placeholder="не обязательно"
+                                /></td>
+                                </tr>
+                                <tr>
+                                <td>Остаток</td>
+                                <td> <Form.Control
+                                    name="Balance"
+                                    onChange={handleChangeControl}
+                                    placeholder="не обязательно"
+                                /></td>
+                                </tr>
+                                <tr>
+                                <td>Текст</td>
+                                <td><Form.Control
+                                      name="Text"
+                                      placeholder="Текст заявки"
+                                      onChange={handleChangeControl}
+                                      as="textarea"
+                                  />
+                                  <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Text}</span>
+                                </td>
+                                </tr>
+                                <tr>
+                                <td>Контактное лицо</td>
+                                <td> <Form.Control
+                                    name="Telefon"
+                                    onChange={handleChangeControl}
+                                    defaultValue={user.user.name}
+                                    placeholder="Контактный телефон"
+                                /></td>
+                                </tr>
+                                <tr>
+                                <td>Контактный телефон</td>
+                                <td> <Form.Control
+                                    name="Telefon"
+                                    onChange={handleChangeControl}
+                                    defaultValue={user.user.telefon}
+                                    placeholder="Контактный телефон"
+                                /></td>
+                                </tr>
+                                <tr>
+                                <td>Категории</td>
+                                <td>
+                                <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
+                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                    Выбор
+                                    </Button></td>
+                                </tr>
+                                <tr>
+                                <td>Регионы</td>
+                                <td>
+                                <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
+                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                    Выбор
+                                    </Button></td>
+                                </tr>
+                                <tr>
+                                <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
+                                <td>
+                                  Разместите фото в нужном порядке, первое станет заглавным.
+                                <input type="file"
+                                    onChange={onInputChange}
+                                    accept="image/*"
+                                    className="form-control"
+                                    multiple/>
+                                    {listItems()}
+                                    </td>
+                                </tr>
+                                <tr>
+                                </tr>
+                                
+                            </tbody>
+              </Table>   
+              <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
+                <Button
+                variant="primary"
+                type="submit"
+                className="btn btn-success ml-auto mr-1"
+                >
+                Создать
+                </Button>
+              </Form>
+              </Col>
+            </Row>
           </Container>
+      </div>
     );
 });
 

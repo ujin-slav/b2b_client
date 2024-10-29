@@ -133,7 +133,7 @@ textarea {
 }
 
 .messageBox{
-  pointer-events:none;
+  /* pointer-events:none; */
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -231,8 +231,8 @@ td.tdRed{
 
 
 .nav-link{
-  font-size: 23px;
-  font-family: American Retro;
+  font-size: 20px;
+  font-family: Roboto;
   color:white !important;
 }
 .nav-link.generalLink{
@@ -293,6 +293,7 @@ td.tdRed{
   word-wrap:break-word
 }
 .createAsk td:first-child {
+  width:98%;
   text-align: right;
 }
 .yellowtext {
@@ -359,6 +360,8 @@ td.tdRed{
   }
   .foto{
     height: 200px;
+    width: 200px;
+    object-fit: contain;
     border-radius: 20px 20px 20px 20px;
   }
 
@@ -369,6 +372,8 @@ td.tdRed{
     height: 200px;
   }
   .fotoContainer{
+    max-width: 50vw;
+    max-height: 50vh;
     position: relative;
     cursor: pointer
   }
@@ -427,6 +432,8 @@ td.tdRed{
     color: #999999;
   }
   .fotoSpecCard{
+    max-height: 500px;
+    object-fit: contain;
     border-radius: 20px;
     width: 100%;
     cursor: pointer;
@@ -445,6 +452,8 @@ td.tdRed{
   }
   .miniFotoSpecCard{
     width: 100px;
+    height: 100px;
+    object-fit: contain 
   }
   .fotoSlider{
     display: flex;
@@ -464,6 +473,8 @@ td.tdRed{
     user-select: none;       
   }
   .fotoSliderMobile{
+    display: flex;
+    justify-content: center;
     position: fixed; /* фиксированное положение */
     top: 0;
     right: 0;
@@ -485,6 +496,9 @@ td.tdRed{
   .rightNav{
     display: inline-block;
     margin: auto;
+  }
+  .centerNav{
+    align-self: center;
   }
   .closeNav{
     display: inline-block;
@@ -519,8 +533,7 @@ td.tdRed{
     margin: 10px 15px 5px 15px;
   }
   .createNewOfferText{
-    font-size: 30px;
-    font-family: American Retro;
+    font-size: 25px;
   }
   .delSpecOfferContainer{
     height: 25px;
@@ -581,8 +594,8 @@ td.tdRed{
     display: inline-block;
   }
   .fotoSliderImg{
-    max-width: 100vw;
-    max-height: 100vh;
+    max-width: 80vw;
+    max-height: 80vh;
     object-fit: contain;
   }
   .section.card{
@@ -593,7 +606,7 @@ td.tdRed{
     background-color: #282c34;
     height: 55px;
     text-decoration: underline;
-    color: #EC4D3C;
+    color: black;
     cursor: pointer; 
     position: relative;   
     border-radius: 20px 20px 20px 20px !important;                               
@@ -621,10 +634,11 @@ td.tdRed{
     position: absolute;
     top: 50%;
     transform: translateY(-50%); 
-    font-size: 25px;
-    font-family: American Retro;     
+    font-size: 22px;
+    font-family: Roboto;     
     background-color:white;  
     width: 98%;     
+    height: 80%; 
     padding: 3px 3px 3px 10px;
     border-radius: 20px 20px 20px 20px;            
   }
@@ -685,7 +699,7 @@ td.tdRed{
   }
   .createNew{
     font-size: 25px;
-    font-family: American Retro;
+    font-family: Roboto;
   }
   .searchForm{
     padding: 30px 120px 10px 120px;
@@ -1220,6 +1234,9 @@ text-align: center;
   font-style: italic;
   color:#0D55FD;
 }
+.react-datepicker-wrapper input{
+  width:70% !important;
+}
 @media (max-width: 650px) {
   .searchFormMenuSelect{
     width: 100% !important;
@@ -1265,9 +1282,6 @@ text-align: center;
   div.mx-auto.my-4.container{
     width: 100%;
   }
-  .foto{
-    height: fit-content;
-  }
   .userCardListUserFlex{
     display: block;
   }
@@ -1283,5 +1297,20 @@ text-align: center;
   }
   .profile{
     width: 95%;
+  }
+  .sectionName{    
+    font-size: 20px;        
+  }
+  .nav-link{
+    font-size: 15px;
+  }
+  .navContainerMobile{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left:0;
+  }
+  .centerNavMobile{
+    align-self: center;
   }
 }

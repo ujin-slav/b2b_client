@@ -1,7 +1,7 @@
 import axios from 'axios';
 import SocketStore from '../store/SocketStore';
 
-export const API_URL = `http://localhost:5000/api`;
+export const API_URL = `http://85.93.42.213:5000/api`;
 
 //Проверять связь с сервером
 const socketStore = new SocketStore()
