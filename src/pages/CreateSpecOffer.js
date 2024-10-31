@@ -336,7 +336,9 @@ const CreateSpecOffer = observer(() => {
                                 <tr>
                                 <td>Дата окончания предложения</td>
                                 <td>
-                                <DatePicker
+                                <div className='createSpecOfferDataPicker'>  
+                                  <DatePicker
+                                      className='createSpecOfferDataPicker'
                                       locale="ru"
                                       selected={startDate}
                                       name="EndDateOffers"
@@ -344,7 +346,8 @@ const CreateSpecOffer = observer(() => {
                                       dateFormat="dd/MM/yyyy HH:mm"
                                       onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
                                       showTimeInput
-                                    />
+                                  />
+                                </div>
                                 </td>
                                 </tr>
                                 <tr>

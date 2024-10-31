@@ -176,8 +176,9 @@ const Prices = observer(() => {
             </Form>
             <PlusCircleFill onClick={()=>history.push(UPLOADPRICE)}  className="addNew"/>
                  <span className="createNew">Загрузить свой прайс</span>
-            {width>650 ? 
-                   <Table>
+            {1>0 ? 
+                <div class="table-responsive">
+                   <Table class="table table-hover">
                    <thead>
                       <tr>
                           <th>Артикул</th>
@@ -215,6 +216,7 @@ const Prices = observer(() => {
                           )}
                        </tbody>
                   </Table>
+                </div>
             : 
                 <div>
                     <div className='parentPrice'>
@@ -259,12 +261,12 @@ const Prices = observer(() => {
             }
             <ReactPaginate
             forcePage = {currentPage-1}
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
+            previousLabel={"<"}
+            nextLabel={">"}
             breakLabel={"..."}
             pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={1}
             onPageChange={handlePageClick}
             containerClassName={"pagination justify-content-center"}
             pageClassName={"page-item"}

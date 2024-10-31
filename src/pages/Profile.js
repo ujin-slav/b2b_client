@@ -192,7 +192,8 @@ const Profile =  observer(() => {
                     <img 
                         className="foto" 
                         src={URL.createObjectURL(file)} 
-                    /> 
+                    >
+                    </img>     
                     <div className='delButton' onClick={()=>setFile([])}>X</div>
                 </div>
                 </div>

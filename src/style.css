@@ -18,7 +18,12 @@ textarea {
 .container {
   background-color: white  !important;
 }
-
+.specContactDataCategory{
+  font-size: 12px;
+}
+.specContactDataRegion{
+  font-size: 12px;
+}
 .close ::before{
     content: 'X';
     visibility: visible;
@@ -381,9 +386,9 @@ td.tdRed{
     position: absolute;
     right:0;
     top:0;
-    font-size: 20px;
-    width: 40px;
-    border-radius: 0px 15px 0px 20px;
+    font-size: 12px;
+    width: 30px;
+    border-radius: 20px 20px 20px 20px;
     color:white;
     padding:0px 0px 0px 10px;
     background-color:red !important;
@@ -1234,7 +1239,7 @@ text-align: center;
   font-style: italic;
   color:#0D55FD;
 }
-.react-datepicker-wrapper input{
+input.createSpecOfferDataPicker{
   width:70% !important;
 }
 @media (max-width: 650px) {
@@ -1312,5 +1317,8 @@ text-align: center;
   }
   .centerNavMobile{
     align-self: center;
+  }
+  .card-body{
+    font-size: 10px;
   }
 }

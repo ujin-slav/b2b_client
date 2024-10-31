@@ -125,13 +125,13 @@ const CardSpecOffer = observer(() => {
                 <div className="specContact">
                     <span>Категории</span>
                 </div>
-                <div className="specContactData">
+                <div className="specContactDataCategory">
                     <span>{getCategoryName(checkedCat, categoryNodes).join(", ")}</span>
                 </div>
                 <div className="specContact">
                     <span>Регионы</span>
                 </div>
-                <div className="specContactData">
+                <div className="specContactDataRegion">
                     <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
                 </div>
             </Col>
