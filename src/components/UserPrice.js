@@ -63,7 +63,7 @@ const UserPrice = ({idorg,idprod}) => {
 
     const getPrice = () =>{
         setLoading(true)
-        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
+        PriceService.getMyPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
             if(data){
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -77,7 +77,7 @@ const UserPrice = ({idorg,idprod}) => {
     }
 
     const fetchComments = async (currentPage) => {
-        PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then(
+        PriceService.getMyPrice({page:currentPage,limit,search,org:idorg}).then(
             (data)=>{
             setPrice(data.docs)
             setTotalDocs(data.totalDocs);
@@ -95,7 +95,7 @@ const UserPrice = ({idorg,idprod}) => {
     // }
 
     const handleSearch = (text) =>{
-        PriceService.getPrice({page:1,limit,search:text,org:idorg}).
+        PriceService.getMyPrice({page:1,limit,search:text,org:idorg}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);

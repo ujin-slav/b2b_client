@@ -25,10 +25,11 @@ const MyPrice = observer(() => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
+            PriceService.getMyPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
+                console.log(data)
             }).finally(()=>setFetching(false))
             }
         }
@@ -42,7 +43,7 @@ const MyPrice = observer(() => {
     },[]);
 
     const handleSearch = (e) =>{
-        PriceService.getPrice({page:1,limit,search,org:user.user.id}).
+        PriceService.getMyPrice({page:1,limit,search,org:user.user.id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -62,13 +63,13 @@ const MyPrice = observer(() => {
 
     const loadPrice = () =>{
         setLoadingFull(true)
-        console.log(totalDocs)
-        PriceService.getPrice({page:1,limit:totalDocs,search:'',org:user.user.id}).then((data)=>{
+        PriceService.getMyPrice({page:1,limit:totalDocs,search:'',org:user.user.id}).then((data)=>{
             const fileName = `Price.xlsx`;
             const aoa = []
             data.docs.map((item)=>{
                 aoa.push([item.Code,item.Name,item.Price,item.Balance])
             })
+            console.log(data)
             const ws = XLSX.utils.aoa_to_sheet(aoa);
             var wscols = [
                 {wch:25},

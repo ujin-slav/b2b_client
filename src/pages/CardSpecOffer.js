@@ -38,7 +38,8 @@ const CardSpecOffer = observer(() => {
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((result)=>{
             if(result.status===200){
-                setPriceID(result.data.priceId)
+                console.log(result)
+                setPriceID(result.data.price._id)
                 setSpecOffer(result.data.specoffer)
                 setCheckedRegion(result.data.specoffer.Region)
                 setCheckedCat(result.data.specoffer.Category)

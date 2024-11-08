@@ -32,6 +32,7 @@ import Captcha from "demos-react-captcha";
 import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
 import { XCircle} from 'react-bootstrap-icons';
+import bin from "../icons/bin.svg";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -120,14 +121,14 @@ const ModifySpecOffer = observer(() => {
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((result)=>{
           if(result.status===200){
+              let priceData = result.data.price 
               result = result.data.specoffer
               let formErrors = specOffer.formErrors;
-              let data = Object.assign(specOffer.data, result);
+              let data = Object.assign(specOffer.data, result, priceData);
               setCheckedRegion(result?.Region);
               setCheckedCat(result?.Category);
               setSpecOffer({ data, formErrors});
-              console.log(result.Author) 
-              console.log(user.user.id) 
+              console.log(result)
               if(result.Author!==user.user.id){
                 setPermission(false)
               }
@@ -217,12 +218,15 @@ const ModifySpecOffer = observer(() => {
     }
     
     const onInputChange = (e) => {
-      if(files.length+e.target.files.length<6){
+      if(files.length+e.target.files.length<9){
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
               let file = e.target.files[i]
-              setSortedList(((oldItems) => [...oldItems,file]))
+              file.id = Date.now() + Math.random()
+              setFileSize(fileSize + file.size)
+              setSortedList(((oldItems) => [...oldItems,file.id]))
+              setFiles(((oldItems) => [...oldItems, file]))
             } else {
               myalert.setMessage("Превышен размер файлов");
             }  
@@ -250,6 +254,14 @@ const ModifySpecOffer = observer(() => {
         return(
               <div key={i} className='dnd-list mt-3'>
                 <div className='fotoContainer'>
+                    <div className="delSpecOfferContainer">
+                        <img 
+                            className="delSpecOffer" 
+                            src={bin}
+                            id={i}
+                            onClick={(event)=>handleDelete(event,sortedList[i])}
+                        /> 
+                    </div>
                     <img 
                     id={i}
                     draggable='true' 
@@ -261,7 +273,6 @@ const ModifySpecOffer = observer(() => {
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
                     className="foto"  src={getImageURL(sortedList[i])} /> 
-                    <div id={i} className='delButton' onClick={(event)=>handleDelete(event,sortedList[i])}>X</div>
                 </div>
               </div>
         )
@@ -332,7 +343,8 @@ const ModifySpecOffer = observer(() => {
           }
         } else {
           console.error("FORM INVALID");
-          myalert.setMessage("Не заполнено поле текст заявки");
+          myalert.setMessage("Заполнены не все поля предложения.");
+          console.log(specOffer)
         }
       }else{
         console.error("FORM INVALID");
@@ -416,13 +428,17 @@ const ModifySpecOffer = observer(() => {
                             <td> <Form.Control
                                 name="Code"
                                 onChange={handleChangeControl}
+                                defaultValue={specOffer.data.Code}
                                 placeholder="не обязательно"
                             /></td>
                             </tr>
                             <tr>
                             <td>Остаток</td>
                             <td> <Form.Control
+                                type="number" 
+                                step=".01"
                                 name="Balance"
+                                defaultValue={specOffer.data.Balance}
                                 onChange={handleChangeControl}
                                 placeholder="не обязательно"
                             /></td>

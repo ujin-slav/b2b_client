@@ -80,7 +80,8 @@ const MySpecOffers = observer(() => {
         const result = await SpecOfferService.deleteSpecOffer({id:deleteId});
         if (result.status===200){
           myalert.setMessage("Успешно"); 
-          setLoading(!loading)
+          setCurrentPage(1)
+          setFetching(!fetching)
         } else {
           myalert.setMessage(result.data.message);
         }

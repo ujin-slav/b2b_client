@@ -8,6 +8,7 @@ import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
 import { MYORDERSPRICE } from '../utils/routes';
+import {ORGINFO} from "../utils/routes";
 
 const CreatePriceAsk = () => {
     const {chat} =  useContext(Context)
@@ -50,7 +51,7 @@ const CreatePriceAsk = () => {
             })
         }
         fetchUser(idorg).then((data)=>{
-            setRecevier(data)
+            setRecevier(data.data)
         })
         const element = table.current;
         element.addEventListener('scroll',scrollHandler);
@@ -150,8 +151,12 @@ const CreatePriceAsk = () => {
         <div class="container-priceask-center">   
             <div>
             <Form.Group className="mx-auto my-2">
-                <Form.Label>Получатель: {recevier?.name}, {recevier?.nameOrg},
-                    ИНН: {recevier?.inn}
+                <Form.Label>
+                    Получатель: &nbsp; 
+                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + recevier?._id)}> 
+                        {recevier?.name}, 
+                        &nbsp;{recevier?.nameOrg}
+                    </a>
                 </Form.Label>
             </Form.Group> 
             <Form.Group className="mx-auto my-2">

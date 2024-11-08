@@ -9,6 +9,7 @@ import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import { categoryNodes } from '../config/Category';
 import AuthService from "../services/AuthService";
+import bin from "../icons/bin.svg";
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -193,8 +194,7 @@ const Profile =  observer(() => {
                         className="foto" 
                         src={URL.createObjectURL(file)} 
                     >
-                    </img>     
-                    <div className='delButton' onClick={()=>setFile([])}>X</div>
+                    </img> 
                 </div>
                 </div>
             )    
@@ -219,6 +219,20 @@ const Profile =  observer(() => {
                             <td>Логотип</td>
                             <td>
                                 {logo()}
+                                {file.length!==0 ? 
+                                <div className='delLogoContainer' onClick={()=>setFile([])}>
+                                    <img 
+                                        className="delProfileFoto" 
+                                        src={bin}
+                                    /> 
+                                    <div>
+                                        Удалить лого
+                                    </div>
+                                </div>
+                                :
+                                <span>
+                                </span>
+                                }
                                 <input type="file"
                                 accept="image/png, image/jpeg"
                                 onChange={onInputChange}

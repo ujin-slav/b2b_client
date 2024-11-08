@@ -1,4 +1,4 @@
-import React from 'react';
+import {React,useState} from 'react'
 import CheckboxTree from 'react-checkbox-tree';
 import { PlusCircle, 
   DashCircleFill, 
@@ -7,9 +7,12 @@ import { PlusCircle,
   FileEarmark, 
   ChevronDown, 
   ChevronRight } from 'react-bootstrap-icons';
+import {Form} from "react-bootstrap";
 import { categoryNodes } from '../config/Category';
 
 const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
+
+  const[nodes,setNodes] = useState(categoryNodes)
 
   const prevChecked = checked
   const res = checked.reduce((acc, cat) => {
@@ -21,8 +24,20 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
     return acc ? acc : {} 
   },{})
 
+  // const onCheck=(checked)=>{
+  //   if(Object.keys(res).length < max){
+  //     setChecked(checked)
+  //   }else{
+  //     if(checked.length>prevChecked.length){
+  //       setChecked(prevChecked)
+  //     }else{
+  //       setChecked(checked)
+  //     }
+  //   }
+  // }
+
   const onCheck=(checked)=>{
-    if(Object.keys(res).length < max){
+    if(checked?.length < max){
       setChecked(checked)
     }else{
       if(checked.length>prevChecked.length){
@@ -33,26 +48,53 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
     }
   }
 
+  const handleControl = (e)=> {
+    let resultArray = []
+    let value = e.target.value
+    if(value===""){
+      setNodes(categoryNodes)
+      return
+    }
+    const regex = value.replace(/\s{20000,}/g, '*.*')
+    categoryNodes.map((itemNodes)=>{
+      if(itemNodes.children){
+          itemNodes.children.map((itemChildren)=>{
+              if(itemChildren.label.match(regex)){
+                resultArray.push(itemChildren)
+                setNodes(resultArray)
+              }
+        })
+      }
+    })
+  }
+
   return (
-    <CheckboxTree
-      nodes={categoryNodes}
-      checked={checked}
-      expanded={expanded}
-      onCheck={checked => onCheck(checked)}
-      onExpand={expanded => setExpanded(expanded)}
-      icons={{
-          check: <DashCircleFill/>,
-          uncheck: <PlusCircle />,
-          halfCheck: <DashCircleFill />,
-          expandClose: <ChevronRight />,
-          expandOpen: <ChevronDown />,
-          expandAll: <ChevronDown />,
-          collapseAll:  <ChevronRight/>,
-          parentClose: <Folder style={{"width": "25px", "height": "25px"}}/>,
-          parentOpen: <Folder2Open style={{"width": "25px", "height": "25px"}}/>,
-          leaf: <FileEarmark style={{"width": "20px", "height": "20px"}}/>
-      }}
-    />
+    <div>
+        <Form.Control
+          placeholder="Поиск"
+          onChange={(e)=>handleControl(e)}
+          className="mb-3"
+        />
+        <CheckboxTree
+          nodes={nodes}
+          checked={checked}
+          expanded={expanded}
+          onCheck={checked => onCheck(checked)}
+          onExpand={expanded => setExpanded(expanded)}
+          icons={{
+              check: <DashCircleFill/>,
+              uncheck: <PlusCircle />,
+              halfCheck: <DashCircleFill />,
+              expandClose: <ChevronRight />,
+              expandOpen: <ChevronDown />,
+              expandAll: <ChevronDown />,
+              collapseAll:  <ChevronRight/>,
+              parentClose: <Folder style={{"width": "25px", "height": "25px"}}/>,
+              parentOpen: <Folder2Open style={{"width": "25px", "height": "25px"}}/>,
+              leaf: <FileEarmark style={{"width": "20px", "height": "20px"}}/>
+          }}
+        />
+    </div>
   );
 }
 

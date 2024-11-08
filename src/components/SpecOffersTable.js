@@ -166,7 +166,7 @@ const SpecOffersTable = observer(() => {
                 <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
                     <img 
                     className="fotoSpec"
-                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
+                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.FilesPreview[0]?.filename} />
                     <div className='specInfo'>
                       <div className="specName">
                           {item.Name}
@@ -194,12 +194,12 @@ const SpecOffersTable = observer(() => {
         </div>
         <ReactPaginate
             forcePage = {currentPage-1}
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
+            previousLabel={"<"}
+            nextLabel={">"}
             breakLabel={"..."}
             pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={1}
             onPageChange={handlePageClick}
             containerClassName={"pagination justify-content-center"}
             pageClassName={"page-item"}

@@ -29,7 +29,8 @@ import {observer} from "mobx-react-lite";
 import Captcha from "demos-react-captcha";
 import "../style.css";
 import {B2B_ROUTE} from "../utils/routes";
-import { XCircle} from 'react-bootstrap-icons';
+import { XCircle} from 'react-bootstrap-icons'; 
+import bin from "../icons/bin.svg";
 
 const formValid = ({ data, formErrors }) => {
   let valid = true;
@@ -82,14 +83,15 @@ const CreateSpecOffer = observer(() => {
         Text: null,
         Price: null,
         Code:"",
-        Balance:"",
+        Balance:0,
+        Measure:"",
         Category: "",
         Region: "",
       },
       formErrors: {
-        Price: "",
-        Name: "",
-        Text: "",
+        Price: "не заполнено",
+        Name: "не заполнено",
+        Text: "не заполнено",
       }
     }
     );
@@ -212,6 +214,14 @@ const CreateSpecOffer = observer(() => {
         return(
               <div key={i} className='dnd-list mt-3'>
                 <div className='fotoContainer'>
+                    <div className="delSpecOfferContainer">
+                        <img 
+                            className="delSpecOffer" 
+                            src={bin}
+                            id={i}
+                            onClick={(event)=>handleDelete(event,sortedList[i])}
+                        /> 
+                    </div>
                     <img 
                     id={i}
                     draggable='true' 
@@ -223,7 +233,6 @@ const CreateSpecOffer = observer(() => {
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
                     className="foto" src={URL.createObjectURL(files.find(item=>item.id===sortedList[i]))} /> 
-                    <div id={i} className='delButton' onClick={(event)=>handleDelete(event,sortedList[i])}>X</div>
                 </div>
               </div>
         )
@@ -277,18 +286,19 @@ const CreateSpecOffer = observer(() => {
           data.append("Price", specOffer.data.Price)
           data.append("Code", specOffer.data.Code)
           data.append("Balance", specOffer.data.Balance)
+          data.append("Measure", specOffer.data.Measure)
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           const result = await SpecOfferService.addSpecOffer(data)
           if (result.status===200){
             myalert.setMessage("Предложение успешно добавлено");
-            //history.push(B2B_ROUTE)
+            history.push(B2B_ROUTE)
           } else {
             myalert.setMessage(result?.data?.message)
           }
         } else {
-          console.error("FORM INVALID");
-          myalert.setMessage("Не заполнено поле текст заявки");
+          console.error("FORM INVALID")
+          myalert.setMessage("Заполнены не все поля предложения.");
         }
       }else{
         console.error("FORM INVALID");
@@ -367,6 +377,14 @@ const CreateSpecOffer = observer(() => {
                                 /></td>
                                 </tr>
                                 <tr>
+                                <td>Ед.изм</td>
+                                <td> <Form.Control
+                                    name="Measure"
+                                    onChange={handleChangeControl}
+                                    placeholder="не обязательно"
+                                /></td>
+                                </tr>
+                                <tr>
                                 <td>Текст</td>
                                 <td><Form.Control
                                       name="Text"
@@ -436,6 +454,38 @@ const CreateSpecOffer = observer(() => {
                 >
                 Создать
                 </Button>
+                <ModalCT 
+                header="Регионы" 
+                active={modalActiveReg} 
+                setActive={setModalActiveReg}
+                text={
+                  <div className='mx-3 pb-2 text-warning'>
+                  Не более 3
+                  </div>
+                }  
+                component={<RegionTree 
+                checked={checkedRegion} expanded={expandedRegion} max={3}
+                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                />}/>
+                <ModalCT 
+                      header="Категории" 
+                      active={modalActiveCat} 
+                      setActive={setModalActiveCat}
+                      text={
+                        <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                        </div>
+                      }  
+                      component={<CategoryTree 
+                      checked={checkedCat} expanded={expandedCat} max={4}
+                      setChecked={setCheckedCat} setExpanded={setExpandedCat}
+                />}/>
+                <ModalCT 
+                      header="Участники" 
+                      active={modalActiveMember}  
+                      component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
+                      setActive={setModalActiveMember} 
+                />
               </Form>
               </Col>
             </Row>
