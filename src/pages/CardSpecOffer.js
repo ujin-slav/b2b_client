@@ -37,12 +37,11 @@ const CardSpecOffer = observer(() => {
 
     useEffect(() => {
         SpecOfferService.getSpecOfferId({id}).then((result)=>{
-            if(result.status===200){
-                console.log(result)
-                setPriceID(result.data.price._id)
-                setSpecOffer(result.data.specoffer)
-                setCheckedRegion(result.data.specoffer.Region)
-                setCheckedCat(result.data.specoffer.Category)
+            if(result.status===200 && result.data){
+                setPriceID(result.data.price?._id)
+                setSpecOffer(result.data?.specoffer)
+                setCheckedRegion(result.data?.specoffer.Region)
+                setCheckedCat(result.data.specoffer?.Category)
             }else{
                 setError(result.data.errors)
             }
@@ -66,7 +65,7 @@ const CardSpecOffer = observer(() => {
         return(
             <div>
                 <div className="cardSpecPrice">
-                     {specOffer.Price} ₽
+                     {specOffer?.Price} ₽
                 </div>  
                 <div>  
                     <button className="myButtonMessage mt-4"
@@ -108,7 +107,7 @@ const CardSpecOffer = observer(() => {
                     onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
                 <div className='parentSpec'>
-                {specOffer.FilesMini?.map((item,index)=>
+                {specOffer?.FilesMini?.map((item,index)=>
                     <div key={index} className='albumSpec'>
                         <img className='miniFotoSpecCard'
                         onClick={()=>setFotoFocus(index)} 
@@ -121,7 +120,7 @@ const CardSpecOffer = observer(() => {
                     <span>Описание</span>
                 </div>
                 <div className="specContactData">
-                    <span>{specOffer.Text}</span>
+                    <span>{specOffer?.Text}</span>
                 </div>
                 <div className="specContact">
                     <span>Категории</span>

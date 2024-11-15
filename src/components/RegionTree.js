@@ -13,7 +13,6 @@ import {Form} from "react-bootstrap";
 const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
 
   const[nodes,setNodes] = useState(regionNodes)
-  let resultArray = [].concat(regionNodes)
     
     const prevChecked = checked
     const res = checked.reduce((acc, cat) => {
@@ -38,27 +37,33 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
     }
 
     const handleControl = (e)=> {
+      let resultArray = []
       let value = e.target.value
       if(value===""){
+        setNodes(regionNodes)
         return
       }
-      const regex = value.replace(/\s{20000,}/g, '*.*')
-      resultArray.map((itemNodes,indexNodes)=>{
+      const regex = value.replace(/\\/g, "\\\\");
+      regionNodes.map((itemNodes)=>{
         if(itemNodes.children){
-          itemNodes.children.map((itemChildren,indexChildren)=>{
-                if(!itemChildren.label.match(regex)){
-                  itemNodes.children.splice(indexChildren,1)
-                }
+            itemNodes.children.map((itemChildren)=>{
+                if(itemChildren.label.match(regex)){
+                  let search = resultArray.findIndex(item => item.value === itemNodes.value)
+                  if(search==-1){
+                    let newNode = JSON.parse(JSON.stringify(itemNodes))
+                    newNode.children = [itemChildren]
+                    resultArray.push(newNode)
+                    setNodes(resultArray)
+                  }else{
+                    if(Array.isArray(resultArray[search].children)){
+                      resultArray[search].children.push(itemChildren)
+                    }
+                  }
+              }
           })
         }
-        if(Array.isArray(itemNodes.children)){
-          if(itemNodes.children.length==0){
-            resultArray.splice(indexNodes,1)
-            setNodes(resultArray)
-          }
-        }
       })
-    }  
+    }
 
     return (
       <div>

@@ -17,6 +17,7 @@ import {LOGIN_ROUTE,
         UPLOADPRICE,
         MYORDERSPRICE, 
         MYPRICE,
+        MYPRICES,
         PRICES, 
         INVITEDPRICE,
         MYSPECOFFERS,
@@ -291,7 +292,7 @@ const NavBar = observer(() => {
                             <div><b>&nbsp;&nbsp;Прайс-листы</b></div>
                           </div>
                         </li>
-                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYPRICE)}className={classNameLink(MYPRICE)}>Мой прайс</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(MYPRICES)}className={classNameLink(MYPRICES)}>Мои прайсы</NavDropdown.Item></li>
                         <li className="job-sub-tabs"><NavDropdown.Item onClick={()=>activeLink(UPLOADPRICE)}className={classNameLink(UPLOADPRICE)}>Загрузить прайс</NavDropdown.Item></li>
                         <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={classNameLink(MYORDERSPRICE)}>Я заказывал по прайсу</NavDropdown.Item></li>
                         <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICE)}className={classNameLink(INVITEDPRICE)}>

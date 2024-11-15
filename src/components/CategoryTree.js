@@ -55,14 +55,23 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
       setNodes(categoryNodes)
       return
     }
-    const regex = value.replace(/\s{20000,}/g, '*.*')
+    const regex = value.replace(/\\/g, "\\\\");
     categoryNodes.map((itemNodes)=>{
       if(itemNodes.children){
           itemNodes.children.map((itemChildren)=>{
               if(itemChildren.label.match(regex)){
-                resultArray.push(itemChildren)
-                setNodes(resultArray)
-              }
+                let search = resultArray.findIndex(item => item.value === itemNodes.value)
+                if(search==-1){
+                  let newNode = JSON.parse(JSON.stringify(itemNodes))
+                  newNode.children = [itemChildren]
+                  resultArray.push(newNode)
+                  setNodes(resultArray)
+                }else{
+                  if(Array.isArray(resultArray[search].children)){
+                    resultArray[search].children.push(itemChildren)
+                  }
+                }
+            }
         })
       }
     })

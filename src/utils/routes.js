@@ -4,6 +4,7 @@ import Banned from "../pages/Banned"
 import CardAsk from "../pages/CardAsk";
 import CardPriceAsk from "../pages/CardPriceAsk";
 import CreateAsk from "../pages/CreateAsk";
+import CreatePrice from "../pages/CreatePrice";
 import CreateSpecOffer from "../pages/CreateSpecOffer";
 import CreatePriceAsk from "../pages/CreatePriceAsk";
 import CreatePriceAskFiz from "../pages/CreatePriceAskFiz";
@@ -34,6 +35,7 @@ import Test from "../pages/Test";
 import UploadPrice from "../pages/UploadPrice";
 import Prices from "../pages/Prices";
 import MyPrice from "../pages/MyPrice";
+import MyPrices from "../pages/MyPrices";
 import CardSpecOffer from "../pages/CardSpecOffer";
 import InvitedSpecOffer from "../pages/InvitedSpecOffer";
 import QuestForMe from "../pages/QuestForMe";
@@ -61,6 +63,7 @@ export const CARDPRICEASK = '/cardpriceask'
 export const CARDSPECOFFER = '/cardspecoffer'
 export const CREATEASK = '/createask'
 export const CREATESPECOFFER = '/createspecoffer'
+export const CREATEPRICE = '/createprice'
 export const CREATEPRICEASK = '/createpriceask'
 export const CREATEPRICEASKFIZ = '/createpriceaskfiz'
 export const DOWNLOAD = '/download'
@@ -83,6 +86,7 @@ export const HELP = '/help'
 export const ABOUT = '/about'
 export const UPLOADPRICE = '/uploadprice'
 export const MYPRICE = '/myprice'
+export const MYPRICES = '/myprices'
 export const PRICES = '/prices'
 export const LENTSTATUS = '/lentstatus'
 export const INVITED = '/invited'
@@ -370,6 +374,10 @@ export const authRoutes = [
         Component: CreateSpecOffer
     },
     {
+        path: CREATEPRICE,
+        Component: CreatePrice
+    },
+    {
         path: CREATEPRICEASK + '/:idorg/:idprod',
         Component: CreatePriceAsk
     },
@@ -484,6 +492,10 @@ export const authRoutes = [
     {
         path: MYPRICE,
         Component: MyPrice
+    },
+    {
+        path: MYPRICES,
+        Component: MyPrices
     },
     {
         path: LENTSTATUS,
