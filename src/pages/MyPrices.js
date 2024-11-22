@@ -2,19 +2,22 @@ import {React,useContext,useEffect,useState} from 'react';
 import {Card, Form, InputGroup,Button,Row} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
+import {useParams} from 'react-router-dom';
 import {useHistory} from 'react-router-dom';
 import {Context} from "../index";
+import PriceService from '../services/PriceService'
 import dateFormat from "dateformat";
 import {Search} from 'react-bootstrap-icons';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import CardSpecOffer from '../pages/CardSpecOffer';
-import { CARDSPECOFFER,CREATEPRICE,CREATESPECOFFER, MODIFYSPECOFFER } from '../utils/routes';
+import { CARDSPECOFFER,CREATEPRICE, MYPRICE } from '../utils/routes';
 import ReactPaginate from "react-paginate";
 import { PlusCircleFill,XCircle,Pen} from 'react-bootstrap-icons';
 import ModalAlert from '../components/ModalAlert';
 import bin from "../icons/bin.svg";
+import excel from "../icons/excel.svg";
 
 
 const MyPrices = observer(() => {
@@ -36,20 +39,20 @@ const MyPrices = observer(() => {
 
     useEffect(() => {
         setLoading(true)
-        // SpecOfferService.getSpecOfferUser({
-        //     id:user.user.id,
-        //     limit,
-        //     search,
-        //     page:currentPage,
-        //     startDate,
-        //     endDate
-        //     }).then((data)=>{
-        //             setSpecOffers(data.docs);
-        //             setPageCount(data.totalPages);
-        //             setCurrentPage(data.page)
-        // }).finally(
-        //     ()=>setLoading(false)
-        // )
+        PriceService.getPricesUser({
+            id:user.user.id,
+            limit,
+            search,
+            page:currentPage,
+            startDate,
+            endDate
+            }).then((data)=>{
+                    setPrices(data.docs);
+                    setPageCount(data.totalPages);
+                    setCurrentPage(data.page)
+        }).finally(
+            ()=>setLoading(false)
+        )
       },[fetching]);
 
     const fetchPage = async (currentPage) => {
@@ -78,14 +81,14 @@ const MyPrices = observer(() => {
     }
   
     const deletePrice = async () =>{
-        // const result = await SpecOfferService.deleteSpecOffer({id:deleteId});
-        // if (result.status===200){
-        //   myalert.setMessage("Успешно"); 
-        //   setCurrentPage(1)
-        //   setFetching(!fetching)
-        // } else {
-        //   myalert.setMessage(result.data.message);
-        // }
+        const result = await PriceService.clearPrice({org:user.user.id,priceId: deleteId});
+        if (result.status===200){
+            myalert.setMessage("Успешно");
+            setCurrentPage(1)
+            setFetching(!fetching)
+        } else {
+            myalert.setMessage(result.data.message);
+        }
     }
    
     return (
@@ -161,7 +164,7 @@ const MyPrices = observer(() => {
                 <div className='parentSpec'>
                 {prices?.map((item)=>{
                 return(
-                    <div onClick={()=>console.log('')} className='childSpec'>
+                    <div onClick={()=>history.push(MYPRICE + '/' + item._id)} className='childSpec'>
                         <div  className="delSpecOfferContainer">
                             {/* <XCircle className="delSpecOffer"
                                 onClick={(e)=>{
@@ -179,6 +182,15 @@ const MyPrices = observer(() => {
                                     setDeleteId(item._id)
                                 }}
                             /> 
+                        </div>
+                        <img 
+                        className="fotoSpec"
+                        src={excel} />
+                        <div className="specName">
+                            {item.Name}
+                        </div>
+                        <div className="specNameOrg">
+                            {item.NameOrg}
                         </div>
                         <div className="specCloudy">
                             {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?

@@ -148,11 +148,27 @@ const CreatePrice = observer(() => {
               setInterval(percent,10)
             }
         }
+        if(checkedCat.length==0){
+            myalert.setMessage("Не заполнены категории");
+            return
+          }
+        if(checkedRegion.length==0){
+            myalert.setMessage("Не заполнены регионы");
+            return
+        }
+        if (!formValid(priceForm)){
+            myalert.setMessage("Не заполнено поле текст");
+            return
+        }
         if (file.length !== 0) {
             if (checkPrice()) {
                 const data = new FormData()
                 data.append("price", JSON.stringify(price))
                 data.append("userID", user.user.id)
+                data.append("name", priceForm.data.Name)
+                data.append("description", priceForm.data.Desciption)
+                data.append("category", JSON.stringify(checkedCat))
+                data.append("region", JSON.stringify(checkedRegion))
                 const result = await uploadPrice(data, options)
                 if (result.result) {
                     myalert.setMessage("Прайс загружен");
@@ -194,6 +210,7 @@ const CreatePrice = observer(() => {
             break;
         }
         setPriceForm({ data, formErrors});
+        console.log(priceForm)
       }
 
     return (
@@ -303,10 +320,10 @@ const CreatePrice = observer(() => {
                         </Table>
                         <Button
                             variant="primary"
-                            type="submit"
+                            onClick={(e)=>onSubmit(e)}
                             className="btn btn-success mt-3"
                         >
-                            Загрузить
+                            Создать
                         </Button>
                     <ModalCT 
                         header="Регионы" 

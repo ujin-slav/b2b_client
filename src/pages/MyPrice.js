@@ -1,19 +1,27 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {Card, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import PriceService from '../services/PriceService'
+import {useParams} from 'react-router-dom';
 import dateFormat, { masks } from "dateformat";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import ModalAlert from '../components/ModalAlert';
+import { categoryNodes } from '../config/Category';
+import { regionNodes } from '../config/Region';
+import {getCategoryName} from '../utils/Convert'
 import * as XLSX from 'xlsx';
 
 const MyPrice = observer(() => {
     const {user} = useContext(Context);
     const [org, setOrg] = useState();
+    const {id} = useParams();
     const[loadingFull,setLoadingFull] = useState(false);
     const[fetching,setFetching] = useState(true);
+    const [checkedRegion,setCheckedRegion] = useState([]);
+    const [checkedCat,setCheckedCat] = useState([]);
     const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]); 
+    const [priceHead,setPriceHead] = useState({}); 
     const[totalDocs,setTotalDocs] = useState(0);
     const {myalert} = useContext(Context);
     const[currentPage,setCurrentPage] = useState(1);
@@ -25,17 +33,21 @@ const MyPrice = observer(() => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getMyPrice({page:currentPage,limit,search,org:user.user.id}).then((data)=>{
+            PriceService.getMyPrice({page:currentPage,limit,search,org:user.user.id,priceId:id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice([...price, ...data.docs]);
                 setCurrentPage(prevState=>prevState + 1)
-                console.log(data)
             }).finally(()=>setFetching(false))
             }
         }
     },[fetching,user.user]);
 
     useEffect(() => {
+        PriceService.getPriceId({id}).then((data)=>{
+            setPriceHead(data)
+            setCheckedRegion(data?.Region)
+            setCheckedCat(data?.Category)
+        })
         document.addEventListener('scroll',scrollHandler);
         return function(){
             document.removeEventListener('scroll',scrollHandler);
@@ -43,7 +55,7 @@ const MyPrice = observer(() => {
     },[]);
 
     const handleSearch = (e) =>{
-        PriceService.getMyPrice({page:1,limit,search,org:user.user.id}).
+        PriceService.getMyPrice({page:1,limit,search,priceId:id,org:user.user.id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
@@ -63,7 +75,7 @@ const MyPrice = observer(() => {
 
     const loadPrice = () =>{
         setLoadingFull(true)
-        PriceService.getMyPrice({page:1,limit:totalDocs,search:'',org:user.user.id}).then((data)=>{
+        PriceService.getMyPrice({page:1,limit:totalDocs,search:'',org:user.user.id,priceId:id}).then((data)=>{
             const fileName = `Price.xlsx`;
             const aoa = []
             data.docs.map((item)=>{
@@ -85,17 +97,6 @@ const MyPrice = observer(() => {
         }).finally(()=>setLoadingFull(false))
     }
 
-    const clearPrice = async()=>{
-        setFetch(true)
-        const result = await PriceService.clearPrice({org:user.user.id});
-        if (result.status===200){
-          myalert.setMessage("Успешно");
-          setPrice([])
-        } else {
-          myalert.setMessage(result.data.message);
-        }
-        setFetch(false)
-    }  
 
     if(loadingFull||fetch){
         return (
@@ -106,30 +107,42 @@ const MyPrice = observer(() => {
     }
 
     return (
-        <Container>             
-                <Row>
+        <Container> 
+                    <Table>
+                        <col style={{"width":"25%"}}/>
+          	            <col style={{"width":"75%"}}/>
+                        <tbody>
+                            <tr>
+                                <td>Название</td>
+                                <td>{priceHead?.Name}</td>
+                            </tr>
+                            <tr>
+                                <td>Описание</td>
+                                <td>{priceHead?.Desciption}</td>
+                            </tr>
+                            <tr>
+                                <td>Категории</td>
+                                <td>{getCategoryName(checkedCat, categoryNodes).join(", ")}</td>
+                            </tr>
+                            <tr>
+                                <td>Регионы</td>
+                                <td>{getCategoryName(checkedRegion, regionNodes).join(", ")}</td>
+                            </tr>
+                            <tr>
+                                <td>Ссылка</td>
+                                <td><a href="javascript:void(0)" onClick={()=>loadPrice(true)}>Прайс.xls</a></td>
+                            </tr>
+                        </tbody>
+                    </Table>    
+                    <Row>
                     <Form.Group className="my-2">
                         <Form.Label>Поиск:</Form.Label>
                         <Form.Control
                             onChange={handleSearch}
                             placeholder="Начните набирать артикул или название продукта"
                         />
-                        <Button
-                        variant="primary"
-                        className="btn btn-success mt-3 mx-3"
-                        onClick={()=>loadPrice(true)}
-                        >
-                            Скачать загруженный прайс
-                        </Button>
-                        <Button
-                            variant="primary"
-                            className="btn btn-success mt-3 mx-1"
-                            onClick={()=>setModalActive(true)}
-                        >
-                            Удалить данные на сервере
-                        </Button>
                     </Form.Group>
-            </Row>
+                </Row>
             <Table>
              <thead>
                 <tr>
@@ -154,9 +167,6 @@ const MyPrice = observer(() => {
                     )}
                  </tbody>
             </Table>
-            <ModalAlert header="Предыдущие данные будут удалены, продолжить?" 
-              active={modalActive} 
-              setActive={setModalActive} funRes={clearPrice}/>
         </Container>
     );
 });

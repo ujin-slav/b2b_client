@@ -1261,6 +1261,9 @@ text-align: center;
   font-style: italic;
   color:#0D55FD;
 }
+.groupColor {
+  background-color: lightgoldenrodyellow;
+}
 input.createSpecOfferDataPicker{
   width:70% !important;
 }

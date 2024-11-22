@@ -188,9 +188,6 @@ const MySpecOffers = observer(() => {
                         <div className="specPrice">
                             {item.Price} ₽
                         </div>
-                        <div className="specNameOrg">
-                            {item.NameOrg}
-                        </div>
                         <div className="specCloudy">
                             {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
                             `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`

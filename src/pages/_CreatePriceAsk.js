@@ -9,9 +9,6 @@ import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
 import { MYORDERSPRICE } from '../utils/routes';
 import {ORGINFO} from "../utils/routes";
-import { CaretRight,CaretDown} from 'react-bootstrap-icons';
-import useIntersectionObserver from '../hooks/intersectObserver'
-
 
 const CreatePriceAsk = () => {
     const {chat} =  useContext(Context)
@@ -25,7 +22,6 @@ const CreatePriceAsk = () => {
     const [result,setResult] = useState([]); 
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState(1);
-    const [isIntersecting, setElement] = useIntersectionObserver({ root: null, threshold: 0.5 })
     const[comment,setComment] = useState("");
     const[search,setSearch] = useState("");
     const {myalert} = useContext(Context);
@@ -37,38 +33,16 @@ const CreatePriceAsk = () => {
     let limit = 30
 
     useEffect(() => {
-        if(price.length===0){
-            PriceService.getPricesUserAsk({id:idorg}).then((data)=>{
-                data.map((item,index)=>{
-                    PriceService.getPrice({page:1,limit,org:idorg,PriceId:item._id}).then((dataPrice)=>{
-                        item.Child = dataPrice.docs
-                        item.TotalDocs = dataPrice.totalDocs
-                        item.CurrentPage = item.CurrentPage + 1
-                        setPrice(data);
-                    })
-                })
-            }).finally(
-                ()=>setFetching(false)
-            )
+        if(fetching){
+            if(price.length===0 || price.length<totalDocs) {
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:check.data.onlySpec}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setPrice([...price, ...data.docs]);
+                setCurrentPage(prevState=>prevState + 1)
+            }).finally(()=>setFetching(false))
         }
-    },[]);
-
-    useEffect(() => {
-        if(isIntersecting?.isIntersecting){
-            setFetching(true)
-            let group = price.find(item => item.Id === isIntersecting.target.id)
-            PriceService.getPrice({page:group.CurrentPage,limit,org:idorg,PriceId:group.Id}).then((data)=>{
-                group.Child = [...group.Child, ...data.docs]
-                group.TotalDocs = data.totalDocs
-                group.CurrentPage = group.CurrentPage + 1
-                let newPrice = JSON.parse(JSON.stringify(price))
-                setPrice(newPrice)
-                setFetching(false)
-            }).finally(
-                ()=>setFetching(false)
-            )
         }
-    },[isIntersecting]);
+    },[fetching]);
 
     useEffect(() => {
         if(idprod){
@@ -98,12 +72,6 @@ const CreatePriceAsk = () => {
         data[name] = checked
         setCheck({data})
         handleSearch(search)
-    }
-
-    const reverseGroup = (item) =>{
-        item.Closed=!item?.Closed
-        let newPrice = JSON.parse(JSON.stringify(price))
-        setPrice(newPrice)
     }
 
     const handleSearch = (text) =>{
@@ -178,30 +146,6 @@ const CreatePriceAsk = () => {
         }
     }
 
-    const unfold = (item,index) =>{
-        if(!item.Closed && Array.isArray(item.Child)){
-            return(
-                <>
-                    {item.Child.map((item,index)=>
-                        <>
-                            <tr key={index} onClick={(e)=>addToResult(e,item)} class="pointer">
-                                <td>{item?.Code}</td>
-                                <td>{item?.Name}</td>
-                                <td>{item?.Price}</td>
-                                <td>{item?.Balance}</td>
-                                <td>{item?.Measure}</td>
-                                <td>{dateFormat(item?.Date, "dd/mm/yyyy")}</td>
-                            </tr>
-                        </>
-                    )}
-                    <div id={item.Id} ref={setElement}/>
-                </>
-            )
-        }else{
-            return(<></>)
-        }      
-    }
-
     return (
         <div class="container-priceask">
         <div class="container-priceask-center">   
@@ -246,36 +190,17 @@ const CreatePriceAsk = () => {
                 </thead>
                     <tbody>
                         {price?.map((item,index)=>
-                            <>
-                            <tr key={index} onClick={()=>reverseGroup(item)} className='groupColor'>
-                                <td class="pointer">
-                                    {!item?.Closed ? 
-                                        <CaretDown style={{"width": "15px", "height": "15px"}}/> 
-                                        : 
-                                        <CaretRight style={{"width": "15px", "height": "15px"}}/>
-                                    }
-                                </td>
-                                <td colSpan="5" class="pointer">{item?.Name}</td>
+                            <tr key={index} onClick={(e)=>addToResult(e,item)}>
+                                <td>{item?.Code}</td>
+                                <td class="pointer">{item?.Name}</td>
+                                <td>{item?.Price}</td>
+                                <td>{item?.Balance}</td>
+                                <td>{item?.Measure}</td>
+                                <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                             </tr>
-                            {unfold(item,index)}
-                            </>
                         )}
                     </tbody>
                 </Table>
-                {fetching ?
-                    <div id="fountainG">
-                        <div id="fountainG_1" class="fountainG"></div>
-                        <div id="fountainG_2" class="fountainG"></div>
-                        <div id="fountainG_3" class="fountainG"></div>
-                        <div id="fountainG_4" class="fountainG"></div>
-                        <div id="fountainG_5" class="fountainG"></div>
-                        <div id="fountainG_6" class="fountainG"></div>
-                        <div id="fountainG_7" class="fountainG"></div>
-                        <div id="fountainG_8" class="fountainG"></div>
-                    </div>
-                    :
-                    <></>
-                }
             </div>
             </div>
             <div class="border-price">

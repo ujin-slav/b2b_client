@@ -7,6 +7,7 @@ import AskUserStore from './store/AskUserStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styleMenu.css';
 import '../src/waiting.css';
+import '../src/loaderGorizontal.css';
 import AlertStore from './store/AlertStore';
 import QuestStore from './store/QuestStore';
 import MyContrStore from './store/MyContrStore';

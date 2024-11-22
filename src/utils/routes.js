@@ -303,7 +303,7 @@ export const bannedRoutes = [
         Component: Prices
     },
     {
-        path: MYPRICE,
+        path: MYPRICE + '/:id',
         Component: MyPrice
     },
     {
@@ -490,7 +490,7 @@ export const authRoutes = [
         Component: Prices
     },
     {
-        path: MYPRICE,
+        path: MYPRICE + '/:id',
         Component: MyPrice
     },
     {
@@ -565,7 +565,7 @@ export const publicRoutes = [
         Component: Auth
     },
     {
-        path: MYPRICE,
+        path: MYPRICE + '/:id',
         Component: Auth
     },
     {

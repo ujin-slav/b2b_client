@@ -6,8 +6,20 @@ export default class PriceService {
         const {data} = await $api.post(`/getprice`,formData);
         return data
     }
+    static async getPriceId(formData){
+        const {data} = await $api.post(`/getpriceid`,formData);
+        return data
+    }
     static async getMyPrice(formData){
         const {data} = await $api.post(`/getmyprice`,formData);
+        return data
+    }
+    static async getPricesUser(formData){
+        const {data} = await $api.post(`/getpricesuser`,formData);
+        return data
+    }
+    static async getPricesUserAsk(formData){
+        const {data} = await $api.post(`/getpricesuserask`,formData);
         return data
     }
     static async getFilterPrice(formData){

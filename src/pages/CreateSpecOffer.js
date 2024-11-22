@@ -268,6 +268,14 @@ const CreateSpecOffer = observer(() => {
 
     const onSubmit = async(e) => {
       e.preventDefault();
+      if(checkedCat.length==0){
+        myalert.setMessage("Не заполнены категории");
+        return
+      }
+      if(checkedRegion.length==0){
+        myalert.setMessage("Не заполнены регионы");
+        return
+      }
       if(captcha){
         if (formValid(specOffer)) {
           const data = new FormData();
@@ -315,6 +323,7 @@ const CreateSpecOffer = observer(() => {
     return (
       <div>
         <Container className="profile">
+          <h3>Создать специальное предложение.</h3> 
           <Row>
             <Col>
               <Form onSubmit={onSubmit}>
