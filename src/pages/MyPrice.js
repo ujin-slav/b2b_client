@@ -9,6 +9,8 @@ import ModalAlert from '../components/ModalAlert';
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
 import {getCategoryName} from '../utils/Convert'
+import { PlusCircleFill, PencilSquare, FileEarmarkX} from 'react-bootstrap-icons';
+import {generateUUID} from '../utils/getUID'
 import * as XLSX from 'xlsx';
 
 const MyPrice = observer(() => {
@@ -35,7 +37,11 @@ const MyPrice = observer(() => {
             if(price.length===0 || price.length<totalDocs) {
             PriceService.getMyPrice({page:currentPage,limit,search,org:user.user.id,priceId:id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
-                setPrice([...price, ...data.docs]);
+                const dataDocs = data.docs
+                dataDocs.map((item,index)=>{
+                    item.editing = false
+                })
+                setPrice([...price, ...dataDocs]);
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
             }
@@ -81,7 +87,6 @@ const MyPrice = observer(() => {
             data.docs.map((item)=>{
                 aoa.push([item.Code,item.Name,item.Price,item.Balance])
             })
-            console.log(data)
             const ws = XLSX.utils.aoa_to_sheet(aoa);
             var wscols = [
                 {wch:25},
@@ -97,6 +102,37 @@ const MyPrice = observer(() => {
         }).finally(()=>setLoadingFull(false))
     }
 
+    const handleClickEdit = (e,item) =>{
+        item.editing=!item.editing
+        let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(newPrice)
+    }
+
+    const handleClickDelete = (e,item) =>{
+       let newPrice = price.filter((el) => el._id !== item._id)
+       setPrice(newPrice)
+    }
+
+    const handleChange = (e,item) =>{
+        const { name, value } = e.target;
+        item[name] = value;
+    }
+
+    const newRow = (e) =>{
+        const newItem = {
+            _id:generateUUID(),
+            Code: "",
+            Date: new Date(),
+            Name: "",
+            Price: 0,
+            Balance: 0,
+            editing: false
+        }
+        price.unshift(newItem)
+        let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(newPrice)
+    }
+
 
     if(loadingFull||fetch){
         return (
@@ -105,6 +141,72 @@ const MyPrice = observer(() => {
             </p> 
         )
     }
+
+    const getTr =(item,index)=>{
+        if(item?.editing){
+            return(
+                <tr key={index}>
+                <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
+                <td>
+                    <Form.Control 
+                        name="Code"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Code}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Name"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Name}
+                        as="textarea"
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Price"
+                        type="number"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Price}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Balance"
+                        type="number"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Balance}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Measure"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Measure}
+                    />
+                </td>
+                <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+                <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
+                </tr>
+            )
+        }
+        return(
+            <tr key={index} >
+            <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
+            <td>{item?.Code}</td>
+            <td>{item?.Name}</td>
+            <td>{item?.Price}</td>
+            <td>{item?.Balance}</td>
+            <td>{item?.Measure}</td>
+            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
+            <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
+            </tr>
+        )
+    }
+
 
     return (
         <Container> 
@@ -143,27 +245,25 @@ const MyPrice = observer(() => {
                         />
                     </Form.Group>
                 </Row>
+                <PlusCircleFill onClick={(e)=>newRow()} className="addSpecOffer"/>
             <Table>
              <thead>
                 <tr>
+                    <th>Ред.</th>
                     <th>Артикул</th>
                     <th>Наименование</th>
                     <th>Цена</th>
                     <th>Остаток</th>
                     <th>Ед.изм</th>
                     <th>Дата</th>
+                    <th>Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
                     {price?.map((item,index)=>
-                        <tr key={index}>
-                            <td>{item?.Code}</td>
-                            <td>{item?.Name}</td>
-                            <td>{item?.Price}</td>
-                            <td>{item?.Balance}</td>
-                            <td>{item?.Measure}</td>
-                            <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
-                        </tr>
+                        <> 
+                            {getTr(item,index)}
+                        </>
                     )}
                  </tbody>
             </Table>

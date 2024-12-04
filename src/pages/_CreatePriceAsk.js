@@ -35,12 +35,12 @@ const CreatePriceAsk = () => {
     useEffect(() => {
         if(fetching){
             if(price.length===0 || price.length<totalDocs) {
-            PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:check.data.onlySpec}).then((data)=>{
-                setTotalDocs(data.totalDocs);
-                setPrice([...price, ...data.docs]);
-                setCurrentPage(prevState=>prevState + 1)
-            }).finally(()=>setFetching(false))
-        }
+                PriceService.getPrice({page:currentPage,limit,search,org:idorg,spec:check.data.onlySpec}).then((data)=>{
+                    setTotalDocs(data.totalDocs);
+                    setPrice([...price, ...data.docs]);
+                    setCurrentPage(prevState=>prevState + 1)
+                }).finally(()=>setFetching(false))
+            }
         }
     },[fetching]);
 

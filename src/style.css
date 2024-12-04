@@ -422,6 +422,13 @@ td.tdRed{
     object-fit: contain;
 
   }
+  .fotoSpecDisabled{
+    display: none;
+    border-radius: 20px 20px 20px 20px;
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+  }
   .specName{
     font-size: 15px;
     color:#0d6efd;
@@ -1264,8 +1271,33 @@ text-align: center;
 .groupColor {
   background-color: lightgoldenrodyellow;
 }
+.priceIdSearch {
+  /* position: absolute;
+  right: 0; */
+  background-color: lightgoldenrodyellow;
+}
+.priceIdSearchTd {
+  position: relative;
+}
 input.createSpecOfferDataPicker{
   width:70% !important;
+}
+.containerFotoSwitch {
+  display: flex;
+}
+.itemSwitchOff {
+  border-radius: 20px;
+  margin: 2px;
+  height: 10px;
+  width: 20%;
+  background-color: white;
+}
+.itemSwitchOn {
+  border-radius: 20px;
+  margin: 2px;
+  height: 10px;
+  width: 20%;
+  background-color:lightblue;
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{

@@ -1,4 +1,4 @@
-import {React,useContext,useEffect,useState} from 'react';
+import {React,useContext,useEffect,useState,useRef} from 'react';
 import {Card,InputGroup,Button,Col,Row,Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
@@ -18,16 +18,19 @@ const SpecOffersTable = observer(() => {
     const [loading,setLoading] = useState(true) 
     const {ask} = useContext(Context);
     const [specOffers, setSpecOffers] = useState([]);
-    const[visible,setVisible] = useState(false);
+    const [visible,setVisible] = useState(false);
     const {myalert} = useContext(Context);
-    const[fetching,setFetching] = useState(true);
+    const [fetching,setFetching] = useState(true);
     const history = useHistory();
     const [pageCount, setPageCount] = useState(0);
+    const [clientX, setClientX] = useState(0);
     const {user} = useContext(Context);
     const [currentPage,setCurrentPage] = useState(1)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
-    const[limit,setLimit] = useState(10);
+    const [limit,setLimit] = useState(10);
+    const imgs = useRef([])
+    const maxPhoto = 5
 
     useEffect(() => {
     if(visible){
@@ -40,6 +43,11 @@ const SpecOffersTable = observer(() => {
           startDate,
           endDate,
           limit,page:currentPage}).then((data)=>{
+                if(Array.isArray(data.docs)){
+                    data.docs.map((item)=>{
+                        item.indexFoto = 0
+                    })
+                } 
                 setSpecOffers(data.docs)
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
@@ -66,6 +74,22 @@ const SpecOffersTable = observer(() => {
           setLimit(value)
           setFetching(!fetching)
     }
+
+    const mouseMoveHandler = (e,item,index) => {
+        let num = 0
+        let left = imgs.current[index].getBoundingClientRect().left
+        let width = imgs.current[index].getBoundingClientRect().width
+        let countImage = (item.FilesPreview.length == 0 ? 
+            item.FilesPreview.length + 1 : item.FilesPreview.length)
+        if(countImage>=maxPhoto){
+            num = Math.floor((e.clientX - left) / (width / maxPhoto))
+        }else{
+            num = Math.floor((e.clientX - left) / (width / countImage))
+        }
+        item.indexFoto = num
+        let newSpecOffers = JSON.parse(JSON.stringify(specOffers))
+        setSpecOffers(newSpecOffers)
+    }
     
     if (loading){
         return(
@@ -89,6 +113,40 @@ const SpecOffersTable = observer(() => {
               </Card>
         )
        }
+    
+    const getImg = (item,index) => {
+        return(
+            item.FilesPreview.map((innerItem, innerIndex)=>
+            <img 
+            className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
+            src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
+            onMouseMove={(e)=>mouseMoveHandler(e,item,index)}
+            ref={el => imgs.current[index] = el} />
+        ))
+    } 
+
+    const getItemSwitch = (item) => {
+        let count = item.FilesPreview.length
+        let amount = 0 
+        if(count>=maxPhoto){
+            amount = maxPhoto
+        }else{
+            amount = count
+        }
+        return (
+            <>
+                {(() => {
+                    const arr = [];
+                    for (let i = 0; i < amount; i++) {
+                        arr.push(
+                            <div className={item.indexFoto==i ? "itemSwitchOn" : "itemSwitchOff"}></div>
+                        );
+                    }
+                    return arr;
+                })()}
+            </>
+        )
+    }
 
     return (
         <Card className='section sectionOffers'>
@@ -161,12 +219,22 @@ const SpecOffersTable = observer(() => {
           <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addNew"/>
           <span className="createNew">Создать новое</span>
         <div className='parentSpec'>
-            {specOffers.map((item)=>{
+            {specOffers.map((item,index)=>{
             return(
-                <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
-                    <img 
-                    className="fotoSpec"
-                    src={process.env.REACT_APP_API_URL + `getpic/` + item?.FilesPreview[0]?.filename} />
+                <div 
+                    onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} 
+                    className='childSpec'
+                    ref={el => imgs.current[index] = el} >
+                    {item.FilesPreview.length == 0 ?
+                       <img 
+                       className="fotoSpec"
+                       src={process.env.REACT_APP_API_URL + `getpic/` + item?.filename}/>
+                       :
+                       getImg(item,index)
+                    }
+                    <div class="containerFotoSwitch">
+                        {getItemSwitch(item)}
+                    </div>
                     <div className='specInfo'>
                       <div className="specName">
                           {item.Name}

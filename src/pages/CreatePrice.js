@@ -21,6 +21,8 @@ import { observer } from "mobx-react-lite";
 import * as XLSX from 'xlsx';
 import PriceService from '../services/PriceService'
 import ModalAlert from '../components/ModalAlert';
+import { PlusCircleFill, PencilSquare, FileEarmarkX} from 'react-bootstrap-icons';
+import {generateUUID} from '../utils/getUID'
 
 const formValid = ({ data, formErrors }) => {
     let valid = true;
@@ -46,6 +48,8 @@ const CreatePrice = observer(() => {
     const { user } = useContext(Context);
     const [fetch, setFetch] = useState(false);
     const [price, setPrice] = useState([]);
+    const[searchResult, setSearchResult] = useState([]);
+    const[search,setSearch] = useState("");
     const [priceForm, setPriceForm] = useState({
         data: {
           Author: "",
@@ -86,7 +90,22 @@ const CreatePrice = observer(() => {
                     /* Convert array of arrays */
                     const data = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: true, defval: '', });
                     /* Update state */
-                    setPrice(data);
+                    if(Array.isArray(data)){
+                        let newData = data.map((item,index)=>{
+                            let newItem = {}
+                            newItem._id = generateUUID()
+                            newItem.editing = false
+                            newItem.show = true
+                            newItem.Code = item[0]
+                            newItem.Name = item[1]
+                            newItem.Price = item[2]
+                            newItem.Balance = item[3]
+                            newItem.Measure = item[4]
+                            return newItem
+                        })
+                        setPrice(newData);
+                        console.log(newData)
+                    }
                     input.current.value = null
                 };
                 if (rABS) reader.readAsBinaryString(e.target.files[0]);
@@ -111,75 +130,86 @@ const CreatePrice = observer(() => {
         let result = true
         price?.map((item, index) => {
             const numStr = index + 1
-            if (!item[1]) {
+            if (!item.Name) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле наименование");
                 result = false
             }
-            if (!item[2]) {
+            if (!item.Price) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле цена");
                 result = false
             }
-            if (!item[3]) {
+            if (!item.Balance) {
                 myalert.setMessage("В строке № " + numStr + " не заполнено поле остаток");
                 result = false
             }
-            if (!Number(item[2])) {
+            if (!Number(item.Price)) {
                 myalert.setMessage("В строке № " + numStr + " поле цена не является числом");
                 result = false
             }
-            if (!Number(item[3])) {
+            if (!Number(item.Balance)) {
                 myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
                 result = false
             }
+            let newName = item.Name.replaceAll(' ', '').toLowerCase()
+            price?.map((itemInner, indexInner) => {
+                if(index!==indexInner){
+                    if(newName==itemInner.Name.replaceAll(' ', '').toLowerCase()){
+                        const numInnerStr = indexInner + 1
+                        myalert.setMessage("В строке № " + numInnerStr + " и строке № " + numStr + " совпадают наименования");
+                        result = false
+                    }
+                } 
+            })
         })
         return result
     }
 
     const onSubmit = async (e) => {
-        e.preventDefault();
-        const options = {
-            onUploadProgress: (progressEvent) => {
-              const {loaded, total} = progressEvent;
-              let percent = Math.floor( (loaded * 100) / total )
-              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
-              if( percent < 100 ){
-                setProgress(percent)
-              }
-              setInterval(percent,10)
-            }
-        }
-        if(checkedCat.length==0){
-            myalert.setMessage("Не заполнены категории");
-            return
-          }
-        if(checkedRegion.length==0){
-            myalert.setMessage("Не заполнены регионы");
-            return
-        }
-        if (!formValid(priceForm)){
-            myalert.setMessage("Не заполнено поле текст");
-            return
-        }
-        if (file.length !== 0) {
-            if (checkPrice()) {
-                const data = new FormData()
-                data.append("price", JSON.stringify(price))
-                data.append("userID", user.user.id)
-                data.append("name", priceForm.data.Name)
-                data.append("description", priceForm.data.Desciption)
-                data.append("category", JSON.stringify(checkedCat))
-                data.append("region", JSON.stringify(checkedRegion))
-                const result = await uploadPrice(data, options)
-                if (result.result) {
-                    myalert.setMessage("Прайс загружен");
-                } else if (result.errors) {
-                    myalert.setMessage(result.message);
-                }
-                setFile([])
-            }
-        } else {
-            myalert.setMessage("Выберите файл");
-        }
+        // e.preventDefault();
+        // const options = {
+        //     onUploadProgress: (progressEvent) => {
+        //       const {loaded, total} = progressEvent;
+        //       let percent = Math.floor( (loaded * 100) / total )
+        //       console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+        //       if( percent < 100 ){
+        //         setProgress(percent)
+        //       }
+        //       setInterval(percent,10)
+        //     }
+        // }
+        // if(checkedCat.length==0){
+        //     myalert.setMessage("Не заполнены категории");
+        //     return
+        //   }
+        // if(checkedRegion.length==0){
+        //     myalert.setMessage("Не заполнены регионы");
+        //     return
+        // }
+        // if (!formValid(priceForm)){
+        //     myalert.setMessage("Не заполнено поле текст");
+        //     return
+        // }
+        // if (file.length !== 0) {
+        //     if (checkPrice()) {
+        //         const data = new FormData()
+        //         data.append("price", JSON.stringify(price))
+        //         data.append("userID", user.user.id)
+        //         data.append("name", priceForm.data.Name)
+        //         data.append("description", priceForm.data.Desciption)
+        //         data.append("category", JSON.stringify(checkedCat))
+        //         data.append("region", JSON.stringify(checkedRegion))
+        //         const result = await uploadPrice(data, options)
+        //         if (result.result) {
+        //             myalert.setMessage("Прайс загружен");
+        //         } else if (result.errors) {
+        //             myalert.setMessage(result.message);
+        //         }
+        //         setFile([])
+        //     }
+        // } else {
+        //     myalert.setMessage("Выберите файл");
+        // }
+        checkPrice()
     };
 
     const clearPrice = async () => {
@@ -212,6 +242,146 @@ const CreatePrice = observer(() => {
         setPriceForm({ data, formErrors});
         console.log(priceForm)
       }
+
+      const handleClickEdit = (e,item) =>{
+        item.editing=!item.editing
+        let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(newPrice)
+    }
+
+    const handleClickDelete = (e,item) =>{
+       let newPrice = price.filter((el) => el._id !== item._id)
+       setPrice(newPrice)
+    }
+
+    const handleChange = (e,item) =>{
+        const { name, value } = e.target;
+        item[name] = value;
+    }
+
+    const handleSearch = (e) =>{
+        const { value } = e.target;
+        setSearch(value)
+        const regex = value.replace(/\\/g, "\\\\").toLowerCase();
+        price.map((item,index)=>{
+            if(item.Name.toLowerCase().match(regex) 
+                || item.Code.toLowerCase().match(regex)){
+                    item.show = true
+            }else{
+                item.show = false
+            }
+        })
+        setPrice(price)
+        console.log(price)
+    }
+
+    const newRow = (e) =>{
+        const newItem = {
+            _id:generateUUID(),
+            Code: "",
+            Name: "",
+            Price: 0,
+            Balance: 0,
+            editing: true
+        }
+        price.unshift(newItem)
+        let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(newPrice)
+    }
+
+    const getTr =(item,index)=>{
+        if(!item.show){
+            return(
+                <></>
+            )
+        }
+        if(item.editing){
+            return(
+                <tr key={index}>
+                <td>{index+1}</td>
+                <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
+                <td>
+                    <Form.Control 
+                        name="Code"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Code}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Name"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Name}
+                        as="textarea"
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Price"
+                        type="number"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Price}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Balance"
+                        type="number"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Balance}
+                    />
+                </td>
+                <td>
+                    <Form.Control 
+                        name="Measure"
+                        type="text"
+                        onChange={(e)=>handleChange(e,item)}
+                        defaultValue={item?.Measure}
+                    />
+                </td>
+                <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
+                </tr>
+            )
+        }
+        return(
+            <tr key={index} >
+            <td>{index+1}</td>
+            <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
+            <td>{item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
+            <td>{item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Price || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Balance || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Measure || <div style={{ "color": "green" }}>нет</div>}</td>
+            <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
+            </tr>
+        )
+    }
+
+    const getTablePrice =()=>{
+        if(search==""){
+            return(
+                <>
+                    {price?.map((item,index)=>
+                        <> 
+                            {getTr(item,index)}
+                        </>
+                    )}
+                </>
+            )
+        }else{
+            return(
+                <>
+                    {searchResult?.map((item,index)=>
+                        <> 
+                            {getTr(item,index)}
+                        </>
+                    )}
+                </>
+            )
+        }
+    }
 
     return (
         <div>
@@ -357,42 +527,41 @@ const CreatePrice = observer(() => {
                 </Row>
                 <Row>
                     <Col>
-                        {/* <Form.Group className="mx-auto my-2">
+                    <Form.Group className="mx-auto my-2">
                         <Form.Label>Поиск:</Form.Label>
                         <Form.Control
                             onChange={handleSearch}
                             placeholder="Начните набирать артикул или название продукта"
                         />
-                    </Form.Group> */}
+                    </Form.Group>
                     </Col>
                 </Row>
-            </Container>
-            <Table>
+                <PlusCircleFill onClick={(e)=>newRow()} className="addSpecOffer"/>
+                <Table>
                 <thead>
                     <tr>
+                        <th>№</th>
+                        <th>Ред.</th>
                         <th>Артикул</th>
                         <th>Наименование</th>
                         <th>Цена</th>
                         <th>Остаток</th>
                         <th>Ед.изм</th>
+                        <th>Удалить</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {price?.map((item) =>
-
-                        <tr>
-                            <td>{item[0] || item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
-                            <td>{item[1] || item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
-                            <td>{item[2] || item.Price || <div style={{ "color": "red" }}>нет</div>}</td>
-                            <td>{item[3] || item.Balance || <div style={{ "color": "red" }}>нет</div>}</td>
-                            <td>{item[4] || item.Measure || <div style={{ "color": "green" }}>нет</div>}</td>
-                        </tr>
+                    {price?.map((item,index)=>
+                        <> 
+                            {getTr(item,index)}
+                        </>
                     )}
                 </tbody>
             </Table>
             <ModalAlert header="Предыдущие данные будут удалены, продолжить?"
                 active={modalActive}
                 setActive={setModalActive} funRes={clearPrice} />
+            </Container>
         </div>
     );
 });

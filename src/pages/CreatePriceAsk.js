@@ -26,8 +26,10 @@ const CreatePriceAsk = () => {
     const[totalDocs,setTotalDocs] = useState(0);
     const[currentPage,setCurrentPage] = useState(1);
     const [isIntersecting, setElement] = useIntersectionObserver({ root: null, threshold: 0.5 })
+    const [isIntersectingSearch, setElementSearch] = useIntersectionObserver({ root: null, threshold: 0.5 })
     const[comment,setComment] = useState("");
     const[search,setSearch] = useState("");
+    const[searchResult,setSearchResult] = useState([]);
     const {myalert} = useContext(Context);
     const {user} = useContext(Context);
     const[check,setCheck]  = useState( {data: {
@@ -55,18 +57,20 @@ const CreatePriceAsk = () => {
 
     useEffect(() => {
         if(isIntersecting?.isIntersecting){
-            setFetching(true)
             let group = price.find(item => item.Id === isIntersecting.target.id)
-            PriceService.getPrice({page:group.CurrentPage,limit,org:idorg,PriceId:group.Id}).then((data)=>{
-                group.Child = [...group.Child, ...data.docs]
-                group.TotalDocs = data.totalDocs
-                group.CurrentPage = group.CurrentPage + 1
-                let newPrice = JSON.parse(JSON.stringify(price))
-                setPrice(newPrice)
-                setFetching(false)
-            }).finally(
-                ()=>setFetching(false)
-            )
+            if(group.Child.length < group.TotalDocs){
+                setFetching(true)
+                PriceService.getPrice({page:group.CurrentPage,limit,org:idorg,PriceId:group.Id}).then((data)=>{
+                    group.Child = [...group.Child, ...data.docs]
+                    group.TotalDocs = data.totalDocs
+                    group.CurrentPage = group.CurrentPage + 1
+                    let newPrice = JSON.parse(JSON.stringify(price))
+                    setPrice(newPrice)
+                    setFetching(false)
+                }).finally(
+                    ()=>setFetching(false)
+                )
+            }
         }
     },[isIntersecting]);
 
@@ -79,26 +83,18 @@ const CreatePriceAsk = () => {
         fetchUser(idorg).then((data)=>{
             setRecevier(data.data)
         })
-        const element = table.current;
-        element.addEventListener('scroll',scrollHandler);
-        return function(){
-            element.removeEventListener('scroll',scrollHandler);
-        }
     },[]);
 
-    const scrollHandler = (e) =>{
-        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+    useEffect(() => {
+        if(isIntersectingSearch?.isIntersecting && searchResult.length<totalDocs){
             setFetching(true)
+            PriceService.getPrice({page:currentPage,limit,search,org:idorg}).then((data)=>{
+                setTotalDocs(data.totalDocs);
+                setSearchResult([...searchResult, ...data.docs]);
+                setCurrentPage(prevState=>prevState + 1)
+            }).finally(()=>setFetching(false))
         }
-    }
-
-    const handleChecked = (e) =>{
-        const { name, checked } = e.target;
-        let data = check.data
-        data[name] = checked
-        setCheck({data})
-        handleSearch(search)
-    }
+    },[isIntersectingSearch]);
 
     const reverseGroup = (item) =>{
         item.Closed=!item?.Closed
@@ -107,10 +103,11 @@ const CreatePriceAsk = () => {
     }
 
     const handleSearch = (text) =>{
+        setFetching(true)
         PriceService.getPrice({page:1,limit,search:text,org:idorg,spec:check.data.onlySpec}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
-                setPrice(data.docs);
+                setSearchResult(data.docs);
                 setCurrentPage(2)
                 setSearch(text)
         }).finally(
@@ -202,6 +199,51 @@ const CreatePriceAsk = () => {
         }      
     }
 
+    const tablePrice = () => {
+        if(search==""){
+            return(
+                <>
+                    {price?.map((item,index)=>
+                        <>
+                        <tr key={index} onClick={()=>reverseGroup(item)} className='groupColor'>
+                            <td class="pointer">
+                                {!item?.Closed ? 
+                                    <CaretDown style={{"width": "15px", "height": "15px"}}/> 
+                                    : 
+                                    <CaretRight style={{"width": "15px", "height": "15px"}}/>
+                                }
+                            </td>
+                            <td colSpan="5" class="pointer">{item?.Name}</td>
+                        </tr>
+                        {unfold(item,index)}
+                        </>
+                    )}
+                </>
+            )
+        }else{
+            return(
+                <>
+                    {searchResult?.map((item,index)=>
+                        <tr key={index} onClick={(e)=>addToResult(e,item)}>
+                            <td>{item?.Code}</td>
+                            {/* <td class="pointer" className='priceIdSearchTd'>{item?.Name} 
+                                <span className='priceIdSearch'> {item?.PriceId?.Name}</span>
+                            </td> */}
+                            <td class="pointer">{item?.Name}<br/>
+                            <span className='priceIdSearch'> {item?.PriceId?.Name}</span>
+                            </td>
+                            <td>{item?.Price}</td>
+                            <td>{item?.Balance}</td>
+                            <td>{item?.Measure}</td>
+                            <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                        </tr>
+                    )}
+                    <span ref={setElementSearch}/>
+                </>
+            )
+        }
+    }
+
     return (
         <div class="container-priceask">
         <div class="container-priceask-center">   
@@ -222,7 +264,7 @@ const CreatePriceAsk = () => {
                     placeholder="Начните набирать артикул или название продукта"
                 />
             </Form.Group>
-            <InputGroup className="mt-3">
+            {/* <InputGroup className="mt-3">
                 <Form.Check
                     name="onlySpec"
                     type="checkbox"
@@ -231,7 +273,7 @@ const CreatePriceAsk = () => {
                 >
                 </Form.Check>
                 <Form.Label>Показать только специальные предложения.</Form.Label>
-            </InputGroup>
+            </InputGroup> */}
             <div class="table-responsive" ref={table}>
                 <Table class="table table-hover">
                 <thead>
@@ -245,21 +287,7 @@ const CreatePriceAsk = () => {
                     </tr>
                 </thead>
                     <tbody>
-                        {price?.map((item,index)=>
-                            <>
-                            <tr key={index} onClick={()=>reverseGroup(item)} className='groupColor'>
-                                <td class="pointer">
-                                    {!item?.Closed ? 
-                                        <CaretDown style={{"width": "15px", "height": "15px"}}/> 
-                                        : 
-                                        <CaretRight style={{"width": "15px", "height": "15px"}}/>
-                                    }
-                                </td>
-                                <td colSpan="5" class="pointer">{item?.Name}</td>
-                            </tr>
-                            {unfold(item,index)}
-                            </>
-                        )}
+                        {tablePrice()}
                     </tbody>
                 </Table>
                 {fetching ?
