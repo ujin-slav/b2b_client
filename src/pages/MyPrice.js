@@ -23,6 +23,7 @@ const MyPrice = observer(() => {
     const [checkedCat,setCheckedCat] = useState([]);
     const [fetch,setFetch] = useState(false); 
     const [price,setPrice] = useState([]); 
+    const [changingItems,setChangingItems] = useState([]); 
     const [priceHead,setPriceHead] = useState({}); 
     const[totalDocs,setTotalDocs] = useState(0);
     const {myalert} = useContext(Context);
@@ -31,6 +32,9 @@ const MyPrice = observer(() => {
     const[search,setSearch] = useState("");
     const [modalActive,setModalActive] = useState(false);
     let limit = 30
+    const[changedItems,setChangedItems] = useState([])
+    let deletedItems = []
+    let newItems = [] 
 
     useEffect(() => {
         if(fetching){
@@ -38,9 +42,6 @@ const MyPrice = observer(() => {
             PriceService.getMyPrice({page:currentPage,limit,search,org:user.user.id,priceId:id}).then((data)=>{
                 setTotalDocs(data.totalDocs);
                 const dataDocs = data.docs
-                dataDocs.map((item,index)=>{
-                    item.editing = false
-                })
                 setPrice([...price, ...dataDocs]);
                 setCurrentPage(prevState=>prevState + 1)
             }).finally(()=>setFetching(false))
@@ -103,9 +104,27 @@ const MyPrice = observer(() => {
     }
 
     const handleClickEdit = (e,item) =>{
-        item.editing=!item.editing
-        let newPrice = JSON.parse(JSON.stringify(price))
-        setPrice(newPrice)
+        let search = changingItems.findIndex((el)=>el._id==item._id)
+        if(search==-1){
+            setChangingItems([...changingItems,JSON.parse(JSON.stringify(item))])
+        }else{
+            if(JSON.stringify(changingItems[search]) === JSON.stringify(item)){
+                //console.log("не отличаются")
+            }else{
+                console.log("отличаются")
+                let search = changedItems.findIndex((el)=>el._id==item._id)
+                if(search==-1){
+                    setChangedItems([...changedItems,JSON.parse(JSON.stringify(item))])
+                }else{
+                    changedItems.splice(search,1)
+                    setChangedItems([...changedItems,JSON.parse(JSON.stringify(item))])
+                }
+            }
+            changingItems.splice(search,1)
+            let items = JSON.parse(JSON.stringify(changingItems))
+            setChangingItems(items)
+            console.log(changedItems)
+        }
     }
 
     const handleClickDelete = (e,item) =>{
@@ -143,7 +162,12 @@ const MyPrice = observer(() => {
     }
 
     const getTr =(item,index)=>{
-        if(item?.editing){
+        let searchChanging = changingItems.findIndex((el)=>el._id==item._id)
+        let searchChanged = changedItems.findIndex((el)=>el._id==item._id)
+        if(searchChanged!==-1){
+            item=changedItems[searchChanged]
+        }
+        if(searchChanging!==-1){
             return(
                 <tr key={index}>
                 <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
@@ -263,7 +287,7 @@ const MyPrice = observer(() => {
                     {price?.map((item,index)=>
                         <> 
                             {getTr(item,index)}
-                        </>
+                        </> 
                     )}
                  </tbody>
             </Table>

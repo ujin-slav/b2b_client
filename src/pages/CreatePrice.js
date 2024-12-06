@@ -165,50 +165,50 @@ const CreatePrice = observer(() => {
     }
 
     const onSubmit = async (e) => {
-        // e.preventDefault();
-        // const options = {
-        //     onUploadProgress: (progressEvent) => {
-        //       const {loaded, total} = progressEvent;
-        //       let percent = Math.floor( (loaded * 100) / total )
-        //       console.log( `${loaded}kb of ${total}kb | ${percent}%` );
-        //       if( percent < 100 ){
-        //         setProgress(percent)
-        //       }
-        //       setInterval(percent,10)
-        //     }
-        // }
-        // if(checkedCat.length==0){
-        //     myalert.setMessage("Не заполнены категории");
-        //     return
-        //   }
-        // if(checkedRegion.length==0){
-        //     myalert.setMessage("Не заполнены регионы");
-        //     return
-        // }
-        // if (!formValid(priceForm)){
-        //     myalert.setMessage("Не заполнено поле текст");
-        //     return
-        // }
-        // if (file.length !== 0) {
-        //     if (checkPrice()) {
-        //         const data = new FormData()
-        //         data.append("price", JSON.stringify(price))
-        //         data.append("userID", user.user.id)
-        //         data.append("name", priceForm.data.Name)
-        //         data.append("description", priceForm.data.Desciption)
-        //         data.append("category", JSON.stringify(checkedCat))
-        //         data.append("region", JSON.stringify(checkedRegion))
-        //         const result = await uploadPrice(data, options)
-        //         if (result.result) {
-        //             myalert.setMessage("Прайс загружен");
-        //         } else if (result.errors) {
-        //             myalert.setMessage(result.message);
-        //         }
-        //         setFile([])
-        //     }
-        // } else {
-        //     myalert.setMessage("Выберите файл");
-        // }
+        e.preventDefault();
+        const options = {
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+              if( percent < 100 ){
+                setProgress(percent)
+              }
+              setInterval(percent,10)
+            }
+        }
+        if(checkedCat.length==0){
+            myalert.setMessage("Не заполнены категории");
+            return
+          }
+        if(checkedRegion.length==0){
+            myalert.setMessage("Не заполнены регионы");
+            return
+        }
+        if (!formValid(priceForm)){
+            myalert.setMessage("Не заполнено поле текст");
+            return
+        }
+        if (file.length !== 0) {
+            if (checkPrice()) {
+                const data = new FormData()
+                data.append("price", JSON.stringify(price))
+                data.append("userID", user.user.id)
+                data.append("name", priceForm.data.Name)
+                data.append("description", priceForm.data.Desciption)
+                data.append("category", JSON.stringify(checkedCat))
+                data.append("region", JSON.stringify(checkedRegion))
+                const result = await uploadPrice(data, options)
+                if (result.result) {
+                    myalert.setMessage("Прайс загружен");
+                } else if (result.errors) {
+                    myalert.setMessage(result.message);
+                }
+                setFile([])
+            }
+        } else {
+            myalert.setMessage("Выберите файл");
+        }
         checkPrice()
     };
 

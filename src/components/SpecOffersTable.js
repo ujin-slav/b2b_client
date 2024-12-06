@@ -23,8 +23,8 @@ const SpecOffersTable = observer(() => {
     const [fetching,setFetching] = useState(true);
     const history = useHistory();
     const [pageCount, setPageCount] = useState(0);
-    const [clientX, setClientX] = useState(0);
     const {user} = useContext(Context);
+    const [currentImg,setCurrentImg] = useState()
     const [currentPage,setCurrentPage] = useState(1)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
@@ -90,6 +90,14 @@ const SpecOffersTable = observer(() => {
         let newSpecOffers = JSON.parse(JSON.stringify(specOffers))
         setSpecOffers(newSpecOffers)
     }
+
+    const mouseEnterHandler = (e,item,index) => {
+        setCurrentImg(index)
+    }
+
+    const mouseLeaveHandler = (e,item,index) => {
+        setCurrentImg(null)
+    }
     
     if (loading){
         return(
@@ -121,20 +129,30 @@ const SpecOffersTable = observer(() => {
             className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
             src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
             onMouseMove={(e)=>mouseMoveHandler(e,item,index)}
+            onMouseEnter={(e)=>mouseEnterHandler(e,item,index)}
+            onMouseLeave={(e)=>mouseLeaveHandler(e,item,index)}
             ref={el => imgs.current[index] = el} />
         ))
     } 
 
-    const getItemSwitch = (item) => {
+    const getItemSwitch = (item,index) => {
         let count = item.FilesPreview.length
         let amount = 0 
+        if(index!==currentImg){
+            return(
+                <div class="containerFotoSwitch">
+                    <div className="itemSwitchOff"></div>
+                </div>
+            )
+        }
         if(count>=maxPhoto){
             amount = maxPhoto
         }else{
             amount = count
         }
         return (
-            <>
+            <>  
+                <div class="containerFotoSwitch">
                 {(() => {
                     const arr = [];
                     for (let i = 0; i < amount; i++) {
@@ -144,6 +162,7 @@ const SpecOffersTable = observer(() => {
                     }
                     return arr;
                 })()}
+                </div>
             </>
         )
     }
@@ -232,9 +251,7 @@ const SpecOffersTable = observer(() => {
                        :
                        getImg(item,index)
                     }
-                    <div class="containerFotoSwitch">
-                        {getItemSwitch(item)}
-                    </div>
+                    {getItemSwitch(item,index)}
                     <div className='specInfo'>
                       <div className="specName">
                           {item.Name}
