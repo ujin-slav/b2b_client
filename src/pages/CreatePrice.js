@@ -103,8 +103,7 @@ const CreatePrice = observer(() => {
                             newItem.Measure = item[4]
                             return newItem
                         })
-                        setPrice(newData);
-                        console.log(newData)
+                        setPrice([...price, ...newData]);
                     }
                     input.current.value = null
                 };
@@ -272,7 +271,6 @@ const CreatePrice = observer(() => {
             }
         })
         setPrice(price)
-        console.log(price)
     }
 
     const newRow = (e) =>{
@@ -282,7 +280,8 @@ const CreatePrice = observer(() => {
             Name: "",
             Price: 0,
             Balance: 0,
-            editing: true
+            editing: true,
+            show:true
         }
         price.unshift(newItem)
         let newPrice = JSON.parse(JSON.stringify(price))

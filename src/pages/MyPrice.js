@@ -31,10 +31,10 @@ const MyPrice = observer(() => {
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const[search,setSearch] = useState("");
     const [modalActive,setModalActive] = useState(false);
-    let limit = 30
     const[changedItems,setChangedItems] = useState([])
-    let deletedItems = []
-    let newItems = [] 
+    const[deletedItems,setDeletedItems] = useState([])
+    const[newItems,setNewItems] = useState([]) 
+    let limit = 30
 
     useEffect(() => {
         if(fetching){
@@ -62,15 +62,27 @@ const MyPrice = observer(() => {
     },[]);
 
     const handleSearch = (e) =>{
-        PriceService.getMyPrice({page:1,limit,search,priceId:id,org:user.user.id}).
+        const { value } = e.target;
+        PriceService.getMyPrice({page:1,limit,search:value,priceId:id,org:user.user.id}).
             then((data)=>{
                 setTotalDocs(data.totalDocs);
                 setPrice(data.docs);
                 setCurrentPage(2)
-                setSearch(e.target.value)
+                setSearch(value)
         }).finally(
             ()=>setFetching(false)
         )
+        ///
+        const regex = value.replace(/\\/g, "\\\\").toLowerCase();
+        newItems.map((item,index)=>{
+            if(item.Name.toLowerCase().match(regex) 
+                || item.Code.toLowerCase().match(regex)){
+                    item.show = true
+            }else{
+                item.show = false
+            }
+        })
+        setNewItems(newItems)
     }
 
     const scrollHandler = (e) =>{
@@ -123,13 +135,15 @@ const MyPrice = observer(() => {
             changingItems.splice(search,1)
             let items = JSON.parse(JSON.stringify(changingItems))
             setChangingItems(items)
-            console.log(changedItems)
         }
     }
 
     const handleClickDelete = (e,item) =>{
        let newPrice = price.filter((el) => el._id !== item._id)
+       let newItemsPrice = newItems.filter((el) => el._id !== item._id)
+       setDeletedItems([...deletedItems, item])
        setPrice(newPrice)
+       setNewItems(newItemsPrice)
     }
 
     const handleChange = (e,item) =>{
@@ -145,13 +159,65 @@ const MyPrice = observer(() => {
             Name: "",
             Price: 0,
             Balance: 0,
-            editing: false
+            show: true,
+            newItem: true
         }
-        price.unshift(newItem)
+        setNewItems([...newItems,newItem])
+        setChangingItems([...changingItems,newItem])
         let newPrice = JSON.parse(JSON.stringify(price))
         setPrice(newPrice)
     }
 
+    const checkItem = (item, index, array) => {
+        let result = true
+        const numStr = index + 1
+        if (!item.Name) {
+            myalert.setMessage("В строке № " + numStr + " не заполнено поле наименование");
+            result = false
+        }
+        if (!item.Price) {
+            myalert.setMessage("В строке № " + numStr + " не заполнено поле цена");
+            result = false
+        }
+        if (!item.Balance) {
+            myalert.setMessage("В строке № " + numStr + " не заполнено поле остаток");
+            result = false
+        }
+        if (!Number(item.Price)) {
+            myalert.setMessage("В строке № " + numStr + " поле цена не является числом");
+            result = false
+        }
+        if (!Number(item.Balance)) {
+            myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
+            result = false
+        }
+        let newName = item.Name.replaceAll(' ', '').toLowerCase()
+        array?.map((itemInner, indexInner) => {
+            if(index!==indexInner){
+                if(newName==itemInner.Name.replaceAll(' ', '').toLowerCase()){
+                    const numInnerStr = indexInner + 1
+                    myalert.setMessage("В строке № " + numInnerStr + " и строке № " + numStr + " совпадают наименования");
+                    result = false
+                }
+            } 
+        })
+        return result
+    }
+
+    const checkItems = () => {
+        let result = true
+        newItems?.map((item, index, array) => {
+            result = checkItem(item, index, array)
+        })
+        changedItems?.map((item, index, array) => {
+            result = checkItem(item, index+newItems.length, array)
+        })
+        return result
+    }
+
+    const save = (e) => {
+        checkItems()
+    }
 
     if(loadingFull||fetch){
         return (
@@ -164,12 +230,20 @@ const MyPrice = observer(() => {
     const getTr =(item,index)=>{
         let searchChanging = changingItems.findIndex((el)=>el._id==item._id)
         let searchChanged = changedItems.findIndex((el)=>el._id==item._id)
+        let searchDeleted = deletedItems.findIndex((el)=>el._id==item._id)
+        if(item.newItem && !item.show){
+            return(<></>)
+        }
+        if(searchDeleted!==-1){
+            return(<></>)
+        }
         if(searchChanged!==-1){
             item=changedItems[searchChanged]
         }
         if(searchChanging!==-1){
             return(
                 <tr key={index}>
+                <td>{index+1}</td>
                 <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
                 <td>
                     <Form.Control 
@@ -219,12 +293,13 @@ const MyPrice = observer(() => {
         }
         return(
             <tr key={index} >
+            <td>{index+1}</td>
             <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
-            <td>{item?.Code}</td>
-            <td>{item?.Name}</td>
-            <td>{item?.Price}</td>
-            <td>{item?.Balance}</td>
-            <td>{item?.Measure}</td>
+            <td>{item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
+            <td>{item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Price || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Balance || <div style={{ "color": "red" }}>нет</div>}</td>
+            <td>{item.Measure || <div style={{ "color": "green" }}>нет</div>}</td>
             <td>{dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}</td>
             <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
             </tr>
@@ -259,7 +334,14 @@ const MyPrice = observer(() => {
                                 <td><a href="javascript:void(0)" onClick={()=>loadPrice(true)}>Прайс.xls</a></td>
                             </tr>
                         </tbody>
-                    </Table>    
+                    </Table> 
+                    <Button
+                            variant="primary"
+                            onClick={(e)=>save(e)}
+                            className="btn btn-success mt-1 mb-2"
+                        >
+                            Сохранить
+                    </Button>   
                     <Row>
                     <Form.Group className="my-2">
                         <Form.Label>Поиск:</Form.Label>
@@ -273,6 +355,7 @@ const MyPrice = observer(() => {
             <Table>
              <thead>
                 <tr>
+                    <th>№</th>
                     <th>Ред.</th>
                     <th>Артикул</th>
                     <th>Наименование</th>
@@ -284,9 +367,14 @@ const MyPrice = observer(() => {
                 </tr>
                 </thead>
                 <tbody>
-                    {price?.map((item,index)=>
+                    {newItems?.map((item,index)=>
                         <> 
                             {getTr(item,index)}
+                        </> 
+                    )}
+                    {price?.map((item,index)=>
+                        <> 
+                            {getTr(item,index+newItems.length)}
                         </> 
                     )}
                  </tbody>
