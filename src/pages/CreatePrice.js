@@ -149,6 +149,28 @@ const CreatePrice = observer(() => {
                 myalert.setMessage("В строке № " + numStr + " поле остаток не является числом");
                 result = false
             }
+            //
+            if (item.Price<0) {
+                myalert.setMessage("В строке № " + numStr + " поле цена меньше 0");
+                result = false
+            }
+            if (item.Balance<0) {
+                myalert.setMessage("В строке № " + numStr + " поле остаток меньше 0");
+                result = false
+            }
+            //
+            if (item.Name?.length>500) {
+                myalert.setMessage("В строке № " + numStr + " наименование больше 500 знаков");
+                result = false
+            }
+            if (item.Code?.length>100) {
+                myalert.setMessage("В строке № " + numStr + " артикул больше 100 знаков");
+                result = false
+            }
+            if (item.Measure?.length>10) {
+                myalert.setMessage("В строке № " + numStr + " ед.изм больше 10 знаков");
+                result = false
+            }
             let newName = item.Name.replaceAll(' ', '').toLowerCase()
             price?.map((itemInner, indexInner) => {
                 if(index!==indexInner){
@@ -208,7 +230,6 @@ const CreatePrice = observer(() => {
         } else {
             myalert.setMessage("Выберите файл");
         }
-        checkPrice()
     };
 
     const clearPrice = async () => {
@@ -239,7 +260,6 @@ const CreatePrice = observer(() => {
             break;
         }
         setPriceForm({ data, formErrors});
-        console.log(priceForm)
       }
 
       const handleClickEdit = (e,item) =>{
@@ -302,6 +322,7 @@ const CreatePrice = observer(() => {
                 <td>
                     <Form.Control 
                         name="Code"
+                        maxlength="100"
                         type="text"
                         onChange={(e)=>handleChange(e,item)}
                         defaultValue={item?.Code}
@@ -311,6 +332,7 @@ const CreatePrice = observer(() => {
                     <Form.Control 
                         name="Name"
                         type="text"
+                        maxlength="500"
                         onChange={(e)=>handleChange(e,item)}
                         defaultValue={item?.Name}
                         as="textarea"
@@ -320,6 +342,8 @@ const CreatePrice = observer(() => {
                     <Form.Control 
                         name="Price"
                         type="number"
+                        max="9999999999999999999999999999999999999"
+                        min="0.01"
                         onChange={(e)=>handleChange(e,item)}
                         defaultValue={item?.Price}
                     />
@@ -328,6 +352,8 @@ const CreatePrice = observer(() => {
                     <Form.Control 
                         name="Balance"
                         type="number"
+                        max="9999999999999999999999999999999999999"
+                        min="0.01"
                         onChange={(e)=>handleChange(e,item)}
                         defaultValue={item?.Balance}
                     />
@@ -335,6 +361,7 @@ const CreatePrice = observer(() => {
                 <td>
                     <Form.Control 
                         name="Measure"
+                        maxlength="10"
                         type="text"
                         onChange={(e)=>handleChange(e,item)}
                         defaultValue={item?.Measure}

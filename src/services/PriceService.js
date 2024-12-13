@@ -10,8 +10,8 @@ export default class PriceService {
         const {data} = await $api.post(`/getpriceid`,formData);
         return data
     }
-    static async getMyPrice(formData){
-        const {data} = await $api.post(`/getmyprice`,formData);
+    static async getMyPrice(formData,options){
+        const {data} = await $api.post(`/getmyprice`,formData,options);
         return data
     }
     static async getPricesUser(formData){
@@ -73,5 +73,8 @@ export default class PriceService {
     static async deleteFile(formData){
         return $api.post(`/deletestatuspriceaskfile`, formData);
     }
-    
+    static async modifyPrice(formData){
+        const data = await $api.post(`/modifyprice`, formData);
+        return data
+    }
 }
