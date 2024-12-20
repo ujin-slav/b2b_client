@@ -364,9 +364,9 @@ td.tdRed{
     cursor: pointer
   }
   .foto{
-    height: 200px;
-    width: 200px;
-    object-fit: contain;
+    height: 160px;
+    width: 160px;
+    object-fit: cover;
     border-radius: 20px 20px 20px 20px;
   }
 
@@ -400,6 +400,12 @@ td.tdRed{
     cursor: pointer;
     background-color:white;
   }
+  .parentSpecOffer {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    background-color:white;
+  }
   .childSpec {
     overflow-wrap: break-word;
     width: 20%;
@@ -419,7 +425,7 @@ td.tdRed{
     border-radius: 20px 20px 20px 20px;
     width: 100%;
     height: 200px;
-    object-fit: contain;
+    object-fit: cover;
 
   }
   .fotoSpecDisabled{
@@ -427,7 +433,7 @@ td.tdRed{
     border-radius: 20px 20px 20px 20px;
     width: 100%;
     height: 200px;
-    object-fit: contain;
+    object-fit: cover;
   }
   .specName{
     font-size: 15px;
@@ -466,7 +472,8 @@ td.tdRed{
   .miniFotoSpecCard{
     width: 100px;
     height: 100px;
-    object-fit: contain 
+    object-fit: cover;
+    border-radius: 20px; 
   }
   .fotoSlider{
     display: flex;
@@ -1200,8 +1207,14 @@ text-align: center;
   color:green;
 }
 .logo{
-  max-width: 200px;
-  max-height: 200px;
+  /* width: 200px;
+  height: 200px; */
+  object-fit: cover;
+}
+.logoSimilarOffers{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
 }
 .chatImage{
   max-width: 400px;

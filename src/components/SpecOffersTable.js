@@ -12,6 +12,7 @@ import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
 import {CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
+import noImage from "../icons/noImage.svg";
 
 
 const SpecOffersTable = observer(() => {
@@ -29,6 +30,7 @@ const SpecOffersTable = observer(() => {
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [limit,setLimit] = useState(10);
+    const [sort,setSort] = useState("cheaper");
     const imgs = useRef([])
     const maxPhoto = 5
 
@@ -40,6 +42,7 @@ const SpecOffersTable = observer(() => {
           filterRegion:ask.regionFilter,
           searchText:ask.searchText,
           searchInn:ask.searchInn,
+          sort,
           startDate,
           endDate,
           limit,page:currentPage}).then((data)=>{
@@ -73,6 +76,12 @@ const SpecOffersTable = observer(() => {
           setCurrentPage(1)
           setLimit(value)
           setFetching(!fetching)
+    }
+
+    const handleSelectSort = (value) =>{
+        setCurrentPage(1)
+        setSort(value)
+        setFetching(!fetching)
     }
 
     const mouseMoveHandler = (e,item,index) => {
@@ -124,7 +133,7 @@ const SpecOffersTable = observer(() => {
     
     const getImg = (item,index) => {
         return(
-            item.FilesPreview.map((innerItem, innerIndex)=>
+            item.FilesPreview?.map((innerItem, innerIndex)=>
             <img 
             className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
             src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
@@ -136,7 +145,7 @@ const SpecOffersTable = observer(() => {
     } 
 
     const getItemSwitch = (item,index) => {
-        let count = item.FilesPreview.length
+        let count = item.FilesPreview?.length
         let amount = 0 
         if(index!==currentImg){
             return(
@@ -232,6 +241,18 @@ const SpecOffersTable = observer(() => {
                               <option value='50'>50</option>
                               <option value='100'>100</option>
                       </Form.Control>
+                      <div className='captionMenuSelect'>Упорядочить:</div>
+                      <Form.Control
+                          as="select"  
+                          value={limit}
+                          className='searchFormMenuSelect'
+                          onChange={(e)=>handleSelectSort(e.target.value)} 
+                      >       
+                              <option value='cheaper'>Дешевле</option>
+                              <option value='expensive'>Дороже</option>
+                              <option value='less'>Меньше</option>
+                              <option value='more'>Больше</option>
+                      </Form.Control>
               </div>
               </Row>
           </Form>
@@ -244,12 +265,12 @@ const SpecOffersTable = observer(() => {
                     onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} 
                     className='childSpec'
                     ref={el => imgs.current[index] = el} >
-                    {item.FilesPreview.length == 0 ?
-                       <img 
-                       className="fotoSpec"
-                       src={process.env.REACT_APP_API_URL + `getpic/` + item?.filename}/>
-                       :
-                       getImg(item,index)
+                    {item.FilesPreview?.length == 0 || item.FilesPreview==null?
+                    <img 
+                        className="fotoSpec"
+                        src={noImage}/>
+                            :
+                        getImg(item,index)
                     }
                     {getItemSwitch(item,index)}
                     <div className='specInfo'>

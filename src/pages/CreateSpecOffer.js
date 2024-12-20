@@ -56,7 +56,7 @@ const CreateSpecOffer = observer(() => {
 
     const {user} = useContext(Context);  
     const [captcha, setCaptcha] = useState(false);
-    const [loading, setLoading] = useState(false)
+    const [submiting, setSubmiting] = useState(false)
     const [startDate, setStartDate] = useState(date);
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -232,7 +232,7 @@ const CreateSpecOffer = observer(() => {
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
-                    className="foto" src={URL.createObjectURL(files.find(item=>item.id===sortedList[i]))} /> 
+                    className="foto mx-2" src={URL.createObjectURL(files.find(item=>item.id===sortedList[i]))} /> 
                 </div>
               </div>
         )
@@ -267,7 +267,6 @@ const CreateSpecOffer = observer(() => {
     }
 
     const onSubmit = async(e) => {
-      e.preventDefault();
       if(checkedCat.length==0){
         myalert.setMessage("Не заполнены категории");
         return
@@ -278,6 +277,7 @@ const CreateSpecOffer = observer(() => {
       }
       if(captcha){
         if (formValid(specOffer)) {
+          setSubmiting(true)
           const data = new FormData();
           sortedList.forEach((i)=>{
                   data.append(
@@ -304,6 +304,7 @@ const CreateSpecOffer = observer(() => {
           } else {
             myalert.setMessage(result?.data?.message)
           }
+          setSubmiting(false)
         } else {
           console.error("FORM INVALID")
           myalert.setMessage("Заполнены не все поля предложения.");
@@ -326,7 +327,6 @@ const CreateSpecOffer = observer(() => {
           <h3>Создать специальное предложение.</h3> 
           <Row>
             <Col>
-              <Form onSubmit={onSubmit}>
               <Table>
                 <col style={{"width":"25%"}}/>
                 <col style={{"width":"75%"}}/>
@@ -447,7 +447,9 @@ const CreateSpecOffer = observer(() => {
                                     accept="image/*"
                                     className="form-control"
                                     multiple/>
-                                    {listItems()}
+                                    <div className='parentSpecOffer'>
+                                      {listItems()}
+                                    </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -456,13 +458,26 @@ const CreateSpecOffer = observer(() => {
                             </tbody>
               </Table>   
               <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
-                <Button
-                variant="primary"
-                type="submit"
-                className="btn btn-success ml-auto mr-1"
-                >
-                Создать
-                </Button>
+                <button
+                  onClick={onSubmit}
+                  className="myButtonMessage mt-3"
+                  >
+                  Создать
+                </button>
+                {submiting ?
+                    <div id="fountainG">
+                        <div id="fountainG_1" class="fountainG"></div>
+                        <div id="fountainG_2" class="fountainG"></div>
+                        <div id="fountainG_3" class="fountainG"></div>
+                        <div id="fountainG_4" class="fountainG"></div>
+                        <div id="fountainG_5" class="fountainG"></div>
+                        <div id="fountainG_6" class="fountainG"></div>
+                        <div id="fountainG_7" class="fountainG"></div>
+                        <div id="fountainG_8" class="fountainG"></div>
+                    </div>
+                    :
+                    <></>
+                }
                 <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 
@@ -495,7 +510,6 @@ const CreateSpecOffer = observer(() => {
                       component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
                       setActive={setModalActiveMember} 
                 />
-              </Form>
               </Col>
             </Row>
           </Container>

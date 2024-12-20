@@ -12,7 +12,12 @@ import {useParams} from 'react-router-dom';
 import dateFormat, { masks } from "dateformat";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import { PlusCircleFill, PencilSquare, FileEarmarkX} from 'react-bootstrap-icons';
+import { 
+        PlusCircleFill,
+        PencilSquare, 
+        FileEarmarkX,
+        ArrowUp,
+        ArrowDown} from 'react-bootstrap-icons';
 import {generateUUID} from '../utils/getUID'
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
@@ -21,6 +26,7 @@ import {getCategoryName} from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import ModalCT from '../components/ModalCT';
 import * as XLSX from 'xlsx';
+import { identity } from 'lodash-es';
 
 const MyPrice = observer(() => {
 
@@ -37,11 +43,11 @@ const MyPrice = observer(() => {
     const[search,setSearch] = useState("");
     const[changedItems,setChangedItems] = useState([])
     const[deletedItems,setDeletedItems] = useState([])
-    const[newItems,setNewItems] = useState([]) 
     const [modalActiveReg,setModalActiveReg] = useState(false)
     const [modalActiveCat,setModalActiveCat] = useState(false)
     const [expandedRegion,setExpandedRegion] = useState([]);
     const [expandedCat,setExpandedCat] = useState([]);
+    const [sort ,setSort] = useState();
     const [priceForm, setPriceForm] = useState({
         data: {
           Author: "",
@@ -72,6 +78,7 @@ const MyPrice = observer(() => {
             setTotalDocs(data.totalDocs);
             const dataDocs = data.docs
             dataDocs.map((item,index)=>{
+                item.num = index + 1
                 item.show = true
             })
             setPrice([...price, ...dataDocs]);
@@ -104,14 +111,6 @@ const MyPrice = observer(() => {
     }
 
     const handleClickEdit = (e,item) =>{
-        if(item.newItem){
-            let search = newItems.findIndex((el)=>el._id==item._id)
-            let searchChanging = changingItems.findIndex((el)=>el._id==item._id)
-            changingItems.splice(searchChanging,1)
-            setChangingItems(items)
-            newItems[search] = item
-            return
-        }
         let search = changingItems.findIndex((el)=>el._id==item._id)
         if(search==-1){
             setChangingItems([...changingItems,JSON.parse(JSON.stringify(item))])
@@ -136,10 +135,11 @@ const MyPrice = observer(() => {
 
     const handleClickDelete = (e,item) =>{
        let newPrice = price.filter((el) => el._id !== item._id)
-       let newItemsPrice = newItems.filter((el) => el._id !== item._id)
        setDeletedItems([...deletedItems, item])
+       newPrice.map((item,index)=>{
+        item.num = index + 1
+       })
        setPrice(newPrice)
-       setNewItems(newItemsPrice)
     }
 
     const handleChange = (e,item) =>{
@@ -190,6 +190,7 @@ const MyPrice = observer(() => {
 
     const newRow = (e) =>{
         const newItem = {
+            num: -1,
             _id:generateUUID(),
             Code: "",
             Date: new Date(),
@@ -197,13 +198,15 @@ const MyPrice = observer(() => {
             Price: 0,
             Balance: 0,
             show: true,
-            newItem: true
+            newItem: true,
         }
-        setNewItems([...newItems,newItem])
         setChangingItems([...changingItems,newItem])
         price.unshift(newItem)
-        let newPrice = JSON.parse(JSON.stringify(price))
-        setPrice(newPrice)
+        price.map((item,index)=>{
+            item.num = index + 1
+        })
+        //let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(price)
     }
 
     const checkPrice = () => {
@@ -266,6 +269,89 @@ const MyPrice = observer(() => {
         return result
     }
 
+    const compareText =(a,b)=>{
+        let strA = a.toLowerCase()
+        let strB = b.toLowerCase()
+        if (strA < strB) 
+            return -1
+        if (strA > strB)
+            return 1
+        return 0
+    }
+
+    const handleClickSort =(e)=>{
+        let {id} = e.target
+        switch (id) {
+            case "num":
+                if(sort!=='num'){
+                    price.sort((a,b)=>a.num - b.num)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.num - a.num)
+                    setSort("")
+                }
+              break;  
+            case "code":
+                if(sort!=='code'){
+                    price.sort((a,b)=>compareText(a.Code,b.Code))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Code,a.Code))
+                    setSort("")
+                }
+              break;   
+            case "name":
+                if(sort!=='name'){
+                    price.sort((a,b)=>compareText(a.Name,b.Name))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Name,a.Name))
+                    setSort("")
+                }
+              break;
+            case "price":
+                if(sort!=='price'){
+                    price.sort((a,b)=>a.Price - b.Price)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.Price - a.Price)
+                    setSort("")
+                }
+              break;
+            case "balance":
+                if(sort!=='balance'){
+                    price.sort((a,b)=>a.Balance - b.Balance)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.Balance - a.Balance)
+                    setSort("")
+                }
+                break;
+            case "measure":
+                if(sort!=='measure'){
+                    price.sort((a,b)=>compareText(a.Measure,b.Measure))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Measure,a.Measure))
+                    setSort("")
+                }
+                break;
+            case "date":
+                if(sort!=='date'){
+                    price.sort((a,b)=> new Date(a.Date) - new Date(b.Date))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=> new Date(b.Date) - new Date(a.Date))
+                    setSort("")
+                }
+                break;
+            default: 
+                break;
+        }
+        let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(newPrice)
+    }
+
     const onSubmit = async(e) => {
         e.preventDefault();
         const data = new FormData();
@@ -277,13 +363,12 @@ const MyPrice = observer(() => {
         data.append("Region", JSON.stringify(checkedRegion))
         data.append("changedItems", JSON.stringify(changedItems))
         data.append("deletedItems", JSON.stringify(deletedItems))
-        data.append("newItems", JSON.stringify(newItems))
         const result = await PriceService.modifyPrice(data)
         if (result.status===200){
             myalert.setMessage("Прайс успешно изменен");
-          } else {
+        }else{
             myalert.setMessage(result?.data?.message)
-          }
+        }
          console.log(result) 
     }
 
@@ -295,7 +380,7 @@ const MyPrice = observer(() => {
         if(searchChanging!==-1){
             return(
                 <tr key={index}>
-                <td>{index+1}</td>
+                <td>{item.num}</td>
                 <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
                 <td>
                     <Form.Control 
@@ -352,7 +437,7 @@ const MyPrice = observer(() => {
         }
         return(
             <tr key={index} >
-            <td>{index+1}</td>
+            <td>{item.num}</td>
             <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
             <td>{item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
             <td>{item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
@@ -475,17 +560,26 @@ const MyPrice = observer(() => {
             <Table>
              <thead>
                 <tr>
-                    <th>№</th>
+                    <th id='num' onClick={handleClickSort} class="pointer">№</th>
                     <th>Ред.</th>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Цена</th>
-                    <th>Остаток</th>
-                    <th>Ед.изм</th>
-                    <th>Дата</th>
+                    <th id='code' onClick={handleClickSort} class="pointer">Артикул</th>
+                    <th id='name' onClick={handleClickSort} class="pointer">Наименование</th>
+                    <th id='price' onClick={handleClickSort} class="pointer">Цена</th>
+                    <th id='balance' onClick={handleClickSort} class="pointer">Остаток</th>
+                    <th id='measure' onClick={handleClickSort} class="pointer">Ед.изм</th>
+                    <th id='date' onClick={handleClickSort} class="pointer">Дата</th>
                     <th>Удалить</th>
                 </tr>
                 </thead>
+                    <col style={{"width":"2%"}}/>
+                    <col style={{"width":"2%"}}/>
+                    <col style={{"width":"10%"}}/>
+                    <col style={{"width":"25%"}}/>
+                    <col style={{"width":"5%"}}/>
+                    <col style={{"width":"8%"}}/>
+                    <col style={{"width":"10%"}}/>
+                    <col style={{"width":"10%"}}/>
+                    <col style={{"width":"2%"}}/>
                 <tbody>
                     {price?.map((item,index)=>
                         <> 

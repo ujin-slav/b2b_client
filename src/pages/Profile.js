@@ -388,13 +388,11 @@ const Profile =  observer(() => {
                             </tr>
                         </tbody>
                     </Table>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        className="btn btn-success ml-auto mr-1"
+                    <button
+                        className="myButtonMessage"
                         >
                         Сохранить
-                    </Button>
+                    </button>
                     </Form>
                 </Col>
             </Row>

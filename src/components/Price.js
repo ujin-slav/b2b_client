@@ -31,6 +31,7 @@ const Prices = observer(() => {
     const [currentPage,setCurrentPage] = useState(1)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
+    const [sort,setSort] = useState("cheaper");
     const[limit,setLimit] = useState(10);
 
     useEffect(()=>{
@@ -49,6 +50,7 @@ const Prices = observer(() => {
               filterRegion:ask.regionFilter,
               searchText:ask.searchText,
               searchInn:ask.searchInn,
+              sort,
               startDate,
               endDate,
               limit,page:currentPage}).then((data)=>{
@@ -81,6 +83,12 @@ const Prices = observer(() => {
             setCurrentPage(1)
             setLimit(value)
             setFetching(!fetching)
+    }
+
+    const handleSelectSort = (value) =>{
+        setCurrentPage(1)
+        setSort(value)
+        setFetching(!fetching)
     }
 
       if (loading){
@@ -170,6 +178,18 @@ const Prices = observer(() => {
                               <option value='25'>25</option>
                               <option value='50'>50</option>
                               <option value='100'>100</option>
+                      </Form.Control>
+                      <div className='captionMenuSelect'>Упорядочить:</div>
+                      <Form.Control
+                          as="select"  
+                          value={limit}
+                          className='searchFormMenuSelect'
+                          onChange={(e)=>handleSelectSort(e.target.value)} 
+                      >       
+                              <option value='cheaper'>Дешевле</option>
+                              <option value='expensive'>Дороже</option>
+                              <option value='less'>Меньше</option>
+                              <option value='more'>Больше</option>
                       </Form.Control>
               </div>
               </Row>

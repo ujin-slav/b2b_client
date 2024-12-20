@@ -105,7 +105,7 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
             {specOffers.map((item,index)=>
                     <div key={index} class="childCarouselSimilar">
                         <img 
-                        className="logo"
+                        className="logoSimilarOffers"
                         src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
                         <div className="specName" onClick={(e)=>redirect(e,item._id)}>
                             {item.Name}

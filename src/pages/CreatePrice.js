@@ -71,6 +71,7 @@ const CreatePrice = observer(() => {
     const [progress, setProgress] = useState(0)
     const [loading, setLoading] = useState(false)
     const [expandedRegion,setExpandedRegion] = useState([]);
+    const [sort ,setSort] = useState();
     const [expandedCat,setExpandedCat] = useState([]);
     const input = useRef(null);
 
@@ -93,6 +94,7 @@ const CreatePrice = observer(() => {
                     if(Array.isArray(data)){
                         let newData = data.map((item,index)=>{
                             let newItem = {}
+                            newItem.num = index + 1
                             newItem._id = generateUUID()
                             newItem.editing = false
                             newItem.show = true
@@ -304,6 +306,83 @@ const CreatePrice = observer(() => {
             show:true
         }
         price.unshift(newItem)
+        price.map((item,index)=>{
+            item.num = index + 1
+        })
+        //let newPrice = JSON.parse(JSON.stringify(price))
+        setPrice(price)
+    }
+
+    const compareText =(a,b)=>{
+        let strA = a.toLowerCase()
+        let strB = b.toLowerCase()
+        if (strA < strB) 
+            return -1
+        if (strA > strB)
+            return 1
+        return 0
+    }
+
+    const handleClickSort =(e)=>{
+        let {id} = e.target
+        switch (id) {
+            case "num":
+                if(sort!=='num'){
+                    price.sort((a,b)=>a.num - b.num)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.num - a.num)
+                    setSort("")
+                }
+              break;  
+            case "code":
+                if(sort!=='code'){
+                    price.sort((a,b)=>compareText(a.Code,b.Code))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Code,a.Code))
+                    setSort("")
+                }
+              break;   
+            case "name":
+                if(sort!=='name'){
+                    price.sort((a,b)=>compareText(a.Name,b.Name))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Name,a.Name))
+                    setSort("")
+                }
+              break;
+            case "price":
+                if(sort!=='price'){
+                    price.sort((a,b)=>a.Price - b.Price)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.Price - a.Price)
+                    setSort("")
+                }
+              break;
+            case "balance":
+                if(sort!=='balance'){
+                    price.sort((a,b)=>a.Balance - b.Balance)
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>b.Balance - a.Balance)
+                    setSort("")
+                }
+                break;
+            case "measure":
+                if(sort!=='measure'){
+                    price.sort((a,b)=>compareText(a.Measure,b.Measure))
+                    setSort(id)
+                }else{
+                    price.sort((a,b)=>compareText(b.Measure,a.Measure))
+                    setSort("")
+                }
+                break;
+            default: 
+                break;
+        }
         let newPrice = JSON.parse(JSON.stringify(price))
         setPrice(newPrice)
     }
@@ -317,7 +396,7 @@ const CreatePrice = observer(() => {
         if(item.editing){
             return(
                 <tr key={index}>
-                <td>{index+1}</td>
+                <td>{item.num}</td>
                 <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
                 <td>
                     <Form.Control 
@@ -373,7 +452,7 @@ const CreatePrice = observer(() => {
         }
         return(
             <tr key={index} >
-            <td>{index+1}</td>
+            <td>{item.num}</td>
             <td onClick ={(e)=>handleClickEdit(e,item)} class="pointer"><PencilSquare/></td>
             <td>{item.Code || <div style={{ "color": "green" }}>нет</div>}</td>
             <td>{item.Name || <div style={{ "color": "red" }}>нет</div>}</td>
@@ -383,30 +462,6 @@ const CreatePrice = observer(() => {
             <td onClick ={(e)=>handleClickDelete(e,item)} class="pointer"><FileEarmarkX/></td>
             </tr>
         )
-    }
-
-    const getTablePrice =()=>{
-        if(search==""){
-            return(
-                <>
-                    {price?.map((item,index)=>
-                        <> 
-                            {getTr(item,index)}
-                        </>
-                    )}
-                </>
-            )
-        }else{
-            return(
-                <>
-                    {searchResult?.map((item,index)=>
-                        <> 
-                            {getTr(item,index)}
-                        </>
-                    )}
-                </>
-            )
-        }
     }
 
     return (
@@ -566,13 +621,13 @@ const CreatePrice = observer(() => {
                 <Table>
                 <thead>
                     <tr>
-                        <th>№</th>
+                        <th id='num' onClick={handleClickSort} class="pointer">№</th>
                         <th>Ред.</th>
-                        <th>Артикул</th>
-                        <th>Наименование</th>
-                        <th>Цена</th>
-                        <th>Остаток</th>
-                        <th>Ед.изм</th>
+                        <th id='code' onClick={handleClickSort} class="pointer">Артикул</th>
+                        <th id='name' onClick={handleClickSort} class="pointer">Наименование</th>
+                        <th id='price' onClick={handleClickSort} class="pointer">Цена</th>
+                        <th id='balance' onClick={handleClickSort} class="pointer">Остаток</th>
+                        <th id='measure' onClick={handleClickSort} class="pointer">Ед.изм</th>
                         <th>Удалить</th>
                     </tr>
                 </thead>

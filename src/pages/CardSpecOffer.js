@@ -17,6 +17,7 @@ import {useHistory,useLocation} from 'react-router-dom'
 import { CARDSPECOFFER,ORGINFO } from '../utils/routes';
 import { Cart4} from 'react-bootstrap-icons';
 import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
+import noImage from "../icons/noImage.svg";
 
 const CardSpecOffer = observer(() => {
     const {user} = useContext(Context);
@@ -103,9 +104,14 @@ const CardSpecOffer = observer(() => {
         <Container className="mx-auto my-4">
            <Row>
             <Col>
-                <img className='fotoSpecCard' 
+                {!specOffer?.Files || specOffer?.Files.length==0 ? 
+                    <img 
+                    src={noImage}/>
+                :
+                    <img className='fotoSpecCard' 
                     onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
+                }
                 <div className='parentSpec'>
                 {specOffer?.FilesMini?.map((item,index)=>
                     <div key={index} className='albumSpec'>

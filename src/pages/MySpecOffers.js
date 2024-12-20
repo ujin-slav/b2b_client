@@ -1,4 +1,4 @@
-import {React,useContext,useEffect,useState} from 'react';
+import {React,useContext,useEffect,useState,useRef} from 'react';
 import {Card, Form, InputGroup,Button,Row} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 import { PlusCircleFill,XCircle,Pen} from 'react-bootstrap-icons';
 import ModalAlert from '../components/ModalAlert';
 import bin from "../icons/bin.svg";
+import noImage from "../icons/noImage.svg";
 
 const MySpecOffers = observer(() => {
 
@@ -26,12 +27,15 @@ const MySpecOffers = observer(() => {
     const [pageCount, setPageCount] = useState(0);
     const {user} = useContext(Context);
     const [search,setSearch] = useState("")
+    const [currentImg,setCurrentImg] = useState()
     const [currentPage,setCurrentPage] = useState(1)
     const [loading,setLoading] = useState(false)
     const [fetching,setFetching] = useState(true)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [limit,setLimit] = useState(10)
+    const imgs = useRef([])
+    const maxPhoto = 5
 
     useEffect(() => {
         setLoading(true)
@@ -43,6 +47,11 @@ const MySpecOffers = observer(() => {
             startDate,
             endDate
             }).then((data)=>{
+                    if(Array.isArray(data.docs)){
+                        data.docs.map((item)=>{
+                            item.indexFoto = 0
+                        })
+                    } 
                     setSpecOffers(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
@@ -75,6 +84,30 @@ const MySpecOffers = observer(() => {
         setLimit(value)
         setFetching(!fetching)
     }
+
+    const mouseMoveHandler = (e,item,index) => {
+        let num = 0
+        let left = imgs.current[index].getBoundingClientRect().left
+        let width = imgs.current[index].getBoundingClientRect().width
+        let countImage = (item.FilesPreview.length == 0 ? 
+            item.FilesPreview.length + 1 : item.FilesPreview.length)
+        if(countImage>=maxPhoto){
+            num = Math.floor((e.clientX - left) / (width / maxPhoto))
+        }else{
+            num = Math.floor((e.clientX - left) / (width / countImage))
+        }
+        item.indexFoto = num
+        let newSpecOffers = JSON.parse(JSON.stringify(specOffers))
+        setSpecOffers(newSpecOffers)
+    }
+
+    const mouseEnterHandler = (e,item,index) => {
+        setCurrentImg(index)
+    }
+
+    const mouseLeaveHandler = (e,item,index) => {
+        setCurrentImg(null)
+    }
   
     const deleteSpecOffer = async () =>{
         const result = await SpecOfferService.deleteSpecOffer({id:deleteId});
@@ -85,7 +118,52 @@ const MySpecOffers = observer(() => {
         } else {
           myalert.setMessage(result.data.message);
         }
-      }
+    }
+
+    const getItemSwitch = (item,index) => {
+        let count = item.FilesPreview?.length
+        let amount = 0 
+        if(index!==currentImg){
+            return(
+                <div class="containerFotoSwitch">
+                    <div className="itemSwitchOff"></div>
+                </div>
+            )
+        }
+        if(count>=maxPhoto){
+            amount = maxPhoto
+        }else{
+            amount = count
+        }
+        return (
+            <>  
+                <div class="containerFotoSwitch">
+                {(() => {
+                    const arr = [];
+                    for (let i = 0; i < amount; i++) {
+                        arr.push(
+                            <div className={item.indexFoto==i ? "itemSwitchOn" : "itemSwitchOff"}></div>
+                        );
+                    }
+                    return arr;
+                })()}
+                </div>
+            </>
+        )
+    }
+
+    const getImg = (item,index) => {
+        return(
+            item.FilesPreview?.map((innerItem, innerIndex)=>
+            <img 
+            className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
+            src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
+            onMouseMove={(e)=>mouseMoveHandler(e,item,index)}
+            onMouseEnter={(e)=>mouseEnterHandler(e,item,index)}
+            onMouseLeave={(e)=>mouseLeaveHandler(e,item,index)}
+            ref={el => imgs.current[index] = el} />
+        ))
+    } 
 
     return (
         <div>
@@ -158,9 +236,10 @@ const MySpecOffers = observer(() => {
         {!loading ? 
             <div>
                 <div className='parentSpec'>
-                {specOffers?.map((item)=>{
+                {specOffers?.map((item,index)=>{
+                    console.log(item)
                 return(
-                    <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec'>
+                    <div onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} className='childSpec' ref={el => imgs.current[index] = el}>
                         <div  className="delSpecOfferContainer">
                             {/* <XCircle className="delSpecOffer"
                                 onClick={(e)=>{
@@ -179,9 +258,14 @@ const MySpecOffers = observer(() => {
                                 }}
                             /> 
                         </div>
+                        {item.FilesPreview?.length == 0 || item.FilesPreview==null?
                         <img 
-                        className="fotoSpec"
-                        src={process.env.REACT_APP_API_URL + `getpic/` + item?.FilesPreview[0]?.filename} />
+                            className="fotoSpec"
+                            src={noImage}/>
+                                :
+                            getImg(item,index)
+                        }
+                        {getItemSwitch(item,index)}
                         <div className="specName">
                             {item.Name}
                         </div>
@@ -199,14 +283,13 @@ const MySpecOffers = observer(() => {
                             {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
                         </div>
                         <div>
-                            <a href="javascript:void(0)" 
+                            <button 
+                                className="myButtonMessage"
                                 onClick={(e)=>{
                                     e.stopPropagation()
                                     history.push(MODIFYSPECOFFER + '/' + item._id)
-                                }}>
-                            Редактировать
-                            </a>
-                            <Pen  className="changeSpecOffer"/>
+                                }}
+                            >Редактировать</button>
                         </div>
                     </div>
                     

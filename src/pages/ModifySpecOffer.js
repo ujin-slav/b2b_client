@@ -88,7 +88,7 @@ const ModifySpecOffer = observer(() => {
 
     const {user} = useContext(Context);  
     const [captcha, setCaptcha] = useState(false);
-    const [loading, setLoading] = useState(false)
+    const [submiting, setSubmiting] = useState(false)
     const [startDate, setStartDate] = useState(date);
     const [files, setFiles] = useState([])
     const [modalActiveReg,setModalActiveReg] = useState(false)
@@ -128,13 +128,12 @@ const ModifySpecOffer = observer(() => {
               setCheckedRegion(result?.Region);
               setCheckedCat(result?.Category);
               setSpecOffer({ data, formErrors});
-              console.log(result)
               if(result.Author!==user.user.id){
                 setPermission(false)
               }
               result?.Files?.map((item)=>{
                 fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
-                .then(res => res.blob()) // Gets the response and returns it as a blob
+                .then(res => res.blob()) 
                 .then(blob => {
                   setSortedList(((oldItems) => [...oldItems,blob]))
               })})
@@ -216,16 +215,29 @@ const ModifySpecOffer = observer(() => {
 
       console.log(id)
     }
+
+    const fileToBlob = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const blob = new Blob([reader.result], { type: file.type });
+          resolve(blob);
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
     
-    const onInputChange = (e) => {
+    const onInputChange = async (e) => {
       if(files.length+e.target.files.length<9){
         for(let i = 0; i < e.target.files.length; i++) { 
           try{
             if(fileSize + e.target.files[i].size < 5242880){
               let file = e.target.files[i]
+              const blob = await fileToBlob(file);
               file.id = Date.now() + Math.random()
               setFileSize(fileSize + file.size)
-              setSortedList(((oldItems) => [...oldItems,file.id]))
+              setSortedList(((oldItems) => [...oldItems,blob]))
               setFiles(((oldItems) => [...oldItems, file]))
             } else {
               myalert.setMessage("Превышен размер файлов");
@@ -272,7 +284,7 @@ const ModifySpecOffer = observer(() => {
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
                     onChange={handleChange}
-                    className="foto"  src={getImageURL(sortedList[i])} /> 
+                    className="foto mx-2"  src={getImageURL(sortedList[i])} /> 
                 </div>
               </div>
         )
@@ -314,13 +326,14 @@ const ModifySpecOffer = observer(() => {
       e.preventDefault();
       if(captcha){
         if (formValid(specOffer)) {
+          setSubmiting(true)
           const data = new FormData();
           sortedList.forEach((item)=>{
-                  data.append(
-                    "file", 
-                    blobToFile(item)
-                  )
-                });
+            data.append(
+              "file", 
+              blobToFile(item)
+            )
+          });
           data.append("ID", id)
           data.append("Author", user.user.id)
           data.append("Name", specOffer.data.Name)
@@ -334,17 +347,15 @@ const ModifySpecOffer = observer(() => {
           data.append("Category", JSON.stringify(checkedCat))
           data.append("Region", JSON.stringify(checkedRegion))
           const result = await SpecOfferService.modifySpecOffer(data)
-          console.log(result)
           if (result.status===200){
             myalert.setMessage("Предложение успешно изменено");
             //history.push(B2B_ROUTE)
           } else {
             myalert.setMessage(result?.data?.message)
           }
+          setSubmiting(false)
         } else {
-          console.error("FORM INVALID");
           myalert.setMessage("Заполнены не все поля предложения.");
-          console.log(specOffer)
         }
       }else{
         console.error("FORM INVALID");
@@ -382,7 +393,6 @@ const ModifySpecOffer = observer(() => {
 
     return (
         <Container>
-          <Form onSubmit={onSubmit}>
           <h3>Редактировать спец. предложение</h3> 
           <Table>
             <col style={{"width":"15%"}}/>
@@ -493,25 +503,42 @@ const ModifySpecOffer = observer(() => {
                             <td>
                               Разместите фото в нужном порядке, первое станет заглавным.
                             <input type="file"
-                                onChange={onInputChange}
-                                className="form-control"
-                                multiple/>
-                                {listItems()}
-                                </td>
+                                    onChange={onInputChange}
+                                    accept="image/*"
+                                    className="form-control"
+                                    multiple
+                            />
+                                    <div className='parentSpecOffer'>
+                                      {listItems()}
+                                    </div>
+                              </td>
                             </tr>
                             <tr>
                             </tr>
                             
                         </tbody>
            </Table>   
+           {submiting ?
+              <div id="fountainG">
+                  <div id="fountainG_1" class="fountainG"></div>
+                  <div id="fountainG_2" class="fountainG"></div>
+                  <div id="fountainG_3" class="fountainG"></div>
+                  <div id="fountainG_4" class="fountainG"></div>
+                  <div id="fountainG_5" class="fountainG"></div>
+                  <div id="fountainG_6" class="fountainG"></div>
+                  <div id="fountainG_7" class="fountainG"></div>
+                  <div id="fountainG_8" class="fountainG"></div>
+              </div>
+              :
+              <></>
+            }
            <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
-            <Button
-            variant="primary"
-            type="submit"
-            className="btn btn-success ml-auto mr-1"
+            <button
+              onClick={onSubmit}
+              className="myButtonMessage mt-3"
             >
             Сохранить
-            </Button>
+            </button>
         <ModalCT 
                 header="Регионы" 
                 active={modalActiveReg} 
@@ -534,7 +561,6 @@ const ModifySpecOffer = observer(() => {
                 component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
                 setActive={setModalActiveMember} 
           />
-          </Form>
           </Container>
     );
 });
