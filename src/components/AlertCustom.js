@@ -9,7 +9,11 @@ const AlertCustom =  observer(() => {
 
     return (
         <div className='alertCustom'>
-            <Alert variant="warning" show={myalert.show} onClose={() => myalert.setShow(false)} dismissible>
+            <Alert 
+                variant="warning" 
+                show={myalert.show} 
+                onClose={() => myalert.setShow(false)}
+                dismissible>
                     {myalert.message}
             </Alert>
         </div>

@@ -12,6 +12,8 @@ import ReviewOrgItems from '../components/ReviewOrgItems';
 import '../fontawesome.css';
 import { CREATEASK } from '../utils/routes';
 import {useHistory} from 'react-router-dom'
+import MessageBoxComplaint from '../components/MessageBoxComplaint';
+import MyImage from '../components/MyImage'
 
 const OrgInfo = () => {
 
@@ -21,6 +23,7 @@ const OrgInfo = () => {
     const {user} = useContext(Context);  
     const [error, setError] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
+    const [modalAMC,setModalAMC] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
@@ -46,13 +49,11 @@ const OrgInfo = () => {
     const logo = () => {
         if(file.length!==0){
             return (
-                <div className='dnd-list'>
                 <div className='fotoContainer'>
-                    <img 
+                    <MyImage 
                         className="foto" 
                         src={URL.createObjectURL(file)} 
                     /> 
-                </div>
                 </div>
             )    
         }else{
@@ -104,13 +105,13 @@ const OrgInfo = () => {
                                             Написать сообщение
                                             <i className="fa fa-solidorg fa-paper-plane colorBlue"/>
                                     </button>
-                                    <button className="myButtonMessage"
+                                    {/* <button className="myButtonMessage"
                                             onClick={()=>history.push(CREATEASK + '/' + idorg)}>
                                             <div>
                                             Отправить персональную заявку
                                             <i className="fa fa-solidorg fa-envelope-o colorBlue"/>
                                             </div>
-                                    </button>
+                                    </button> */}
                                 </div>
                             </td>
                             </tr>
@@ -139,6 +140,18 @@ const OrgInfo = () => {
                                 {org?.telefon}
                             </td>
                             </tr>
+                            <tr>
+                            <td>
+                            </td>
+                            <td>
+                            <button 
+                                className="myButtonMessage"
+                                onClick={()=>setModalAMC(true)}>
+                                Отправить жалобу
+                                <i className="fa fa-solidorg fa-paper-plane colorBlue"/>
+                            </button>
+                            </td>
+                            </tr>
                         </tbody>
                     </Table>
                 </Col>
@@ -160,6 +173,12 @@ const OrgInfo = () => {
                 active={modalActiveMessage}
                 component={<MessageBox author={org} setActive={setModalActiveMessage}/>}
                 setActive={setModalActiveMessage}   
+            />
+            <ModalCT 
+                header="Сообщение" 
+                active={modalAMC}
+                component={<MessageBoxComplaint author={org} setActive={setModalAMC}/>}
+                setActive={setModalAMC}   
             />
             </Container>
     );

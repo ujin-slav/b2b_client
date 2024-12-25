@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom';
 import {ORGINFO} from "../utils/routes";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
+import MyImage from '../components/MyImage'
 
 const Carousel =  observer(() => {
 
@@ -26,7 +27,7 @@ const Carousel =  observer(() => {
     let isDown = false
     let startX
     let scrollLeft
-    let limit = 10
+    let limit = 8
     
     const mouseDownHandler =(e) => {
         isDown = true
@@ -53,6 +54,7 @@ const Carousel =  observer(() => {
     }
 
     const mouseWheelHandler =(e) => {
+        console.log(e)
         if (e.deltaY > 0) {
             slider.current.scrollLeft += 100;
             e.preventDefault();
@@ -81,7 +83,7 @@ const Carousel =  observer(() => {
                 element.addEventListener('scroll', scrollHandler )
             }
         }
-      },[])
+      },[visible])
 
     useEffect(() => {
         if(!loading){
@@ -93,8 +95,6 @@ const Carousel =  observer(() => {
                     page:1,
                     user:user.user.id}).then((data)=>{
                     setTotalDocs(data.totalDocs);
-                    console.log(data.totalDocs);
-                    console.log(carousel);
                     setCarousel(data.docs);
                     setPage(2)
                 })}  
@@ -162,23 +162,14 @@ const Carousel =  observer(() => {
                                 <div>{item?.nameOrg}</div>
                                 </a>
                                 <div>{item?.inn}</div>
-                                {user.isAuth && !item.contrIs ? 
-                                    <PlusCircle 
-                                        class='plusContr'
-                                        onClick={(e)=>addContr(item)}
-                                    /> 
-                                    : 
-                                    <div></div>
-                                }
                             </div>
-                            <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                            <MyImage className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
                         </div>
                     )}
                 </div>
             </div>
         :
-            <div>
-            </div>
+            <div></div>
         }
         </Card>
     )

@@ -13,7 +13,7 @@ import ChatService from '../services/ChatService';
 import MessageService from '../services/MessageService';
 import videojs from 'video.js';
 import VideoJS from '../components/VideoJS';
-
+import Fountaing from '../components/Fountaing'
 
 const MessageList = ({recevier}) => {
 
@@ -83,7 +83,6 @@ const MessageList = ({recevier}) => {
             .then((response)=>{
                 setTotalDocsMessage(response.data.totalDocs)
                 setCurrentPageMessage(2)
-                //const reversed = response.data.docs
                 const reversed = response.data.docs.sort((a,b)=>{return new Date(a.Date) - new Date(b.Date)});
                 setMessageList(reversed)
                 messageBox.current.scrollTo(0,messageBox.current.scrollHeight)
@@ -193,17 +192,19 @@ const MessageList = ({recevier}) => {
     }
 
     const uploadFile = (files)=>{
-        if(files[0].size > 5242880){
+        if(files[0].size > 10485760){
             myalert.setMessage("Превышен размер файла");
             return false
         }  
         const options = {
             onUploadProgress: (progressEvent) => {
-            const {loaded, total} = progressEvent;
-            let percent = Math.floor( (loaded * 100) / total )
-            if( percent < 100 ){
-                setProgress(percent)
-            }
+                const {loaded, total} = progressEvent;
+                let percent = Math.floor( (loaded * 100) / total )
+                if( loaded < total ){
+                    setProgress(percent)
+                }else{
+                    setProgress(0)
+                }
             }
         }
         const data = new FormData();
@@ -373,7 +374,8 @@ const MessageList = ({recevier}) => {
                             </div> </td>
                                 </tr>
                             </tbody>
-                                </table>     
+                            </table> 
+                            <Fountaing show={fetchingMessage}/>    
                         </div> 
                         )
                     })}

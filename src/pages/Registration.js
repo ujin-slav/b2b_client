@@ -257,7 +257,7 @@ const RegistrationForm = () => {
                       </div>
                     } 
                     component={<RegionTree 
-                    checked={checkedRegion} expanded={expandedRegion} max={3} 
+                    checked={checkedRegion} expanded={expandedRegion} max={4} 
                     setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                     />}/>
                <ModalCT 
@@ -270,7 +270,7 @@ const RegistrationForm = () => {
                       </div>
                     }
                     component={<CategoryTree 
-                    checked={checkedCat} expanded={expandedCat} max={3} 
+                    checked={checkedCat} expanded={expandedCat} max={4} 
                     setChecked={setCheckedCat} setExpanded={setExpandedCat}
               />}/>       
             </Container>

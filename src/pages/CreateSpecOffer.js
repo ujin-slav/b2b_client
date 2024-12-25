@@ -19,6 +19,7 @@ import {upload} from "../http/askAPI";
 import ModalCT from '../components/ModalCT';
 import EmailList from '../components/EmailList'
 import RegionTree from '../components/RegionTree';
+import Fountaing from '../components/Fountaing'
 import CategoryTree from '../components/CategoryTree';
 import SpecOfferService from '../services/SpecOfferService'
 import {Context} from "../index";
@@ -426,17 +427,17 @@ const CreateSpecOffer = observer(() => {
                                 <td>Категории</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveCat(true)}>
                                     Выбор
-                                    </Button></td>
+                                    </button></td>
                                 </tr>
                                 <tr>
                                 <td>Регионы</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
                                     Выбор
-                                    </Button></td>
+                                    </button></td>
                                 </tr>
                                 <tr>
                                 <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
@@ -464,32 +465,19 @@ const CreateSpecOffer = observer(() => {
                   >
                   Создать
                 </button>
-                {submiting ?
-                    <div id="fountainG">
-                        <div id="fountainG_1" class="fountainG"></div>
-                        <div id="fountainG_2" class="fountainG"></div>
-                        <div id="fountainG_3" class="fountainG"></div>
-                        <div id="fountainG_4" class="fountainG"></div>
-                        <div id="fountainG_5" class="fountainG"></div>
-                        <div id="fountainG_6" class="fountainG"></div>
-                        <div id="fountainG_7" class="fountainG"></div>
-                        <div id="fountainG_8" class="fountainG"></div>
-                    </div>
-                    :
-                    <></>
-                }
+                <Fountaing show={submiting}/>
                 <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg}
-                text={
-                  <div className='mx-3 pb-2 text-warning'>
-                  Не более 3
-                  </div>
-                }  
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} max={3}
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+                      header="Регионы" 
+                      active={modalActiveReg} 
+                      setActive={setModalActiveReg}
+                      text={
+                        <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                        </div>
+                      }  
+                      component={<RegionTree 
+                      checked={checkedRegion} expanded={expandedRegion} max={4}
+                      setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                 />}/>
                 <ModalCT 
                       header="Категории" 

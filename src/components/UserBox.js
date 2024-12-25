@@ -7,6 +7,7 @@ import {
     InputGroup,
   } from "react-bootstrap";
 import dateFormat from "dateformat";
+import Fountaing from '../components/Fountaing'
 import {observer} from "mobx-react-lite";
 
 const UserBox = observer(({recevier,setRecevier,idorg}) => {
@@ -55,15 +56,20 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
 
     useEffect(() => {
         if(fetching){
-            if(chat.contacts.length===0 || chat.contacts.length<totalDocsUser)
-            UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser,idorg})
-            .then((response)=>{
-                if(response.status===200){
-                    setTotalDocsUser(response.data.totalDocs)
-                    setCurrentPageUser(prevState=>prevState + 1)
-                    chat.contacts = [...chat.contacts,...response.data.docs]
-                }            
-            }).finally(()=>setFetching(false))
+            if(chat.contacts.length===0 || chat.contacts.length<totalDocsUser){
+                UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser,idorg})
+                .then((response)=>{
+                    if(response.status===200){
+                        setTotalDocsUser(response.data.totalDocs)
+                        setCurrentPageUser(prevState=>prevState + 1)
+                        chat.contacts = [...chat.contacts,...response.data.docs]
+                    }            
+                }).finally(()=>{
+                    setFetching(false)
+                })
+            }else{
+                setFetching(false)
+            }
         }
     }, [fetching]);
 
@@ -158,6 +164,7 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
                             <div className="offline"></div>}
                         </div>)
                 })}
+                <Fountaing show={fetching}/>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import {useParams} from 'react-router-dom';
 import {InputGroup, Table, Col, Container, Row, Lable,Form,Button} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
+import Fountaing from '../components/Fountaing'
 import { XCircle} from 'react-bootstrap-icons';
 import { fetchUser} from '../http/askAPI';
 import {Context} from "../index";
@@ -290,20 +291,7 @@ const CreatePriceAsk = () => {
                         {tablePrice()}
                     </tbody>
                 </Table>
-                {fetching ?
-                    <div id="fountainG">
-                        <div id="fountainG_1" class="fountainG"></div>
-                        <div id="fountainG_2" class="fountainG"></div>
-                        <div id="fountainG_3" class="fountainG"></div>
-                        <div id="fountainG_4" class="fountainG"></div>
-                        <div id="fountainG_5" class="fountainG"></div>
-                        <div id="fountainG_6" class="fountainG"></div>
-                        <div id="fountainG_7" class="fountainG"></div>
-                        <div id="fountainG_8" class="fountainG"></div>
-                    </div>
-                    :
-                    <></>
-                }
+                <Fountaing show={fetching}/>
             </div>
             </div>
             <div class="border-price">

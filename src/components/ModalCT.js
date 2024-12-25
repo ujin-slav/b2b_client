@@ -13,9 +13,9 @@ const CategoryTree = ({active, setActive, component, header, text}) => {
                     {component}
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={()=>setActive(false)}>
-                    Close
-                </Button>
+                <button className="myButtonMessage" onClick={()=>setActive(false)}>
+                    Закрыть
+                </button>
                 </Modal.Footer>
             </Modal>
         </div>

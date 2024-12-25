@@ -12,6 +12,7 @@ import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
 import {CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
+import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
 
 
@@ -134,7 +135,7 @@ const SpecOffersTable = observer(() => {
     const getImg = (item,index) => {
         return(
             item.FilesPreview?.map((innerItem, innerIndex)=>
-            <img 
+            <MyImage 
             className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
             src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
             onMouseMove={(e)=>mouseMoveHandler(e,item,index)}

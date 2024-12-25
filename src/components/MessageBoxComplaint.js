@@ -11,14 +11,7 @@ const MessageBoxComplaint = ({author,from}) => {
     const inputEl = useRef(null)
 
     const sendMessage = async () => {
-        if (currentMessage !== "" && author!=="") {
-          const messageData = {
-            Author: user.user.id,
-            Recevier: author._id, 
-            Text: currentMessage,
-            Date: new Date()
-        }
-    }}
+    }
 
     return (
         <div>
@@ -32,7 +25,7 @@ const MessageBoxComplaint = ({author,from}) => {
                     }}
                     style={{height:"120px"}}
             />
-            <Button style={{marginTop:"10px"}} onClick={sendMessage}>Отправить</Button>
+            <button className="myButtonMessage mt-2" onClick={sendMessage}>Отправить</button>
         </div>
     );
 };

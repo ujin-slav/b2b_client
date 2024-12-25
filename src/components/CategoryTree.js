@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,useState,useContext} from 'react'
 import CheckboxTree from 'react-checkbox-tree';
 import { PlusCircle, 
   DashCircleFill, 
@@ -9,10 +9,12 @@ import { PlusCircle,
   ChevronRight } from 'react-bootstrap-icons';
 import {Form} from "react-bootstrap";
 import { categoryNodes } from '../config/Category';
+import {Context} from "../index";
 
 const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
 
   const[nodes,setNodes] = useState(categoryNodes)
+  const {myalert} = useContext(Context);
 
   const prevChecked = checked
   const res = checked.reduce((acc, cat) => {
@@ -45,6 +47,7 @@ const CategoryTree =({checked, expanded, setChecked, setExpanded, max})=> {
       }else{
         setChecked(checked)
       }
+      myalert.setMessage(`Не более ${max-1}`);
     }
   }
 

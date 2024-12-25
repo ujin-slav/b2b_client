@@ -18,6 +18,7 @@ import {
 import {upload} from "../http/askAPI";
 import ModalCT from '../components/ModalCT';
 import EmailList from '../components/EmailList'
+import Fountaing from '../components/Fountaing'
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
 import SpecOfferService from '../services/SpecOfferService'
@@ -518,20 +519,7 @@ const ModifySpecOffer = observer(() => {
                             
                         </tbody>
            </Table>   
-           {submiting ?
-              <div id="fountainG">
-                  <div id="fountainG_1" class="fountainG"></div>
-                  <div id="fountainG_2" class="fountainG"></div>
-                  <div id="fountainG_3" class="fountainG"></div>
-                  <div id="fountainG_4" class="fountainG"></div>
-                  <div id="fountainG_5" class="fountainG"></div>
-                  <div id="fountainG_6" class="fountainG"></div>
-                  <div id="fountainG_7" class="fountainG"></div>
-                  <div id="fountainG_8" class="fountainG"></div>
-              </div>
-              :
-              <></>
-            }
+           <Fountaing show={submiting}/>
            <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
             <button
               onClick={onSubmit}
@@ -539,22 +527,32 @@ const ModifySpecOffer = observer(() => {
             >
             Сохранить
             </button>
-        <ModalCT 
-                header="Регионы" 
-                active={modalActiveReg} 
-                setActive={setModalActiveReg} 
-                component={<RegionTree 
-                checked={checkedRegion} expanded={expandedRegion} 
-                setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-                />}/>
-          <ModalCT 
-                header="Категории" 
-                active={modalActiveCat} 
-                setActive={setModalActiveCat} 
-                component={<CategoryTree 
-                checked={checkedCat} expanded={expandedCat} 
-                setChecked={setCheckedCat} setExpanded={setExpandedCat}
-          />}/>
+            <ModalCT 
+                      header="Регионы" 
+                      active={modalActiveReg} 
+                      setActive={setModalActiveReg}
+                      text={
+                        <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                        </div>
+                      }  
+                      component={<RegionTree 
+                      checked={checkedRegion} expanded={expandedRegion} max={4}
+                      setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
+            />}/>
+            <ModalCT 
+                      header="Категории" 
+                      active={modalActiveCat} 
+                      setActive={setModalActiveCat}
+                      text={
+                        <div className='mx-3 pb-2 text-warning'>
+                        Не более 3
+                        </div>
+                      }  
+                      component={<CategoryTree 
+                      checked={checkedCat} expanded={expandedCat} max={4}
+                      setChecked={setCheckedCat} setExpanded={setExpandedCat}
+            />}/>
           <ModalCT 
                 header="Участники" 
                 active={modalActiveMember}  

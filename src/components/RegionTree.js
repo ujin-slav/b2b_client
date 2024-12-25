@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,useState,useContext} from 'react'
 import CheckboxTree from 'react-checkbox-tree';
 import { regionNodes } from '../config/Region';
 import { PlusCircle, 
@@ -9,10 +9,12 @@ import { PlusCircle,
         ChevronDown, 
         ChevronRight } from 'react-bootstrap-icons';
 import {Form} from "react-bootstrap";
+import {Context} from "../index";
 
 const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
 
   const[nodes,setNodes] = useState(regionNodes)
+  const {myalert} = useContext(Context);
     
     const prevChecked = checked
     const res = checked.reduce((acc, cat) => {
@@ -24,8 +26,20 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
       return acc ? acc : {} 
     },{})
 
+    // const onCheck=(checked)=>{
+    //   if(Object.keys(res).length < max){
+    //     setChecked(checked)
+    //   }else{
+    //     if(checked.length>prevChecked.length){
+    //       setChecked(prevChecked)
+    //     }else{
+    //       setChecked(checked)
+    //     }
+    //   }
+    // }
+
     const onCheck=(checked)=>{
-      if(Object.keys(res).length < max){
+      if(checked?.length < max){
         setChecked(checked)
       }else{
         if(checked.length>prevChecked.length){
@@ -33,6 +47,7 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
         }else{
           setChecked(checked)
         }
+        myalert.setMessage(`Не более ${max-1}`);
       }
     }
 

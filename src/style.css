@@ -4,6 +4,10 @@
   /* src: local(American_Retro), url(American_Retro.ttf); /* Для остальных браузеров */
  }
 
+h3{
+  color:gray;
+} 
+
 table {
   background-color: white  !important;
   caret-color: transparent; 
@@ -1140,7 +1144,7 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
 .alertCustom{
   position:fixed;
   bottom: 0px;
-  z-index: 50;
+  z-index: 99999999;
   width: -webkit-fill-available;
 }
 .eye{

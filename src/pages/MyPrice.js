@@ -488,17 +488,17 @@ const MyPrice = observer(() => {
                                 <td>Категории</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                <button className="myButtonMessage mt-1" onClick={()=>setModalActiveCat(true)}>
                                 Выбор
-                                </Button></td>
+                                </button></td>
                             </tr>
                             <tr>
                                 <td>Регионы</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
-                                </Button></td>
+                                </button></td>
                             </tr>
                             <tr>
                                 <td>Ссылка</td>
@@ -514,13 +514,11 @@ const MyPrice = observer(() => {
                         :
                         <div></div>
                     }
-                    <Button
-                            variant="primary"
-                            onClick={(e)=>onSubmit(e)}
-                            className="btn btn-success mt-1 mb-2"
+                    <button
+                            className="myButtonMessage mt-1"
                         >
                             Сохранить
-                    </Button> 
+                    </button> 
                     <Row>
                     <Form.Group className="my-2">
                         <Form.Label>Поиск:</Form.Label>
@@ -541,7 +539,7 @@ const MyPrice = observer(() => {
                     </div>
                     }  
                     component={<RegionTree 
-                    checked={checkedRegion} expanded={expandedRegion} max={3}
+                    checked={checkedRegion} expanded={expandedRegion} max={4}
                     setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                 />}/>
                 <ModalCT 

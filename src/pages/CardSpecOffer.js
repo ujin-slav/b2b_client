@@ -6,6 +6,7 @@ import {observer} from "mobx-react-lite";
 import FotoSlider from '../components/FotoSlider';
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
+import MyImage from '../components/MyImage'
 import SimilarSpecOffers from '../components/SimilarSpecOffers'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
@@ -17,6 +18,7 @@ import {useHistory,useLocation} from 'react-router-dom'
 import { CARDSPECOFFER,ORGINFO } from '../utils/routes';
 import { Cart4} from 'react-bootstrap-icons';
 import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import noImage from "../icons/noImage.svg";
 
 const CardSpecOffer = observer(() => {
@@ -108,14 +110,14 @@ const CardSpecOffer = observer(() => {
                     <img 
                     src={noImage}/>
                 :
-                    <img className='fotoSpecCard' 
+                    <MyImage className='fotoSpecCard' 
                     onClick={()=>setShowSlider(true)}
                     src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
                 }
                 <div className='parentSpec'>
                 {specOffer?.FilesMini?.map((item,index)=>
                     <div key={index} className='albumSpec'>
-                        <img className='miniFotoSpecCard'
+                        <MyImage className='miniFotoSpecCard'
                         onClick={()=>setFotoFocus(index)} 
                         src={process.env.REACT_APP_API_URL + `getpic/` + item.filename}/>
                     </div>

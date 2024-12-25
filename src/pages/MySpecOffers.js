@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 import { PlusCircleFill,XCircle,Pen} from 'react-bootstrap-icons';
 import ModalAlert from '../components/ModalAlert';
 import bin from "../icons/bin.svg";
+import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
 
 const MySpecOffers = observer(() => {
@@ -155,7 +156,7 @@ const MySpecOffers = observer(() => {
     const getImg = (item,index) => {
         return(
             item.FilesPreview?.map((innerItem, innerIndex)=>
-            <img 
+            <MyImage 
             className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
             src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
             onMouseMove={(e)=>mouseMoveHandler(e,item,index)}

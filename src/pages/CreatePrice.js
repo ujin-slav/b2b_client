@@ -555,27 +555,26 @@ const CreatePrice = observer(() => {
                                 <td>Категории</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveCat(true)}>
                                     Выбор
-                                    </Button></td>
+                                    </button></td>
                                 </tr>
                                 <tr>
                                 <td>Регионы</td>
                                 <td>
                                 <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
                                     Выбор
-                                    </Button></td>
+                                    </button></td>
                                 </tr>
                             </tbody>
                         </Table>
-                        <Button
-                            variant="primary"
+                        <button
                             onClick={(e)=>onSubmit(e)}
-                            className="btn btn-success mt-3"
+                            className="myButtonMessage mx-2"
                         >
                             Создать
-                        </Button>
+                        </button>
                     <ModalCT 
                         header="Регионы" 
                         active={modalActiveReg} 
@@ -586,7 +585,7 @@ const CreatePrice = observer(() => {
                         </div>
                         }  
                         component={<RegionTree 
-                        checked={checkedRegion} expanded={expandedRegion} max={3}
+                        checked={checkedRegion} expanded={expandedRegion} max={4}
                         setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                         />}/>
                     <ModalCT 

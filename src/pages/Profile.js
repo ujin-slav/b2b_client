@@ -9,6 +9,7 @@ import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import { categoryNodes } from '../config/Category';
 import AuthService from "../services/AuthService";
+import MyImage from '../components/MyImage'
 import bin from "../icons/bin.svg";
 
 const formValid = ({ data, formErrors }) => {
@@ -188,14 +189,12 @@ const Profile =  observer(() => {
     const logo = () => {
         if(file.length!==0){
             return (
-                <div className='dnd-list'>
                 <div className='fotoContainer'>
-                    <img 
+                    <MyImage 
                         className="foto" 
                         src={URL.createObjectURL(file)} 
                     >
-                    </img> 
-                </div>
+                    </MyImage> 
                 </div>
             )    
         }else{
@@ -210,7 +209,6 @@ const Profile =  observer(() => {
             <Container className="profile">
             <Row>
                 <Col>
-                <Form onSubmit={onSubmit}>
                      <Table>
                         <col style={{"width":"25%"}}/>
           	            <col style={{"width":"75%"}}/>
@@ -220,7 +218,7 @@ const Profile =  observer(() => {
                             <td>
                                 {logo()}
                                 {file.length!==0 ? 
-                                <div className='delLogoContainer' onClick={()=>setFile([])}>
+                                <div className='delLogoContainer mt-3' onClick={()=>setFile([])}>
                                     <img 
                                         className="delProfileFoto" 
                                         src={bin}
@@ -317,17 +315,17 @@ const Profile =  observer(() => {
                             <td>Категории</td>
                             <td>
                             <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                <button className="myButtonMessage mt-1"  onClick={()=>setModalActiveCat(true)}>
                                 Выбор
-                                </Button></td>
+                                </button></td>
                             </tr>
                             <tr>
                             <td>Регионы</td>
                             <td>
                             <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
                                 Выбор
-                                </Button></td>
+                                </button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -390,10 +388,10 @@ const Profile =  observer(() => {
                     </Table>
                     <button
                         className="myButtonMessage"
+                        onClick={onSubmit}
                         >
                         Сохранить
                     </button>
-                    </Form>
                 </Col>
             </Row>
         </Container>
@@ -407,7 +405,7 @@ const Profile =  observer(() => {
                 </div>
             } 
             component={<RegionTree 
-            checked={checkedRegion} expanded={expandedRegion} max={3} 
+            checked={checkedRegion} expanded={expandedRegion} max={4} 
             setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
             />}/>
         <ModalCT 
@@ -420,7 +418,7 @@ const Profile =  observer(() => {
                 </div>
             }
             component={<CategoryTree 
-            checked={checkedCat} expanded={expandedCat} max={3} 
+            checked={checkedCat} expanded={expandedCat} max={4} 
             setChecked={setCheckedCat} setExpanded={setExpandedCat}
         />}/>    
         </div>
