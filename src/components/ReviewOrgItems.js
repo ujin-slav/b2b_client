@@ -11,12 +11,11 @@ import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
 import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import ReactPaginate from "react-paginate";
-
+import bin from "../icons/bin.svg";
 
 const ReviewOrgItems = observer(({...props})=>{
     const {id} = props   
 
-    const [text,setText] = useState('')
     const[visible,setVisible] = useState(false);
     const {user} = useContext(Context);
     const [fetch,setFetch] = useState(false);
@@ -56,25 +55,6 @@ const ReviewOrgItems = observer(({...props})=>{
       setCurrentPage(data.selected + 1)
       await fetchComments(data.selected + 1);
     };
-
-
-    const handleSubmit=async(e)=>{
-        e.preventDefault();
-        const data = {
-            Host:null,
-            Text: text,
-            Author:user.user.id,
-            Org: id,
-        }
-        const result = await ReviewOrgService.addReviewOrg(data)
-        if(result.data?.errors){
-            myalert.setMessage(result.data.message);
-        } else {
-            chat.socket.emit("unread_review_org", data);
-            inputEl.current.value="";
-            setFetch(true)
-        }
-    }
 
     const delReview = async (item) => {
         const result = await ReviewOrgService.delReviewOrg(item.ID);
@@ -137,63 +117,77 @@ const ReviewOrgItems = observer(({...props})=>{
             </Card.Header>
         {visible ?
         <div>
-        {user.isAuth && user.user.id !== id ?
-            <div className='formReviewOrg'>
-                <div>Написать отзыв.</div>
-                <div>Сообщение:</div>
-                <Form.Control
-                name="Text"
-                placeholder="Текст сообщения"
-                as="textarea"
-                ref={inputEl}
-                onChange={(e)=>setText(e.target.value)} />
-                <Button className="mt-3" onClick={handleSubmit}>
-                    Отправить
-                </Button>
-            </div> 
-            :
-            <div></div>
-        }
-        {review?.map((item,index)=>
-        <div key={index}>
-            <Card className="reviewCard">
-            <Card.Header>
-                <span className="boldtext">Автор:</span> {item.Author?.name}, {item.Author?.nameOrg}
-                {item.Author?._id===user.user.id ?
-                <XCircle color="red" className="xcircleReview"  onClick={e=>delReview(item)} /> : <div></div>}
-                <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
-            </Card.Header>
-            <Card.Text className="m-3"> 
-                <span style={{fontSize:"18px"}}>{item.Text}</span>
-            </Card.Text>
-            {item?.Org===user.user.id ?     
-                    <AnswerCardReviewOrg 
-                                user={user} 
-                                item={item}
-                                setFetchAnswer={setFetchAnswer}
-                                />
-            :
-            <div></div>                    
-            }
-            </Card>
-                {item.Answer.map((item)=>{
-                    return(
-                    <Card className="answerReview">
-                        <Card.Text>
-                        <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
-                        <span style={{"float": "right"}}>
-                        {item.Author===user.user.id ?
-                                <XCircle color="red" className="xcircleQuest"  onClick={e=>delAnswer(item)} /> : <div></div>} 
-                        </span>
-                        </Card.Text>
-                    </Card> 
-                    ) 
-                })}      
-        </div>
-        )} 
+          {review?.map((item,index)=>
+                <div key={index} className="mt-4">
+                    <Card className="reviewCard">
+                    <Card.Header className="bg-body d-flex justify-content-between">
+                        <div className="d-flex">
+                            <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
+                            <div>
+                                <div>{item.Author?.name}</div>
+                                <div>{item.Author?.nameOrg}</div>
+                            </div>
+                        </div>
+                        <div>
+                            {item.Author?._id===user.user.id ?
+                                <img 
+                                    className="xcircleReview" 
+                                    src={bin}
+                                    onClick={e=>delReview(item)}
+                                />   
+                                : 
+                                <div></div>
+                            }
+                            <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
+                        </div>
+                    </Card.Header>
+                    <Card.Text className="m-3"> 
+                        <span style={{fontSize:"18px"}}>{item.Text}</span>
+                    </Card.Text>
+                    {item?.Org===user.user.id ?     
+                            <AnswerCardReviewOrg 
+                                        user={user} 
+                                        item={item}
+                                        setFetchAnswer={setFetchAnswer}
+                                        />
+                    :
+                    <div></div>                    
+                    }
+                    </Card>
+                        {item.Answer.map((item)=>{
+                            return(
+                            <Card className="answerReview border-0 mt-2 mb-5">
+                                <Card.Header className="bg-body d-flex justify-content-between">
+                                <div className="d-flex">
+                                    <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
+                                    <div>
+                                        <div>{item.Author?.name}</div>
+                                        <div>{item.Author?.nameOrg}</div>
+                                    </div>
+                                </div>
+                                <div className="position-static">
+                                    {item.Org===user.user.id ?
+                                        <img 
+                                            className="xcircleReview" 
+                                            src={bin}
+                                            onClick={e=>delAnswer(item)}
+                                        />   
+                                        : <div></div>
+                                    } 
+                                    <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
+                                </div>
+                                </Card.Header>
+                                <Card.Text className='mt-3'>
+                                    {item.Text}
+                                </Card.Text>
+                            </Card> 
+                            ) 
+                        })}    
+                </div>
+                )} 
           <ReactPaginate
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
+            previousLabel={"<"}
+            nextLabel={">"}
             breakLabel={"..."}
             pageCount={pageCount}
             marginPagesDisplayed={2}

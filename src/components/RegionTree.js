@@ -26,20 +26,8 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
       return acc ? acc : {} 
     },{})
 
-    // const onCheck=(checked)=>{
-    //   if(Object.keys(res).length < max){
-    //     setChecked(checked)
-    //   }else{
-    //     if(checked.length>prevChecked.length){
-    //       setChecked(prevChecked)
-    //     }else{
-    //       setChecked(checked)
-    //     }
-    //   }
-    // }
-
     const onCheck=(checked)=>{
-      if(checked?.length < max){
+      if(Object.keys(res).length < max-1){
         setChecked(checked)
       }else{
         if(checked.length>prevChecked.length){
@@ -50,6 +38,19 @@ const RegionTree =({checked, expanded, setChecked, setExpanded, max})=> {
         myalert.setMessage(`Не более ${max-1}`);
       }
     }
+
+    // const onCheck=(checked)=>{
+    //   if(checked?.length < max){
+    //     setChecked(checked)
+    //   }else{
+    //     if(checked.length>prevChecked.length){
+    //       setChecked(prevChecked)
+    //     }else{
+    //       setChecked(checked)
+    //     }
+    //     myalert.setMessage(`Не более ${max-1}`);
+    //   }
+    // }
 
     const handleControl = (e)=> {
       let resultArray = []

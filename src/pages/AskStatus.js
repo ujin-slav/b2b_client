@@ -224,7 +224,7 @@ const AskStatus = observer(({askId}) => {
                     <div key={key}>
                         {a.originalname ?
                             <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                                 ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
                                 <a
                                 href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
@@ -247,6 +247,8 @@ const AskStatus = observer(({askId}) => {
         )
     }
     const getChoise =()=>{
+        console.log(user.user.id)
+        console.log(author)
         if(user.user.id === author){
             return (
                 <Form.Control
@@ -260,7 +262,7 @@ const AskStatus = observer(({askId}) => {
                             <option value="6">Товар получен</option>
                 </Form.Control>
             )
-        }else if(user.user._id === winner){
+        }else if(user.user.id === winner){
             return (
                 <Form.Control
                 as="select" 

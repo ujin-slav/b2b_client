@@ -12,7 +12,9 @@ import {observer} from "mobx-react-lite";
 import dateFormat, { masks } from "dateformat";
 import ReactPaginate from "react-paginate";
 import bin from "../icons/bin.svg";
-
+import {Star} from 'react-bootstrap-icons';
+import GoogleDocsViewer from 'react-google-docs-viewer';
+import StarsRatingShow from '../components/StarsRatingShow';
 
 const ReviewAboutMe = observer(() => {
 
@@ -38,6 +40,7 @@ const ReviewAboutMe = observer(() => {
                 setFetch(false)
                 setFetchAnswer(false)
                 setpageCount(response.data.totalPages);
+                console.log(response)
                 chat.socket.emit("get_unread");
             }                
         }).finally(()=>setLoading(false))
@@ -100,18 +103,27 @@ const ReviewAboutMe = observer(() => {
             {review?.map((item,index)=>
                 <div key={index}>
                     <Card className="reviewCard">
-                    <Card.Header>
-                        <span className="boldtext">Автор:</span> {item.Author?.name}, {item.Author?.nameOrg}
-                        {item.Author?._id===user.user.id ?
-                            <img 
-                                className="xcircleReview" 
-                                src={bin}
-                                onClick={e=>delReview(item)}
-                            />   
-                            : 
-                            <div></div>
+                    <Card.Header className="bg-body d-flex justify-content-between">
+                        <div className="d-flex">
+                            <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
+                            <div>
+                                <div>{item.Author?.name}</div>
+                                <div>{item.Author?.nameOrg}</div>
+                                <StarsRatingShow stars={item?.Stars}/>
+                            </div>
+                        </div>
+                        <div>
+                            {item.Author?._id===user.user.id ?
+                                <img 
+                                    className="xcircleReview" 
+                                    src={bin}
+                                    onClick={e=>delReview(item)}
+                                />   
+                                : 
+                                <div></div>
                             }
-                        <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
+                            <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
+                        </div>
                     </Card.Header>
                     <Card.Text className="m-3"> 
                         <span style={{fontSize:"18px"}}>{item.Text}</span>
@@ -128,30 +140,40 @@ const ReviewAboutMe = observer(() => {
                     </Card>
                         {item.Answer.map((item)=>{
                             return(
-                            <Card className="answerReview">
-                                <Card.Text>
-                                <ArrowReturnRight  style={{"width": "25px", "height": "25px"}}/>{item.Text}
-                                <span style={{"float": "right"}}>
-                                {item.Org===user.user.id ?
+                            <Card className="answerReview border-0 mt-2 mb-5">
+                                <Card.Header className="bg-body d-flex justify-content-between">
+                                <div className="d-flex">
+                                    <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
+                                    <div>
+                                        <div>{item.Author?.name}</div>
+                                        <div>{item.Author?.nameOrg}</div>
+                                    </div>
+                                </div>
+                                <div className="position-static">
+                                    {item.Org===user.user.id ?
                                         <img 
-                                            className="xcircleQuest" 
+                                            className="xcircleReview" 
                                             src={bin}
                                             onClick={e=>delAnswer(item)}
                                         />   
                                         : <div></div>
-                                        } 
-                                </span>
+                                    } 
+                                    <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
+                                </div>
+                                </Card.Header>
+                                <Card.Text className='mt-3'>
+                                    {item.Text}
                                 </Card.Text>
                             </Card> 
                             ) 
-                        })}      
+                        })}    
                 </div>
                 )} 
                   {review?.length!==0 ? 
                         <ReactPaginate
                         forcePage = {currentPage-1}
-                        previousLabel={"предыдущий"}
-                        nextLabel={"следующий"}
+                        previousLabel={"<"}
+                        nextLabel={">"}
                         breakLabel={"..."}
                         pageCount={pageCount}
                         marginPagesDisplayed={2}

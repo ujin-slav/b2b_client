@@ -9,12 +9,15 @@ import { FileEarmarkSpreadsheet } from 'react-bootstrap-icons';
 import OrderStatus from './OrderStatus';
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox';
+import ReviewCreate from '../components/ReviewCreate';
 
 const CardPriceAsk = () => {
     
     const {id} = useParams();
+    const [status,setStatus] = useState(1)
     const [recevier, setRecevier] = useState();
     const [author, setAuthor] = useState();
+    const [review, setReview] = useState();
     const [price,setPrice] = useState([]); 
     const [sumTotal,setSumTotal] = useState(0); 
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
@@ -54,6 +57,7 @@ const CardPriceAsk = () => {
                 setError(result.data.errors)
             }
         })
+        console.log(status)
     },[]);
 
     const saveToFile = () => { 
@@ -197,8 +201,13 @@ const CardPriceAsk = () => {
             </div>
             <div  style={{"text-align": "right"}}>
         </div>
+        {status==8 ?
+            <ReviewCreate id={recevier?.id} priceAskId={id}/>
+            :
+            <div></div> 
+        }
         {!fiz.FIZ ? 
-            <OrderStatus priceAskId={id}/> 
+            <OrderStatus priceAskId={id} status={status} setStatus={setStatus}/> 
             :
             <div></div>
         }

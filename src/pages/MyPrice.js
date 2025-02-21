@@ -453,7 +453,6 @@ const MyPrice = observer(() => {
 
     return (
         <Container> 
-                <Form>
                 <h3>{priceName}</h3>
                     <Table>
                         <col style={{"width":"25%"}}/>
@@ -586,7 +585,6 @@ const MyPrice = observer(() => {
                     )}
                  </tbody>
             </Table>
-            </Form>
         </Container>
     );
 });

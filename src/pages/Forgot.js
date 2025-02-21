@@ -44,7 +44,7 @@ const Forgot = observer(() => {
                         Отправить
                         </Button>
                     </Row>   
-                    <div style={{ color:"red"}}>    
+                    <div>    
                         {user.errorString}
                     </div>     
                 </Card>

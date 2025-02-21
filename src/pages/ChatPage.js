@@ -36,10 +36,10 @@ const ChatPage = () => {
         if(idorg){
             fetchUser(idorg).then((response)=>{
                 const contact = {
-                    id: response._id,
-                    email: response.email,
-                    name: response.name,
-                    nameOrg: response.nameOrg,
+                    id: response.data._id,
+                    email: response.data.email,
+                    name: response.data.name,
+                    nameOrg: response.data.nameOrg,
                 }
                 chat.recevier = contact
                 setRecevier(contact)

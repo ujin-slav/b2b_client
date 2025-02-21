@@ -187,7 +187,7 @@ const RegistrationForm = () => {
         <Container style={{width: 800}}>
             <Row>
                 <Col>
-                <h1 className="text-success">Регистрация</h1>
+                <h3>Регистрация</h3>
                 </Col>
             </Row>
             <Row>
@@ -196,7 +196,6 @@ const RegistrationForm = () => {
             </Row>
             <Row>
                 <Col>
-                <Form onSubmit={handleSubmit}>
                     <RegInput value={{Name: "name", Label: "Имя, фамилия", handleChange, PlaceHolder: "Ваше имя", ErrorMessage: userReg.formErrors.name}} />
                     <RegInput value={{Name: "email", Label: "E-mail", handleChange, PlaceHolder: "E-mail", ErrorMessage: userReg.formErrors.email}} />             
                     <RegInput value={{Name: "nameOrg", Label: "Название организации", handleChange, PlaceHolder: "Название организации", ErrorMessage: userReg.formErrors.nameOrg}} />
@@ -220,31 +219,27 @@ const RegistrationForm = () => {
                     <Form.Group>
                     <Form.Label>Регионы в которых работает организация(не более 3-х)</Form.Label>
                     <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
                                     Выбор
-                                    </Button> 
+                                    </button> 
                     </Form.Group>  
                     <Form.Group>         
                     <Form.Label>Категории в которых работает организация(не более 3-х)</Form.Label>
                     <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                    <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
+                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveCat(true)}>
                                     Выбор
-                                    </Button>
+                                    </button>
                     </Form.Group>
                     <RegInput value={{Name: "password", Label: "Пароль", handleChange, PlaceHolder: "Пароль", ErrorMessage: userReg.formErrors.password, Type:"password"}} />
                     <RegInput value={{Name: "confirmPassword", Label: "Повторите пароль", handleChange, PlaceHolder: "Повторите пароль", ErrorMessage: userReg.formErrors.confirmPassword, Type:"password"}} />
-                    <div style={{"margin":"20px 0px 20px 0px"}}>
+                    <div className="mt-3 mb-3">
                       <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>
                     </div>  
-                    <Button
-                    variant="primary"
-                    type="submit"
-                    className="btn btn-success ml-auto mr-1"
-                    >
-                    Зарегистрировать
-                    </Button>
-                    
-                </Form>
+                    <button
+                      onClick={handleSubmit}
+                      className="myButtonMessage">
+                      Зарегистрировать
+                    </button>
                 </Col>
             </Row>    
             <ModalCT 
@@ -253,11 +248,11 @@ const RegistrationForm = () => {
                     setActive={setModalActiveReg}
                     text={
                       <div className='mx-3 pb-2 text-warning'>
-                        Не более 3
+                        Не более 10
                       </div>
                     } 
                     component={<RegionTree 
-                    checked={checkedRegion} expanded={expandedRegion} max={4} 
+                    checked={checkedRegion} expanded={expandedRegion} max={11} 
                     setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
                     />}/>
                <ModalCT 

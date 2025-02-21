@@ -154,8 +154,8 @@ const UserSpecOffersTable = observer(({id}) => {
         {pageCount>2 ?
         <ReactPaginate
             forcePage = {currentPage-1}
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
+            previousLabel={"<"}
+            nextLabel={">"}
             breakLabel={"..."}
             pageCount={pageCount}
             marginPagesDisplayed={2}

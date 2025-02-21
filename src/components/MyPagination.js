@@ -64,8 +64,8 @@ function MyPagination() {
       </div>
 
       <ReactPaginate
-        previousLabel={"предыдущий"}
-        nextLabel={"следующий"}
+        previousLabel={"<"}
+        nextLabel={">"}
         breakLabel={"..."}
         pageCount={pageCount}
         marginPagesDisplayed={2}

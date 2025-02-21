@@ -278,7 +278,7 @@ const MessageList = ({recevier}) => {
                     </div>
                     <div>
                         <a href={process.env.REACT_APP_API_URL + `chatdownload/` + file.filename}>{file.originalname}</a>
-                        <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                        <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                         ${process.env.REACT_APP_API_URL}chatdownload/${file.filename}`)}/>
                     </div>
                 </span>
@@ -299,8 +299,7 @@ const MessageList = ({recevier}) => {
         return(
             <span>
                 <a href={process.env.REACT_APP_API_URL + `chatdownload/` + file.filename}>{file.originalname}</a>
-                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
-                ${process.env.REACT_APP_API_URL}chatdownload/${file.filename}`)}/>
+                <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=${process.env.REACT_APP_API_URL}chatdownload/${file.filename}`)}/>
             </span>
         )
     }

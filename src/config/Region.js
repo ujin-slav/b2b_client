@@ -5256,9 +5256,5 @@ export const regionNodes = [
                 "label": "Инкерман"
             }
         ]
-    },
-    {
-        "value": "item85",
-        "label": "99 Байконур"
     }
 ]

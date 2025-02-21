@@ -126,7 +126,7 @@ const CreatePriceAsk = () => {
             }
         })
         if(searchResult){
-            setResult([...result])   
+            setResult(result)   
         }else{
             item.Count=1
             setResult([...result, item])  
@@ -144,7 +144,7 @@ const CreatePriceAsk = () => {
         let totalSum = 0
         result.map((el,index)=>{
             if(el._id===item._id){
-                result[index].Count = e.target.value
+                result[index].Count = Number(e.target.value)
             }
             totalSum = totalSum + result[index].Count * result[index].Price
         })
@@ -275,7 +275,7 @@ const CreatePriceAsk = () => {
                 </Form.Check>
                 <Form.Label>Показать только специальные предложения.</Form.Label>
             </InputGroup> */}
-            <div class="table-responsive" ref={table}>
+            <div class="table-responsive-create" ref={table}>
                 <Table class="table table-hover">
                 <thead>
                     <tr>
@@ -295,7 +295,7 @@ const CreatePriceAsk = () => {
             </div>
             </div>
             <div class="border-price">
-            <div class="table-responsive">
+            <div class="table-responsive-create">
                 <Table  class="table table-hover">
                 <thead>
                     <tr>
@@ -317,12 +317,14 @@ const CreatePriceAsk = () => {
                                 <td style={{"width": "100px","padding":"3px"}}>
                                     <Form.Control 
                                         defaultValue={item.Count}
+                                        value={item.Count}
                                         type="number"
+                                        min="0"
                                         onChange={(e)=>changeInput(e,item)}
                                     />
                                 </td>
                                 <td>{item.Measure}</td>
-                                <td>{item.Count*item.Price}</td>
+                                <td>{(item.Count * item.Price).toFixed(2)}</td>
                                 <td><XCircle color="red" 
                                 style={{"width": "25px", "height": "20px"}} 
                                 onClick={()=>delFromResult(index)}/></td>
@@ -333,7 +335,7 @@ const CreatePriceAsk = () => {
             </div>
             <hr style={{"border": "none","background-color": "black","height": "5px"}}/>
                 <div class="total-sum">
-                    Сумма итого:<span style={{"font-weight":"500"}}>  {sumTotal}</span>
+                    Сумма итого:<span style={{"font-weight":"500"}}>  {sumTotal.toFixed(2)}</span>
                     <div>Всего наименований: {result.length}</div>
                     </div>
             </div>

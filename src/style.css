@@ -313,8 +313,17 @@ td.tdRed{
   color:white !important;
   padding-left: 0px !important;
 }
+.headerReviewCreate{
+  text-align: center;
+  font-weight: 600;
+}
 .table-responsive{
-  height:400px;  
+  overflow:scroll;
+  border-collapse: separate;
+  border-bottom: 2px solid black;  
+}
+.table-responsive-create{
+  height: 400px;
   overflow:scroll;
   border-collapse: separate;
   border-bottom: 2px solid black;  
@@ -854,7 +863,7 @@ td.tdRed{
     height: 20px;
   }
   .reviewCard{
-    /* border: 1px solid !important; */
+    border: 0px !important;
     margin-top: 5px;
     border-radius: 20px 20px 20px 20px !important;  
   }
@@ -883,7 +892,7 @@ td.tdRed{
     border-radius: 20px 20px 20px 20px !important; 
   }
   .answerReview{
-    margin-left: 20px;
+    margin-left: 50px;
     padding: 2px 2px 2px 2px !important;
     border-radius: 20px 20px 20px 20px !important; 
   }
@@ -1315,6 +1324,27 @@ input.createSpecOfferDataPicker{
   height: 10px;
   width: 20%;
   background-color:lightblue;
+}
+.starRating{
+  width: 40px;
+  height: 40px; 
+  margin-left: 5px !important;
+  color:black;
+}
+.starRatingChosen{
+  width: 40px;
+  height: 40px; 
+  margin-left: 5px !important;
+  color:#FF6A00;
+}
+.starRatingShow{
+  color:black;
+}
+.starRatingChosenShow{
+  color:#FF6A00;
+}
+ul.pagination.justify-content-center{
+  margin-top: 20px;
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{

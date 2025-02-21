@@ -1,82 +1,36 @@
-import React, {useState,
-    useContext,
-    useRef,
-    useEffect} from "react";
-import {CaretDownFill,CaretUpFill} from 'react-bootstrap-icons';
-import { Form,Card, Button,} from "react-bootstrap";
+import React, {useState,useContext,useRef,useEffect} from "react";
 import ReviewOrgService from '../services/ReviewOrgService'; 
+import { Form, Button} from "react-bootstrap";
 import {Context} from "../index"; 
-import AnswerCardReviewOrg from "../components/AnswerCardReviewOrg"
-import { ArrowReturnRight,XCircle,XSquare} from 'react-bootstrap-icons';
-import {observer} from "mobx-react-lite";
-import dateFormat, { masks } from "dateformat";
-import ReactPaginate from "react-paginate";
+import StarsRating from "../components/StarsRating"; 
+import StarsRatingShow from "../components/StarsRatingShow"; 
 import bin from "../icons/bin.svg";
-import StarsRatingShow from '../components/StarsRatingShow';
+import { Card} from "react-bootstrap";
+import dateFormat, { masks } from "dateformat";
+import AnswerCardReviewOrg from "../components/AnswerCardReviewOrg"
 
-
-const ReviewWriteMe = () => {
-    
+const ReviewCreate = ({id,priceAskId}) => {
 
     const [text,setText] = useState('')
-    const[visible,setVisible] = useState(false);
+    const [fetch,setFetch] = useState(true)
     const {user} = useContext(Context);
-    const id = user.user.id   
-    const [fetch,setFetch] = useState(false);
-    const [fetchAnswer,setFetchAnswer] = useState(false)
-    const [review,setReview] = useState([]);
-    const [loading,setLoading] = useState(true) 
-    const {myalert} = useContext(Context);
-    const inputEl = useRef(null);
     const {chat} =  useContext(Context)
-    const [pageCount, setpageCount] = useState(0);
-    const [currentPage,setCurrentPage] = useState(1)
-    let limit = 10
-    
+    const [review,setReview] = useState()
+    const inputEl = useRef(null);
+    const {myalert} = useContext(Context);
+    const [currentStar, setCurrentStar] = useState();
+    const [fetchAnswer,setFetchAnswer] = useState(false)
+
     useEffect(() => {
-        ReviewOrgService.fetchReviewOrg({author:id,limit,page:currentPage,user:user.user.id}).then((response)=>{
-            if(response.status===200){
-                setReview(response.data.docs)
+        if(fetch){
+            ReviewOrgService.fetchReviewPriceAsk({priceAskId}).then((data)=>{
+                setReview(data.data)
+                console.log(data)
+            }).finally(()=>{
                 setFetch(false)
-                setFetchAnswer(false)
-                setpageCount(response.data.totalPages);
-                chat.socket.emit("get_unread");
-                console.log(response)
-            }                
-        }).finally(()=>setLoading(false))
-    },[fetch,fetchAnswer,visible]);
-
-    const fetchComments = async (currentPage) => {
-        ReviewOrgService.fetchReviewOrg({
-        id,limit,page:currentPage}).then((data)=>{
-        setReview(data.docs)
-        setpageCount(data.totalPages);
-       }).finally(()=>setLoading(false))
-    };
-
-    const handlePageClick = async (data) => {
-      setCurrentPage(data.selected + 1)
-      await fetchComments(data.selected + 1);
-    };
-
-
-    const handleSubmit=async(e)=>{
-        e.preventDefault();
-        const data = {
-            Host:null,
-            Text: text,
-            Author:user.user.id,
-            Org: id,
+            })
         }
-        const result = await ReviewOrgService.addReviewOrg(data)
-        if(result.data?.errors){
-            myalert.setMessage(result.data.message);
-        } else {
-            inputEl.current.value="";
-            setFetch(true)
-            chat.socket.emit("unread_quest_mail", {data});
-        }
-    }
+    },[fetch]);
 
     const delReview = async (item) => {
         const result = await ReviewOrgService.delReviewOrg(item.ID);
@@ -93,16 +47,41 @@ const ReviewWriteMe = () => {
         if (result.status===200){
             myalert.setMessage("Успешно"); 
           } else {
-            console.log(result)
             myalert.setMessage(result.data.message);
           }
         setFetch(true)
     }
 
-    return (
-        <div className='container-mycontr mt-3'>
-            {review?.map((item,index)=>
-                <div key={index}>
+    const handleSubmit =async(e)=>{
+        e.preventDefault();
+        if(!currentStar){
+            myalert.setMessage("Выберите оценку")
+            return
+        }
+        const data = {
+            Host:null,
+            Text: text,
+            Author:user.user.id,
+            Org: id,
+            Stars: currentStar,
+            PriceAsk: priceAskId
+        }
+        const result = await ReviewOrgService.addReviewOrg(data)
+        if(result.data?.errors){
+            myalert.setMessage(result.data.message);
+        } else {
+            chat.socket.emit("unread_review_org", data)
+            inputEl.current.value=""
+            setFetch(true)
+        }
+    }
+    if(review){
+        let item = review
+        return(
+            <div className='mt-4'>
+                    <div className='headerReviewCreate'>
+                        Отзыв
+                    </div>
                     <Card className="reviewCard">
                     <Card.Header className="bg-body d-flex justify-content-between">
                     <div className="d-flex">
@@ -110,7 +89,7 @@ const ReviewWriteMe = () => {
                             <div>
                                 <div>{item.Author?.name}</div>
                                 <div>{item.Author?.nameOrg}</div>
-                                <StarsRatingShow stars={item?.Stars}/>
+                                <StarsRatingShow stars={item.Stars}/>
                             </div>
                         </div>
                         <div>
@@ -139,7 +118,7 @@ const ReviewWriteMe = () => {
                     <div></div>                    
                     }
                     </Card>
-                        {item.Answer.map((item)=>{
+                        {item.Answer?.map((item)=>{
                             return(
                             <Card className="answerReview border-0 mt-2 mb-5">
                                  <Card.Header className="bg-body d-flex justify-content-between">
@@ -168,33 +147,29 @@ const ReviewWriteMe = () => {
                             </Card> 
                             ) 
                         })}      
+            </div>
+        )
+    }
+    return (
+        <div>
+            <div className='formReviewOrg'>
+                <div className='headerReviewCreate'>
+                        Написать отзыв
                 </div>
-                )} 
-                {review?.length!==0 ? 
-                        <ReactPaginate
-                        forcePage = {currentPage-1}
-                        previousLabel={"<"}
-                        nextLabel={">"}
-                        breakLabel={"..."}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={handlePageClick}
-                        containerClassName={"pagination justify-content-center"}
-                        pageClassName={"page-item"}
-                        pageLinkClassName={"page-link"}
-                        previousClassName={"page-item"}
-                        previousLinkClassName={"page-link"}
-                        nextClassName={"page-item"}
-                        nextLinkClassName={"page-link"}
-                        breakClassName={"page-item"}
-                        breakLinkClassName={"page-link"}
-                        activeClassName={"active"}
-                        />
-                    :
-                <div></div>}
+                <div className="mb-2">Сообщение:</div>
+                <Form.Control
+                name="Text"
+                placeholder="Текст сообщения"
+                as="textarea"
+                ref={inputEl}
+                onChange={(e)=>setText(e.target.value)} />
+                <StarsRating currentStar={currentStar} setCurrentStar={setCurrentStar}/>
+                <button className="myButtonMessage mt-2" onClick={handleSubmit}>
+                    Отправить
+                </button>
+            </div> 
         </div>
     );
 };
 
-export default ReviewWriteMe;
+export default ReviewCreate;

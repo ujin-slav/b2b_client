@@ -250,7 +250,7 @@ const TableAsk = observer(() => {
                         <div><span className="specCloudy">Файлы: </span></div>
                         {item?.Files?.map((item,index)=><div key={index}>
                                         <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-                                        <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                        <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                                         ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                                     </div>)}
                         </div>
@@ -265,8 +265,8 @@ const TableAsk = observer(() => {
             {ask?.length!==0 ? 
                 <ReactPaginate
                 forcePage = {currentPage-1}
-                previousLabel={"предыдущий"}
-                nextLabel={"следующий"}
+                previousLabel={"<"}
+                nextLabel={">"}
                 breakLabel={"..."}
                 pageCount={pageCount}
                 marginPagesDisplayed={2}

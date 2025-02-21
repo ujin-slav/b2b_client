@@ -208,7 +208,7 @@ const CardAsk = observer(() => {
           <td>{item.Text}</td>
           <td>{item.Files?.map((item,index)=><div key={index}>
               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+              <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
           </div>)}</td>
           <td>
@@ -338,7 +338,7 @@ const CardAsk = observer(() => {
                             <td>Файлы заявки</td>
                             <td> {ask?.Files?.map((item,index)=><div key={index}>
                               <a href={process.env.REACT_APP_API_URL + `download/` + item.filename}>{item.originalname}</a>
-                              <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                              <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                               ${process.env.REACT_APP_API_URL}download/${item.filename}`)}/>
                           </div>)}</td>
                             </tr>

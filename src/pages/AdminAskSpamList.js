@@ -172,8 +172,8 @@ const AdminAskSpamList = () => {
             </Card>
             <ReactPaginate
             forcePage = {currentPage-1}
-            previousLabel={"предыдущий"}
-            nextLabel={"следующий"}
+            previousLabel={"<"}
+            nextLabel={">"}
             breakLabel={"..."}
             pageCount={pageCount}
             marginPagesDisplayed={2}

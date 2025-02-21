@@ -39,11 +39,11 @@ const AnswerCardReviewOrg = ({...props}) => {
     return (
         <div>
             <ListGroup>
-                <ListGroup.Item className="answer">
+                <ListGroup.Item className="answer border-0">
                 <a href="javascript:void(0)" onClick={()=>setVisible(!visible)}> Ответить</a></ListGroup.Item>
             </ListGroup>
             {visible ? 
-            <Card className="borderRadius">
+            <Card className="border-0">
             <Form.Control
                 name="Text"
                 placeholder="Текст сообщения"
@@ -51,10 +51,8 @@ const AnswerCardReviewOrg = ({...props}) => {
                 as="textarea"
                 onChange={(e)=>setTextAnswer(e.target.value)}
             />
-            <button className="myButton" onClick={(e)=>handleAnswer(e)}>
-                    <div>
-                         Отправить
-                    </div>
+            <button className="myButtonMessage mt-2" onClick={(e)=>handleAnswer(e)}>
+                Отправить
             </button> 
             </Card>  
             :

@@ -378,7 +378,7 @@ const ChatPage = observer(() => {
                                             {messageContent.File ?  
                                             <span>
                                                 <a href={process.env.REACT_APP_API_URL + `download/` + messageContent.File.filename}>{messageContent.File.originalname}</a>
-                                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                                <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                                                 ${process.env.REACT_APP_API_URL}download/${messageContent.File.filename}`)}/>
                                              </span>
                                             :

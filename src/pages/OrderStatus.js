@@ -55,9 +55,8 @@ export const statusOrder = [
     },
 ]
 
-const OrderStatus = observer(({priceAskId}) => {
+const OrderStatus = observer(({priceAskId,status,setStatus}) => {
 
-    const [status,setStatus] = useState(1)
     const[prevStatus,setPrevStatus] = useState(1)
     const [author, setAuthor] = useState()
     const [askTo, setAskTo] = useState()
@@ -144,7 +143,6 @@ const OrderStatus = observer(({priceAskId}) => {
             setAskTo(result.To)
             setFiz(result.Fiz)
             setAuthor(result.Author)
-            console.log(result)
         }).finally(()=>setLoading(false))
     }
 
@@ -237,7 +235,7 @@ const OrderStatus = observer(({priceAskId}) => {
                     <div key={key}>
                         {a.originalname ?
                             <div>
-                                <Eye className="eye" onClick={()=>window.open(`http://docs.google.com/viewer?url=
+                                <Eye className="eye" onClick={()=>window.open(`https://docs.yandex.ru/docs/view?url=
                                 ${process.env.REACT_APP_API_URL}getstatusfile/${a.filename}`)}/>
                                 <a
                                 href={process.env.REACT_APP_API_URL + `getstatusfile/` + a.filename}
@@ -260,14 +258,25 @@ const OrderStatus = observer(({priceAskId}) => {
         )
     }
 
+    const setStatusFun =(value)=> {
+        if(value==0){
+            return
+        }
+        if(value==8 && prevStatus!==7){
+            myalert.setMessage("Поставщик еще не отправил товар");
+            return
+        }
+        setStatus(value)
+    }
+
     const getChoise =()=>{
-        if(user.user._id !== author){
+        if(user.user.id !== author){
             return (
                 <Form.Control
                 as="select" 
-                onChange={(e)=>setStatus(e.target.value)}        
+                onChange={(e)=>setStatusFun(e.target.value)}        
                  >       
-                    <option>Выбрать</option>
+                    <option value="0">Выбрать</option>
                     <option value="2">Обрабатывается поставщиком</option>
                     <option value="3">Выставлен счет(ожидается оплата)</option>
                     <option value="4">Создан договор(контракт)</option>
@@ -279,9 +288,9 @@ const OrderStatus = observer(({priceAskId}) => {
             return (
                 <Form.Control
                 as="select" 
-                onChange={(e)=>setStatus(e.target.value)}        
+                onChange={(e)=>setStatusFun(e.target.value)}        
                  >       
-                    <option>Выбрать</option>
+                    <option value="0">Выбрать</option>
                     <option value="4">Создан договор(контракт)</option>
                     <option value="5">Подписан договор(контракт)</option>
                     <option value="6">Оплата произведена</option>
@@ -296,8 +305,13 @@ const OrderStatus = observer(({priceAskId}) => {
              <InputGroup className="mt-4 mb-4"> 
                 <Form.Label className="px-3 mt-2">Изменить статус:</Form.Label>
                     {getChoise()}
-                    <Button onClick={()=>send()}>Сохранить
-                    </Button> 
+                    <button 
+                        className="myButtonMessage" 
+                        onClick={()=>send()}
+                        style={{marginBottom:"auto"}}
+                    >
+                            Сохранить
+                    </button> 
                 </InputGroup>
             {progress!==0 ? 
             <ProgressBar now={progress} active label={`${progress}%`} className="mt-3 mb-3"/>

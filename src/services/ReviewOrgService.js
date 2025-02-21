@@ -11,6 +11,9 @@ export default class ReviewOrgService {
     static fetchReviewOrgtUser(data){
         return $api.post('/getrevieworguser',data);
     }
+    static fetchReviewPriceAsk(data){
+        return $api.post('/getreviewpriceask',data);
+    }
     static delReviewOrg(id){
         return $api.post('/delrevieworg',{id});
     }
