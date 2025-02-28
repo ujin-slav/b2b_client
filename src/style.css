@@ -413,6 +413,11 @@ td.tdRed{
     cursor: pointer;
     background-color:white;
   }
+  .parentSpecAdvance {
+    display: flex;
+    flex-wrap: wrap;
+    background-color:white;
+  }
   .parentSpecOffer {
     display: flex;
     flex-wrap: wrap;
@@ -544,14 +549,18 @@ td.tdRed{
     text-align: center; 
   }
   .cardSpecPrice{
-    font-size: 50px;
-    font-weight:bold;
+    font-size: 35px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    line-height: 1.2;
     padding-left: 50px;
   }
   .specContact{
     margin: 20px;
-    font-size: 25px;
-    font-weight:bold;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.2;
+    font-weight: bold;
   }
   .addSpecOffer{
     width: 50px; 
@@ -574,6 +583,12 @@ td.tdRed{
     margin: 5px 0px 5px 5px;
   }
   .delSpecOffer{
+    width: 25px; 
+    height: 25px;
+    color:gray;
+    display: inline-block;
+  }
+  .checkBoxAdvance{
     width: 25px; 
     height: 25px;
     color:gray;
@@ -920,6 +935,8 @@ td.tdRed{
   overflow-x: auto;
 }
 .childCarousel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   background-color: #fafabe;
   font-weight: bold;
   font-size: 14px;

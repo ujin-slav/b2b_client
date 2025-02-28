@@ -1,7 +1,7 @@
 import React, {useState,
     useContext,
     useRef} from "react";
-import { Form,Button} from "react-bootstrap";
+import { Form,Button,Row,Col} from "react-bootstrap";
  import {Context} from "../index";
  import SpecOfferService from '../services/SpecOfferService'
  import Captcha from "demos-react-captcha";
@@ -34,10 +34,11 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
     const {myalert} = useContext(Context);
     const {chat} = useContext(Context);
     const inputEl = useRef(null);
+    const [sumTotal,setSumTotal] = useState(specOffer.Price); 
     const[specAsk,setSpecAsk] = useState( {
         data: {
           comment:"",
-          amount:""
+          amount:1
         },
         formErrors: {
           amount:""
@@ -46,15 +47,18 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
       );
 
     const sendMessage = async (e) => {
-        e.preventDefault();
+        if(specAsk.data.amount <= 0){
+          myalert.setMessage("Количество должно быть больше 0")
+          return
+        }
         if(captcha){
           if (formValid(specAsk)) {
             const result = await SpecOfferService.specAskOrg({
               Author:user.user.id,
               Comment:specAsk.data.comment,
               Amount:specAsk.data.amount,
-              Receiver:receiver,
-              SpecOffer:specOffer
+              Receiver:specOffer.Author,
+              SpecOffer:specOffer._id
             })
             if (result.status===200){
               myalert.setMessage("Заявка успешно отправлена");
@@ -74,26 +78,12 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
     };
     
     const handleChange = e => {
-        e.preventDefault();
         const { name, value } = e.target;
         let formErrors = specAsk.formErrors;
         let data = specAsk.data
         data[name] = value;
-        
-        switch (name) {
-            case "name":
-            formErrors.Name =
-                value.length < 3 ? "минимум 3 символа" : "";
-            break;   
-            case "email":
-                formErrors.Email = emailRegex.test(value)
-                    ? ""
-                    : "неверный email";
-            break;
-            default:
-            break;
-        }
         setSpecAsk({ data, formErrors});
+        setSumTotal(specOffer.Price * data.amount)
     }
 
     const handleChangeCaptcha = (value) => {
@@ -104,25 +94,31 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
 
     return (
         <div>
-            <div class="mb-3 row">
-                <label for="inputPassword" class="col-sm-2 col-form-label">Кол-во</label>
-                <div class="col-sm-10">
-                <Form.Control type="text" name="amount" onChange={handleChange}/>
-                </div>
+            <div class="mb-3">
+                    <span class="align-items-center text-break">{specOffer.Name} </span>
+                    <Form.Control 
+                        defaultValue="1"
+                        type="number"
+                        name="amount"
+                        min="0"
+                        className="mx-2 d-inline w-auto"
+                        onChange={handleChange}
+                    />
             </div>
-            <div class="mb-3 row">
-                <div class="col-sm-10">
-                <Form.Control 
-                    type="text"  
-                    name="comment" 
-                    placeholder="Комментарий к заказу"
-                    as="textarea"
-                    onChange={handleChange}/>
-                </div>
+            <hr style={{"border": "none","background-color": "black","height": "5px"}}/>
+            <div class="total-sum mb-5">
+                Сумма итого:<span style={{"font-weight":"500"}}> {sumTotal.toFixed(2)}</span>
             </div>
+            <Form.Control 
+                type="text"  
+                name="comment" 
+                placeholder="Комментарий к заказу"
+                className="w-100 mb-3"
+                as="textarea"
+                onChange={handleChange}/>
             <div className="errorMessage" style={{color:"red"}}>{errorMessage}</div>  
             <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>  
-            <Button style={{marginTop:"10px"}} onClick={sendMessage}>Отправить</Button>
+            <button className="myButtonMessage mt-3" onClick={sendMessage}>Отправить</button>
         </div>
     );
 };

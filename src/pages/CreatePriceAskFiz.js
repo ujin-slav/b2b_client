@@ -429,13 +429,11 @@ const CreatePriceAskFiz = () => {
                     </div>
                 </div>
             </div>
-            <Button
-                variant="primary"
-                className="btn btn-success mt-3"
-                onClick={()=>saveOrder(true)}
-                >
+            <button 
+                className="myButtonMessage" 
+                onClick={()=>saveOrder(true)}>
                 Отправить поставщику
-            </Button>
+            </button>
         </div>
         </div>
         </div>

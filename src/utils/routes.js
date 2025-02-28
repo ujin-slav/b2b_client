@@ -43,6 +43,7 @@ import QuestFromMe from "../pages/QuestFromMe";
 import LentStatus from "../pages/LentStatus";
 import ReviewAboutMe from "../pages/ReviewAboutMe";
 import ReviewWriteMe from "../pages/ReviewWriteMe";
+import Advance from "../pages/Advance";
 import Admin from '../pages/Admin';
 import AdminAsk from '../pages/AdminAsk';
 import AdminPrice from "../pages/AdminPrice";
@@ -98,6 +99,7 @@ export const TEST = '/test'
 export const ACTIVATE = '/activate'
 export const REVIEWABOUTME = '/reviewaboutme'
 export const REVIEWWRITEME = '/reviewwriteme'
+export const ADVANCE = '/advance'
 export const ADMIN = '/admin'
 export const ADMIN_ASK = '/admin/ask'
 export const ADMIN_PRICE = '/admin/price'
@@ -378,11 +380,11 @@ export const authRoutes = [
         Component: CreatePrice
     },
     {
-        path: CREATEPRICEASK + '/:idorg/:idprod',
+        path: CREATEPRICEASK + '/:idorg/:idprod?',
         Component: CreatePriceAsk
     },
     {
-        path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
+        path: CREATEPRICEASKFIZ + '/:idorg/:idprod?',
         Component: CreatePriceAskFiz
     },
     {
@@ -514,6 +516,10 @@ export const authRoutes = [
         Component: Test
     },
     {
+        path: ADVANCE,
+        Component: Advance
+    },
+    {
         path: "*",
         Component: B2B
     },
@@ -621,7 +627,7 @@ export const publicRoutes = [
         Component: CardSpecOffer
     },
     {
-        path: CREATEPRICEASKFIZ + '/:idorg/:idprod',
+        path: CREATEPRICEASKFIZ + '/:idorg/:idprod?',
         Component: CreatePriceAskFiz
     },
     {

@@ -28,10 +28,12 @@ import {LOGIN_ROUTE,
         REVIEWABOUTME,
         REVIEWWRITEME,
         INVITEDPRICEFIZ,
-        IWINNER} from "../utils/routes";
+        IWINNER,
+        ADVANCE} from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
+import bullhorn from "../icons/bullhorn.svg";
 import comment from "../icons/comment.svg";
 import calendar from "../icons/calendar.svg";
 import quest from "../icons/question-circle.svg";
@@ -175,6 +177,13 @@ const NavBar = observer(() => {
             return ""
         } 
     }
+    const sumInvitedSpecOffersFiz=()=>{
+        if(chat.specOfferAskFizUnread > 0){
+            return chat.specOfferAskFizUnread
+        }else{
+            return ""
+        } 
+    }
     const sumStatusAsk=()=>{
         if(chat.statusAskUnread > 0){
             return chat.statusAskUnread
@@ -272,16 +281,42 @@ const NavBar = observer(() => {
                           </div>
                         </li>
                         <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={classNameLink(MYSPECOFFERS)}>Мои специальные предложения</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={classNameLink(MYSPECOFFERS)}>Я заказывал</NavDropdown.Item></li>
                         <li className="job-sub-tabs"> 
-                        {/* <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
                         <div className="parentAnswer">
-                           <div>Заявки частных лиц</div>
+                           <div>Мне заказали</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvitedSpecOffers()}</div>
                            </div>
                         </div>
-                        </NavDropdown.Item> */}
+                        </NavDropdown.Item> 
                         </li>
+                        <li className="job-sub-tabs"> 
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
+                        <div className="parentAnswer">
+                           <div>Быстрые заказы</div>
+                           <div className="countQuest">
+                               <div className='yellowtext'>{sumInvitedSpecOffersFiz()}</div>
+                           </div>
+                        </div>
+                        </NavDropdown.Item> 
+                        </li>
+                      </ul>
+                      <ul>
+                        <li className="dropdown-header">
+                          <div className="menu-icon-wrapper">
+                            <div><img className="awesomeIcon" src={bullhorn}/></div>
+                            <div><b>&nbsp;&nbsp;Продвижение</b></div>
+                          </div>
+                        </li>
+                            <li className="job-sub-tabs"> 
+                                <NavDropdown.Item 
+                                    onClick={()=>activeLink(ADVANCE)}
+                                    className={classNameLink(ADVANCE)}>
+                                        Купить
+                                </NavDropdown.Item>
+                            </li>
                       </ul>
                     </div>
                     <div>
@@ -304,9 +339,10 @@ const NavBar = observer(() => {
                         </div>
                         </NavDropdown.Item>
                         </li>
-                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICEFIZ)}className={classNameLink(INVITEDPRICEFIZ)}>
+                        <li className="job-sub-tabs"> 
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDPRICEFIZ)}className={classNameLink(INVITEDPRICEFIZ)}>
                         <div className="parentAnswer">
-                           <div>Заказы физ.лиц</div>
+                           <div>Быстрые заказы</div>
                            <div className="countQuest">
                                <div className='yellowtext'>{sumInvitedPriceFiz()}</div>
                            </div>

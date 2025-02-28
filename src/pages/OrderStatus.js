@@ -55,7 +55,7 @@ export const statusOrder = [
     },
 ]
 
-const OrderStatus = observer(({priceAskId,status,setStatus}) => {
+const OrderStatus = observer(({priceAskId,specOfferId,status,setStatus}) => {
 
     const[prevStatus,setPrevStatus] = useState(1)
     const [author, setAuthor] = useState()
@@ -103,6 +103,7 @@ const OrderStatus = observer(({priceAskId,status,setStatus}) => {
         filesShipment?.forEach((item)=>{data.append("file", item);data.append("Shipmentfiles", item.name)})
         filesReceived?.forEach((item)=>{data.append("file", item);data.append("Receivedfiles", item.name)})
         data.append("PriceAskId", priceAskId)
+        data.append("SpecOfferId", specOfferId)
         data.append("Author", user.user.id)
         data.append("AuthorAsk", author)
         data.append("AskTo", askTo)
@@ -126,7 +127,7 @@ const OrderStatus = observer(({priceAskId,status,setStatus}) => {
 
     const getStatus = () => {
         setLoading(true)
-        PriceService.getStatus(priceAskId).then((result)=>{
+        PriceService.getStatus(priceAskId || specOfferId).then((result)=>{
             if(result.Status){
                 setStatus(result?.Status?.Status?.value)
                 setPrevStatus(result?.Status?.Status?.value)
@@ -342,12 +343,12 @@ const OrderStatus = observer(({priceAskId,status,setStatus}) => {
                 <div className='mt-4 mb-4'>
                     {inputFiles(true, filesOther,setFilesOther,filesSizeOther,setFileSizeOther,"Otherfiles","Прикрепить прочие файлы")}
                 </div>
-        <ModalAlert header="Вы действительно хотите удалить" 
-        active={modalActive} 
-        setActive={setModalActive} 
-        funRes={delFile}
-        />
-        </div>
+                    <ModalAlert header="Вы действительно хотите удалить" 
+                    active={modalActive} 
+                    setActive={setModalActive} 
+                    funRes={delFile}
+                    />
+                </div>
     );
 });
 

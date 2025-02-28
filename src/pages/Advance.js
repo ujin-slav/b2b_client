@@ -20,8 +20,8 @@ import bin from "../icons/bin.svg";
 import excel from "../icons/excel.svg";
 
 
-const MyPrices = observer(() => {
-
+const Advance = () => {
+    
     const [prices, setPrices] = useState([]);
     const {myalert} = useContext(Context);
     const history = useHistory();
@@ -157,23 +157,22 @@ const MyPrices = observer(() => {
             </div>
             </Row>
         </Form>
-        <PlusCircleFill onClick={()=>history.push(CREATEPRICE)}  className="addSpecOffer"/>
-        <span className="createNewOfferText">Загрузить новый прайс</span>
         {!loading ? 
             <div>
-                <div className='parentSpec'>
+                <div className='parentSpecAdvance'>
                 {prices?.map((item)=>{
                 return(
-                    <div onClick={()=>history.push(MYPRICE + '/' + item._id)} className='childSpec'>
-                        <div  className="delSpecOfferContainer">
+                    <div className='childSpec'>
+                        <div className="delSpecOfferContainer">
+                            <input type="checkbox" className="checkBoxAdvance"/> 
                         </div>
                         <img 
                         className="fotoSpec"
                         src={excel} />
-                        <div className="specName">
+                        <div className="specName" onClick={()=>history.push(MYPRICE + '/' + item._id)}>
                             {item.Name}
                         </div>
-                        <div className="specNameOrg">
+                        <div className="specNameOrg" >
                             {item.NameOrg}
                         </div>
                         <div className="specCloudy">
@@ -186,15 +185,6 @@ const MyPrices = observer(() => {
                         <div className="specCloudy">
                             {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
                         </div>
-                        <button 
-                            className="myButtonMessage mt-1 w-100"
-                            onClick={(e)=>{
-                                e.stopPropagation();
-                                setModalActive(true);
-                                setDeleteId(item._id)
-                            }}>
-                            Удалить
-                        </button>
                     </div>
                     
                 )
@@ -232,6 +222,6 @@ const MyPrices = observer(() => {
         }
         </div>
     );
-});
+};
 
-export default MyPrices;
+export default Advance;

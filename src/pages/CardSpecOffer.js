@@ -67,18 +67,15 @@ const CardSpecOffer = observer(() => {
     const cartPrice = ()=>{
         return(
             <div>
+                <div className="display-5">
+                    {specOffer?.Name}
+                </div>
                 <div className="cardSpecPrice">
                      {specOffer?.Price} ₽
                 </div>  
                 <div>  
                     <button className="myButtonMessage mt-4"
-                            onClick={()=>{
-                                if(user.isAuth){
-                                    history.push(CREATEPRICEASK + '/' +  specOffer?.Author + '/' + priceID)
-                                }else{
-                                    history.push(CREATEPRICEASKFIZ + '/' +  specOffer?.Author + '/' + priceID)
-                                }
-                            }}>
+                            onClick={()=>setModalActiveAskOrg(true)}>
                                 Сделать заявку
                         <Cart4 className="specOfferCart"/>
                     </button>
@@ -147,14 +144,6 @@ const CardSpecOffer = observer(() => {
                 {window.innerWidth > 650 ? cartPrice() : <div></div>}
                 {user.isAuth ?
                 <div>
-                    {/* <Button style={{
-                        fontSize:"20px",
-                        padding:"10px 35px 10px 35px",
-                        marginTop:"30px"
-                    }} 
-                    onClick={()=>setModalActiveAskOrg(true)}>
-                    Заказать
-                    </Button> */}
                     <button className="myButtonMessage mt-2"
                     onClick={()=>setModalActiveMessage(true)}>
                       Написать сообщение
@@ -217,8 +206,7 @@ const CardSpecOffer = observer(() => {
             header="Заказ" 
             active={modalActiveAskOrg}
             component={<SpecOfferAskOrg 
-                specOffer={id}
-                receiver={specOffer?.Author} 
+                specOffer={specOffer}
                 setActive={setModalActiveAskOrg}/>}
             setActive={setModalActiveAskOrg}   
             />

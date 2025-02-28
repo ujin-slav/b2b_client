@@ -9,8 +9,9 @@ import ReactPaginate from "react-paginate";
 import {ORGINFO} from "../utils/routes";
 import ContrService from '../services/ContrService';
 import bin from "../icons/bin.svg";
+import {observer} from "mobx-react-lite";
 
-const MyContr = () => {
+const MyContr = observer(() => {
     const [list,setList] = useState([]);;
     const [modalActive,setModalActive] = useState(false);
     const [deleteId,setDeleteId] = useState();
@@ -34,7 +35,7 @@ const MyContr = () => {
         }).finally(
             ()=>setLoading(false)
         )
-      },[fetching]);
+      },[fetching,user.user]);
 
     const fetchPage = async (currentPage) => {
         setCurrentPage(currentPage)
@@ -99,24 +100,20 @@ const MyContr = () => {
       {!loading ? 
       <div>
          <div className='parentSpecAsk'>
-      {list?.map((item,index)=>
+        {list?.map((item,index)=>
              <div key={index} class="childCarousel">
                 <div className="cardContrHead">
                     <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
-                    <div>{item?.nameOrg}</div>
-                        <img 
-                            className="delContr" 
-                            src={bin}
-                            onClick={(e)=>{
+                        <div>{item?.name}</div>
+                        <div>{item?.nameOrg}</div>
+                    </a>
+                </div>
+                <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                <button className="myButtonMessage mt-0 w-100" onClick={(e)=>{
                                 e.stopPropagation();
                                 setModalActive(true);
                                 setDeleteId(item._id)
-                            }}
-                        /> 
-                    </a>
-                    <div>{item?.inn}</div>
-                </div>
-                <img className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                }}>Удалить</button>
             </div>
       )}  
     </div> 
@@ -152,6 +149,6 @@ const MyContr = () => {
       }
       </div>
     );
-};
+});
 
 export default MyContr;

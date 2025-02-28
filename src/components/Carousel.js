@@ -4,7 +4,7 @@ import {CaretDownFill,CaretUpFill,PlusCircle} from 'react-bootstrap-icons'
 import CarouselService from '../services/CarouselService'
 import ContrService from '../services/ContrService';
 import {useHistory} from 'react-router-dom';
-import {ORGINFO} from "../utils/routes";
+import {ORGINFO, CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import MyImage from '../components/MyImage'
@@ -86,6 +86,9 @@ const Carousel =  observer(() => {
       },[visible])
 
     useEffect(() => {
+        if(user.isFetching){
+            return
+        }
         if(!loading){
                 CarouselService.getCarousel({
                     filterCat:ask.categoryFilter,
@@ -98,9 +101,12 @@ const Carousel =  observer(() => {
                     setCarousel(data.docs);
                     setPage(2)
                 })}  
-    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn]);
+    },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,user.isFetching]);
 
     useEffect(() => {
+        if(user.isFetching){
+            return
+        }
         if(carousel.length===0 || carousel.length<=totalDocs) {
                 CarouselService.getCarousel({
                     filterCat:ask.categoryFilter,
@@ -119,7 +125,7 @@ const Carousel =  observer(() => {
                 setFetching(false)
                 setLoading(false)
             })}
-    },[fetching]);
+    },[fetching,user.isFetching]);
 
     const addContr = async(item)=>{
         console.log(item)
@@ -159,11 +165,31 @@ const Carousel =  observer(() => {
                         <div key={index} class="childCarousel">
                             <div className="cardContrHead">
                                 <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
-                                <div>{item?.nameOrg}</div>
+                                    <div>{item?.nameOrg}</div>
+                                    <div>{item?.name}</div>
                                 </a>
-                                <div>{item?.inn}</div>
                             </div>
                             <MyImage className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                            {item.contrIs === false ? 
+                                <button 
+                                    className="myButtonMessage mt-0 w-100"
+                                    onClick={(e)=>addContr(item)}>
+                                    Добавить в контрагенты
+                                </button>
+                                : 
+                                <div></div>
+                            }
+                            <button 
+                                className="myButtonMessage mt-0 w-100"
+                                onClick={()=>{
+                                    if(user.isAuth){
+                                        history.push(CREATEPRICEASK + '/' + item?._id)
+                                    }else{
+                                        history.push(CREATEPRICEASKFIZ + '/' + item?._id)
+                                    }
+                                }}>
+                                Создать заявку
+                            </button>
                         </div>
                     )}
                 </div>

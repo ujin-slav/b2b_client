@@ -7,6 +7,7 @@ export default class UserStore {
     user = {};
     isAuth = false;
     isLoading = false;
+    isFetching = true;
     chat;
     errorString = "";
     noConnection = false
@@ -22,6 +23,10 @@ export default class UserStore {
 
     setLoading(bool){
         this.isLoading = bool; 
+    }
+
+    setFetching(bool){
+        this.isFetching = bool; 
     }
 
     setUser(user){
@@ -125,6 +130,7 @@ export default class UserStore {
             this.chat.connect()
         }finally{
             this.setLoading(false);
+            this.setFetching(false)
         }
     }
     async connectNotAuth() {
@@ -134,7 +140,8 @@ export default class UserStore {
         } catch (error) {
             console.log(error)
         }finally{
-            this.setLoading(false);
+            this.setLoading(false)
+            this.setFetching(false)
         }
     }
 }

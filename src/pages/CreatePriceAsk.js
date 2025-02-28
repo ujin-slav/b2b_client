@@ -347,20 +347,16 @@ const CreatePriceAsk = () => {
                     as="textarea"
                 />
             </Form.Group>
-            <Button
-                variant="primary"
-                className="btn mx-3 mt-3"
-                onClick={()=>saveOrder(false)}
-                >
+            <button 
+                className="myButtonMessage mx-3" 
+                onClick={()=>saveOrder(false)}>
                 Записать
-            </Button>
-            <Button
-                variant="primary"
-                className="btn btn-success mt-3"
-                onClick={()=>saveOrder(true)}
-                >
+            </button>
+            <button 
+                className="myButtonMessage" 
+                onClick={()=>saveOrder(true)}>
                 Отправить поставщику
-            </Button>
+            </button>
         </div>
         </div>
         </div>
