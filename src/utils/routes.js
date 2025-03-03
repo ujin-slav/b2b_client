@@ -3,6 +3,7 @@ import B2B from "../pages/B2b"
 import Banned from "../pages/Banned"
 import CardAsk from "../pages/CardAsk";
 import CardPriceAsk from "../pages/CardPriceAsk";
+import CardSpecAsk from "../pages/CardSpecAsk";
 import CreateAsk from "../pages/CreateAsk";
 import CreatePrice from "../pages/CreatePrice";
 import CreateSpecOffer from "../pages/CreateSpecOffer";
@@ -44,6 +45,7 @@ import LentStatus from "../pages/LentStatus";
 import ReviewAboutMe from "../pages/ReviewAboutMe";
 import ReviewWriteMe from "../pages/ReviewWriteMe";
 import Advance from "../pages/Advance";
+import MyOrdersSpecOffers from "../pages/MyOrdersSpecOffers";
 import Admin from '../pages/Admin';
 import AdminAsk from '../pages/AdminAsk';
 import AdminPrice from "../pages/AdminPrice";
@@ -61,6 +63,7 @@ export const REGISTRATION_ROUTE = '/registration'
 export const B2B_ROUTE = '/'
 export const CARDASK = '/cardask'
 export const CARDPRICEASK = '/cardpriceask'
+export const CARDSPECASK = '/cardspecask'
 export const CARDSPECOFFER = '/cardspecoffer'
 export const CREATEASK = '/createask'
 export const CREATESPECOFFER = '/createspecoffer'
@@ -71,6 +74,7 @@ export const DOWNLOAD = '/download'
 export const PROFILE = '/profile'
 export const MYORDERS = '/myorders'
 export const MYORDERSPRICE = '/myordersprice'
+export const MYORDERSSPECOFFERS = '/myordersspecoffers'
 export const MYOFFERS = '/myoffers'
 export const MYSPECOFFERS = '/myspecoffers'
 export const MODIFYSPECOFFER = '/modifyspecoffer'
@@ -360,6 +364,10 @@ export const authRoutes = [
         Component: CardPriceAsk
     },
     {
+        path: CARDSPECASK + '/:id',
+        Component: CardSpecAsk
+    },
+    {
         path: CARDSPECOFFER + '/:id',
         Component: CardSpecOffer
     },
@@ -398,6 +406,10 @@ export const authRoutes = [
     {
         path: MYORDERSPRICE,
         Component: MyOrdersPrice
+    },
+    {
+        path: MYORDERSSPECOFFERS,
+        Component: MyOrdersSpecOffers
     },
     {
         path: PROFILE,

@@ -1,43 +1,43 @@
 import {React,useContext,useEffect,useState} from 'react';
 import {Context} from "../index";
-import {observer} from "mobx-react-lite";
 import {Card, Form, InputGroup,Button,Col,Row} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
-import { MODIFYPRICEASK,CARDPRICEASK } from '../utils/routes';
+import { CARDSPECASK } from '../utils/routes';
 import "../style.css";
 import ru from "date-fns/locale/ru"
 import ReactPaginate from "react-paginate";
 import ModalAlert from '../components/ModalAlert';
 import {ORGINFO} from "../utils/routes";
-import AskService from '../services/AskService'
+import SpecOfferService from '../services/SpecOfferService'
 import { XCircle, Search} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import bin from "../icons/bin.svg";
 
-const MyOrdersPrice = () => {
+const MyOrdersSpecOffers = () => {
+
     registerLocale("ru", ru)
 
     const {user} = useContext(Context);
-    const [askPriceUser, setAskPriceUser] = useState([])
+    const [askSpecOfferUser, setAskSpecOfferUser] = useState([])
     const {myalert} = useContext(Context);
     const [deleteId,setDeleteId] = useState();
     const [modalActive,setModalActive] = useState(false);
     const history = useHistory();
     const [pageCount, setPageCount] = useState(0)
     const [currentPage,setCurrentPage] = useState(1)
-    const[searchInn,setSearchInn] = useState("");
-    const[searchComment,setSearchComment] = useState("");
+    const [searchInn,setSearchInn] = useState("");
+    const [searchComment,setSearchComment] = useState("");
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [loading,setLoading] = useState(false)
-    const[fetching,setFetching] = useState(true);
-    const[limit,setLimit] = useState(10);
+    const [fetching,setFetching] = useState(true);
+    const [limit,setLimit] = useState(10);
 
     useEffect(() => {
       setLoading(true)
-      PriceService.getAskPrice({
+      SpecOfferService.getSpecAskUser({
           authorId:user.user.id,
           limit,
           searchInn,
@@ -46,7 +46,7 @@ const MyOrdersPrice = () => {
           startDate,
           endDate
           }).then((data)=>{
-                  setAskPriceUser(data.docs);
+                  setAskSpecOfferUser(data.docs);
                   setPageCount(data.totalPages);
                   setCurrentPage(data.page)
       }).finally(
@@ -110,7 +110,7 @@ const MyOrdersPrice = () => {
                 <InputGroup className='mt-2'>
                     <Form.Control
                         onChange={(e)=>setSearchComment(e.target.value)}
-                        placeholder="Комментарий к закупке"
+                        placeholder="Комментарий к заявке"
                     />
                     <Button variant="outline-secondary" onClick={()=>handleSearchComment()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
@@ -172,33 +172,18 @@ const MyOrdersPrice = () => {
         {!loading ? 
         <div>
             <div className='parentSpecAsk'>
-        {askPriceUser?.map((item, index)=>
+        {askSpecOfferUser?.map((item, index)=>
           <div key={index}  
             className='childSpecAsk'
           >
             <Card>
               <Card.Header  className="specNameDoc"
-                  onClick={()=>item?.Sent ?
-                    history.push(CARDPRICEASK + '/' + item._id)
-                    :
-                    history.push(MODIFYPRICEASK + '/' + item._id)
-                  }
+                  onClick={()=>history.push(CARDSPECASK + '/' + item._id)}
               >
               <div>№ 
                   {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
               </div>
               <div>от {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
-              <span className="cardMenu">
-                    <img 
-                      className="awesomeIcon binIcon" 
-                      src={bin}
-                      onClick={(e)=>{
-                        e.stopPropagation();
-                        setModalActive(true);
-                        setDeleteId(item._id)
-                      }}
-                    />   
-              </span> 
               </Card.Header>
             <div className='cardPadding'>
             <div><span className="specCloudy">Получатель: </span> 
@@ -211,27 +196,26 @@ const MyOrdersPrice = () => {
             </div>
             <div><span className="specCloudy">Стоимость: </span>{item?.Sum}</div>
             <div></div>
-            <div><span className="specCloudy">Отправлен: </span>{item?.Sent ?
-                    <span style={{"color":"green"}}>
-                    Да
-                    </span>
-                    :
-                    <span  style={{"color":"red"}}>
-                    Нет</span>
-            }</div>
-            {item?.Sent ?
-              <div><span className="specCloudy">Статус: </span>{item?.Status?.Status?.labelRu}</div>
-              :
-              <div></div>
-            }
+            <div><span className="specCloudy">Статус: </span>
+                {item?.Status?.Status ? 
+                <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
+                :
+                <span className='statusLabel'>Доставлен поставщику</span>
+                }
+                </div>
             <div>
-              <span className="specCloudy">Комментарий к закупке: </span>
+              <span className="specCloudy">Комментарий к заявке: </span>
               {item?.Comment?.length > 50 ? 
               `${item?.Comment?.substring(0,50)}...`
               :
               item?.Comment
               }
             </div>
+            <button className="myButtonMessage mt-2 w-100" onClick={(e)=>{
+                  e.stopPropagation();
+                  setModalActive(true);
+                  setDeleteId(item._id)
+            }}>Удалить</button> 
             <div>
             </div>
           </div>
@@ -239,7 +223,7 @@ const MyOrdersPrice = () => {
           </div>
         )}  
         </div>
-        {askPriceUser?.length!==0 ? 
+        {askSpecOfferUser?.length!==0 ? 
                 <ReactPaginate
                 forcePage = {currentPage-1}
                 previousLabel={"<"}
@@ -273,4 +257,4 @@ const MyOrdersPrice = () => {
     );
 };
 
-export default MyOrdersPrice;
+export default MyOrdersSpecOffers;

@@ -11,6 +11,11 @@ export default class SpecOfferService {
         return data
     }
 
+    static async getSpecAskId(id){
+        const data = await $api.post(`/getspecaskid`,{id});
+        return data
+    }
+
     static async getFilterSpecOffer(formData){
         const {data} = await $api.post(`/getfilterspecoffer`,formData);
         return data

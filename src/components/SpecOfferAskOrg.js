@@ -57,8 +57,14 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
               Author:user.user.id,
               Comment:specAsk.data.comment,
               Amount:specAsk.data.amount,
-              Receiver:specOffer.Author,
-              SpecOffer:specOffer._id
+              To:specOffer.Author,
+              SpecOffer:specOffer._id,
+              Table: [{
+                Name: specOffer.Name,
+                Price: specOffer.Price,
+                Code: specOffer.Code,
+                Measure: specOffer.Measure
+              }]
             })
             if (result.status===200){
               myalert.setMessage("Заявка успешно отправлена");

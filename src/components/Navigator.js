@@ -25,7 +25,8 @@ import {LOGIN_ROUTE,
     REVIEWWRITEME,
     INVITEDPRICEFIZ,
     IWINNER,
-    MYPRICES} from "../utils/routes";
+    MYPRICES,
+    MYORDERSSPECOFFERS} from "../utils/routes";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 
@@ -86,6 +87,11 @@ const Navigator =  observer(() => {
             path: MYORDERSPRICE,
             label: "Я заказывал по прайсу",
             menuPart: "Прайс-листы"
+        },
+        {
+            path: MYORDERSSPECOFFERS,
+            label: "Я заказывал по прайсу",
+            menuPart: "Спец. предложения"
         },
         {
             path: INVITEDPRICE,

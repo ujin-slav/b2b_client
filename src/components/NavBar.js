@@ -4,26 +4,21 @@ import {SocketContext} from "../App";
 import {observer} from "mobx-react-lite";
 import '../fontawesome.css';
 import {LOGIN_ROUTE,
-        CREATEASK, 
         MYORDERS, 
         MYOFFERS,
         B2B_ROUTE,
         HELP,
         MYCONTR,
         CHAT,
-        QUEST, 
         ABOUT,
         INVITED,
         UPLOADPRICE,
-        MYORDERSPRICE, 
-        MYPRICE,
+        MYORDERSPRICE,
+        MYORDERSSPECOFFERS, 
         MYPRICES,
-        PRICES, 
         INVITEDPRICE,
         MYSPECOFFERS,
         INVITEDSPECOFFER,
-        QUESTFROMME,
-        QUESTFORME,
         LENTSTATUS,
         REVIEWABOUTME,
         REVIEWWRITEME,
@@ -281,7 +276,7 @@ const NavBar = observer(() => {
                           </div>
                         </li>
                         <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYSPECOFFERS)}className={classNameLink(MYSPECOFFERS)}>Мои специальные предложения</NavDropdown.Item></li>
-                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYORDERSPRICE)}className={classNameLink(MYSPECOFFERS)}>Я заказывал</NavDropdown.Item></li>
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYORDERSSPECOFFERS)}className={classNameLink(MYORDERSSPECOFFERS)}>Я заказывал</NavDropdown.Item></li>
                         <li className="job-sub-tabs"> 
                         <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
                         <div className="parentAnswer">

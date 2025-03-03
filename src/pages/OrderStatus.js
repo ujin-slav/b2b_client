@@ -128,7 +128,7 @@ const OrderStatus = observer(({priceAskId,specOfferId,status,setStatus}) => {
     const getStatus = () => {
         setLoading(true)
         PriceService.getStatus(priceAskId || specOfferId).then((result)=>{
-            if(result.Status){
+            if(result?.Status){
                 setStatus(result?.Status?.Status?.value)
                 setPrevStatus(result?.Status?.Status?.value)
                 setFilesBils(result?.Status?.Bilsfiles || [])
@@ -141,9 +141,9 @@ const OrderStatus = observer(({priceAskId,specOfferId,status,setStatus}) => {
                 setFiz(result.Fiz)
                 setAuthor(result.author)
             }
-            setAskTo(result.To)
-            setFiz(result.Fiz)
-            setAuthor(result.Author)
+            setAskTo(result?.To)
+            setFiz(result?.Fiz)
+            setAuthor(result?.Author)
         }).finally(()=>setLoading(false))
     }
 
