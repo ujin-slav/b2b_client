@@ -19,6 +19,7 @@ import {LOGIN_ROUTE,
         INVITEDPRICE,
         MYSPECOFFERS,
         INVITEDSPECOFFER,
+        INVITEDSPECOFFERFIZ,
         LENTSTATUS,
         REVIEWABOUTME,
         REVIEWWRITEME,
@@ -288,7 +289,7 @@ const NavBar = observer(() => {
                         </NavDropdown.Item> 
                         </li>
                         <li className="job-sub-tabs"> 
-                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFER)}className={classNameLink(INVITEDSPECOFFER)}>
+                        <NavDropdown.Item onClick={()=>activeLink(INVITEDSPECOFFERFIZ)}className={classNameLink(INVITEDSPECOFFERFIZ)}>
                         <div className="parentAnswer">
                            <div>Быстрые заказы</div>
                            <div className="countQuest">

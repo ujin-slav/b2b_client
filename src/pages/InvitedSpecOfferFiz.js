@@ -35,7 +35,7 @@ const InvitedSpecOffer =  observer(() => {
 
     useEffect(() => {
       setLoading(true)
-      SpecOfferService.getSpecAskUser({
+      SpecOfferService.getSpecAskUserFiz({
           to:user.user.id,
           limit,
           searchInn,

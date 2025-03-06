@@ -90,13 +90,18 @@ const Navigator =  observer(() => {
         },
         {
             path: MYORDERSSPECOFFERS,
-            label: "Я заказывал по прайсу",
+            label: "Я заказывал спец. пред.",
             menuPart: "Спец. предложения"
         },
         {
             path: INVITEDPRICE,
             label: "Мне заказали по прайсу",
             menuPart: "Прайс-листы"
+        },
+        {
+            path: INVITEDSPECOFFER,
+            label: "Мне заказали спец. пред.",
+            menuPart: "Спец. предложения"
         },
         {
             path: INVITEDPRICEFIZ,

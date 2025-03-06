@@ -39,6 +39,7 @@ import MyPrice from "../pages/MyPrice";
 import MyPrices from "../pages/MyPrices";
 import CardSpecOffer from "../pages/CardSpecOffer";
 import InvitedSpecOffer from "../pages/InvitedSpecOffer";
+import InvitedSpecOfferFiz from "../pages/InvitedSpecOfferFiz";
 import QuestForMe from "../pages/QuestForMe";
 import QuestFromMe from "../pages/QuestFromMe";
 import LentStatus from "../pages/LentStatus";
@@ -99,6 +100,7 @@ export const IWINNER= '/iwinner'
 export const INVITEDPRICE = '/invitedprice'
 export const INVITEDPRICEFIZ = '/invitedpricefiz'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
+export const INVITEDSPECOFFERFIZ = '/invitedspecofferfiz'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
 export const REVIEWABOUTME = '/reviewaboutme'
@@ -301,6 +303,10 @@ export const bannedRoutes = [
         Component: InvitedSpecOffer
     },
     {
+        path: INVITEDSPECOFFERFIZ,
+        Component: InvitedSpecOfferFiz
+    },
+    {
         path: UPLOADPRICE,
         Component: UploadPrice
     },
@@ -494,6 +500,10 @@ export const authRoutes = [
     {
         path: INVITEDSPECOFFER,
         Component: InvitedSpecOffer
+    },
+    {
+        path: INVITEDSPECOFFERFIZ,
+        Component: InvitedSpecOfferFiz
     },
     {
         path: UPLOADPRICE,

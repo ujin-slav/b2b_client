@@ -179,12 +179,7 @@ const CardSpecAsk = () => {
                                 <td>{item.Code}</td>
                                 <td>{item.Name}</td>
                                 <td>{item.Price}</td>
-                                <td style={{"width": "100px","padding":"3px"}}>
-                                    <Form.Control 
-                                        value={item.Count}
-                                        type="number"
-                                    />
-                                </td>
+                                <td>{item.Count}</td>
                                 <td>{item.Count*item.Price}</td>
                             </tr>
                         )}

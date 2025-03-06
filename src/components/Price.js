@@ -14,6 +14,7 @@ import { regionNodes } from '../config/Region';
 import ModalCT from '../components/ModalCT';
 import { Cart4,CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
 import ReactPaginate from "react-paginate";
+import cart from "../icons/cart.svg";
 
 const Prices = observer(() => {
     const {ask} = useContext(Context);
@@ -223,7 +224,7 @@ const Prices = observer(() => {
                                   <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
                                       {item?.User?.nameOrg}</a></td>
                                   <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
-                                  <td><Cart4 color="#0D55FD" style={{"width": "25px", "height": "25px"}}
+                                  <td><img src={cart} style={{"width": "25px", "height": "25px","cursor":"pointer"}}
                                   onClick={()=>{
                                       if(user.isAuth){
                                           history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)

@@ -1,4 +1,5 @@
 import $api from "../http";
+import axios from 'axios';
 
 export default class SpecOfferService {
 
@@ -26,6 +27,10 @@ export default class SpecOfferService {
     }
     static async getSpecAskUser(formData){
         const {data} = await $api.post(`/getspecaskuser`,formData);
+        return data
+    }
+    static async getSpecAskUserFiz(formData){
+        const {data} = await $api.post(`/getspecaskuserfiz`,formData);
         return data
     }
     static async getSpecOfferId(formData){

@@ -470,6 +470,7 @@ td.tdRed{
   }
   .fotoSpecCard{
     max-height: 500px;
+    max-width: 600px;
     object-fit: contain;
     border-radius: 20px;
     width: 100%;
@@ -488,6 +489,13 @@ td.tdRed{
     padding:10px 10px 10px 10px;
   }
   .miniFotoSpecCard{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 20px; 
+  }
+  .miniFotoSpecCardSVG{
+    opacity: 75%; 
     width: 100px;
     height: 100px;
     object-fit: cover;

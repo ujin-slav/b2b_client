@@ -12,6 +12,7 @@ export default class SocketStore {
     invitedPriceUnread = 0
     invitedPriceFizUnread = 0
     specOfferAskUnread = 0
+    specOfferAskFizUnread = 0
     statusAskUnread = 0
     connected = false
     errorString = "";
@@ -68,6 +69,9 @@ export default class SocketStore {
     getSpecOfferAskUnread(){
         return this.specOfferAskUnread 
     }
+    getSpecOfferAskFizUnread(){
+        return this.specOfferAskFizUnread 
+    }
     getStatusAskUnread(){
         return this.statusAskUnread 
     }
@@ -94,6 +98,9 @@ export default class SocketStore {
     }
     setSpecOfferAskUnread(specOfferAskUnread){
         this.specOfferAskUnread = specOfferAskUnread; 
+    }
+    setSpecOfferAskFizUnread(specOfferAskFizUnread){
+        this.specOfferAskFizUnread = specOfferAskFizUnread; 
     }
     setStatusAskUnread(statusAskUnread){
         this.statusAskUnread = statusAskUnread; 
@@ -139,6 +146,7 @@ export default class SocketStore {
             this.setInvitedPriceUnread(data.unreadInvitedPrice)
             this.setInvitedPriceFizUnread(data.unreadInvitedPriceFiz)
             this.setSpecOfferAskUnread(data.UnreadSpecAsk)  
+            this.setSpecOfferAskFizUnread(data.UnreadSpecAskFiz)  
             this.setStatusAskUnread(data.UnreadStatusAsk)           
           })
           this.socket.on("get_refreshUser", (data) => {   
@@ -167,6 +175,9 @@ export default class SocketStore {
           })
           this.socket.on("get_unread_specOfferAsk", (data) => { 
             this.setSpecOfferAskUnread(data)   
+          })
+          this.socket.on("get_unread_specOfferAskFiz", (data) => { 
+            this.setSpecOfferAskFizUnread(data)   
           })
           this.socket.on("get_unread_statusAsk", (data) => { 
             this.setStatusAskUnread(data)   

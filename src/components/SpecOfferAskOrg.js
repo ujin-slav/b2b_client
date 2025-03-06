@@ -27,7 +27,7 @@ const formValid = ({ data, formErrors }) => {
   };
   
 
-const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
+const SpecOfferAskOrg = ({specOffer,setActive}) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [captcha, setCaptcha] = useState(false);
     const {user} = useContext(Context);
@@ -56,19 +56,20 @@ const SpecOfferAskOrg = ({receiver,specOffer,setActive}) => {
             const result = await SpecOfferService.specAskOrg({
               Author:user.user.id,
               Comment:specAsk.data.comment,
-              Amount:specAsk.data.amount,
               To:specOffer.Author,
               SpecOffer:specOffer._id,
               Table: [{
                 Name: specOffer.Name,
                 Price: specOffer.Price,
                 Code: specOffer.Code,
-                Measure: specOffer.Measure
+                Measure: specOffer.Measure,
+                FIZ: false,
+                Count: specAsk.data.amount
               }]
             })
             if (result.status===200){
               myalert.setMessage("Заявка успешно отправлена");
-              chat.socket.emit("unread_specOfferAsk", {To:receiver});
+              chat.socket.emit("unread_specOfferAsk", {To:specOffer.Author});
               setActive(false)
             } else {
               myalert.setMessage(result?.data?.message)

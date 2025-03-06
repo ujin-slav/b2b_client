@@ -20,6 +20,9 @@ import { Cart4} from 'react-bootstrap-icons';
 import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import noImage from "../icons/noImage.svg";
+import rutube from "../icons/rutube.svg";
+import cart from "../icons/cart.svg";
+import video from "../icons/video.svg";
 
 const CardSpecOffer = observer(() => {
     const {user} = useContext(Context);
@@ -29,8 +32,11 @@ const CardSpecOffer = observer(() => {
     const [checkedRegion,setCheckedRegion] = useState([]);
     const [checkedCat,setCheckedCat] = useState([]);
     const {id} = useParams();
+    const [typePlayer, setTypePlayer] = useState(1);
     const [fotoFocus, setFotoFocus] = useState(0);
+    const [videoFocus, setVideoFocus] = useState(0);
     const [specOffer, setSpecOffer] = useState();
+    const [rutube, setRutube] = useState();
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
     const [modalActiveAskFiz,setModalActiveAskFiz] = useState(false)
     const [modalActiveAskOrg,setModalActiveAskOrg] = useState(false)
@@ -45,10 +51,11 @@ const CardSpecOffer = observer(() => {
                 setSpecOffer(result.data?.specoffer)
                 setCheckedRegion(result.data?.specoffer.Region)
                 setCheckedCat(result.data.specoffer?.Category)
+                setRutube(result.data?.rutube)
             }else{
                 setError(result.data.errors)
             }
-        }).finally(()=>setLoading(false))     
+        }).finally(()=>setLoading(false))    
     },[location]);
 
     if (loading){
@@ -75,12 +82,45 @@ const CardSpecOffer = observer(() => {
                 </div>  
                 <div>  
                     <button className="myButtonMessage mt-4"
-                            onClick={()=>setModalActiveAskOrg(true)}>
+                            onClick={()=>{
+                                if(user.isAuth){
+                                    setModalActiveAskOrg(true)
+                                }else{
+                                    setModalActiveAskFiz(true)
+                                }
+                            }}>
                                 Сделать заявку
-                        <Cart4 className="specOfferCart"/>
+                            <img src={cart} className="specOfferCart"/>
                     </button>
                 </div> 
             </div>
+        )
+    }
+
+    const returnPlayer = () =>{
+        if(typePlayer==1){
+            return(
+                <div>
+                    <iframe 
+                        width="600" 
+                        height="337" 
+                        src="https://rutube.ru/play/embed/7716bd3e665725c3c008ae7ab4ff02e2" 
+                        frameBorder="0" allow="clipboard-write; autoplay" 
+                        webkitAllowFullScreen mozallowfullscreen allowFullScreen>
+                    </iframe>  
+                </div>
+            )
+        }
+        return(
+            <>
+                {!specOffer?.Files || specOffer?.Files.length==0 ? 
+                    <img src={noImage}/>
+                    :
+                    <MyImage className='fotoSpecCard' 
+                    onClick={()=>setShowSlider(true)}
+                    src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
+                }
+            </>
         )
     }
 
@@ -103,22 +143,23 @@ const CardSpecOffer = observer(() => {
         <Container className="mx-auto my-4">
            <Row>
             <Col>
-                {!specOffer?.Files || specOffer?.Files.length==0 ? 
-                    <img 
-                    src={noImage}/>
-                :
-                    <MyImage className='fotoSpecCard' 
-                    onClick={()=>setShowSlider(true)}
-                    src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
-                }
+                {returnPlayer()}
                 <div className='parentSpec'>
                 {specOffer?.FilesMini?.map((item,index)=>
                     <div key={index} className='albumSpec'>
                         <MyImage className='miniFotoSpecCard'
-                        onClick={()=>setFotoFocus(index)} 
+                        onClick={()=>{setFotoFocus(index);setTypePlayer(0)}} 
                         src={process.env.REACT_APP_API_URL + `getpic/` + item.filename}/>
                     </div>
                 )}
+                <div class="d-flex align-items-center position-relative" >
+                    <img 
+                        className='miniFotoSpecCardSVG position-absolute' 
+                        src={video}
+                        onClick={()=>{setVideoFocus(0);setTypePlayer(1)}} 
+                    />
+                    <img className='miniFotoSpecCard' src={rutube.thumbnail_url}/>
+                </div>
                 </div>
                 {window.innerWidth < 650 ? cartPrice() : <div></div>}
                 <div className="specContact">
@@ -197,8 +238,7 @@ const CardSpecOffer = observer(() => {
             header="Заказ" 
             active={modalActiveAskFiz}
             component={<SpecOfferAskFiz 
-                specOffer={id}
-                receiver={specOffer?.Author} 
+                specOffer={specOffer}
                 setActive={setModalActiveAskFiz}/>}
             setActive={setModalActiveAskFiz}   
             />
