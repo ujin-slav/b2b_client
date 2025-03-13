@@ -440,11 +440,12 @@ td.tdRed{
   }
   .fotoSpec{
     display: block;
+    z-index: 1;
+    grid-area: 1 / 1;
     border-radius: 20px 20px 20px 20px;
     width: 100%;
     height: 200px;
-    object-fit: cover;
-
+    object-fit: contain;
   }
   .fotoSpecDisabled{
     display: none;
@@ -452,6 +453,25 @@ td.tdRed{
     width: 100%;
     height: 200px;
     object-fit: cover;
+  }
+  .fotoSpecBack{
+    display: block;
+    border-radius: 20px 20px 20px 20px;
+    width: 100%;
+    height: 200px;
+    opacity: .4;
+    background: no-repeat center;
+    background-size: cover;
+    -webkit-filter: blur(13px);
+    filter: blur(13px);
+  }
+  .fotoSpecBackDisabled{
+    display: none;
+  }
+  .ImgSpecWrapper{
+    grid-area: 1 / 1;
+    overflow: hidden;
+    border-radius: 20px 20px 20px 20px;
   }
   .specName{
     font-size: 15px;
