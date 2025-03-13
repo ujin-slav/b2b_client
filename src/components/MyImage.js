@@ -43,7 +43,13 @@ const MyImage = (props) => {
     <img src={noImage}/>
   }
 
-  return <img {...props}></img>
+  if(props.disabled){
+    return(<></>)
+  }
+
+  return (
+        <img {...props}></img>
+    )
 }
 
 export default MyImage;

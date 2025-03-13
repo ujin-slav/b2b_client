@@ -13,7 +13,6 @@ import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
 import {CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
 import MyImage from '../components/MyImage'
-import MyImageWithBack from '../components/MyImageWithBack'
 import noImage from "../icons/noImage.svg";
 import video from "../icons/video.svg";
 
@@ -139,16 +138,20 @@ const SpecOffersTable = observer(() => {
             item.FilesPreview?.map((innerItem, innerIndex)=>
             <span style={{'display':'grid'}}>
                 <MyImage 
-                className={item.indexFoto == innerIndex ? "fotoSpec" : "fotoSpecDisabled"}
+                className={"fotoSpec"}
+                disabled={item.indexFoto !== innerIndex ? true : false}
                 src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
                 onMouseMove={(e)=>mouseMoveHandler(e,item,index)}
                 onMouseEnter={(e)=>mouseEnterHandler(e,item,index)}
                 onMouseLeave={(e)=>mouseLeaveHandler(e,item,index)}
                 ref={el => imgs.current[index] = el} />
-                <MyImageWithBack 
-                src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
-                className={item.indexFoto == innerIndex ? "fotoSpecBack" : "fotoSpecBackDisabled"}
-                />
+                <div className="ImgSpecWrapper">
+                    <MyImage
+                    src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
+                    disabled={item.indexFoto !== innerIndex ? true : false}
+                    className={"fotoSpecBack"}
+                    />
+                </div>
             </span>
         ))
     } 
