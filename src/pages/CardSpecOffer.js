@@ -158,7 +158,7 @@ const CardSpecOffer = observer(() => {
                         src={video}
                         onClick={()=>{setVideoFocus(0);setTypePlayer(1)}} 
                     />
-                    <img className='miniFotoSpecCard' src={rutube.thumbnail_url}/>
+                    <img className='miniFotoSpecCard' src={rutube?.thumbnail_url}/>
                 </div>
                 </div>
                 {window.innerWidth < 650 ? cartPrice() : <div></div>}

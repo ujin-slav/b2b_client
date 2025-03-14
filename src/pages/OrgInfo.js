@@ -49,12 +49,19 @@ const OrgInfo = () => {
     const logo = () => {
         if(file.length!==0){
             return (
-                <div className='fotoContainer'>
-                    <MyImage 
-                        className="foto" 
+                <span style={{'display':'grid'}}>
+                <MyImage 
+                    className={"fotoSpec"}
+                    disabled={false}
+                    src={URL.createObjectURL(file)}   />
+                    <div className="ImgSpecWrapper">
+                        <MyImage
                         src={URL.createObjectURL(file)} 
-                    /> 
-                </div>
+                        disabled={false}
+                        className={"fotoSpecBack"}
+                        />
+                    </div>
+                </span>
             )    
         }else{
             return(

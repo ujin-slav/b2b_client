@@ -5,6 +5,8 @@ import { CARDSPECOFFER } from '../utils/routes'
 import {getCategoryName} from '../utils/Convert'
 import { regionNodes } from '../config/Region'
 import dateFormat from "dateformat"
+import MyImage from '../components/MyImage'
+import noImage from "../icons/noImage.svg";
 
 const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
 
@@ -13,11 +15,14 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
     const [loading,setLoading] = useState(true) 
     const[fetching,setFetching] = useState(true)
     const[totalDocs,setTotalDocs] = useState(0)
+    const [currentImg,setCurrentImg] = useState()
     const[page,setPage] = useState(1)
     const history = useHistory()
     const slider = useRef(null)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
+    const imgs = useRef([])
+    const maxPhoto = 5
 
     useEffect(() => {
         if(fetching){
@@ -30,9 +35,15 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
               searchText:"",
               searchInn:"",      
               limit,page:1}).then((data)=>{
-              setSpecOffers([...specOffers, ...data.docs])
-              setTotalDocs(data.totalDocs)
-              setPage(prevState=>prevState + 1)
+                if(Array.isArray(data.docs)){
+                    data.docs.map((item)=>{
+                        item.indexFoto = 0
+                    })
+                }
+                console.log(data.docs)
+                setSpecOffers([...specOffers, ...data.docs])
+                setTotalDocs(data.totalDocs)
+                setPage(prevState=>prevState + 1)
             }).finally(()=>setLoading(false))
             }
         }  
@@ -93,7 +104,86 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
             element.removeEventListener('wheel', mouseWheelHandler )
             element.addEventListener('scroll', scrollHandler )
         }
-      },[])
+    },[])
+
+    const mouseMoveImgHandler = (e,item,index) => {
+        let num = 0
+        let left = imgs.current[index].getBoundingClientRect().left
+        let width = imgs.current[index].getBoundingClientRect().width
+        let countImage = (item.FilesPreview.length == 0 ? 
+            item.FilesPreview.length + 1 : item.FilesPreview.length)
+        if(countImage>=maxPhoto){
+            num = Math.floor((e.clientX - left) / (width / maxPhoto))
+        }else{
+            num = Math.floor((e.clientX - left) / (width / countImage))
+        }
+        item.indexFoto = num
+        let newSpecOffers = JSON.parse(JSON.stringify(specOffers))
+        setSpecOffers(newSpecOffers)
+    }
+
+    const mouseEnterHandler = (e,item,index) => {
+        setCurrentImg(index)
+    }
+
+    const mouseLeaveHandler = (e,item,index) => {
+        setCurrentImg(null)
+    }
+
+    const getImg = (item,index) => {
+        return(
+            item.FilesPreview?.map((innerItem, innerIndex)=>
+            <span style={{'display':'grid'}}>
+                <MyImage 
+                className={"fotoSpec"}
+                disabled={item.indexFoto !== innerIndex ? true : false}
+                src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
+                onMouseMove={(e)=>mouseMoveImgHandler(e,item,index)}
+                onMouseEnter={(e)=>mouseEnterHandler(e,item,index)}
+                onMouseLeave={(e)=>mouseLeaveHandler(e,item,index)}
+                ref={el => imgs.current[index] = el} />
+                <div className="ImgSpecWrapper">
+                    <MyImage
+                    src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
+                    disabled={item.indexFoto !== innerIndex ? true : false}
+                    className={"fotoSpecBack"}
+                    />
+                </div>
+            </span>
+        ))
+    } 
+
+    const getItemSwitch = (item,index) => {
+        let count = item.FilesPreview?.length
+        let amount = 0 
+        if(index!==currentImg){
+            return(
+                <div class="containerFotoSwitch">
+                    <div className="itemSwitchOff"></div>
+                </div>
+            )
+        }
+        if(count>=maxPhoto){
+            amount = maxPhoto
+        }else{
+            amount = count
+        }
+        return (
+            <>  
+                <div class="containerFotoSwitch">
+                {(() => {
+                    const arr = [];
+                    for (let i = 0; i < amount; i++) {
+                        arr.push(
+                            <div className={item.indexFoto==i ? "itemSwitchOn" : "itemSwitchOff"}></div>
+                        );
+                    }
+                    return arr;
+                })()}
+                </div>
+            </>
+        )
+    }
 
 
     return (
@@ -103,11 +193,20 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
             </div>
             <div class="parentCarousel" id="slider" ref={slider}>
             {specOffers.map((item,index)=>
-                    <div key={index} class="childCarouselSimilar">
-                        <img 
-                        className="logoSimilarOffers"
-                        src={process.env.REACT_APP_API_URL + `getpic/` + item?.Files[0]?.filename} />
-                        <div className="specName" onClick={(e)=>redirect(e,item._id)}>
+                    <div 
+                        key={index} 
+                        class="childCarouselSimilar" 
+                        onClick={(e)=>redirect(e,item._id)}
+                        ref={el => imgs.current[index] = el}>
+                        {item.FilesPreview?.length == 0 || item.FilesPreview==null?
+                            <img 
+                            className="fotoSpec"
+                            src={noImage}/>
+                                :
+                            getImg(item,index)
+                            }
+                        {getItemSwitch(item,index)}
+                        <div className="specName mt-2">
                             {item.Name}
                         </div>
                         <div className="specPrice">
