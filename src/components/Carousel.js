@@ -163,13 +163,25 @@ const Carousel =  observer(() => {
                 <div class="parentCarousel" id="slider" ref={slider}>
                     {carousel.map((item,index)=>
                         <div key={index} class="childCarousel">
-                            <div className="cardContrHead">
+                            <div>
                                 <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?._id)}>
                                     <div>{item?.nameOrg}</div>
                                     <div>{item?.name}</div>
                                 </a>
                             </div>
-                            <MyImage className="logo" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                            <span className="mt-2 mb-3" style={{'display':'grid'}}>
+                                <MyImage 
+                                    className={"fotoSpec"}
+                                    disabled={false}
+                                    src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
+                                    <div className="ImgSpecWrapper">
+                                        <MyImage
+                                        src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename}
+                                        disabled={false}
+                                        className={"fotoSpecBack"}
+                                        />
+                                    </div>
+                            </span>
                             {item.contrIs === false ? 
                                 <button 
                                     className="myButtonMessage mt-0 w-100"

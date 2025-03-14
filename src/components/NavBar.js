@@ -251,7 +251,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer" id="invited">
                            <div>Мои приглашения</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvited()}</div>
+                               <div className='whiteText'>{sumInvited()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>
@@ -261,7 +261,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer" id="invited">
                            <div>Я победил</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumIWinner()}</div>
+                               <div className='whiteText'>{sumIWinner()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>
@@ -283,7 +283,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Мне заказали</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedSpecOffers()}</div>
+                               <div className='whiteText'>{sumInvitedSpecOffers()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item> 
@@ -293,7 +293,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Быстрые заказы</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedSpecOffersFiz()}</div>
+                               <div className='whiteText'>{sumInvitedSpecOffersFiz()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item> 
@@ -330,7 +330,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Мне заказали по прайсу</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedPrice()}</div>
+                               <div className='whiteText'>{sumInvitedPrice()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>
@@ -340,7 +340,7 @@ const NavBar = observer(() => {
                         <div className="parentAnswer">
                            <div>Быстрые заказы</div>
                            <div className="countQuest">
-                               <div className='yellowtext'>{sumInvitedPriceFiz()}</div>
+                               <div className='whiteText'>{sumInvitedPriceFiz()}</div>
                            </div>
                         </div>
                         </NavDropdown.Item>
@@ -376,7 +376,7 @@ const NavBar = observer(() => {
                                 <div className="parentAnswer">
                                 <div>Cтатус заявок</div>
                                     <div className="countQuest">
-                                        <div className='yellowtext'>{sumStatusAsk()}</div>
+                                        <div className='whiteText'>{sumStatusAsk()}</div>
                                     </div>
                                 </div>
                             </NavDropdown.Item>
@@ -396,7 +396,7 @@ const NavBar = observer(() => {
                                 <div className="parentAnswer">
                                 <div>Обо мне</div>
                                     <div className="countQuest">
-                                        <div className='yellowtext'>{sumReviewOrg()}</div>
+                                        <div className='whiteText'>{sumReviewOrg()}</div>
                                     </div>
                                 </div>
                             </NavDropdown.Item>
@@ -404,7 +404,7 @@ const NavBar = observer(() => {
                                 <div className="parentAnswer">
                                 <div>Написаны мной</div>
                                     <div className="countQuest">
-                                        <div className='yellowtext'>{sumAnswerOrg()}</div>
+                                        <div className='whiteText'>{sumAnswerOrg()}</div>
                                     </div>
                                 </div>
                             </NavDropdown.Item>

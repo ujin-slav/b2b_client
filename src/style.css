@@ -305,9 +305,8 @@ td.tdRed{
   width:98%;
   text-align: right;
 }
-.yellowtext {
-  color: yellow;
-  font-weight:bold;
+.whiteText {
+  color: white;
 }
 .myNoti{
   color:white !important;
@@ -953,22 +952,15 @@ td.tdRed{
   overflow-x: auto;
 }
 .childCarousel {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  background-color: #fafabe;
-  font-weight: bold;
-  font-size: 14px;
-  border-radius: 20px;
+  /* display: grid; */
+  /* grid-template-rows: auto 1fr auto; */
+  /* background-color: #fafabe; */
+  /* font-weight: bold; */
+  /* font-size: 14px; */
+  /* border-radius: 20px; */
   min-width: 240px;
-  max-width: 240px;
+  max-width: 240px; 
   margin: 5px;
-}
-.childCarousel img {
-  display: block;
-  margin: 0 auto;
-  border-radius: 10px;
-  max-height: 90%;
-  max-width:  90%;
 }
 .carouselHead{
   background-color:white;

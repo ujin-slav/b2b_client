@@ -189,13 +189,19 @@ const Profile =  observer(() => {
     const logo = () => {
         if(file.length!==0){
             return (
-                <div className='fotoContainer'>
+                    <span style={{'display':'grid'}}>
                     <MyImage 
-                        className="foto" 
-                        src={URL.createObjectURL(file)} 
-                    >
-                    </MyImage> 
-                </div>
+                        className={"fotoSpec"}
+                        disabled={false}
+                        src={URL.createObjectURL(file)}  />
+                        <div className="ImgSpecWrapper">
+                            <MyImage
+                            src={URL.createObjectURL(file)}
+                            disabled={false}
+                            className={"fotoSpecBack"}
+                            />
+                        </div>
+                    </span>
             )    
         }else{
             return(
