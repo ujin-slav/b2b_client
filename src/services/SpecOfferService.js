@@ -7,6 +7,14 @@ export default class SpecOfferService {
         const data = await $api.post(`/addspecoffer`,formData);
         return data
     }
+    static async addFavoritesSpec(formData){
+        const data = await $api.post(`/addfavoritesspec`,formData);
+        return data
+    }
+    static async delFavoritesSpec(formData){
+        const data = await $api.post(`/delfavoritesspec`,formData);
+        return data
+    }
     static async modifySpecOffer(formData){
         const data = await $api.post(`/modifyspecoffer`,formData);
         return data
@@ -23,6 +31,10 @@ export default class SpecOfferService {
     }
     static async getSpecOfferUser(formData){
         const {data} = await $api.post(`/getspecofferuser`,formData);
+        return data
+    }
+    static async getSpecOfferFavorite(formData){
+        const {data} = await $api.post(`/getspecofferfavorite`,formData);
         return data
     }
     static async getSpecAskUser(formData){

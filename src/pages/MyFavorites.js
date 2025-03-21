@@ -18,7 +18,7 @@ import bin from "../icons/bin.svg";
 import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
 
-const MySpecOffers = observer(() => {
+const MyFavorites = observer(() => {
 
     const [specOffers, setSpecOffers] = useState([]);
     const {myalert} = useContext(Context);
@@ -27,7 +27,8 @@ const MySpecOffers = observer(() => {
     const [deleteId,setDeleteId] = useState();
     const [pageCount, setPageCount] = useState(0);
     const {user} = useContext(Context);
-    const [search,setSearch] = useState("")
+    const [searchInn,setSearchInn] = useState("");
+    const [searchText,setSearchText] = useState("")
     const [currentImg,setCurrentImg] = useState()
     const [currentPage,setCurrentPage] = useState(1)
     const [loading,setLoading] = useState(false)
@@ -40,10 +41,11 @@ const MySpecOffers = observer(() => {
 
     useEffect(() => {
         setLoading(true)
-        SpecOfferService.getSpecOfferUser({
+        SpecOfferService.getSpecOfferFavorite({
             id:user.user.id,
             limit,
-            search,
+            searchText,
+            searchInn,
             page:currentPage,
             startDate,
             endDate
@@ -53,6 +55,7 @@ const MySpecOffers = observer(() => {
                             item.indexFoto = 0
                         })
                     } 
+                    console.log(data)
                     setSpecOffers(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
@@ -70,7 +73,12 @@ const MySpecOffers = observer(() => {
         await fetchPage(data.selected + 1);
     }
 
-    const handleSearch = () =>{
+    const handleSearchText = () =>{
+        setCurrentPage(1)
+        setFetching(!fetching)
+    }
+
+    const handleSearchInn = () =>{
         setCurrentPage(1)
         setFetching(!fetching)
     }
@@ -110,16 +118,6 @@ const MySpecOffers = observer(() => {
         setCurrentImg(null)
     }
   
-    const deleteSpecOffer = async () =>{
-        const result = await SpecOfferService.deleteSpecOffer({id:deleteId});
-        if (result.status===200){
-          myalert.setMessage("Успешно"); 
-          setCurrentPage(1)
-          setFetching(!fetching)
-        } else {
-          myalert.setMessage(result.data.message);
-        }
-    }
 
     const getImg = (item,index) => {
         return(
@@ -178,14 +176,23 @@ const MySpecOffers = observer(() => {
 
     return (
         <div>
-             <Form className="searchFormMenu">
+            <Form className="searchFormMenu">
             <Row> 
-                <InputGroup>
+                <InputGroup className='mt-2'>
                     <Form.Control
-                        onChange={(e)=>setSearch(e.target.value)}
+                        onChange={(e)=>setSearchText(e.target.value)}
                         placeholder="Текст или название предложения"
                     />
-                    <Button variant="outline-secondary" onClick={()=>handleSearch()}>
+                    <Button variant="outline-secondary" onClick={()=>handleSearchText()}>
+                        <Search color="black" style={{"width": "20px", "height": "20px"}}/>
+                    </Button>
+                </InputGroup>
+                <InputGroup className='mt-2'>
+                    <Form.Control
+                        onChange={(e)=>setSearchInn(e.target.value)}
+                        placeholder="Имя, ИНН, название организации"
+                    />
+                    <Button variant="outline-secondary" onClick={()=>handleSearchInn()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                     </Button>
                 </InputGroup>
@@ -209,7 +216,7 @@ const MySpecOffers = observer(() => {
                             >
                                 <Search color="black" style={{"width": "20px", "height": "20px"}}/>
                             </Button>
-                        </InputGroup>
+                        </InputGroup >
                         <InputGroup>
                             <DatePicker
                                 locale="ru"
@@ -242,8 +249,6 @@ const MySpecOffers = observer(() => {
             </div>
             </Row>
         </Form>
-        <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addSpecOffer"/>
-        <span className="createNewOfferText">Создать новое</span>
         {!loading ? 
             <div>
                 <div className='parentSpec'>
@@ -274,23 +279,6 @@ const MySpecOffers = observer(() => {
                         <div className="specCloudy">
                             {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
                         </div>
-                        <div>
-                            <button 
-                                className="myButtonMessage w-100"
-                                onClick={(e)=>{
-                                    e.stopPropagation()
-                                    history.push(MODIFYSPECOFFER + '/' + item._id)
-                                }}>
-                                Редактировать</button>
-                            <button 
-                            className="myButtonMessage w-100"
-                            onClick={(e)=>{
-                                e.stopPropagation();
-                                setModalActive(true);
-                                setDeleteId(item._id)
-                            }}>
-                            Удалить</button>
-                        </div>
                     </div>
                     
                 )
@@ -319,9 +307,6 @@ const MySpecOffers = observer(() => {
                         />
                     :
                 <div></div>}
-                <ModalAlert header="Вы действительно хотите удалить" 
-                active={modalActive} 
-                setActive={setModalActive} funRes={deleteSpecOffer}/>
             </div> 
         : 
             <div class="loader">Loading...</div>
@@ -330,4 +315,4 @@ const MySpecOffers = observer(() => {
     );
 });
 
-export default MySpecOffers;
+export default MyFavorites;

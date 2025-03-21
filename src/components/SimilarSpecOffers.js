@@ -192,41 +192,44 @@ const SimilarSpecOffers = ({categoryFilter,regionFilter,redirect}) => {
                 <span>Похожие предложения</span>
             </div>
             <div class="parentCarousel" id="slider" ref={slider}>
-            {specOffers.map((item,index)=>
-                    <div 
-                        key={index} 
-                        class="childCarouselSimilar" 
-                        onClick={(e)=>redirect(e,item._id)}
-                        ref={el => imgs.current[index] = el}>
-                        {item.FilesPreview?.length == 0 || item.FilesPreview==null?
-                            <img 
-                            className="fotoSpec"
-                            src={noImage}/>
-                                :
-                            getImg(item,index)
-                            }
-                        {getItemSwitch(item,index)}
-                        <div className="specName mt-2">
-                            {item.Name}
-                        </div>
-                        <div className="specPrice">
-                            {item.Price} ₽
-                        </div>
-                        <div className="specNameOrg">
-                            {item.NameOrg}
-                        </div>
-                        <div className="specCloudy">
-                            {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                            `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+            {specOffers.map((item,index)=>{
+            return(
+                <div 
+                    onClick={(e)=>redirect(e,item._id)}
+                    className='childSpec'
+                    ref={el => imgs.current[index] = el} >
+                    {item.FilesPreview?.length == 0 || item.FilesPreview==null?
+                    <img 
+                        className="fotoSpec"
+                        src={noImage}/>
                             :
-                            getCategoryName(item.Region, regionNodes).join(", ")
-                            }
-                        </div>
-                        <div className="specCloudy">
-                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                        </div>
+                        getImg(item,index)
+                    }
+                    {getItemSwitch(item,index)}
+                    <div className='specInfo'>
+                      <div className="specName">
+                          {item.Name}
+                      </div>
+                      <div className="specPrice">
+                          {item.Price} ₽
+                      </div>
+                      <div className="specNameOrg">
+                          {item.NameOrg}
+                      </div>
+                      <div className="specCloudy">
+                          {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
+                          `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                          :
+                          getCategoryName(item.Region, regionNodes).join(", ")
+                          }
+                      </div>
+                      <div className="specCloudy">
+                          {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                      </div>
+                    </div>
                 </div>
-            )}
+            )
+            })}
             </div>
         </div>
     )

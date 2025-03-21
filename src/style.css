@@ -373,6 +373,10 @@ td.tdRed{
   .boldtext{
     font-weight:bold;
   }
+  .boldtextRed{
+    font-weight:bold;
+    color:red;
+  }
   .right{
     float: right;
   }
@@ -472,6 +476,18 @@ td.tdRed{
     font-weight:bold;
     cursor: pointer;
     text-decoration:none;
+  }
+  .heart{
+    color:#0d6efd;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+  .heartRed{
+    color:red;
+    cursor: pointer;
+    width: 20px;
+    height:  20px;
   }
   .specPrice{
     font-size: 20px;
@@ -747,6 +763,9 @@ td.tdRed{
     padding:10px 10px 10px 10px;
     box-sizing: border-box;
     position: relative;
+  }
+  .card{
+    border-radius: 20px !important;
   }
   .parentPrice {
     display: flex;

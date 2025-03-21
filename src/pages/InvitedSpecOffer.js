@@ -24,6 +24,7 @@ const InvitedSpecOffer =  observer(() => {
   const [modalActive,setModalActive] = useState(false);
   const history = useHistory();
   const [pageCount, setPageCount] = useState(0)
+  const [totalDocs, setTotalDocs] = useState(0)
   const [currentPage,setCurrentPage] = useState(1)
   const[searchInn,setSearchInn] = useState("");
   const[searchComment,setSearchComment] = useState("");
@@ -46,7 +47,9 @@ const InvitedSpecOffer =  observer(() => {
                 setAskSpecOfferUser(data.docs);
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
-                chat.socket.emit("get_unread");
+                setTotalDocs(data.totalDocs)
+                console.log(data)
+                //chat.socket.emit("get_unread");
       }).finally(
           ()=>setLoading(false)
       )
@@ -150,10 +153,9 @@ const InvitedSpecOffer =  observer(() => {
           <div key={index} className='childSpecAsk'>
             <Card>
               <Card.Header className="specNameDoc" onClick={()=>history.push(CARDSPECASK + '/' + item._id)}>
-              <div className='boldtext'>№ 
-                {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+              <div className={item.Unread ? 'boldtextRed' : 'boldtext'}>№ 
+                  {totalDocs-index} От {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}
               </div>
-              <div>От {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
             <div>
             <span className="specCloudy">Автор: </span>

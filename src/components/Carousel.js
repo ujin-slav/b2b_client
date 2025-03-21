@@ -133,14 +133,13 @@ const Carousel =  observer(() => {
         if (result.errors){
             myalert.setMessage(result.message); 
         } else {
-            myalert.setMessage("Успешно") 
+            // myalert.setMessage("Успешно") 
             const newCarousel = carousel.map((el)=>{
                 if(el._id === item._id){
                     el.contrIs = true
                 }
                 return el
             })
-            console.log(newCarousel)
             setCarousel(newCarousel)
         }
     }

@@ -2,6 +2,7 @@ import React,{useState,useEffect,useContext} from 'react';
 import {Table,Form} from "react-bootstrap";
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
+import {Context} from "../index";
 import {Card,Container} from "react-bootstrap";
 import {useParams} from 'react-router-dom';
 import * as XLSX from 'xlsx';
@@ -16,7 +17,9 @@ const CardSpecAsk = () => {
     
     const {id} = useParams();
     const [status,setStatus] = useState(1)
+    const {user} = useContext(Context);
     const [recevier, setRecevier] = useState();
+    const {chat} = useContext(Context)
     const [author, setAuthor] = useState(); 
     const [sumTotal,setSumTotal] = useState(0); 
     const [modalActiveMessage,setModalActiveMessage] = useState(false)
@@ -52,6 +55,7 @@ const CardSpecAsk = () => {
                         TelefonFiz:result.data.TelefonFiz
                     }
                 )
+                chat.socket.emit("get_unread")
             }else{
                 setError(result.data.errors)
             }

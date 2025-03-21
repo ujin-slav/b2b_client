@@ -11,7 +11,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import CardSpecOffer from '../pages/CardSpecOffer';
 import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
-import {CaretDownFill,CaretUpFill,PlusCircleFill,Search} from 'react-bootstrap-icons';
+import {CaretDownFill,CaretUpFill,PlusCircleFill,Search, Heart} from 'react-bootstrap-icons';
 import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
 import video from "../icons/video.svg";
@@ -47,18 +47,20 @@ const SpecOffersTable = observer(() => {
           sort,
           startDate,
           endDate,
+          user:user.user.id,
           limit,page:currentPage}).then((data)=>{
                 if(Array.isArray(data.docs)){
                     data.docs.map((item)=>{
                         item.indexFoto = 0
                     })
                 } 
+                console.log(data)
                 setSpecOffers(data.docs)
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
         }).finally(()=>setLoading(false))
     }
-      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible,fetching]);
+      },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible,fetching,user.isFetching]);
 
     const fetchPage = async (currentPage) => {
         setCurrentPage(currentPage)
@@ -108,6 +110,43 @@ const SpecOffersTable = observer(() => {
 
     const mouseLeaveHandler = (e,item,index) => {
         setCurrentImg(null)
+    }
+
+    const addToFavorites = async (item) => {
+        if(item.Favorite){
+            const result = await SpecOfferService.delFavoritesSpec({
+                userID:user.user.id,
+                specID:item._id
+            })
+            if (result.status===200){
+            const newSpecOffers = specOffers.map((el)=>{
+                if(el._id === item._id){
+                    el.Favorite = false
+                }
+                return el
+            })
+            setSpecOffers(newSpecOffers)
+            } else {
+            myalert.setMessage(result.data.message);
+            }
+            return
+        }
+        const result = await SpecOfferService.addFavoritesSpec({
+            userID:user.user.id,
+            specID:item._id,
+            specAuthor:item.Author
+        })
+        if (result.status===200){
+          const newSpecOffers = specOffers.map((el)=>{
+              if(el._id === item._id){
+                  el.Favorite = true
+              }
+              return el
+          })
+          setSpecOffers(newSpecOffers)
+        } else {
+          myalert.setMessage(result.data.message);
+        }
     }
     
     if (loading){
@@ -272,9 +311,9 @@ const SpecOffersTable = observer(() => {
           <span className="createNew">Создать новое</span>
         <div className='parentSpec'>
             {specOffers.map((item,index)=>{
+                console.log(item)
             return(
                 <div 
-                    onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)} 
                     className='childSpec'
                     ref={el => imgs.current[index] = el} >
                     {item.FilesPreview?.length == 0 || item.FilesPreview==null?
@@ -286,8 +325,20 @@ const SpecOffersTable = observer(() => {
                     }
                     {getItemSwitch(item,index)}
                     <div className='specInfo'>
-                      <div className="specName">
-                          {item.Name}
+                      <div className=" d-flex justify-content-between">
+                            <span 
+                                className="specName"
+                                onClick={()=>history.push(CARDSPECOFFER + '/' + item._id)}>
+                                    {item.Name}
+                            </span>
+                          {user.isAuth && item.Author._id !== user.user.id ? 
+                            <Heart 
+                                className={item.isFavorite ? "heartRed" : "heart"}
+                                onClick={()=>addToFavorites((item))}
+                            />
+                            :
+                            <></>
+                          }
                       </div>
                       <div className="specPrice">
                           {item.Price} ₽

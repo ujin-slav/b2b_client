@@ -54,6 +54,7 @@ import AdminUploadPrice from "../pages/AdminUploadPrice";
 import AdminAskSpamList from "../pages/AdminAskSpamList";
 import AdminSpecOfferSpamList from "../pages/AdminSpecOfferSpamList";
 import AdminSpecOffers from "../pages/AdminSpecOffers";
+import MyFavorites from "../pages/MyFavorites";
 
 
 export const LOGIN_ROUTE = '/login'
@@ -101,6 +102,7 @@ export const INVITEDPRICE = '/invitedprice'
 export const INVITEDPRICEFIZ = '/invitedpricefiz'
 export const INVITEDSPECOFFER = '/invitedspecoffer'
 export const INVITEDSPECOFFERFIZ = '/invitedspecofferfiz'
+export const MYFAVORITES = '/myfavorites'
 export const TEST = '/test'
 export const ACTIVATE = '/activate'
 export const REVIEWABOUTME = '/reviewaboutme'
@@ -504,6 +506,10 @@ export const authRoutes = [
     {
         path: INVITEDSPECOFFERFIZ,
         Component: InvitedSpecOfferFiz
+    },
+    {
+        path: MYFAVORITES,
+        Component: MyFavorites
     },
     {
         path: UPLOADPRICE,

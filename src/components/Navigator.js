@@ -18,6 +18,7 @@ import {LOGIN_ROUTE,
     INVITEDPRICE,
     MYSPECOFFERS,
     INVITEDSPECOFFER,
+    INVITEDSPECOFFERFIZ,
     QUESTFROMME,
     QUESTFORME,
     LENTSTATUS,
@@ -26,7 +27,8 @@ import {LOGIN_ROUTE,
     INVITEDPRICEFIZ,
     IWINNER,
     MYPRICES,
-    MYORDERSSPECOFFERS} from "../utils/routes";
+    MYORDERSSPECOFFERS,
+    MYFAVORITES} from "../utils/routes";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 
@@ -104,6 +106,11 @@ const Navigator =  observer(() => {
             menuPart: "Спец. предложения"
         },
         {
+            path: INVITEDSPECOFFERFIZ,
+            label: "Быстрые заказы",
+            menuPart: "Спец. предложения"
+        },
+        {
             path: INVITEDPRICEFIZ,
             label: "Заказы физ.лиц",
             menuPart: "Прайс-листы"
@@ -117,6 +124,11 @@ const Navigator =  observer(() => {
             path: MYSPECOFFERS,
             label: "Мои специальные предложения",
             menuPart: "Спец. предложения"
+        },
+        {
+            path: MYFAVORITES,
+            label: "Мои специальные предложения",
+            menuPart: "Избранное"
         },
         {
             path: HELP,

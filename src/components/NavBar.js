@@ -25,7 +25,8 @@ import {LOGIN_ROUTE,
         REVIEWWRITEME,
         INVITEDPRICEFIZ,
         IWINNER,
-        ADVANCE} from "../utils/routes";
+        ADVANCE,
+        MYFAVORITES} from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
 import basketShop from "../icons/shopping-basket.svg";
 import calc from "../icons/calculator.svg";
@@ -297,6 +298,7 @@ const NavBar = observer(() => {
                            </div>
                         </div>
                         </NavDropdown.Item> 
+                        <li className="job-sub-tabs"> <NavDropdown.Item onClick={()=>activeLink(MYFAVORITES)}className={classNameLink(MYFAVORITES)}>Избранное</NavDropdown.Item></li>
                         </li>
                       </ul>
                       <ul>
