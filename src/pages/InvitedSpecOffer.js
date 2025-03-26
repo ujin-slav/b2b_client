@@ -11,6 +11,7 @@ import {  Search} from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import SpecOfferService from '../services/SpecOfferService'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import {documentNum} from '../utils/documentNum'
 
 const InvitedSpecOffer =  observer(() => {
 
@@ -153,30 +154,33 @@ const InvitedSpecOffer =  observer(() => {
           <div key={index} className='childSpecAsk'>
             <Card>
               <Card.Header className="specNameDoc" onClick={()=>history.push(CARDSPECASK + '/' + item._id)}>
-              <div className={item.Unread ? 'boldtextRed' : 'boldtext'}>№ 
-                  {totalDocs-index} От {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}
+              <div className='boldtext'>№&nbsp; 
+                {documentNum(item._id)}
               </div>
+              <div>От {dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</div>
               </Card.Header>
-            <div>
-            <span className="specCloudy">Автор: </span>
-            {item?.FIZ ? 
-            `${item?.NameFiz + " " + item?.EmailFiz}`
-            :
-            `${item?.Author?.name + " " + item?.Author?.nameOrg}`
-            }
-            </div>
-            <div><span className="specCloudy">Сумма: </span>{item?.Sum}</div>
-            {!item?.FIZ ? 
-                <div><span className="specCloudy">Статус: </span>
-                {item?.Status?.Status ? 
-                <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
-                :
-                <span className='statusLabel'>Доставлен поставщику</span>
-                }
-              </div>
+            <div className='cardPadding'>
+              <div>
+              <span className="specCloudy">Автор: </span>
+              {item?.FIZ ? 
+              `${item?.NameFiz + " " + item?.EmailFiz}`
               :
-              <div></div>
-            }
+              `${item?.Author?.name + " " + item?.Author?.nameOrg}`
+              }
+              </div>
+              <div><span className="specCloudy">Сумма: </span>{item?.Sum}</div>
+              {!item?.FIZ ? 
+                  <div><span className="specCloudy">Статус: </span>
+                  {item?.Status?.Status ? 
+                  <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
+                  :
+                  <span className='statusLabel'>Доставлен поставщику</span>
+                  }
+                </div>
+                :
+                <div></div>
+              }
+            </div>
             </Card>
           </div>
         )} 
