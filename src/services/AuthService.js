@@ -16,6 +16,10 @@ export default class AuthService {
     static async changeuser(formData){
         return $api.post('/changeuser',formData)
     }
+
+    static async changeAlbum(formData){
+        return $api.post('/changealbum',formData)
+    }
     
     static async forgot(email){
         return $api.post('/forgot', {email})

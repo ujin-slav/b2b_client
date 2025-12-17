@@ -58,6 +58,7 @@ const Prices = observer(() => {
                     setPrice(data.docs);
                     setPageCount(data.totalPages);
                     setCurrentPage(data.page)
+                    console.log(data)
             }).finally(()=>setLoading(false))
         }
     },[ask.categoryFilter,ask.regionFilter,ask.searchText,ask.searchInn,visible,fetching]);
@@ -216,20 +217,20 @@ const Prices = observer(() => {
                           {price?.map((item,index)=>
                           
                               <tr key={index}>
-                                  <td>{item?.Code}</td>
-                                  <td>{item?.Name}</td>
-                                  <td>{item?.Price}</td>
-                                  <td>{item?.Balance}</td>
-                                  <td>{item?.Measure}</td>
-                                  <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.User?._id)}>
-                                      {item?.User?.nameOrg}</a></td>
+                                  <td>{item?.code}</td>
+                                  <td>{item?.name}</td>
+                                  <td>{item?.price}</td>
+                                  <td>{item?.balance}</td>
+                                  <td>{item?.measure}</td>
+                                  <td> <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + item?.userId)}>
+                                      {item?.userNameOrg}</a></td>
                                   <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                                   <td><img src={cart} style={{"width": "25px", "height": "25px","cursor":"pointer"}}
                                   onClick={()=>{
                                       if(user.isAuth){
-                                          history.push(CREATEPRICEASK + '/' + item?.User?._id + '/' + item?._id)
+                                          history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
                                       }else{
-                                          history.push(CREATEPRICEASKFIZ + '/' + item?.User?._id + '/' + item?._id)
+                                          history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
                                       }
                                   }}
                                   /></td>

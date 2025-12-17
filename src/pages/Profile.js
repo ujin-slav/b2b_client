@@ -1,4 +1,4 @@
-import {React, useEffect,useContext,useState} from 'react';
+import {React, useEffect,useContext,useState, useRef} from 'react';
 import {Card, Table, Col, Container, Row, Lable,Form,Button,InputGroup} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
@@ -30,6 +30,14 @@ const Profile =  observer(() => {
     const {user} = useContext(Context);  
     const {myalert} = useContext(Context);
     const [file, setFile] = useState([])
+
+    const [files, setFiles] = useState([])
+    const [fileSize, setFileSize] = useState(0);
+    const [sortedList, setSortedList] = useState([]) 
+    const inputEl = useRef(null); 
+    
+    let sourceElement = null
+
     const[profile,setProfile] = useState( {
         data: {
             name: null,
@@ -74,6 +82,14 @@ const Profile =  observer(() => {
             .then(blob => {
               setFile(blob)
             })
+        }
+        if(user.user.filesMini){
+          user.user.filesMini?.map((item)=>{
+            fetch(process.env.REACT_APP_API_URL + `getalbum/` + item.filename)
+            .then(res => res.blob()) 
+            .then(blob => {
+              setSortedList(((oldItems) => [...oldItems,blob]))
+          })})
         }
       },[user.user]);
 
@@ -132,7 +148,9 @@ const Profile =  observer(() => {
         
         if (formValid(profile)) {
             const formData = new FormData();
+            const formDataAlbum = new FormData();
 
+            formDataAlbum.append("id", user.user.id)
             formData.append("id", user.user.id)
             formData.append("name",data.name)
             formData.append("nameOrg",data.nameOrg)
@@ -147,6 +165,12 @@ const Profile =  observer(() => {
             formData.append("notiMessage",data.notiMessage)
             formData.append("notiAsk",data.notiAsk)
             formData.append("getAskFromFiz",data.getAskFromFiz)
+            sortedList.forEach((item)=>{
+              formDataAlbum.append(
+                "file", 
+                blobToFile(item)
+              )
+            });
             if(file.length!==0){
                 formData.append("file", blobToFile(file))
             }else{
@@ -159,6 +183,14 @@ const Profile =  observer(() => {
                 myalert.setMessage("Данные успешно сохранены"); 
             } else {
                 myalert.setMessage(result.data.message);
+            }
+
+            const resultAlbum = await AuthService.changeAlbum(formDataAlbum);
+            if (resultAlbum.status===200){
+                user.setUser(resultAlbum.data.user);
+                myalert.setMessage("Данные успешно сохранены"); 
+            } else {
+                myalert.setMessage(resultAlbum.data.message);
             }
         }else{
             myalert.setMessage("Форма заполнена не верно")
@@ -209,6 +241,155 @@ const Profile =  observer(() => {
             )
         }
     }
+
+    const handleDragStart = (event) => {
+        event.target.style.opacity = 0.5
+        sourceElement = event.target
+        event.dataTransfer.effectAllowed = 'move'
+      }
+  
+      const handleDragOver = (event) => {
+        event.preventDefault()
+        event.dataTransfer.dropEffect = 'move' 
+      }
+  
+      const handleDragEnter = (event) => {
+        event.target.classList.add('over')    
+      }
+    
+      const handleDragLeave = (event) => {
+        event.target.classList.remove('over')
+      }
+    
+      const handleDrop = (event) => {
+        event.stopPropagation()
+        if (sourceElement !== event.target) {
+          const list = sortedList.filter((item, i) => 
+            i.toString() !== sourceElement.id)
+          const removed = sortedList.filter((item, i) => 
+            i.toString() === sourceElement.id)[0]
+          let insertAt = Number(event.target.id)
+    
+          let tempList = []
+  
+          if (insertAt >= list.length) {
+            tempList = list.slice(0).concat(removed)
+            setSortedList(tempList)
+            event.target.classList.remove('over')
+          } else
+          if ((insertAt < list.length)) {
+            tempList = list.slice(0,insertAt).concat(removed)
+  
+            const newList = tempList.concat(list.slice(
+              insertAt))
+    
+            setSortedList(newList)
+            event.target.classList.remove('over')
+          }
+        }else
+        event.target.classList.remove('over') 
+      }
+    
+      const handleDragEnd = (event) => {
+        event.target.style.opacity = 1
+      }
+    
+      const handleChangeFoto = (event) => {
+        event.preventDefault()
+        const list = sortedList.map((item, i) => {
+          if (i !== Number(event.target.id)) { 
+            return item }
+          else return event.target.value   
+        })
+        setSortedList(list)
+      }
+
+      
+    const handleDelete = (event,id) => {
+      event.preventDefault()
+      const list = sortedList.filter((item, i) => 
+      i !== Number(event.target.id))
+      setSortedList(list)
+
+      // URL.revokeObjectURL(files.find(item=>item.id===id))
+      // const newFiles = files.filter((item,index,array)=>{item.id!==id});
+      // setFiles(newFiles);
+    }
+
+      const fileToBlob = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const blob = new Blob([reader.result], { type: file.type });
+            resolve(blob);
+          };
+          reader.onerror = reject;
+          reader.readAsArrayBuffer(file);
+        });
+      }
+      
+      const onInputChangeFoto = async (e) => {
+        if(sortedList.length+e.target.files.length<9){
+          for(let i = 0; i < e.target.files.length; i++) { 
+            try{
+              if(fileSize + e.target.files[i].size < 5242880){
+                let file = e.target.files[i]
+                const blob = await fileToBlob(file);
+                file.id = Date.now() + Math.random()
+                setFileSize(fileSize + file.size)
+                setSortedList(((oldItems) => [...oldItems,blob]))
+              } else {
+                myalert.setMessage("Превышен размер файлов");
+              }  
+            }catch(e){
+              console.log(e)
+            }
+          }
+        }else{
+          myalert.setMessage("Превышено количество файлов");
+        }
+      };
+
+      const getImageURL = (id) => {
+        let file = files.find(item=>item.id===id)
+        if(file){
+          return URL.createObjectURL(file)
+        }else{
+          return URL.createObjectURL(id) 
+        }
+      }
+
+    const listItems = () => {
+
+        return sortedList.map((item, i) => {
+          return(
+                <div key={i} className='dnd-list mt-3'>
+                  <div className='fotoContainer'>
+                      <div className="delSpecOfferContainer">
+                          <img 
+                              className="delSpecOffer" 
+                              src={bin}
+                              id={i}
+                              onClick={(event)=>handleDelete(event,sortedList[i])}
+                          /> 
+                      </div>
+                      <img 
+                      id={i}
+                      draggable='true' 
+                      onDragStart={handleDragStart} 
+                      onDragOver={handleDragOver} 
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      onDragEnd={handleDragEnd}
+                      onChange={handleChangeFoto}
+                      className="foto mx-2" src={getImageURL(sortedList[i])} /> 
+                  </div>
+                </div>
+          )
+        }
+        )
+      }
     
     return (
         <div>
@@ -242,6 +423,31 @@ const Profile =  observer(() => {
                                 onChange={onInputChange}
                                 className="form-control"
                                 single/>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td>Фото(не более 5 файлов по 5Mb)</td>
+                                <td>
+                                  Разместите фото в нужном порядке.
+                                <div className='parentSpecOffer'>
+                                    {listItems()}
+                                </div>
+                                <input type="file"
+                                    onChange={onInputChangeFoto}
+                                    key={Date.now()}
+                                    accept="image/*"
+                                    className="form-control"
+                                    multiple/>
+                                </td>
+                                </tr>
+                            <tr>
+                            <td>Ссылка на видео(Rutube)</td>
+                            <td><Form.Control
+                                    name="name"
+                                    type="text"
+                                    onChange={handleChange}
+                                    defaultValue={user.user.rutube}
+                                /> 
                             </td>
                             </tr>
                             <tr>

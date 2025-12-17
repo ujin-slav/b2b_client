@@ -46,7 +46,7 @@ const SearchForm = () => {
                 <Row>
                 <Form.Group as={Col}>
                         <InputGroup className="mb-3">
-                            <Form.Control type="nameOrder" placeholder="Наименование или текст закупки" 
+                            <Form.Control type="nameOrder" placeholder="Наименование или код товара" 
                                 onChange={(e)=>setSearchText(e.target.value)}/>
                             <Button variant="outline-secondary" id="button-addon2" 
                                     onClick={()=>{ask.setSearchText(searchText)
