@@ -1188,6 +1188,12 @@ i.col-2.fa.fa-solid.fa-paper-plane.colorBlue{
   margin-right: 5px;
   border-radius: 70px;
 }
+.avatarSuggestion{
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  border-radius: 70px;
+}
 .alertCustom{
   position:fixed;
   bottom: 0px;
@@ -1383,6 +1389,16 @@ input.createSpecOfferDataPicker{
 }
 ul.pagination.justify-content-center{
   margin-top: 20px;
+}
+.dropDownSearchText{ 
+  top: 100%;
+  z-index: 1000;
+  max-height: 320px;
+  overflow-y: auto;
+  background-color: white;
+}
+.suggestionCard{
+
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{
