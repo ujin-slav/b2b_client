@@ -22,7 +22,7 @@ import { PlusCircle, DashCircle } from 'react-bootstrap-icons';
 import { Context } from "../index";
 import PriceService from '../services/PriceService'
 import CarouselService from '../services/CarouselService'
-import { Search } from 'react-bootstrap-icons';
+import { Search, X } from 'react-bootstrap-icons';
 
 const SearchForm = () => {
     const { ask } = useContext(Context);
@@ -160,7 +160,7 @@ const SearchForm = () => {
     const desktop = () => {
         return (
             <div>
-                <Form className="searchForm">
+                <div className="searchForm">
                     <Row>
                         <Form.Group as={Col}>
                             <InputGroup className="mb-3">
@@ -190,6 +190,16 @@ const SearchForm = () => {
                                             ))
                                         )}
                                     </ListGroup>
+                                )}{searchText && (
+                                    <button
+                                        className="btn-clear"
+                                        aria-label="Очистить поиск"
+                                        onClick={() => {
+                                            ask.setSearchText("")
+                                            inputText.current.value = ""
+                                        }}>
+                                        <X color="black" style={{ "width": "30px", "height": "30px" }} />
+                                    </button>
                                 )}
                                 <Button variant="outline-secondary" id="button-addon2"
                                     onClick={() => {
@@ -266,7 +276,7 @@ const SearchForm = () => {
                             </InputGroup>
                         </Form.Group>
                     </Row>
-                </Form>
+                </div>
                 <ModalCT
                     header="Регионы"
                     active={modalActiveReg}

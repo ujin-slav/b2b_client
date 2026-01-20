@@ -1397,8 +1397,23 @@ ul.pagination.justify-content-center{
   overflow-y: auto;
   background-color: white;
 }
-.suggestionCard{
+.btn-clear {
+  position: absolute;
+  right: 50px;           /* отступ от правого края, учитывая кнопку поиска */
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding-right: 1px;
+  line-height: 1;
+  z-index: 100;
+}
 
+.btn-clear:hover {
+  color: #333;
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{
