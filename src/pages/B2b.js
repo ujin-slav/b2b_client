@@ -10,7 +10,6 @@ const B2b = observer(() => {
     return (
         <div>
            <SearchForm/>
-           <TableAskCard/>
            <SpecOffersTable/>
            <Prices/>
            <Carousel/>

@@ -196,9 +196,10 @@ const SearchForm = () => {
                                         aria-label="Очистить поиск"
                                         onClick={() => {
                                             ask.setSearchText("")
+                                            setSearchText("")
                                             inputText.current.value = ""
                                         }}>
-                                        <X color="black" style={{ "width": "30px", "height": "30px" }} />
+                                        <X className="btn-clear-icon" />
                                     </button>
                                 )}
                                 <Button variant="outline-secondary" id="button-addon2"
@@ -242,6 +243,18 @@ const SearchForm = () => {
                                         )}
                                     </ListGroup>
                                 )}
+                                {searchInn && (
+                                    <button
+                                        className="btn-clear"
+                                        aria-label="Очистить поиск"
+                                        onClick={() => {
+                                            ask.setSearchInn("")
+                                            setSearchInn("")
+                                            inputInn.current.value = ""
+                                        }}>
+                                        <X className="btn-clear-icon" />
+                                    </button>
+                                )}
                                 <Button variant="outline-secondary" id="button-addon2"
                                     onClick={() => {
                                         ask.setSearchInn(searchInn)
@@ -259,6 +272,16 @@ const SearchForm = () => {
                                     placeholder="Классификатор"
                                     value={getCategoryName(checkedCat, categoryNodes).join(", ")}
                                 />
+                                {checkedCat.length > 0 && (
+                                    <button
+                                        className="btn-clear btn-clear-checked"
+                                        aria-label="Очистить поиск"
+                                        onClick={() => {
+                                            setCheckedCat([])
+                                        }}>
+                                        <X className="btn-clear-icon" />
+                                    </button>
+                                )}
                                 <Button variant="outline-secondary" id="button-addon2" onClick={() => setModalActiveCat(true)}>
                                     ...
                                 </Button>
@@ -270,6 +293,16 @@ const SearchForm = () => {
                                     placeholder="Регионы"
                                     value={getCategoryName(checkedRegion, regionNodes).join(", ")}
                                 />
+                                {checkedRegion.length > 0 && (
+                                    <button
+                                        className="btn-clear btn-clear-checked"
+                                        aria-label="Очистить поиск"
+                                        onClick={() => {
+                                            setCheckedRegion([])
+                                        }}>
+                                        <X className="btn-clear-icon" />
+                                    </button>
+                                )}
                                 <Button variant="outline-secondary" id="button-addon2" onClick={() => setModalActiveReg(true)}>
                                     ...
                                 </Button>

@@ -321,9 +321,10 @@ td.tdRed{
   font-weight: 600;
 }
 .table-responsive{
-  overflow:scroll;
   border-collapse: separate;
   border-bottom: 2px solid black;  
+  overflow-x: auto;
+  overflow-y: auto;
 }
 .table-responsive-create{
   height: 400px;
@@ -1408,12 +1409,22 @@ ul.pagination.justify-content-center{
   color: #999;
   cursor: pointer;
   padding-right: 1px;
+  padding-left: 0px;
   line-height: 1;
   z-index: 100;
 }
-
-.btn-clear:hover {
+.btn-clear-checked {
+  right: 45px !important;
+}
+.btn-clear-icon {
+  color:#999999;
+  height: 30px;
+  width: 30px;
+}
+.btn-clear-icon:hover {
   color: #333;
+  height: 30px;
+  width: 30px;
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{

@@ -325,7 +325,7 @@ const CreateSpecOffer = observer(() => {
     return (
       <div>
         <Container className="profile">
-          <h3>Создать специальное предложение.</h3> 
+          <h3>Создать специальное предложение</h3> 
           <Row>
             <Col>
               <Table>
