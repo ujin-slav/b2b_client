@@ -10,18 +10,21 @@ import UserAsk from "../components/UserAsk";
 import UserPrice from '../components/UserPrice';
 import ReviewOrgItems from '../components/ReviewOrgItems';
 import '../fontawesome.css';
-import { CREATEPRICEASK, CREATEPRICEASKFIZ} from '../utils/routes';
+import { CREATEPRICEASK, CREATEPRICEASKFIZ } from '../utils/routes';
 import { useHistory } from 'react-router-dom'
 import MessageBoxComplaint from '../components/MessageBoxComplaint';
 import MyImage from '../components/MyImage'
+import FotoSliderAlbum from '../components/FotoSliderAlbum';
 
 const OrgInfo = () => {
 
     const { idorg, idprod } = useParams();
     const [org, setOrg] = useState();
     const [file, setFile] = useState([])
-    const { user } = useContext(Context);
-    const [error, setError] = useState();
+    const { user } = useContext(Context)
+    const [error, setError] = useState()
+    const [fotoFocus, setFotoFocus] = useState(0)
+    const [showSlider, setShowSlider] = useState(false)
     const [modalActiveMessage, setModalActiveMessage] = useState(false)
     const [modalAMC, setModalAMC] = useState(false)
     const history = useHistory()
@@ -40,7 +43,7 @@ const OrgInfo = () => {
                     }
                 }
             } else {
-                setError(result.data.errors)
+                setError(result?.data?.errors)
             }
         })
 
@@ -62,6 +65,30 @@ const OrgInfo = () => {
                         />
                     </div>
                 </span>
+            )
+        } else {
+            return (
+                <span></span>
+            )
+        }
+    }
+
+    const listFotos = () => {
+        console.log(org)
+        if (org?.filesMini?.length !== 0) {
+            return (
+                <div className="containerOrgInfoFoto">
+                    {org?.filesMini?.map((item, index) =>
+                        <div key={index} className='albumSpec'>
+                            <MyImage className='miniFotoSpecCard'
+                                onClick={() => {
+                                    setFotoFocus(index)
+                                    setShowSlider(true)
+                                }}
+                                src={process.env.REACT_APP_API_URL + `getalbum/` + item.filename} />
+                        </div>
+                    )}
+                </div>
             )
         } else {
             return (
@@ -95,6 +122,24 @@ const OrgInfo = () => {
                                 <td>Логотип</td>
                                 <td>
                                     {logo()}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Фото</td>
+                                <td>
+                                    {listFotos()}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Видео(Rutube)</td>
+                                <td>
+                                    
+                                        <iframe width="600" height="337" 
+                                        src="https://rutube.ru/play/embed/e749d9f6600516c814535140a9f19c4c/" 
+                                        allow="clipboard-write; autoplay" 
+                                        webkitAllowFullScreen mozallowfullscreen allowFullScreen> 
+                                        </iframe>
+                                   
                                 </td>
                             </tr>
                             <tr>
@@ -184,6 +229,13 @@ const OrgInfo = () => {
                 active={modalAMC}
                 component={<MessageBoxComplaint author={org} setActive={setModalAMC} />}
                 setActive={setModalAMC}
+            />
+            <FotoSliderAlbum
+                fotoArray={org?.files}
+                setShow={setShowSlider}
+                show={showSlider}
+                fotoFocus={fotoFocus}
+                setFotoFocus={setFotoFocus}
             />
         </Container>
     );

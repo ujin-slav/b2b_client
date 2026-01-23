@@ -333,44 +333,6 @@ const CreateSpecOffer = observer(() => {
                 <col style={{"width":"75%"}}/>
                             <tbody>
                                 <tr>
-                                <td>Название</td>
-                                <td><Form.Control
-                                      type="text"
-                                      name="Name"
-                                      onChange={handleChangeControl}
-                                      placeholder="Название"
-                                  />
-                                  <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
-                                </tr>
-                                <tr>
-                                <td>Цена</td>
-                                <td><Form.Control
-                                      type="number" 
-                                      name="Price"
-                                      step=".01"
-                                      onChange={handleChangeControl}
-                                      placeholder="Цена"
-                                  />
-                                  <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Price}</span></td>
-                                </tr>
-                                <tr>
-                                <td>Дата окончания предложения</td>
-                                <td>
-                                <div className='createSpecOfferDataPicker'>  
-                                  <DatePicker
-                                      className='createSpecOfferDataPicker'
-                                      locale="ru"
-                                      selected={startDate}
-                                      name="EndDateOffers"
-                                      timeInputLabel="Время:"
-                                      dateFormat="dd/MM/yyyy HH:mm"
-                                      onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
-                                      showTimeInput
-                                  />
-                                </div>
-                                </td>
-                                </tr>
-                                <tr>
                                 <td>Артикул</td>
                                 <td> <Form.Control
                                     name="Code"
@@ -379,23 +341,7 @@ const CreateSpecOffer = observer(() => {
                                 /></td>
                                 </tr>
                                 <tr>
-                                <td>Остаток</td>
-                                <td> <Form.Control
-                                    name="Balance"
-                                    onChange={handleChangeControl}
-                                    placeholder="не обязательно"
-                                /></td>
-                                </tr>
-                                <tr>
-                                <td>Ед.изм</td>
-                                <td> <Form.Control
-                                    name="Measure"
-                                    onChange={handleChangeControl}
-                                    placeholder="не обязательно"
-                                /></td>
-                                </tr>
-                                <tr>
-                                <td>Текст</td>
+                                <td>Описание</td>
                                 <td><Form.Control
                                       name="Text"
                                       placeholder="Текст заявки"
@@ -404,40 +350,6 @@ const CreateSpecOffer = observer(() => {
                                   />
                                   <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Text}</span>
                                 </td>
-                                </tr>
-                                <tr>
-                                <td>Контактное лицо</td>
-                                <td> <Form.Control
-                                    name="Telefon"
-                                    onChange={handleChangeControl}
-                                    defaultValue={user.user.name}
-                                    placeholder="Контактный телефон"
-                                /></td>
-                                </tr>
-                                <tr>
-                                <td>Контактный телефон</td>
-                                <td> <Form.Control
-                                    name="Telefon"
-                                    onChange={handleChangeControl}
-                                    defaultValue={user.user.telefon}
-                                    placeholder="Контактный телефон"
-                                /></td>
-                                </tr>
-                                <tr>
-                                <td>Категории</td>
-                                <td>
-                                <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveCat(true)}>
-                                    Выбор
-                                    </button></td>
-                                </tr>
-                                <tr>
-                                <td>Регионы</td>
-                                <td>
-                                <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                    <button className="myButtonMessage mt-1" onClick={()=>setModalActiveReg(true)}>
-                                    Выбор
-                                    </button></td>
                                 </tr>
                                 <tr>
                                 <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>

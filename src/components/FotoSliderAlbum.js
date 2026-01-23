@@ -1,0 +1,88 @@
+import React,{useState,useEffect,useContext} from 'react';
+import { CaretLeft,CaretRight,XLg} from 'react-bootstrap-icons';
+
+const FotoSlider = ({fotoArray, show,setShow,fotoFocus,setFotoFocus}) => {
+
+    if(!show){
+        return (
+            <div>      
+            </div>
+        );
+    }
+
+    const rightNav = () => {
+        if(fotoFocus+1===fotoArray.length){
+            setFotoFocus(0)
+        }else{
+            setFotoFocus(fotoFocus+1)
+        }
+    }
+    const leftNav = () => {
+        if(fotoFocus===0){
+            setFotoFocus(fotoArray.length-1)
+        }else{
+            setFotoFocus(fotoFocus-1)
+        }
+    }
+
+    const mobile = () => {
+        return(
+            <div className='fotoSliderMobile'>
+                <div className="centerNavMobile">
+                    <img className='fotoSliderImg' src={process.env.REACT_APP_API_URL + `getalbum/` + fotoArray[fotoFocus]?.filename}/> 
+                </div>
+                <div className='navContainerMobile'>
+                    <div className='navContainer'>
+                        <div className='leftNav'>
+                            <CaretLeft color="white" style={{"width": "80px", "height": "80px"}} 
+                            onClick={()=>leftNav()}
+                            />
+                        </div>
+                        <div className='closeNav'>
+                            <XLg color="white" style={{"width": "50px", "height": "50px"}} 
+                            onClick={()=>setShow(false)}/>
+                        </div>
+                        <div className='rightNav'>
+                            <CaretRight color="white" style={{"width": "80px", "height": "80px"}} 
+                            onClick={()=>rightNav()}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    const desktop = () => {
+        return(
+            <div className='fotoSlider'>
+                <div className='leftNav'>
+                    <CaretLeft color="white" style={{"width": "80px", "height": "80px"}} 
+                    onClick={()=>leftNav()}
+                    />
+                </div>
+                <div className='centerNav'>
+                    <img className='fotoSliderImg' src={process.env.REACT_APP_API_URL + `getalbum/` + fotoArray[fotoFocus]?.filename}/> 
+                </div>
+                <div className='rightNav'>
+                    <CaretRight color="white" style={{"width": "80px", "height": "80px"}} 
+                    onClick={()=>rightNav()}
+                    />
+                </div>
+                <div>
+                    <XLg color="white" style={{"width": "50px", "height": "50px"}} 
+                    onClick={()=>setShow(false)}/>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        window.innerWidth > 650 ? 
+            desktop()
+            :
+            mobile()
+    )
+};
+
+export default FotoSlider;
