@@ -1,4 +1,4 @@
-import { React, useEffect, useContext, useState, useRef } from 'react';
+import { React, useEffect, useContext, useState, useRef, useMemo } from 'react';
 import { Card, Table, Col, Container, Row, Lable, Form, Button, InputGroup } from "react-bootstrap";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
@@ -11,6 +11,7 @@ import { categoryNodes } from '../config/Category';
 import AuthService from "../services/AuthService";
 import MyImage from '../components/MyImage'
 import bin from "../icons/bin.svg";
+import {generateUUID} from '../utils/getUID'
 
 const formValid = ({ data, formErrors, nullValid }) => {
   let valid = true;
@@ -20,8 +21,8 @@ const formValid = ({ data, formErrors, nullValid }) => {
   });
 
   // validate the form was filled out
-  Object.values(nullValid).forEach(val => {
-    val === true && data[val] === null &&(valid = false);
+  Object.values(data).forEach(val => {
+    val === null && (valid = false);
   });
 
   return valid;
@@ -40,11 +41,11 @@ const Profile = observer(() => {
   const { user } = useContext(Context);
   const { myalert } = useContext(Context);
   const [file, setFile] = useState([])
-
-  const [files, setFiles] = useState([])
-  const [fileSize, setFileSize] = useState(0);
+  const [deletedLogo, setDeletedLogo] = useState(false)
+  const [changedLogo, setChangedLogo] = useState(false)
+  
   const [sortedList, setSortedList] = useState([])
-  const inputEl = useRef(null);
+  const [deletedList, setDeletedList] = useState([])
 
   let sourceElement = null
 
@@ -62,8 +63,8 @@ const Profile = observer(() => {
       notiAsk: true,
       getAskFromFiz: true
     },
-    nullValid:{
-      name:true
+    nullValid: {
+      name: true
     },
     formErrors: {
       name: "",
@@ -100,11 +101,35 @@ const Profile = observer(() => {
         fetch(process.env.REACT_APP_API_URL + `getalbum/` + item.filename)
           .then(res => res.blob())
           .then(blob => {
-            setSortedList(((oldItems) => [...oldItems, blob]))
+            let preview = {
+              fromServer:true,
+              file: URL.createObjectURL(blob),
+              id: item.originalname,
+              blob
+            }
+            setSortedList(((oldItems) => [...oldItems, preview]))
           })
       })
     }
   }, [user.user]);
+
+  ///////////////////
+
+  const imageUrl = useMemo(() => {
+    if (!file) return null;
+    if (!(file instanceof Blob) && !(file instanceof File)) {
+      return null;
+    }
+    return URL.createObjectURL(file);
+  }, [file]);
+
+  useEffect(() => {
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+    };
+  }, [imageUrl]);
 
   const [modalActiveReg, setModalActiveReg] = useState(false)
   const [modalActiveCat, setModalActiveCat] = useState(false)
@@ -144,7 +169,7 @@ const Profile = observer(() => {
       default:
         break;
     }
-    setProfile({ data, nullValid, formErrors});
+    setProfile({ data, nullValid, formErrors });
   }
 
   const handleChangeRutube = (e) => {
@@ -153,7 +178,7 @@ const Profile = observer(() => {
   }
 
   const blobToFile = (item) => {
-    return new File([item], "load", { type: item.type })
+    return new File([item?.blob], item?.id , { type: item?.type })
   }
 
   const onSubmit = async (e) => {
@@ -170,6 +195,10 @@ const Profile = observer(() => {
       const formDataAlbum = new FormData();
 
       formDataAlbum.append("id", user.user.id)
+      formDataAlbum.append("deletedList", JSON.stringify(deletedList))
+      formDataAlbum.append("sortedList", 
+        JSON.stringify(sortedList.map(item => item.id))
+      )
       formData.append("id", user.user.id)
       formData.append("name", data.name)
       formData.append("nameOrg", data.nameOrg)
@@ -184,13 +213,20 @@ const Profile = observer(() => {
       formData.append("notiMessage", data.notiMessage)
       formData.append("notiAsk", data.notiAsk)
       formData.append("getAskFromFiz", data.getAskFromFiz)
+      formData.append("deletedLogo", deletedLogo)
+      formData.append("changedLogo", changedLogo)
+
       sortedList.forEach((item) => {
-        formDataAlbum.append(
-          "file",
-          blobToFile(item)
-        )
+        if(!item.fromServer){
+          console.log(item)
+          formDataAlbum.append(
+            "file",
+            blobToFile(item)
+          )
+        }
       });
-      if (file.length !== 0) {
+
+      if (file.length !== 0 && changedLogo) {
         formData.append("file", blobToFile(file))
       } else {
         formData.append("file", null)
@@ -227,8 +263,12 @@ const Profile = observer(() => {
   const onInputChange = (e) => {
     try {
       if (e.target.files[0].size < 5242880) {
-        let file = e.target.files[0]
-        setFile(file)
+        let newFile = e.target.files[0]
+        if(file.length !== 0){
+          setChangedLogo(true)
+        }
+        setFile(newFile)
+        setChangedLogo(true)
       } else {
         myalert.setMessage("Превышен размер файла");
       }
@@ -244,10 +284,10 @@ const Profile = observer(() => {
           <MyImage
             className={"fotoSpec"}
             disabled={false}
-            src={URL.createObjectURL(file)} />
+            src={imageUrl} />
           <div className="ImgSpecWrapper">
             <MyImage
-              src={URL.createObjectURL(file)}
+              src={imageUrl}
               disabled={false}
               className={"fotoSpecBack"}
             />
@@ -327,13 +367,15 @@ const Profile = observer(() => {
 
   const handleDelete = (event, id) => {
     event.preventDefault()
-    const list = sortedList.filter((item, i) =>
-      i !== Number(event.target.id))
-    setSortedList(list)
 
-    // URL.revokeObjectURL(files.find(item=>item.id===id))
-    // const newFiles = files.filter((item,index,array)=>{item.id!==id});
-    // setFiles(newFiles);
+    let num = Number(event.target.id)
+    let el = sortedList[num]
+    if(el?.fromServer){
+      setDeletedList(((oldItems) => [...oldItems,el?.id]))
+    }
+    const list = sortedList.filter((item, i) =>
+      i !== num)
+    setSortedList(list)
   }
 
   const fileToBlob = (file) => {
@@ -349,15 +391,21 @@ const Profile = observer(() => {
   }
 
   const onInputChangeFoto = async (e) => {
+    const sizeSortedList = sortedList.reduce((sum, val) => sum + val?.blob?.size, 0)
     if (sortedList.length + e.target.files.length < 9) {
       for (let i = 0; i < e.target.files.length; i++) {
         try {
-          if (fileSize + e.target.files[i].size < 5242880) {
+          if (sizeSortedList + e.target.files[i].size < 5485760) {
             let file = e.target.files[i]
             const blob = await fileToBlob(file);
-            file.id = Date.now() + Math.random()
-            setFileSize(fileSize + file.size)
-            setSortedList(((oldItems) => [...oldItems, blob]))
+            //file.id = Date.now() + Math.random()
+            let preview = {
+              fromServer:false,
+              file: URL.createObjectURL(blob),
+              id: generateUUID(),
+              blob
+            }
+            setSortedList(((oldItems) => [...oldItems, preview]))
           } else {
             myalert.setMessage("Превышен размер файлов");
           }
@@ -369,15 +417,6 @@ const Profile = observer(() => {
       myalert.setMessage("Превышено количество файлов");
     }
   };
-
-  const getImageURL = (id) => {
-    let file = files.find(item => item.id === id)
-    if (file) {
-      return URL.createObjectURL(file)
-    } else {
-      return URL.createObjectURL(id)
-    }
-  }
 
   const listItems = () => {
 
@@ -403,7 +442,7 @@ const Profile = observer(() => {
               onDrop={handleDrop}
               onDragEnd={handleDragEnd}
               onChange={handleChangeFoto}
-              className="foto mx-2" src={getImageURL(sortedList[i])} />
+              className="foto mx-2" src={sortedList[i]?.file} />
           </div>
         </div>
       )
@@ -425,7 +464,10 @@ const Profile = observer(() => {
                   <td>
                     {logo()}
                     {file.length !== 0 ?
-                      <div className='delLogoContainer mt-3' onClick={() => setFile([])}>
+                      <div className='delLogoContainer mt-3' onClick={() => {
+                        setDeletedLogo(true)
+                        setFile([])
+                      }}>
                         <img
                           className="delProfileFoto"
                           src={bin}
