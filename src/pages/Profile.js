@@ -11,9 +11,9 @@ import { categoryNodes } from '../config/Category';
 import AuthService from "../services/AuthService";
 import MyImage from '../components/MyImage'
 import bin from "../icons/bin.svg";
-import {generateUUID} from '../utils/getUID'
+import { generateUUID } from '../utils/getUID'
 
-const formValid = ({ data, formErrors, nullValid }) => {
+const formValid = ({ data, nullValid, formErrors }) => {
   let valid = true;
   // validate form errors being empty
   Object.values(formErrors).forEach(val => {
@@ -21,17 +21,21 @@ const formValid = ({ data, formErrors, nullValid }) => {
   });
 
   // validate the form was filled out
-  Object.values(data).forEach(val => {
-    val === null && (valid = false);
+  Object.keys(nullValid).forEach(field => {
+    if (nullValid[field] === true) {
+      const value = data[field];
+      if (value === null || value === undefined || value === '') {
+        valid = false;
+      }
+    }
   });
-
   return valid;
 };
 
 function rutubeValidLink(url) {
   url = url.trim().toLowerCase();
 
-  const regex = /rutube\.ru\/(?:video|play)\/([a-f0-9]{32})(?:\/|$|\?)/i;
+  const regex = /rutube\.ru\/(?:video|play)\/([a-f0-9]{32})(?:$|\?|\/(?:$|\?))/i;
 
   return regex.test(url);
 }
@@ -40,10 +44,9 @@ const Profile = observer(() => {
 
   const { user } = useContext(Context);
   const { myalert } = useContext(Context);
-  const [file, setFile] = useState([])
+  const [file, setFile] = useState()
   const [deletedLogo, setDeletedLogo] = useState(false)
-  const [changedLogo, setChangedLogo] = useState(false)
-  
+
   const [sortedList, setSortedList] = useState([])
   const [deletedList, setDeletedList] = useState([])
 
@@ -51,17 +54,6 @@ const Profile = observer(() => {
 
   const [profile, setProfile] = useState({
     data: {
-      name: null,
-      nameOrg: null,
-      adressOrg: null,
-      telefon: null,
-      site: null,
-      inn: null,
-      description: null,
-      notiInvited: true,
-      notiMessage: true,
-      notiAsk: true,
-      getAskFromFiz: true
     },
     nullValid: {
       name: true
@@ -71,7 +63,8 @@ const Profile = observer(() => {
       nameOrg: "",
       adressOrg: "",
       telefon: "",
-      Inn: ""
+      Inn: "",
+      rutube: ""
     }
   });
 
@@ -82,54 +75,45 @@ const Profile = observer(() => {
     if (user.user.region) {
       setCheckedRegion(Object.values(user.user.region))
     }
-    let data = profile.data
+    let data = Object.assign(profile.data, user.user)
+    let nullValid = profile.nullValid
     let formErrors = profile.formErrors
-    !!user.user.notiInvited && (data.notiInvited = user.user.notiInvited)
-    !!user.user.notiMessage && (data.notiMessage = user.user.notiMessage)
-    !!user.user.notiAsk && (data.notiAsk = user.user.notiAsk)
-    !!user.user.getAskFromFiz && (data.getAskFromFiz = user.user.getAskFromFiz)
-    setProfile({ data, formErrors });
+
+    setProfile({ data, nullValid,formErrors });
     if (user.user.logo) {
       fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
         .then(res => res.blob())
         .then(blob => {
-          setFile(blob)
+          let preview = {
+            fromServer: true,
+            file: URL.createObjectURL(blob),
+            id: user.user.logo?.originalname,
+            blob
+          }
+          setFile(preview)
         })
     }
     if (user.user.filesMini) {
-      user.user.filesMini?.map((item) => {
+      user.user.filesMini?.map((item, index) => {
         fetch(process.env.REACT_APP_API_URL + `getalbum/` + item.filename)
           .then(res => res.blob())
           .then(blob => {
             let preview = {
-              fromServer:true,
+              fromServer: true,
               file: URL.createObjectURL(blob),
               id: item.originalname,
               blob
             }
-            setSortedList(((oldItems) => [...oldItems, preview]))
+            setSortedList(prev => {
+              const newList = [...prev];
+              newList[index] = preview;
+              return newList;
+            });
           })
       })
+
     }
-  }, [user.user]);
-
-  ///////////////////
-
-  const imageUrl = useMemo(() => {
-    if (!file) return null;
-    if (!(file instanceof Blob) && !(file instanceof File)) {
-      return null;
-    }
-    return URL.createObjectURL(file);
-  }, [file]);
-
-  useEffect(() => {
-    return () => {
-      if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
-      }
-    };
-  }, [imageUrl]);
+  }, []);
 
   const [modalActiveReg, setModalActiveReg] = useState(false)
   const [modalActiveCat, setModalActiveCat] = useState(false)
@@ -165,6 +149,9 @@ const Profile = observer(() => {
       case "telefon":
         formErrors.telefon =
           value.length < 3 && value.length > 0 ? "минимум 3 символа" : "";
+      case "rutube":
+        formErrors.rutube =
+          !rutubeValidLink(value) && value.length > 0 ? "ссылка не действительна" : "";
         break;
       default:
         break;
@@ -172,83 +159,76 @@ const Profile = observer(() => {
     setProfile({ data, nullValid, formErrors });
   }
 
-  const handleChangeRutube = (e) => {
-    const { name, value } = e.target;
-    rutubeValidLink(value)
-  }
-
   const blobToFile = (item) => {
-    return new File([item?.blob], item?.id , { type: item?.type })
+    return new File([item?.blob], item?.id, { type: item?.type })
   }
 
   const onSubmit = async (e) => {
-    e.preventDefault();
-    let formErrors = profile.formErrors;
     let data = profile.data
 
     for (var key in data) {
       data[key] === null && (data[key] = user.user[key]);
     }
 
-    if (formValid(profile)) {
-      const formData = new FormData();
-      const formDataAlbum = new FormData();
-
-      formDataAlbum.append("id", user.user.id)
-      formDataAlbum.append("deletedList", JSON.stringify(deletedList))
-      formDataAlbum.append("sortedList", 
-        JSON.stringify(sortedList.map(item => item.id))
-      )
-      formData.append("id", user.user.id)
-      formData.append("name", data.name)
-      formData.append("nameOrg", data.nameOrg)
-      formData.append("adressOrg", data.adressOrg)
-      formData.append("telefon", data.telefon)
-      formData.append("site", data.site)
-      formData.append("description", data.description)
-      formData.append("inn", data.inn)
-      formData.append("region", JSON.stringify(checkedRegion))
-      formData.append("category", JSON.stringify(checkedCat))
-      formData.append("notiInvited", data.notiInvited)
-      formData.append("notiMessage", data.notiMessage)
-      formData.append("notiAsk", data.notiAsk)
-      formData.append("getAskFromFiz", data.getAskFromFiz)
-      formData.append("deletedLogo", deletedLogo)
-      formData.append("changedLogo", changedLogo)
-
-      sortedList.forEach((item) => {
-        if(!item.fromServer){
-          console.log(item)
-          formDataAlbum.append(
-            "file",
-            blobToFile(item)
-          )
-        }
-      });
-
-      if (file.length !== 0 && changedLogo) {
-        formData.append("file", blobToFile(file))
-      } else {
-        formData.append("file", null)
-      }
-
-      const result = await AuthService.changeuser(formData);
-      if (result.status === 200) {
-        user.setUser(result.data.user);
-        myalert.setMessage("Данные успешно сохранены");
-      } else {
-        myalert.setMessage(result.data.message);
-      }
-
-      const resultAlbum = await AuthService.changeAlbum(formDataAlbum);
-      if (resultAlbum.status === 200) {
-        user.setUser(resultAlbum.data.user);
-        myalert.setMessage("Данные успешно сохранены");
-      } else {
-        myalert.setMessage(resultAlbum.data.message);
-      }
-    } else {
+    if (!formValid(profile)) {
       myalert.setMessage("Форма заполнена не верно")
+      return
+    }
+
+    const formData = new FormData();
+    const formDataAlbum = new FormData();
+
+    formDataAlbum.append("id", user.user.id)
+    formDataAlbum.append("deletedList", JSON.stringify(deletedList))
+    formDataAlbum.append("sortedList",
+      JSON.stringify(sortedList.map(item => item.id))
+    )
+    formData.append("id", user.user.id)
+    formData.append("name", data.name)
+    formData.append("nameOrg", data.nameOrg)
+    formData.append("adressOrg", data.adressOrg)
+    formData.append("telefon", data.telefon)
+    formData.append("site", data.site)
+    formData.append("description", data.description)
+    formData.append("rutube", data.rutube)
+    formData.append("inn", data.inn)
+    formData.append("region", JSON.stringify(checkedRegion))
+    formData.append("category", JSON.stringify(checkedCat))
+    formData.append("notiInvited", data.notiInvited)
+    formData.append("notiMessage", data.notiMessage)
+    formData.append("notiAsk", data.notiAsk)
+    formData.append("getAskFromFiz", data.getAskFromFiz)
+    formData.append("deletedLogo", deletedLogo)
+
+    sortedList.forEach((item) => {
+      if (!item?.fromServer) {
+        formDataAlbum.append(
+          "file",
+          blobToFile(item)
+        )
+      }
+    })
+
+    if (file && !file?.fromServer) {
+      formData.append("file", blobToFile(file))
+    }
+
+    const result = await AuthService.changeuser(formData);
+    if (result.status === 200) {
+      user.setUser(result.data.user);
+    } else {
+      myalert.setMessage(result.data.message);
+    }
+
+    const resultAlbum = await AuthService.changeAlbum(formDataAlbum);
+    if (resultAlbum.status === 200) {
+      user.setUser(resultAlbum.data.user);
+    } else {
+      myalert.setMessage(resultAlbum.data.message);
+    }
+
+    if(result.status === 200 && resultAlbum.status === 200){
+      myalert.setMessage("Данные успешно сохранены");
     }
   }
 
@@ -256,19 +236,23 @@ const Profile = observer(() => {
     const { name, checked } = e.target;
     let data = profile.data
     let formErrors = profile.formErrors
+    let nullValid = profile.nullValid
     data[name] = checked
-    setProfile({ data, formErrors });
+    setProfile({ data, nullValid, formErrors });
   }
 
-  const onInputChange = (e) => {
+  const onInputChange = async (e) => {
     try {
       if (e.target.files[0].size < 5242880) {
         let newFile = e.target.files[0]
-        if(file.length !== 0){
-          setChangedLogo(true)
+        const blob = await fileToBlob(newFile);
+        let preview = {
+          fromServer: false,
+          file: URL.createObjectURL(blob),
+          id: generateUUID(),
+          blob
         }
-        setFile(newFile)
-        setChangedLogo(true)
+        setFile(preview)
       } else {
         myalert.setMessage("Превышен размер файла");
       }
@@ -278,16 +262,16 @@ const Profile = observer(() => {
   };
 
   const logo = () => {
-    if (file.length !== 0) {
+    if (file) {
       return (
         <span style={{ 'display': 'grid' }}>
           <MyImage
             className={"fotoSpec"}
             disabled={false}
-            src={imageUrl} />
+            src={file.file} />
           <div className="ImgSpecWrapper">
             <MyImage
-              src={imageUrl}
+              src={file.file}
               disabled={false}
               className={"fotoSpecBack"}
             />
@@ -370,8 +354,8 @@ const Profile = observer(() => {
 
     let num = Number(event.target.id)
     let el = sortedList[num]
-    if(el?.fromServer){
-      setDeletedList(((oldItems) => [...oldItems,el?.id]))
+    if (el?.fromServer) {
+      setDeletedList(((oldItems) => [...oldItems, el?.id]))
     }
     const list = sortedList.filter((item, i) =>
       i !== num)
@@ -398,9 +382,8 @@ const Profile = observer(() => {
           if (sizeSortedList + e.target.files[i].size < 5485760) {
             let file = e.target.files[i]
             const blob = await fileToBlob(file);
-            //file.id = Date.now() + Math.random()
             let preview = {
-              fromServer:false,
+              fromServer: false,
               file: URL.createObjectURL(blob),
               id: generateUUID(),
               blob
@@ -463,10 +446,10 @@ const Profile = observer(() => {
                   <td>Логотип</td>
                   <td>
                     {logo()}
-                    {file.length !== 0 ?
+                    {file ?
                       <div className='delLogoContainer mt-3' onClick={() => {
                         setDeletedLogo(true)
-                        setFile([])
+                        setFile()
                       }}>
                         <img
                           className="delProfileFoto"
@@ -505,9 +488,9 @@ const Profile = observer(() => {
                 <tr>
                   <td>Ссылка на видео(Rutube)</td>
                   <td><Form.Control
-                    name="name"
+                    name="rutube"
                     type="text"
-                    onChange={handleChangeRutube}
+                    onChange={handleChange}
                     defaultValue={user.user.rutube}
                   /><span className="errorMessage" style={{ color: "red" }}>{profile.formErrors.rutube}</span></td>
                 </tr>
@@ -584,22 +567,22 @@ const Profile = observer(() => {
                     />
                   </td>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td>Категории</td>
                   <td>
                     <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
                     <button className="myButtonMessage mt-1" onClick={() => setModalActiveCat(true)}>
                       Выбор
                     </button></td>
-                </tr>
-                <tr>
+                </tr> */}
+                {/* <tr>
                   <td>Регионы</td>
                   <td>
                     <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
                     <button className="myButtonMessage mt-1" onClick={() => setModalActiveReg(true)}>
                       Выбор
                     </button></td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td>
                     Получать уведомления на email:

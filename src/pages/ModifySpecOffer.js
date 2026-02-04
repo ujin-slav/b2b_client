@@ -1,566 +1,436 @@
 
-import React,{useState,useRef,useContext,useEffect} from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import ru from "date-fns/locale/ru"
 import RegInput from "../components/RegInput";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
-    Container,
-    Row,
-    Col,
-    Form,
-    Button,
-    InputGroup,
-    Card,
-    Table,
-  } from "react-bootstrap";
-import {upload} from "../http/askAPI";
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  InputGroup,
+  Card,
+  Table,
+} from "react-bootstrap";
+import { upload } from "../http/askAPI";
 import ModalCT from '../components/ModalCT';
 import EmailList from '../components/EmailList'
 import Fountaing from '../components/Fountaing'
 import RegionTree from '../components/RegionTree';
 import CategoryTree from '../components/CategoryTree';
 import SpecOfferService from '../services/SpecOfferService'
-import {Context} from "../index";
-import {getCategoryName} from '../utils/Convert'
+import { Context } from "../index";
+import { getCategoryName } from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
-import {observer} from "mobx-react-lite";
-import {useParams} from 'react-router-dom';
+import { observer } from "mobx-react-lite";
+import { useParams } from 'react-router-dom';
 import NoPermission from './NoPermission';
 import Captcha from "demos-react-captcha";
 import "../style.css";
-import {B2B_ROUTE} from "../utils/routes";
-import { XCircle} from 'react-bootstrap-icons';
+import { B2B_ROUTE } from "../utils/routes";
+import { XCircle } from 'react-bootstrap-icons';
 import bin from "../icons/bin.svg";
+import { generateUUID } from '../utils/getUID'
 
-const formValid = ({ data, formErrors }) => {
+const formValid = ({ data, nullValid, formErrors }) => {
   let valid = true;
 
   // validate form errors being empty
   Object.values(formErrors).forEach(val => {
-      val.length > 0 && (valid = false);
+    val.length > 0 && (valid = false);
   });
 
   // validate the form was filled out
-  Object.values(data).forEach(val => {
-      val === null && (valid = false);
-});
-
-return valid;
-};
-
-function blobCreationFromURL(inputURI) {
-  
-  var binaryVal;
-
-  // mime extension extraction
-  var inputMIME = inputURI.split(',')[0].split(':')[1].split(';')[0];
-
-  // Extract remaining part of URL and convert it to binary value
-  if (inputURI.split(',')[0].indexOf('base64') >= 0)
-      binaryVal = atob(inputURI.split(',')[1]);
-
-  // Decoding of base64 encoded string
-  else
-      binaryVal = unescape(inputURI.split(',')[1]);
-
-  // Computation of new string in which hexadecimal
-  // escape sequences are replaced by the character 
-  // it represents
-
-  // Store the bytes of the string to a typed array
-  var blobArray = [];
-  for (var index = 0; index < binaryVal.length; index++) {
-      blobArray.push(binaryVal.charCodeAt(index));
-  }
-
-  return new Blob([blobArray], {
-      type: inputMIME
-  });
-}
-
-
-const ModifySpecOffer = observer(() => {
-    var curr = new Date();
-    var date = curr.setDate(curr.getDate() + 30);
-    registerLocale("ru", ru)
-
-    const {user} = useContext(Context);  
-    const [captcha, setCaptcha] = useState(false);
-    const [submiting, setSubmiting] = useState(false)
-    const [startDate, setStartDate] = useState(date);
-    const [files, setFiles] = useState([])
-    const [modalActiveReg,setModalActiveReg] = useState(false)
-    const [modalActiveCat,setModalActiveCat] = useState(false)
-    const [modalActiveMember,setModalActiveMember] = useState(false)
-    const [checkedRegion,setCheckedRegion] = useState([]);
-    const [expandedRegion,setExpandedRegion] = useState([]);
-    const [checkedCat,setCheckedCat] = useState([]);
-    const [expandedCat,setExpandedCat] = useState([]);
-    const [permission, setPermission] = useState(true);
-    const [checkedEmail,setCheckedEmail] =  useState([]);
-    const [fileSize, setFileSize] = useState(0);
-    const {myalert} = useContext(Context);
-    const [error, setError] = useState()
-    const history = useHistory();
-    let sourceElement = null
-    const [sortedList, setSortedList] = useState([])
-    const {id} = useParams();
-
-    const[specOffer,setSpecOffer] = useState( {
-      data: {},
-      formErrors: {
-        Price: "",
-        Name: "",
-        Text: "",
+  Object.keys(nullValid).forEach(field => {
+    if (nullValid[field] === true) {
+      const value = data[field];
+      if (value === null || value === undefined || value === '') {
+        valid = false;
       }
     }
-    );
+  });
+  return valid;
+};
 
-    useEffect(() => {
-        SpecOfferService.getSpecOfferId({id}).then((result)=>{
-          if(result.status===200){
-              let priceData = result.data.price 
-              result = result.data.specoffer
-              let formErrors = specOffer.formErrors;
-              let data = Object.assign(specOffer.data, result, priceData);
-              setCheckedRegion(result?.Region);
-              setCheckedCat(result?.Category);
-              setSpecOffer({ data, formErrors});
-              if(result.Author!==user.user.id){
-                setPermission(false)
+function rutubeValidLink(url) {
+  url = url.trim().toLowerCase();
+
+  const regex = /rutube\.ru\/(?:video|play)\/([a-f0-9]{32})(?:$|\?|\/(?:$|\?))/i;
+
+  return regex.test(url);
+}
+
+const ModifySpecOffer = observer(() => {
+
+  const { user } = useContext(Context);
+  const [captcha, setCaptcha] = useState(false);
+  const [submiting, setSubmiting] = useState(false)
+  const [files, setFiles] = useState([])
+  const [permission, setPermission] = useState(true);
+  const { myalert } = useContext(Context);
+  const [error, setError] = useState()
+  const history = useHistory();
+  let sourceElement = null
+  const [sortedList, setSortedList] = useState([])
+  const { id } = useParams();
+
+  const [specOffer, setSpecOffer] = useState({
+    data: {},
+    nullValid: {
+      code: true,
+      text: true,
+    },
+    formErrors: {
+      Price: "",
+      Name: "",
+      Text: "",
+    }
+  }
+  );
+
+  useEffect(() => {
+    SpecOfferService.getSpecOfferId({ id }).then((result) => {
+      if (result.status === 200) {
+        result = result.data.specoffer
+        let formErrors = specOffer.formErrors;
+        let data = Object.assign(specOffer.data, result);
+        setSpecOffer({ data, formErrors });
+        if (result.Author !== user.user.id) {
+          setPermission(false)
+        }
+        result?.Files?.map((item, index) => {
+          fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
+            .then(res => res.blob())
+            .then(blob => {
+              let preview = {
+                fromServer: true,
+                file: URL.createObjectURL(blob),
+                id: item.originalname,
+                blob
               }
-              result?.Files?.map((item)=>{
-                fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
-                .then(res => res.blob()) 
-                .then(blob => {
-                  setSortedList(((oldItems) => [...oldItems,blob]))
-              })})
-          }else{
-              setError(result.data.errors)
-          }})
-    },[])
+              setSortedList(prev => {
+                const newList = [...prev];
+                newList[index] = preview;
+                return newList;
+              });
+            })
+        })
+      } else {
+        setError(result.data.errors)
+      }
+    })
+  }, [])
 
-    const handleDragStart = (event) => {
-      event.target.style.opacity = 0.5
-      sourceElement = event.target
-      event.dataTransfer.effectAllowed = 'move'
-    }
+  const handleDragStart = (event) => {
+    event.target.style.opacity = 0.5
+    sourceElement = event.target
+    event.dataTransfer.effectAllowed = 'move'
+  }
 
-    const handleDragOver = (event) => {
-      event.preventDefault()
-      event.dataTransfer.dropEffect = 'move' 
-    }
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }
 
-    const handleDragEnter = (event) => {
-      event.target.classList.add('over')    
-    }
-  
-    const handleDragLeave = (event) => {
-      event.target.classList.remove('over')
-    }
-  
-    const handleDrop = (event) => {
-      event.stopPropagation()
-      if (sourceElement !== event.target) {
-        const list = sortedList.filter((item, i) => 
-          i.toString() !== sourceElement.id)
-        const removed = sortedList.filter((item, i) => 
-          i.toString() === sourceElement.id)[0]
-        let insertAt = Number(event.target.id)
-  
-        let tempList = []
+  const handleDragEnter = (event) => {
+    event.target.classList.add('over')
+  }
 
-        if (insertAt >= list.length) {
-          tempList = list.slice(0).concat(removed)
-          setSortedList(tempList)
-          event.target.classList.remove('over')
-        } else
+  const handleDragLeave = (event) => {
+    event.target.classList.remove('over')
+  }
+
+  const handleDrop = (event) => {
+    event.stopPropagation()
+    if (sourceElement !== event.target) {
+      const list = sortedList.filter((item, i) =>
+        i.toString() !== sourceElement.id)
+      const removed = sortedList.filter((item, i) =>
+        i.toString() === sourceElement.id)[0]
+      let insertAt = Number(event.target.id)
+
+      let tempList = []
+
+      if (insertAt >= list.length) {
+        tempList = list.slice(0).concat(removed)
+        setSortedList(tempList)
+        event.target.classList.remove('over')
+      } else
         if ((insertAt < list.length)) {
-          tempList = list.slice(0,insertAt).concat(removed)
+          tempList = list.slice(0, insertAt).concat(removed)
 
           const newList = tempList.concat(list.slice(
             insertAt))
-  
+
           setSortedList(newList)
           event.target.classList.remove('over')
         }
-      }else
-      event.target.classList.remove('over') 
-    }
-  
-    const handleDragEnd = (event) => {
-      event.target.style.opacity = 1
-    }
-  
-    const handleChange = (event) => {
-      event.preventDefault()
-      const list = sortedList.map((item, i) => {
-        if (i !== Number(event.target.id)) { 
-          return item }
-        else return event.target.value   
-      })
-      setSortedList(list)
-    }
-    const handleDelete = (event,id) => {
-      event.preventDefault()
-      const list = sortedList.filter((item, i) => 
+    } else
+      event.target.classList.remove('over')
+  }
+
+  const handleDragEnd = (event) => {
+    event.target.style.opacity = 1
+  }
+
+  const handleChange = (event) => {
+    event.preventDefault()
+    const list = sortedList.map((item, i) => {
+      if (i !== Number(event.target.id)) {
+        return item
+      }
+      else return event.target.value
+    })
+    setSortedList(list)
+  }
+
+  const handleDelete = (event, id) => {
+    event.preventDefault()
+    const list = sortedList.filter((item, i) =>
       i !== Number(event.target.id))
-      setSortedList(list)
+    setSortedList(list)
 
-      URL.revokeObjectURL(files.find(item=>item.id===id))
-      const newFiles = files.filter((item,index,array)=>item.id!==id);
-      setFiles(newFiles);
+    URL.revokeObjectURL(files.find(item => item.id === id))
+    const newFiles = files.filter((item, index, array) => item.id !== id);
+    setFiles(newFiles);
 
-      console.log(id)
-    }
+    console.log(id)
+  }
 
-    const fileToBlob = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const blob = new Blob([reader.result], { type: file.type });
-          resolve(blob);
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
-      });
-    }
-    
-    const onInputChange = async (e) => {
-      if(files.length+e.target.files.length<9){
-        for(let i = 0; i < e.target.files.length; i++) { 
-          try{
-            if(fileSize + e.target.files[i].size < 5242880){
-              let file = e.target.files[i]
-              const blob = await fileToBlob(file);
-              file.id = Date.now() + Math.random()
-              setFileSize(fileSize + file.size)
-              setSortedList(((oldItems) => [...oldItems,blob]))
-              setFiles(((oldItems) => [...oldItems, file]))
-            } else {
-              myalert.setMessage("Превышен размер файлов");
-            }  
-          }catch(e){
-            console.log(e)
-          }
-        }
-      }else{
-        myalert.setMessage("Превышено количество файлов");
-      }
-    };
-    
-    const getImageURL = (id) => {
-      let file = files.find(item=>item.id===id)
-      if(file){
-        return URL.createObjectURL(file)
-      }else{
-        return URL.createObjectURL(id) 
-      }
-    }
+  const fileToBlob = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const blob = new Blob([reader.result], { type: file.type });
+        resolve(blob);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
 
-    const listItems = () => {
-
-      return sortedList.map((item, i) => {
-        return(
-              <div key={i} className='dnd-list mt-3'>
-                <div className='fotoContainer'>
-                    <div className="delSpecOfferContainer">
-                        <img 
-                            className="delSpecOffer" 
-                            src={bin}
-                            id={i}
-                            onClick={(event)=>handleDelete(event,sortedList[i])}
-                        /> 
-                    </div>
-                    <img 
-                    id={i}
-                    draggable='true' 
-                    onDragStart={handleDragStart} 
-                    onDragOver={handleDragOver} 
-                    onDragEnter={handleDragEnter}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onDragEnd={handleDragEnd}
-                    onChange={handleChange}
-                    className="foto mx-2"  src={getImageURL(sortedList[i])} /> 
-                </div>
-              </div>
-        )
-      }
-      )
-    }
-  
-    const handleChangeControl = e => {
-      e.preventDefault();
-      const { name, value } = e.target;
-      let formErrors = specOffer.formErrors;
-      let data = specOffer.data
-      data[name] = value;
-      
-      switch (name) {
-        case "Name":
-          formErrors.Name =
-            value.length < 3 ? "минимум 3 символа" : "";
-          break;   
-        case "Text":
-          formErrors.Text =
-            value.length < 3 ? "минимум 3 символа" : "";
-          break;
-        case "Price":
-          formErrors.Price =
-            value <= 0 ? "Цена должна быть больше ноля" : "";
-          break;
-        default:
-          break;
-      }
-      setSpecOffer({ data, formErrors});
-    }
-
-    const blobToFile=(item)=>{
-      return new File([item],"load",{type:item.type})
-    }
-
-    const onSubmit = async(e) => {
-      e.preventDefault();
-      if(captcha){
-        if (formValid(specOffer)) {
-          setSubmiting(true)
-          const data = new FormData();
-          sortedList.forEach((item)=>{
-            data.append(
-              "file", 
-              blobToFile(item)
-            )
-          });
-          data.append("ID", id)
-          data.append("Author", user.user.id)
-          data.append("Name", specOffer.data.Name)
-          data.append("Telefon", specOffer.data.Telefon)
-          data.append("Contact", specOffer.data.Contact)
-          data.append("EndDateOffers", specOffer.data.EndDateOffers)
-          data.append("Text", specOffer.data.Text)
-          data.append("Price", specOffer.data.Price)
-          data.append("Code", specOffer.data.Code)
-          data.append("Balance", specOffer.data.Balance)
-          data.append("Category", JSON.stringify(checkedCat))
-          data.append("Region", JSON.stringify(checkedRegion))
-          const result = await SpecOfferService.modifySpecOffer(data)
-          if (result.status===200){
-            myalert.setMessage("Предложение успешно изменено");
-            //history.push(B2B_ROUTE)
+  const onInputChange = async (e) => {
+    const sizeSortedList = sortedList.reduce((sum, val) => sum + val?.blob?.size, 0)
+    if (sortedList.length + e.target.files.length < 9) {
+      for (let i = 0; i < e.target.files.length; i++) {
+        try {
+          if (sizeSortedList + e.target.files[i].size < 5485760) {
+            let file = e.target.files[i]
+            const blob = await fileToBlob(file);
+            let preview = {
+              fromServer: false,
+              file: URL.createObjectURL(blob),
+              id: generateUUID(),
+              blob
+            }
+            setSortedList(((oldItems) => [...oldItems, preview]))
           } else {
-            myalert.setMessage(result?.data?.message)
+            myalert.setMessage("Превышен размер файлов");
           }
-          setSubmiting(false)
-        } else {
-          myalert.setMessage("Заполнены не все поля предложения.");
+        } catch (e) {
+          console.log(e)
         }
-      }else{
-        console.error("FORM INVALID");
-        myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
       }
+    } else {
+      myalert.setMessage("Превышено количество файлов");
     }
+  };
 
-    const handleChangeCaptcha = (value) => {
-      if(value){
-        setCaptcha(true)
-      }
-    }
+  const listItems = () => {
 
-    if(error){
-      return(
-          <div>
-            <Container
-                    className="d-flex justify-content-center align-items-center"
-                    style={{height: window.innerHeight - 54}}
-                    >
-                <Card style={{width: 600}} className="p-5 ">
-                    <h5>Спец.предложение не существует, или удалено.</h5>
-                </Card> 
-            </Container>
+    return sortedList.map((item, i) => {
+      return (
+        <div key={i} className='dnd-list mt-3'>
+          <div className='fotoContainer'>
+            <div className="delSpecOfferContainer">
+              <img
+                className="delSpecOffer"
+                src={bin}
+                id={i}
+                onClick={(event) => handleDelete(event, sortedList[i])}
+              />
+            </div>
+            <img
+              id={i}
+              draggable='true'
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onDragEnd={handleDragEnd}
+              onChange={handleChange}
+              className="foto mx-2" src={sortedList[i]?.file} />
           </div>
+        </div>
       )
     }
+    )
+  }
 
-    if(!permission){
-      return(
-        <NoPermission/>
-      )
+  const handleChangeControl = e => {
+    e.preventDefault();
+    const { name, value } = e.target
+    let formErrors = specOffer.formErrors
+    let nullValid = specOffer.nullValid
+    let data = specOffer.data
+    data[name] = value;
+
+    switch (name) {
+      case "text":
+        formErrors.Text =
+          value.length < 3 ? "минимум 3 символа" : "";
+        break;
+      case "code":
+        formErrors.Code =
+          value.length < 3 ? "минимум 3 символа" : "";
+        break;
+      case "rutube":
+        formErrors.Rutube =
+          !rutubeValidLink(value) && value.length > 0 ? "ссылка не действительна" : "";
+        break;
+      default:
+        break;
     }
+    setSpecOffer({ data, nullValid, formErrors });
+  }
 
+  const blobToFile = (item) => {
+    return new File([item], "load", { type: item.type })
+  }
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (captcha) {
+      if (formValid(specOffer)) {
+        setSubmiting(true)
+        const data = new FormData();
+        sortedList.forEach((item) => {
+          data.append(
+            "file",
+            blobToFile(item)
+          )
+        });
+        data.append("ID", id)
+        data.append("Author", user.user.id)
+        data.append("Text", specOffer.data.Text)
+        data.append("Code", specOffer.data.Code)
+        const result = await SpecOfferService.modifySpecOffer(data)
+        if (result.status === 200) {
+          myalert.setMessage("Предложение успешно изменено");
+          //history.push(B2B_ROUTE)
+        } else {
+          myalert.setMessage(result?.data?.message)
+        }
+        setSubmiting(false)
+      } else {
+        myalert.setMessage("Заполнены не все поля предложения.");
+      }
+    } else {
+      console.error("FORM INVALID");
+      myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+    }
+  }
+
+  const handleChangeCaptcha = (value) => {
+    if (value) {
+      setCaptcha(true)
+    }
+  }
+
+  if (error) {
     return (
-        <Container>
-          <h3>Редактировать спец. предложение</h3> 
-          <Table>
-            <col style={{"width":"15%"}}/>
-          	<col style={{"width":"85%"}}/>
-                        <tbody>
-                            <tr>
-                            <td>Название</td>
-                            <td><Form.Control
-                                  type="text"
-                                  name="Name"
-                                  onChange={handleChangeControl}
-                                  defaultValue={specOffer.data.Name}
-                              />
-                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Name}</span></td>
-                            </tr>
-                            <tr>
-                            <td>Цена</td>
-                            <td><Form.Control
-                                  type="number" 
-                                  name="Price"
-                                  step=".01"
-                                  onChange={handleChangeControl}
-                                  defaultValue={specOffer.data.Price}
-                              />
-                              <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Price}</span></td>
-                            </tr>
-                            <tr>
-                            <td>Дата окончания предложения</td>
-                            <td>
-                            <DatePicker
-                                  locale="ru"
-                                  selected={startDate}
-                                  name="EndDateOffers"
-                                  timeInputLabel="Время:"
-                                  dateFormat="dd/MM/yyyy HH:mm"
-                                  onChange={(date) => {setStartDate(date);specOffer.data.EndDateOffers=date}}
-                                  showTimeInput
-                                />
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>Артикул</td>
-                            <td> <Form.Control
-                                name="Code"
-                                onChange={handleChangeControl}
-                                defaultValue={specOffer.data.Code}
-                                placeholder="не обязательно"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Остаток</td>
-                            <td> <Form.Control
-                                type="number" 
-                                step=".01"
-                                name="Balance"
-                                defaultValue={specOffer.data.Balance}
-                                onChange={handleChangeControl}
-                                placeholder="не обязательно"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Текст</td>
-                            <td><Form.Control
-                                  name="Text"
-                                  defaultValue={specOffer.data.Text}
-                                  onChange={handleChangeControl}
-                                  as="textarea"
-                              />
-                               <span className="errorMessage" style={{color:"red"}}>{specOffer.formErrors.Text}</span>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>Контактное лицо</td>
-                            <td> <Form.Control
-                                name="Telefon"
-                                onChange={handleChangeControl}
-                                defaultValue={user.user.name}
-                                placeholder="Контактный телефон"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Контактный телефон</td>
-                            <td> <Form.Control
-                                name="Telefon"
-                                onChange={handleChangeControl}
-                                defaultValue={user.user.telefon}
-                                placeholder="Контактный телефон"
-                            /></td>
-                            </tr>
-                            <tr>
-                            <td>Категории</td>
-                            <td>
-                            <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveCat(true)}>
-                                Выбор
-                                </Button></td>
-                            </tr>
-                            <tr>
-                            <td>Регионы</td>
-                            <td>
-                            <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                                <Button variant="outline-secondary" id="button-addon2" onClick={()=>setModalActiveReg(true)}>
-                                Выбор
-                                </Button></td>
-                            </tr>
-                            <tr>
-                            <td>Фото(будут храниться не более 30 дней, не более 5 файлов по 5Mb)</td>
-                            <td>
-                              Разместите фото в нужном порядке, первое станет заглавным.
-                            <input type="file"
-                                    onChange={onInputChange}
-                                    accept="image/*"
-                                    className="form-control"
-                                    multiple
-                            />
-                                    <div className='parentSpecOffer'>
-                                      {listItems()}
-                                    </div>
-                              </td>
-                            </tr>
-                            <tr>
-                            </tr>
-                            
-                        </tbody>
-           </Table>   
-           <Fountaing show={submiting}/>
-           <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы"/>                
-            <button
-              onClick={onSubmit}
-              className="myButtonMessage mt-3"
-            >
-            Сохранить
-            </button>
-            <ModalCT 
-                      header="Регионы" 
-                      active={modalActiveReg} 
-                      setActive={setModalActiveReg}
-                      text={
-                        <div className='mx-3 pb-2 text-warning'>
-                        Не более 3
-                        </div>
-                      }  
-                      component={<RegionTree 
-                      checked={checkedRegion} expanded={expandedRegion} max={4}
-                      setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-            />}/>
-            <ModalCT 
-                      header="Категории" 
-                      active={modalActiveCat} 
-                      setActive={setModalActiveCat}
-                      text={
-                        <div className='mx-3 pb-2 text-warning'>
-                        Не более 3
-                        </div>
-                      }  
-                      component={<CategoryTree 
-                      checked={checkedCat} expanded={expandedCat} max={4}
-                      setChecked={setCheckedCat} setExpanded={setExpandedCat}
-            />}/>
-          <ModalCT 
-                header="Участники" 
-                active={modalActiveMember}  
-                component={<EmailList checked={checkedEmail} setChecked={setCheckedEmail}/>}
-                setActive={setModalActiveMember} 
-          />
-          </Container>
-    );
+      <div>
+        <Container
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: window.innerHeight - 54 }}
+        >
+          <Card style={{ width: 600 }} className="p-5 ">
+            <h5>Спец.предложение не существует, или удалено.</h5>
+          </Card>
+        </Container>
+      </div>
+    )
+  }
+
+  if (!permission) {
+    return (
+      <NoPermission />
+    )
+  }
+
+
+  return (
+    <Container>
+      <h3>Редактировать спец. предложение</h3>
+      <Table>
+        <col style={{ "width": "15%" }} />
+        <col style={{ "width": "85%" }} />
+        <tbody>
+          <tr>
+            <td>Артикул</td>
+            <td> <Form.Control
+              name="Code"
+              onChange={handleChangeControl}
+              defaultValue={specOffer.data.Code}
+              placeholder="не обязательно"
+            /></td>
+          </tr>
+          <tr>
+            <td>Описание</td>
+            <td><Form.Control
+              name="Text"
+              defaultValue={specOffer.data.Text}
+              onChange={handleChangeControl}
+              as="textarea"
+            />
+              <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Text}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Ссылка на видео(Rutube)</td>
+            <td><Form.Control
+              name="rutube"
+              placeholder="Ссылка"
+              onChange={handleChangeControl}
+            />
+              <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Rutube}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Фото(не более 5 файлов по 5Mb)</td>
+            <td>
+              Разместите фото в нужном порядке, первое станет заглавным.
+              <input type="file"
+                onChange={onInputChange}
+                accept="image/*"
+                className="form-control"
+                multiple
+              />
+              <div className='parentSpecOffer'>
+                {listItems()}
+              </div>
+            </td>
+          </tr>
+          <tr>
+          </tr>
+
+        </tbody>
+      </Table>
+      <Fountaing show={submiting} />
+      <Captcha onChange={handleChangeCaptcha} placeholder="Введите символы" />
+      <button
+        onClick={onSubmit}
+        className="myButtonMessage mt-3"
+      >
+        Сохранить
+      </button>
+    </Container>
+  );
 });
 
 export default ModifySpecOffer;
