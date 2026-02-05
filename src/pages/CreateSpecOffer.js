@@ -267,9 +267,9 @@ const CreateSpecOffer = observer(() => {
     setSubmiting(true)
     const data = new FormData();
     data.append("author", user.user.id)
-    data.append("text", specOffer.data.Text)
-    data.append("code", specOffer.data.Code)
-    data.append("rutube", specOffer.data.Rutube)
+    data.append("text", specOffer.data.text)
+    data.append("code", specOffer.data.code)
+    data.append("rutube", specOffer.data.rutube)
     data.append("sortedList",
       JSON.stringify(sortedList.map(item => item.id))
     )

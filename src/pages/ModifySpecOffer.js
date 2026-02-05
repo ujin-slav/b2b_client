@@ -102,7 +102,7 @@ const ModifySpecOffer = observer(() => {
         if (result.Author !== user.user.id) {
           setPermission(false)
         }
-        result?.Files?.map((item, index) => {
+        result?.FilesMini?.map((item, index) => {
           fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
             .then(res => res.blob())
             .then(blob => {
@@ -197,8 +197,6 @@ const ModifySpecOffer = observer(() => {
     URL.revokeObjectURL(files.find(item => item.id === id))
     const newFiles = files.filter((item, index, array) => item.id !== id);
     setFiles(newFiles);
-
-    console.log(id)
   }
 
   const fileToBlob = (file) => {
@@ -306,34 +304,39 @@ const ModifySpecOffer = observer(() => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (captcha) {
-      if (formValid(specOffer)) {
-        setSubmiting(true)
-        const data = new FormData();
-        sortedList.forEach((item) => {
-          data.append(
-            "file",
-            blobToFile(item)
-          )
-        });
-        data.append("ID", id)
-        data.append("Author", user.user.id)
-        data.append("Text", specOffer.data.Text)
-        data.append("Code", specOffer.data.Code)
-        const result = await SpecOfferService.modifySpecOffer(data)
-        if (result.status === 200) {
-          myalert.setMessage("Предложение успешно изменено");
-          //history.push(B2B_ROUTE)
-        } else {
-          myalert.setMessage(result?.data?.message)
-        }
-        setSubmiting(false)
-      } else {
-        myalert.setMessage("Заполнены не все поля предложения.");
-      }
-    } else {
-      console.error("FORM INVALID");
       myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+      return
     }
+    if (formValid(specOffer)) {
+      myalert.setMessage("Заполнены не все поля предложения.");
+    }
+    setSubmiting(true)
+    const data = new FormData();
+
+    data.append("ID", id)
+    data.append("Author", user.user.id)
+    data.append("Text", specOffer.data.Text)
+    data.append("Code", specOffer.data.Code)
+    data.append("sortedList",
+    JSON.stringify(sortedList.map(item => item.id))
+    )
+    sortedList.forEach((item) => {
+      if (!item?.fromServer) {
+        data.append(
+          "file",
+          blobToFile(item)
+        )
+      }
+    })
+
+    const result = await SpecOfferService.modifySpecOffer(data)
+    if (result.status === 200) {
+      myalert.setMessage("Предложение успешно изменено");
+      //history.push(B2B_ROUTE)
+    } else {
+      myalert.setMessage(result?.data?.message)
+    }
+    setSubmiting(false)
   }
 
   const handleChangeCaptcha = (value) => {

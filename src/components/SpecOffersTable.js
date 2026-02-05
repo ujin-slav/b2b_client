@@ -55,7 +55,6 @@ const SpecOffersTable = observer(() => {
                         item.indexFoto = 0
                     })
                 }
-                console.log(data)
                 setSpecOffers(data.docs)
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
@@ -312,11 +311,11 @@ const SpecOffersTable = observer(() => {
                     <span className="createNew">Создать новое</span>
                     <div className='parentSpec'>
                         {specOffers.map((item, index) => {
-                            console.log(item)
                             return (
                                 <div
                                     className='childSpec'
-                                    ref={el => imgs.current[index] = el} >
+                                    ref={el => imgs.current[index] = el} 
+                                    onClick={() => history.push(CARDSPECOFFER + '/' + item._id)}>    
                                     {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
                                         <img
                                             className="fotoSpec"

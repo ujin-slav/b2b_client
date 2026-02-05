@@ -1,254 +1,225 @@
-import React,{useState,useEffect,useContext} from 'react';
-import {Container,Col,Row,Card} from "react-bootstrap";
+import React, { useState, useEffect, useContext } from 'react';
+import { Container, Col, Row, Card } from "react-bootstrap";
 import SpecOfferService from '../services/SpecOfferService'
-import {useParams} from 'react-router-dom';
-import {observer} from "mobx-react-lite";
+import { useParams } from 'react-router-dom';
+import { observer } from "mobx-react-lite";
 import FotoSlider from '../components/FotoSlider';
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
 import MyImage from '../components/MyImage'
 import SimilarSpecOffers from '../components/SimilarSpecOffers'
-import { categoryNodes } from '../config/Category';
-import { regionNodes } from '../config/Region';
-import {getCategoryName} from '../utils/Convert'
-import {Context} from "../index";
+import { Context } from "../index";
 import SpecOfferAskFiz from '../components/SpecOfferAskFiz';
 import SpecOfferAskOrg from '../components/SpecOfferAskOrg';
-import {useHistory,useLocation} from 'react-router-dom'
-import { CARDSPECOFFER,ORGINFO } from '../utils/routes';
-import { Cart4} from 'react-bootstrap-icons';
-import {CREATEPRICEASK, CREATEPRICEASKFIZ} from "../utils/routes";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useHistory, useLocation } from 'react-router-dom'
+import { CARDSPECOFFER, ORGINFO } from '../utils/routes';
 import noImage from "../icons/noImage.svg";
 import rutube from "../icons/rutube.svg";
 import cart from "../icons/cart.svg";
 import video from "../icons/video.svg";
+import {fetchUser} from "../http/askAPI";
 
 const CardSpecOffer = observer(() => {
-    const {user} = useContext(Context);
+    const { user } = useContext(Context);
     const [priceID, setPriceID] = useState();
     const [showSlider, setShowSlider] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [checkedRegion,setCheckedRegion] = useState([]);
-    const [checkedCat,setCheckedCat] = useState([]);
-    const {id} = useParams();
+    const [author, setAuthor] = useState();
+    const { id } = useParams();
     const [typePlayer, setTypePlayer] = useState(1);
     const [fotoFocus, setFotoFocus] = useState(0);
     const [videoFocus, setVideoFocus] = useState(0);
     const [specOffer, setSpecOffer] = useState();
     const [rutube, setRutube] = useState();
-    const [modalActiveMessage,setModalActiveMessage] = useState(false)
-    const [modalActiveAskFiz,setModalActiveAskFiz] = useState(false)
-    const [modalActiveAskOrg,setModalActiveAskOrg] = useState(false)
+    const [modalActiveMessage, setModalActiveMessage] = useState(false)
+    const [modalActiveAskFiz, setModalActiveAskFiz] = useState(false)
+    const [modalActiveAskOrg, setModalActiveAskOrg] = useState(false)
     const [error, setError] = useState()
     const history = useHistory()
-    const location = useLocation(); 
+    const location = useLocation();
 
     useEffect(() => {
-        SpecOfferService.getSpecOfferId({id}).then((result)=>{
-            if(result.status===200 && result.data){
-                setPriceID(result.data.price?._id)
+        SpecOfferService.getSpecOfferId({ id }).then((result) => {
+            if (result.status === 200 && result.data) {
                 setSpecOffer(result.data?.specoffer)
-                setCheckedRegion(result.data?.specoffer.Region)
-                setCheckedCat(result.data.specoffer?.Category)
                 setRutube(result.data?.rutube)
-            }else{
+                fetchUser(result.data?.specoffer?.Author).then((response)=>{
+                    setAuthor(response?.data)
+                })
+            } else {
                 setError(result.data.errors)
             }
-        }).finally(()=>setLoading(false))    
-    },[location]);
+        }).finally(() => setLoading(false))
+    }, [location]);
 
-    if (loading){
-        return(
+    if (loading) {
+        return (
             <p className="waiting">
                 <div class="loader">Loading...</div>
             </p>
         )
     }
 
-    const redirect=(e,id)=>{
-        window.scrollTo(0, 0) 
+    const redirect = (e, id) => {
+        window.scrollTo(0, 0)
         history.push(CARDSPECOFFER + '/' + id)
     }
 
-    const cartPrice = ()=>{
-        return(
+    const cartPrice = () => {
+        return (
             <div>
                 <div className="display-5">
                     {specOffer?.Name}
                 </div>
                 <div className="cardSpecPrice">
-                     {specOffer?.Price} ₽
-                </div>  
-                <div>  
+                    {specOffer?.Price} ₽
+                </div>
+                <div>
                     <button className="myButtonMessage mt-4"
-                            onClick={()=>{
-                                if(user.isAuth){
-                                    setModalActiveAskOrg(true)
-                                }else{
-                                    setModalActiveAskFiz(true)
-                                }
-                            }}>
-                                Сделать заявку
-                            <img src={cart} className="specOfferCart"/>
+                        onClick={() => {
+                            if (user.isAuth) {
+                                setModalActiveAskOrg(true)
+                            } else {
+                                setModalActiveAskFiz(true)
+                            }
+                        }}>
+                        Сделать заявку
+                        <img src={cart} className="specOfferCart" />
                     </button>
-                </div> 
+                </div>
             </div>
         )
     }
 
-    const returnPlayer = () =>{
-        if(typePlayer==1){
-            return(
+    const returnPlayer = () => {
+        if (typePlayer == 1) {
+            return (
                 <div>
-                    <iframe 
-                        width="600" 
-                        height="337" 
-                        src="https://rutube.ru/play/embed/7716bd3e665725c3c008ae7ab4ff02e2" 
-                        frameBorder="0" allow="clipboard-write; autoplay" 
+                    <iframe
+                        width="600"
+                        height="337"
+                        src="https://rutube.ru/play/embed/7716bd3e665725c3c008ae7ab4ff02e2"
+                        frameBorder="0" allow="clipboard-write; autoplay"
                         webkitAllowFullScreen mozallowfullscreen allowFullScreen>
-                    </iframe>  
+                    </iframe>
                 </div>
             )
         }
-        return(
+        return (
             <>
-                {!specOffer?.Files || specOffer?.Files.length==0 ? 
-                    <img src={noImage}/>
+                {!specOffer?.Files || specOffer?.Files.length == 0 ?
+                    <img src={noImage} />
                     :
-                    <MyImage className='fotoSpecCard' 
-                    onClick={()=>setShowSlider(true)}
-                    src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename}/>
+                    <MyImage className='fotoSpecCard'
+                        onClick={() => setShowSlider(true)}
+                        src={process.env.REACT_APP_API_URL + `getpic/` + specOffer?.Files[fotoFocus]?.filename} />
                 }
             </>
         )
     }
 
-    if(error){
-        return(
+    if (error) {
+        return (
             <div>
-              <Container
-                      className="d-flex justify-content-center align-items-center"
-                      style={{height: window.innerHeight - 54}}
-                      >
-                  <Card style={{width: 600}} className="p-5 ">
-                      <h5>Спец.предложение не существует, или удалено.</h5>
-                  </Card> 
-              </Container>
+                <Container
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: window.innerHeight - 54 }}
+                >
+                    <Card style={{ width: 600 }} className="p-5 ">
+                        <h5>Спец.предложение не существует, или удалено.</h5>
+                    </Card>
+                </Container>
             </div>
         )
-      }
-  
+    }
+
     return (
         <Container className="mx-auto my-4">
-           <Row>
-            <Col>
-                {returnPlayer()}
-                <div className='parentSpec'>
-                {specOffer?.FilesMini?.map((item,index)=>
-                    <div key={index} className='albumSpec'>
-                        <MyImage className='miniFotoSpecCard'
-                        onClick={()=>{setFotoFocus(index);setTypePlayer(0)}} 
-                        src={process.env.REACT_APP_API_URL + `getpic/` + item.filename}/>
+            <Row>
+                <Col>
+                    {returnPlayer()}
+                    <div className='parentSpec'>
+                        {specOffer?.FilesMini?.map((item, index) =>
+                            <div key={index} className='albumSpec'>
+                                <MyImage className='miniFotoSpecCard'
+                                    onClick={() => { setFotoFocus(index); setTypePlayer(0) }}
+                                    src={process.env.REACT_APP_API_URL + `getpic/` + item.filename} />
+                            </div>
+                        )}
+                        <div class="d-flex align-items-center position-relative" >
+                            <img
+                                className='miniFotoSpecCardSVG position-absolute'
+                                src={video}
+                                onClick={() => { setVideoFocus(0); setTypePlayer(1) }}
+                            />
+                            <img className='miniFotoSpecCard' src={rutube?.thumbnail_url} />
+                        </div>
                     </div>
-                )}
-                <div class="d-flex align-items-center position-relative" >
-                    <img 
-                        className='miniFotoSpecCardSVG position-absolute' 
-                        src={video}
-                        onClick={()=>{setVideoFocus(0);setTypePlayer(1)}} 
-                    />
-                    <img className='miniFotoSpecCard' src={rutube?.thumbnail_url}/>
-                </div>
-                </div>
-                {window.innerWidth < 650 ? cartPrice() : <div></div>}
-                <div className="specContact">
-                    <span>Описание</span>
-                </div>
-                <div className="specContactData">
-                    <span>{specOffer?.Text}</span>
-                </div>
-                <div className="specContact">
-                    <span>Категории</span>
-                </div>
-                <div className="specContactDataCategory">
-                    <span>{getCategoryName(checkedCat, categoryNodes).join(", ")}</span>
-                </div>
-                <div className="specContact">
-                    <span>Регионы</span>
-                </div>
-                <div className="specContactDataRegion">
-                    <span>{getCategoryName(checkedRegion, regionNodes).join(", ")}</span>
-                </div>
-            </Col>
-            <Col>
-                {window.innerWidth > 650 ? cartPrice() : <div></div>}
-                {user.isAuth ?
-                <div>
-                    <button className="myButtonMessage mt-2"
-                    onClick={()=>setModalActiveMessage(true)}>
-                      Написать сообщение
-                     <i className="col-2 fa fa-solid fa-paper-plane colorBlue"/>
-                    </button>
-                </div>
-                :
-                <div></div>
-                }
-                <div className="specContact">
-                    <span>Организация:</span>
-                </div>
-                <div className="specContactData">
-                    <a href="javascript:void(0)" onClick={()=>history.push(ORGINFO + '/' + specOffer.Author)}>
-                    <span>{specOffer.NameOrg} ИНН {specOffer.Inn}</span>
-                    </a>
-                </div>
-                <div className="specContact">
-                    <span>Контактное лицо:</span>
-                </div>
-                <div className="specContactData">
-                    <span>{specOffer.Contact}</span>
-                </div>
-                <div className="specContact">
-                    <span>Контактный телефон:</span>
-                </div>
-                <div className="specContactData">
-                    <span>{specOffer.Telefon}</span>
-                </div>
-            </Col>
-           </Row> 
-           <SimilarSpecOffers 
+                    {window.innerWidth < 650 ? cartPrice() : <div></div>}
+                    <div className="specContact">
+                        <span>Описание</span>
+                    </div>
+                    <div className="specContactData">
+                        <span>{specOffer?.Text}</span>
+                    </div>
+                </Col>
+                <Col>
+                    {window.innerWidth > 650 ? cartPrice() : <div></div>}
+                    {user.isAuth ?
+                        <div>
+                            <button className="myButtonMessage mt-2"
+                                onClick={() => setModalActiveMessage(true)}>
+                                Написать сообщение
+                                <i className="col-2 fa fa-solid fa-paper-plane colorBlue" />
+                            </button>
+                        </div>
+                        :
+                        <div></div>
+                    }
+                    <div className="specContactData mt-3">
+                        <div className="d-flex">
+                            <img className="avatarSuggestion" src={process.env.REACT_APP_API_URL + `getlogo/` + author?.logo?.filename} />
+                            <div className="px-2">
+                                <div>{author?.name.substring(0, 100)}</div>
+                                <div>{author?.nameOrg.substring(0, 100)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </Col>
+            </Row>
+            {/* <SimilarSpecOffers 
                     categoryFilter={checkedCat}
                     regionFilter={checkedRegion} 
                     redirect={redirect}
+            /> */}
+            <FotoSlider
+                fotoArray={specOffer?.Files}
+                setShow={setShowSlider}
+                show={showSlider}
+                fotoFocus={fotoFocus}
+                setFotoFocus={setFotoFocus}
             />
-           <FotoSlider 
-            fotoArray={specOffer?.Files}
-            setShow={setShowSlider}
-            show={showSlider}
-            fotoFocus={fotoFocus}
-            setFotoFocus={setFotoFocus}
-           />
-            <ModalCT 
-            header="Сообщение" 
-            active={modalActiveMessage}
-            component={<MessageBox author={specOffer?.Author} setActive={setModalActiveMessage}/>}
-            setActive={setModalActiveMessage}   
+            <ModalCT
+                header="Сообщение"
+                active={modalActiveMessage}
+                component={<MessageBox author={specOffer?.Author} setActive={setModalActiveMessage} />}
+                setActive={setModalActiveMessage}
             />
-            <ModalCT 
-            header="Заказ" 
-            active={modalActiveAskFiz}
-            component={<SpecOfferAskFiz 
-                specOffer={specOffer}
-                setActive={setModalActiveAskFiz}/>}
-            setActive={setModalActiveAskFiz}   
+            <ModalCT
+                header="Заказ"
+                active={modalActiveAskFiz}
+                component={<SpecOfferAskFiz
+                    specOffer={specOffer}
+                    setActive={setModalActiveAskFiz} />}
+                setActive={setModalActiveAskFiz}
             />
-            <ModalCT 
-            header="Заказ" 
-            active={modalActiveAskOrg}
-            component={<SpecOfferAskOrg 
-                specOffer={specOffer}
-                setActive={setModalActiveAskOrg}/>}
-            setActive={setModalActiveAskOrg}   
+            <ModalCT
+                header="Заказ"
+                active={modalActiveAskOrg}
+                component={<SpecOfferAskOrg
+                    specOffer={specOffer}
+                    setActive={setModalActiveAskOrg} />}
+                setActive={setModalActiveAskOrg}
             />
         </Container>
     );
