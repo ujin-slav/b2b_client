@@ -76,16 +76,17 @@ const ModifySpecOffer = observer(() => {
   const history = useHistory();
   let sourceElement = null
   const [sortedList, setSortedList] = useState([])
+  const [deletedList, setDeletedList] = useState([])
   const { id } = useParams();
 
   const [specOffer, setSpecOffer] = useState({
     data: {},
     nullValid: {
-      code: true,
-      text: true,
+      Code: true,
+      Text: true,
     },
     formErrors: {
-      Price: "",
+      Rutube: "",
       Name: "",
       Text: "",
     }
@@ -96,9 +97,10 @@ const ModifySpecOffer = observer(() => {
     SpecOfferService.getSpecOfferId({ id }).then((result) => {
       if (result.status === 200) {
         result = result.data.specoffer
-        let formErrors = specOffer.formErrors;
+        let formErrors = specOffer.formErrors
+        let nullValid = specOffer.nullValid
         let data = Object.assign(specOffer.data, result);
-        setSpecOffer({ data, formErrors });
+        setSpecOffer({ data, nullValid, formErrors });
         if (result.Author !== user.user.id) {
           setPermission(false)
         }
@@ -298,27 +300,30 @@ const ModifySpecOffer = observer(() => {
   }
 
   const blobToFile = (item) => {
-    return new File([item], "load", { type: item.type })
+    return new File([item?.blob], item?.id, { type: item?.type })
   }
 
   const onSubmit = async (e) => {
-    e.preventDefault();
-    if (captcha) {
-      myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)");
+    e.preventDefault()
+
+    if (!captcha) {
+      myalert.setMessage("Неверно введены данные с картинки(CAPTCHA)")
       return
     }
-    if (formValid(specOffer)) {
-      myalert.setMessage("Заполнены не все поля предложения.");
+    if (!formValid(specOffer)) {
+      myalert.setMessage("Форма заполнена не верно")
+      return
     }
     setSubmiting(true)
     const data = new FormData();
 
     data.append("ID", id)
-    data.append("Author", user.user.id)
     data.append("Text", specOffer.data.Text)
     data.append("Code", specOffer.data.Code)
-    data.append("sortedList",
-    JSON.stringify(sortedList.map(item => item.id))
+    data.append("Rutube", specOffer.data.Rutube)
+    data.append("DeletedList", JSON.stringify(deletedList))
+    data.append("SortedList",
+      JSON.stringify(sortedList.map(item => item.id))
     )
     sortedList.forEach((item) => {
       if (!item?.fromServer) {
@@ -332,7 +337,6 @@ const ModifySpecOffer = observer(() => {
     const result = await SpecOfferService.modifySpecOffer(data)
     if (result.status === 200) {
       myalert.setMessage("Предложение успешно изменено");
-      //history.push(B2B_ROUTE)
     } else {
       myalert.setMessage(result?.data?.message)
     }
@@ -380,8 +384,9 @@ const ModifySpecOffer = observer(() => {
               name="Code"
               onChange={handleChangeControl}
               defaultValue={specOffer.data.Code}
-              placeholder="не обязательно"
-            /></td>
+            />
+              <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Code}</span>
+            </td>
           </tr>
           <tr>
             <td>Описание</td>
@@ -397,7 +402,7 @@ const ModifySpecOffer = observer(() => {
           <tr>
             <td>Ссылка на видео(Rutube)</td>
             <td><Form.Control
-              name="rutube"
+              name="Rutube"
               placeholder="Ссылка"
               onChange={handleChangeControl}
             />

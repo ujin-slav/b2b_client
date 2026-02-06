@@ -69,12 +69,7 @@ const Profile = observer(() => {
   });
 
   useEffect(() => {
-    if (user.user.category) {
-      setCheckedCat(Object.values(user.user.category))
-    }
-    if (user.user.region) {
-      setCheckedRegion(Object.values(user.user.region))
-    }
+
     let data = Object.assign(profile.data, user.user)
     let nullValid = profile.nullValid
     let formErrors = profile.formErrors
@@ -114,13 +109,6 @@ const Profile = observer(() => {
 
     }
   }, []);
-
-  const [modalActiveReg, setModalActiveReg] = useState(false)
-  const [modalActiveCat, setModalActiveCat] = useState(false)
-  const [checkedRegion, setCheckedRegion] = useState([]);
-  const [expandedRegion, setExpandedRegion] = useState([]);
-  const [checkedCat, setCheckedCat] = useState([]);
-  const [expandedCat, setExpandedCat] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -192,8 +180,6 @@ const Profile = observer(() => {
     formData.append("description", data.description)
     formData.append("rutube", data.rutube)
     formData.append("inn", data.inn)
-    formData.append("region", JSON.stringify(checkedRegion))
-    formData.append("category", JSON.stringify(checkedCat))
     formData.append("notiInvited", data.notiInvited)
     formData.append("notiMessage", data.notiMessage)
     formData.append("notiAsk", data.notiAsk)
@@ -567,22 +553,6 @@ const Profile = observer(() => {
                     />
                   </td>
                 </tr>
-                {/* <tr>
-                  <td>Категории</td>
-                  <td>
-                    <Card body>{getCategoryName(checkedCat, categoryNodes).join(", ")}</Card>
-                    <button className="myButtonMessage mt-1" onClick={() => setModalActiveCat(true)}>
-                      Выбор
-                    </button></td>
-                </tr> */}
-                {/* <tr>
-                  <td>Регионы</td>
-                  <td>
-                    <Card body>{getCategoryName(checkedRegion, regionNodes).join(", ")}</Card>
-                    <button className="myButtonMessage mt-1" onClick={() => setModalActiveReg(true)}>
-                      Выбор
-                    </button></td>
-                </tr> */}
                 <tr>
                   <td>
                     Получать уведомления на email:
@@ -651,32 +621,6 @@ const Profile = observer(() => {
           </Col>
         </Row>
       </Container>
-      <ModalCT
-        header="Регионы"
-        active={modalActiveReg}
-        setActive={setModalActiveReg}
-        text={
-          <div className='mx-3 pb-2 text-warning'>
-            Не более 3
-          </div>
-        }
-        component={<RegionTree
-          checked={checkedRegion} expanded={expandedRegion} max={4}
-          setChecked={setCheckedRegion} setExpanded={setExpandedRegion}
-        />} />
-      <ModalCT
-        header="Категории"
-        active={modalActiveCat}
-        setActive={setModalActiveCat}
-        text={
-          <div className='mx-3 pb-2 text-warning'>
-            Не более 3
-          </div>
-        }
-        component={<CategoryTree
-          checked={checkedCat} expanded={expandedCat} max={4}
-          setChecked={setCheckedCat} setExpanded={setExpandedCat}
-        />} />
     </div>
   );
 });

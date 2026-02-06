@@ -17,7 +17,7 @@ import noImage from "../icons/noImage.svg";
 import rutube from "../icons/rutube.svg";
 import cart from "../icons/cart.svg";
 import video from "../icons/video.svg";
-import {fetchUser} from "../http/askAPI";
+import { fetchUser } from "../http/askAPI";
 
 const CardSpecOffer = observer(() => {
     const { user } = useContext(Context);
@@ -30,7 +30,6 @@ const CardSpecOffer = observer(() => {
     const [fotoFocus, setFotoFocus] = useState(0);
     const [videoFocus, setVideoFocus] = useState(0);
     const [specOffer, setSpecOffer] = useState();
-    const [rutube, setRutube] = useState();
     const [modalActiveMessage, setModalActiveMessage] = useState(false)
     const [modalActiveAskFiz, setModalActiveAskFiz] = useState(false)
     const [modalActiveAskOrg, setModalActiveAskOrg] = useState(false)
@@ -42,8 +41,7 @@ const CardSpecOffer = observer(() => {
         SpecOfferService.getSpecOfferId({ id }).then((result) => {
             if (result.status === 200 && result.data) {
                 setSpecOffer(result.data?.specoffer)
-                setRutube(result.data?.rutube)
-                fetchUser(result.data?.specoffer?.Author).then((response)=>{
+                fetchUser(result.data?.specoffer?.Author).then((response) => {
                     setAuthor(response?.data)
                 })
             } else {
@@ -92,14 +90,12 @@ const CardSpecOffer = observer(() => {
     }
 
     const returnPlayer = () => {
-        if (typePlayer == 1) {
+        if (typePlayer == 1 && specOffer?.Rutube) {
             return (
                 <div>
-                    <iframe
-                        width="600"
-                        height="337"
-                        src="https://rutube.ru/play/embed/7716bd3e665725c3c008ae7ab4ff02e2"
-                        frameBorder="0" allow="clipboard-write; autoplay"
+                    <iframe width="600" height="337"
+                        src={specOffer?.Rutube}
+                        allow="clipboard-write; autoplay"
                         webkitAllowFullScreen mozallowfullscreen allowFullScreen>
                     </iframe>
                 </div>
@@ -146,14 +142,16 @@ const CardSpecOffer = observer(() => {
                                     src={process.env.REACT_APP_API_URL + `getpic/` + item.filename} />
                             </div>
                         )}
-                        <div class="d-flex align-items-center position-relative" >
-                            <img
-                                className='miniFotoSpecCardSVG position-absolute'
-                                src={video}
-                                onClick={() => { setVideoFocus(0); setTypePlayer(1) }}
-                            />
-                            <img className='miniFotoSpecCard' src={rutube?.thumbnail_url} />
-                        </div>
+                        {specOffer?.Rutube &&
+                            <div class="d-flex align-items-center position-relative" >
+                                <img
+                                    className='miniFotoSpecCardSVG position-absolute'
+                                    src={video}
+                                    onClick={() => { setVideoFocus(0); setTypePlayer(1) }}
+                                />
+                                <img className='miniFotoSpecCard' src={rutube?.thumbnail_url} />
+                            </div>
+                        }
                     </div>
                     {window.innerWidth < 650 ? cartPrice() : <div></div>}
                     <div className="specContact">
