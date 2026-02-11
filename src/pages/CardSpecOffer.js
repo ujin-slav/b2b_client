@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Col, Row, Card } from "react-bootstrap";
 import SpecOfferService from '../services/SpecOfferService'
+import PriceService from '../services/PriceService'
 import { useParams } from 'react-router-dom';
 import { observer } from "mobx-react-lite";
 import FotoSlider from '../components/FotoSlider';
@@ -21,11 +22,11 @@ import { fetchUser } from "../http/askAPI";
 
 const CardSpecOffer = observer(() => {
     const { user } = useContext(Context);
-    const [priceID, setPriceID] = useState();
+    const [priceUnit, setPriceUnit] = useState();
     const [showSlider, setShowSlider] = useState(false);
     const [loading, setLoading] = useState(true);
     const [author, setAuthor] = useState();
-    const { id } = useParams();
+    const { id, idprice } = useParams();
     const [typePlayer, setTypePlayer] = useState(1);
     const [fotoFocus, setFotoFocus] = useState(0);
     const [videoFocus, setVideoFocus] = useState(0);
@@ -44,6 +45,11 @@ const CardSpecOffer = observer(() => {
                 fetchUser(result.data?.specoffer?.Author).then((response) => {
                     setAuthor(response?.data)
                 })
+                if(idprice){
+                    PriceService.getPriceUnit(idprice).then((data)=>{
+                        setPriceUnit(data)
+                    })
+                }
             } else {
                 setError(result.data.errors)
             }
@@ -66,11 +72,11 @@ const CardSpecOffer = observer(() => {
     const cartPrice = () => {
         return (
             <div>
-                <div className="display-5">
-                    {specOffer?.Name}
+                <div className="display-6">
+                    {priceUnit?.Name}
                 </div>
                 <div className="cardSpecPrice">
-                    {specOffer?.Price} ₽
+                    {priceUnit?.Price} ₽
                 </div>
                 <div>
                     <button className="myButtonMessage mt-4"
@@ -114,6 +120,13 @@ const CardSpecOffer = observer(() => {
         )
     }
 
+    const getThumbnailSrc = () => {
+        const videoId = specOffer?.Rutube?.split('/embed/')[1]?.split('/')[0] || '';
+        return videoId 
+          ? `https://rutube.ru/api/video/${videoId}/thumbnail/?redirect=1&size=m`
+          : '';
+      };
+
     if (error) {
         return (
             <div>
@@ -138,7 +151,10 @@ const CardSpecOffer = observer(() => {
                         {specOffer?.FilesMini?.map((item, index) =>
                             <div key={index} className='albumSpec'>
                                 <MyImage className='miniFotoSpecCard'
-                                    onClick={() => { setFotoFocus(index); setTypePlayer(0) }}
+                                    onClick={() => {
+                                        setFotoFocus(index)
+                                        setTypePlayer(0)
+                                    }}
                                     src={process.env.REACT_APP_API_URL + `getpic/` + item.filename} />
                             </div>
                         )}
@@ -149,7 +165,7 @@ const CardSpecOffer = observer(() => {
                                     src={video}
                                     onClick={() => { setVideoFocus(0); setTypePlayer(1) }}
                                 />
-                                <img className='miniFotoSpecCard' src={rutube?.thumbnail_url} />
+                                <img className='miniFotoSpecCard' src={getThumbnailSrc()} />
                             </div>
                         }
                     </div>

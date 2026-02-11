@@ -1432,6 +1432,17 @@ ul.pagination.justify-content-center{
   cursor: pointer;
   background-color:white;
 }
+.earmarkRichText{
+  color: #0000EE;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+.handIndexThumb{
+  color: black;
+  height: 20px;
+  width: 20px;
+}
 @media (max-width: 650px) {
   .searchFormMenuSelect{
     width: 100% !important;

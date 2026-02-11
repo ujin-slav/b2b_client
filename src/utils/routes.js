@@ -185,7 +185,7 @@ export const bannedRoutes = [
         Component: CardPriceAsk
     },
     {
-        path: CARDSPECOFFER + '/:id',
+        path: CARDSPECOFFER + '/:id/:idprice?',
         Component: CardSpecOffer
     },
     {
@@ -376,7 +376,7 @@ export const authRoutes = [
         Component: CardSpecAsk
     },
     {
-        path: CARDSPECOFFER + '/:id',
+        path: CARDSPECOFFER + '/:id/:idprice?',
         Component: CardSpecOffer
     },
     {
@@ -651,7 +651,7 @@ export const publicRoutes = [
         Component: CreatePriceAsk
     },
     {
-        path: CARDSPECOFFER + '/:id',
+        path: CARDSPECOFFER + '/:id/:idprice?',
         Component: CardSpecOffer
     },
     {
