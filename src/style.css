@@ -1443,6 +1443,18 @@ ul.pagination.justify-content-center{
   height: 20px;
   width: 20px;
 }
+.tagsInput{
+  minHeight: 38px;
+  border: 1px solid #ced4da;
+  borderRadius: 0.375rem;
+  backgroundColor: #fff;
+  cursor: text;
+}
+.inputTagsInput:focus-within{
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+  outline: none;
+}
 @media (max-width: 650px) {
   .searchFormMenuSelect{
     width: 100% !important;

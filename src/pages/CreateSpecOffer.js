@@ -9,7 +9,7 @@ import {
   Form,
   Table,
 } from "react-bootstrap";
-import {B2B_ROUTE} from "../utils/routes";
+import { B2B_ROUTE } from "../utils/routes";
 import SpecOfferService from '../services/SpecOfferService'
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
@@ -17,6 +17,7 @@ import Captcha from "demos-react-captcha";
 import "../style.css";
 import bin from "../icons/bin.svg";
 import { generateUUID } from '../utils/getUID'
+import { TagsInput } from '../components/TagsInput'
 
 const formValid = ({ data, nullValid, formErrors }) => {
   let valid = true;
@@ -49,11 +50,13 @@ function rutubeValidLink(url) {
 const CreateSpecOffer = observer(() => {
 
   const { user } = useContext(Context);
-  const [captcha, setCaptcha] = useState(false);
+  const [captcha, setCaptcha] = useState(false)
+  const [selectedCodes, setSelectedCodes] = useState([])
   const [submiting, setSubmiting] = useState(false)
   const [files, setFiles] = useState([])
   const [fileSize, setFileSize] = useState(0);
-  const { myalert } = useContext(Context);
+  const { myalert } = useContext(Context)
+  const selectRef = useRef(null);
   const history = useHistory();
 
   let sourceElement = null
@@ -66,7 +69,6 @@ const CreateSpecOffer = observer(() => {
       rutube: ""
     },
     nullValid: {
-      code: true,
       text: true,
     },
     formErrors: {
@@ -261,14 +263,13 @@ const CreateSpecOffer = observer(() => {
     }
     if (!formValid(specOffer)) {
       myalert.setMessage("Форма заполнена неверно")
-      console.log(specOffer)
       return
     }
     setSubmiting(true)
     const data = new FormData();
     data.append("author", user.user.id)
     data.append("text", specOffer.data.text)
-    data.append("code", specOffer.data.code)
+    data.append("codes", JSON.stringify(selectedCodes))
     data.append("rutube", specOffer.data.rutube)
     data.append("sortedList",
       JSON.stringify(sortedList.map(item => item.id))
@@ -295,6 +296,47 @@ const CreateSpecOffer = observer(() => {
     }
   }
 
+  const handlePaste = (e) => {
+    e.preventDefault();           // ← очень важно — предотвращаем стандартную вставку
+    console.log(e)
+    const pasteText = (e.clipboardData || window.clipboardData).getData('text');
+
+    // Разбиваем по любым пробельным символам и убираем пустые строки
+    const items = pasteText
+      .split(/\s+/)               // \s+ = один или более пробельных символов
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+
+    if (items.length === 0) return;
+
+    // Текущие выбранные значения
+    const current = selectedCodes || [];
+
+    // Новые значения в формате react-select
+    const newOptions = items.map(code => ({
+      value: code,
+      label: code,
+    }));
+
+    // Объединяем + убираем дубликаты (по желанию)
+    const updated = [
+      ...current,
+      ...newOptions,
+    ].reduce((acc, item) => {
+      if (!acc.some(i => i.value === item.value)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+
+    setSelectedCodes(updated);
+
+    // Опционально: можно сбросить поле ввода после вставки
+    if (selectRef.current) {
+      selectRef.current.clearValue();           // или .setValue([], 'silent') в некоторых версиях
+    }
+  }
+
   return (
     <div>
       <Container className="profile">
@@ -307,10 +349,10 @@ const CreateSpecOffer = observer(() => {
               <tbody>
                 <tr>
                   <td>Артикул</td>
-                  <td> <Form.Control
-                    name="code"
-                    onChange={handleChangeControl}
-                    placeholder="Артикул"
+                  <td> <TagsInput
+                    value={selectedCodes}
+                    onChange={setSelectedCodes}
+                    placeholder="Введите артикул или вставьте пачку…"
                   />
                     <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Code}</span>
                   </td>

@@ -35,6 +35,7 @@ import { B2B_ROUTE } from "../utils/routes";
 import { XCircle } from 'react-bootstrap-icons';
 import bin from "../icons/bin.svg";
 import { generateUUID } from '../utils/getUID'
+import { X } from 'react-bootstrap-icons';
 
 const formValid = ({ data, nullValid, formErrors }) => {
   let valid = true;
@@ -76,6 +77,7 @@ const ModifySpecOffer = observer(() => {
   const history = useHistory();
   let sourceElement = null
   const [sortedList, setSortedList] = useState([])
+  const [codes, setCodes] = useState([])
   const [deletedList, setDeletedList] = useState([])
   const { id } = useParams();
 
@@ -96,15 +98,17 @@ const ModifySpecOffer = observer(() => {
   useEffect(() => {
     SpecOfferService.getSpecOfferId({ id }).then((result) => {
       if (result.status === 200) {
-        result = result.data.specoffer
+        let dataSpecOffer = result.data.specoffer
+        let dataCodes = result.data.codes
         let formErrors = specOffer.formErrors
         let nullValid = specOffer.nullValid
-        let data = Object.assign(specOffer.data, result);
-        setSpecOffer({ data, nullValid, formErrors });
-        if (result.Author !== user.user.id) {
+        let data = Object.assign(specOffer.data, dataSpecOffer)
+        setSpecOffer({ data, nullValid, formErrors })
+        setCodes(dataCodes)
+        if (dataSpecOffer.Author !== user.user.id) {
           setPermission(false)
         }
-        result?.FilesMini?.map((item, index) => {
+        dataSpecOffer?.FilesMini?.map((item, index) => {
           fetch(process.env.REACT_APP_API_URL + `getpic/` + item.filename)
             .then(res => res.blob())
             .then(blob => {
@@ -386,6 +390,31 @@ const ModifySpecOffer = observer(() => {
               defaultValue={specOffer.data.Code}
             />
               <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Code}</span>
+              <div
+                className="tagsInput border-0 form-control d-flex flex-wrap gap-1 p-2"
+              >
+                {codes?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="d-flex align-items-center gap-1 px-2 py-1 rounded bg-light border"
+                    style={{
+                      fontSize: '0.9rem',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '280px',          // можно подстроить под maxLength
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {item?.Code}
+                    <button
+                      type="button"
+                      className="btn btn-sm p-0 border-0"
+                      aria-label="Удалить"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>  
             </td>
           </tr>
           <tr>
