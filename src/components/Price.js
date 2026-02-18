@@ -236,11 +236,11 @@ const Prices = observer(() => {
                                         <tr key={index}>
                                             <td>{item?.code}</td>
                                             <td>{item?.name}</td>
-                                            <td>{item?.specOfferId &&
+                                            <td>{item?.specOffer &&
                                                 <FileEarmarkRichtext
                                                     className='earmarkRichText'
                                                     onClick={() => history.push(
-                                                        CARDSPECOFFER + '/' + item?.specOfferId + '/' +
+                                                        CARDSPECOFFER + '/' + item?.specOffer + '/' +
                                                         item?.id
                                                     )}/>}
                                             </td>

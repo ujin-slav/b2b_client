@@ -105,7 +105,7 @@ export function TagsInput({
   };
 
   return (
-    <Form.Group className="mb-3">
+    <Form.Group className="mb-2">
       <div
         className="tagsInput form-control d-flex flex-wrap gap-1 p-2"
         style={{

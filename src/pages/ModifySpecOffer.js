@@ -36,6 +36,7 @@ import { XCircle } from 'react-bootstrap-icons';
 import bin from "../icons/bin.svg";
 import { generateUUID } from '../utils/getUID'
 import { X } from 'react-bootstrap-icons';
+import { TagsInput } from '../components/TagsInput'
 
 const formValid = ({ data, nullValid, formErrors }) => {
   let valid = true;
@@ -78,13 +79,14 @@ const ModifySpecOffer = observer(() => {
   let sourceElement = null
   const [sortedList, setSortedList] = useState([])
   const [codes, setCodes] = useState([])
+  const [selectedCodes, setSelectedCodes] = useState([])
+  const [deletedCodes, setDeletedCodes] = useState([])
   const [deletedList, setDeletedList] = useState([])
   const { id } = useParams();
 
   const [specOffer, setSpecOffer] = useState({
     data: {},
     nullValid: {
-      Code: true,
       Text: true,
     },
     formErrors: {
@@ -97,6 +99,7 @@ const ModifySpecOffer = observer(() => {
 
   useEffect(() => {
     SpecOfferService.getSpecOfferId({ id }).then((result) => {
+      console.log(result)
       if (result.status === 200) {
         let dataSpecOffer = result.data.specoffer
         let dataCodes = result.data.codes
@@ -105,7 +108,7 @@ const ModifySpecOffer = observer(() => {
         let data = Object.assign(specOffer.data, dataSpecOffer)
         setSpecOffer({ data, nullValid, formErrors })
         setCodes(dataCodes)
-        if (dataSpecOffer.Author !== user.user.id) {
+        if (dataSpecOffer?.Author !== user.user.id) {
           setPermission(false)
         }
         dataSpecOffer?.FilesMini?.map((item, index) => {
@@ -323,8 +326,9 @@ const ModifySpecOffer = observer(() => {
 
     data.append("ID", id)
     data.append("Text", specOffer.data.Text)
-    data.append("Code", specOffer.data.Code)
     data.append("Rutube", specOffer.data.Rutube)
+    data.append("Codes", JSON.stringify(selectedCodes))
+    data.append("DeletedCodes", JSON.stringify(deletedCodes))
     data.append("DeletedList", JSON.stringify(deletedList))
     data.append("SortedList",
       JSON.stringify(sortedList.map(item => item.id))
@@ -351,6 +355,12 @@ const ModifySpecOffer = observer(() => {
     if (value) {
       setCaptcha(true)
     }
+  }
+
+  const removeTag = (indexToRemove) => {
+    const codeToDelete = codes[indexToRemove]
+    setDeletedCodes(prev => [...prev, codeToDelete])
+    setCodes(prev => prev.filter((_, i) => i !== indexToRemove))
   }
 
   if (error) {
@@ -383,16 +393,17 @@ const ModifySpecOffer = observer(() => {
         <col style={{ "width": "85%" }} />
         <tbody>
           <tr>
-            <td>Артикул</td>
-            <td> <Form.Control
-              name="Code"
-              onChange={handleChangeControl}
-              defaultValue={specOffer.data.Code}
+            <td>Артикулы</td>
+            <td> <TagsInput
+              value={selectedCodes}
+              onChange={setSelectedCodes}
+              placeholder="Введите артикул или вставьте пачку…"
             />
               <span className="errorMessage" style={{ color: "red" }}>{specOffer.formErrors.Code}</span>
               <div
                 className="tagsInput border-0 form-control d-flex flex-wrap gap-1 p-2"
               >
+                {codes?.length>0 &&<span className='fw-bold'>Существующие артикулы:</span>}
                 {codes?.map((item, index) => (
                   <div
                     key={index}
@@ -404,17 +415,18 @@ const ModifySpecOffer = observer(() => {
                       overflow: 'hidden',
                     }}
                   >
-                    {item?.Code}
+                    {item}
                     <button
                       type="button"
                       className="btn btn-sm p-0 border-0"
                       aria-label="Удалить"
+                      onClick={() => removeTag(index)}
                     >
                       <X size={14} />
                     </button>
                   </div>
                 ))}
-              </div>  
+              </div>
             </td>
           </tr>
           <tr>
