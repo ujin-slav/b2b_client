@@ -26,7 +26,7 @@ export default class SpecOfferService {
     }
 
     static async getFilterSpecOffer(formData){
-        const {data} = await $api.post(`/getfilterspecoffer`,formData);
+        const {data} = await $api.post(`/getsimilarspecoffer`,formData);
         return data
     }
     static async getSpecOfferUser(formData){

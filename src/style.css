@@ -690,6 +690,14 @@ td.tdRed{
     height: 50px;
     filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
   }
+  .heart:hover{
+    height: 50px;
+    filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+  }
+  .heartRed:hover{
+    height: 50px;
+    filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
+  }
   .delProfileFoto:hover{
     height: 50px;
     filter: invert(13%) sepia(92%) saturate(6350%) hue-rotate(358deg) brightness(104%) contrast(112%);
@@ -1454,6 +1462,10 @@ ul.pagination.justify-content-center{
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
   outline: none;
+}
+.favoriteHeartContainer{
+  height: 25px;
+  text-align: right;
 }
 @media (max-width: 650px) {
   .searchFormMenuSelect{

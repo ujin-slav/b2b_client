@@ -15,10 +15,7 @@ import {
 import { Card, InputGroup, Button, Col, Row, Form, Table } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { observer } from "mobx-react-lite";
-import { getCategoryName } from '../utils/Convert'
-import RegionTree from '../components/RegionTree';
-import { regionNodes } from '../config/Region';
-import ModalCT from '../components/ModalCT';
+import HoverPreview from '../components/HoverPreview';
 import {
     Cart4,
     CaretDownFill,
@@ -231,36 +228,41 @@ const Prices = observer(() => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {price?.map((item, index) =>
-
-                                        <tr key={index}>
-                                            <td>{item?.code}</td>
-                                            <td>{item?.name}</td>
-                                            <td>{item?.specOffer &&
-                                                <FileEarmarkRichtext
-                                                    className='earmarkRichText'
-                                                    onClick={() => history.push(
-                                                        CARDSPECOFFER + '/' + item?.specOffer + '/' +
-                                                        item?.id
-                                                    )}/>}
-                                            </td>
-                                            <td>{item?.price}</td>
-                                            <td>{item?.balance}</td>
-                                            <td>{item?.measure}</td>
-                                            <td> <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?.userId)}>
-                                                {item?.userNameOrg}</a></td>
-                                            <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
-                                            <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
-                                                onClick={() => {
-                                                    if (user.isAuth) {
-                                                        history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
-                                                    } else {
-                                                        history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
-                                                    }
-                                                }}
-                                            /></td>
-                                        </tr>
-                                    )}
+                                    {price?.map((item, index) => {
+                                        const previews = item.filesPreview?.map(f => f.filename) || []
+                                        return (
+                                            <tr key={index}>
+                                                <td>{item?.code}</td>
+                                                <td>{item?.name}</td>
+                                                <td>{item?.specOffer &&
+                                                    <HoverPreview images={previews} size={100}>
+                                                        <FileEarmarkRichtext
+                                                            className='earmarkRichText'
+                                                            onClick={() => history.push(
+                                                                CARDSPECOFFER + '/' + item?.specOffer + '/' +
+                                                                item?.id
+                                                            )} />
+                                                    </HoverPreview>
+                                                }
+                                                </td>
+                                                <td>{item?.price}</td>
+                                                <td>{item?.balance}</td>
+                                                <td>{item?.measure}</td>
+                                                <td> <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?.userId)}>
+                                                    {item?.userNameOrg}</a></td>
+                                                <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                                                <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
+                                                    onClick={() => {
+                                                        if (user.isAuth) {
+                                                            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
+                                                        } else {
+                                                            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
+                                                        }
+                                                    }}
+                                                /></td>
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </Table>
                         </div>

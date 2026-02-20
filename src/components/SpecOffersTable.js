@@ -50,6 +50,7 @@ const SpecOffersTable = observer(() => {
                 user: user.user.id,
                 limit, page: currentPage
             }).then((data) => {
+                console.log(data)
                 if (Array.isArray(data.docs)) {
                     data.docs.map((item) => {
                         item.indexFoto = 0
@@ -92,8 +93,8 @@ const SpecOffersTable = observer(() => {
         let num = 0
         let left = imgs.current[index].getBoundingClientRect().left
         let width = imgs.current[index].getBoundingClientRect().width
-        let countImage = (item.FilesPreview.length == 0 ?
-            item.FilesPreview.length + 1 : item.FilesPreview.length)
+        let countImage = (item.filesPreview.length == 0 ?
+            item.filesPreview.length + 1 : item.filesPreview.length)
         if (countImage >= maxPhoto) {
             num = Math.floor((e.clientX - left) / (width / maxPhoto))
         } else {
@@ -174,7 +175,7 @@ const SpecOffersTable = observer(() => {
 
     const getImg = (item, index) => {
         return (
-            item.FilesPreview?.map((innerItem, innerIndex) =>
+            item.filesPreview?.map((innerItem, innerIndex) =>
                 <span style={{ 'display': 'grid' }}>
                     <MyImage
                         className={"fotoSpec"}
@@ -196,7 +197,7 @@ const SpecOffersTable = observer(() => {
     }
 
     const getItemSwitch = (item, index) => {
-        let count = item.FilesPreview?.length
+        let count = item.filesPreview?.length
         let amount = 0
         if (index !== currentImg) {
             return (
@@ -314,9 +315,19 @@ const SpecOffersTable = observer(() => {
                             return (
                                 <div
                                     className='childSpec'
-                                    ref={el => imgs.current[index] = el} 
-                                    onClick={() => history.push(CARDSPECOFFER + '/' + item._id)}>    
-                                    {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
+                                    ref={el => imgs.current[index] = el}
+                                    onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                    {user.isAuth ?
+                                        <div className='favoriteHeartContainer'>
+                                            <Heart
+                                                className={item.isFavorite ? "heartRed" : "heart"}
+                                                onClick={() => addToFavorites((item))}
+                                            />
+                                        </div>
+                                        :
+                                        <></>
+                                    }
+                                    {item.filesPreview?.length == 0 || item.filesPreview == null ?
                                         <img
                                             className="fotoSpec"
                                             src={noImage} />
@@ -328,33 +339,25 @@ const SpecOffersTable = observer(() => {
                                         <div className=" d-flex justify-content-between">
                                             <span
                                                 className="specName"
-                                                onClick={() => history.push(CARDSPECOFFER + '/' + item._id)}>
-                                                {item.Name}
+                                                onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                                {item?.name}
                                             </span>
-                                            {user.isAuth && item.Author._id !== user.user.id ?
-                                                <Heart
-                                                    className={item.isFavorite ? "heartRed" : "heart"}
-                                                    onClick={() => addToFavorites((item))}
-                                                />
-                                                :
-                                                <></>
-                                            }
                                         </div>
                                         <div className="specPrice">
-                                            {item.Price} ₽
+                                            {item.price} ₽
                                         </div>
                                         <div className="specNameOrg">
-                                            {item.NameOrg}
+                                            {item.nameOrg}
                                         </div>
                                         <div className="specCloudy">
-                                            {getCategoryName(item.Region, regionNodes).join(", ").length > 40 ?
-                                                `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                                            {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
+                                                `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
                                                 :
-                                                getCategoryName(item.Region, regionNodes).join(", ")
+                                                getCategoryName(item.region, regionNodes).join(", ")
                                             }
                                         </div>
                                         <div className="specCloudy">
-                                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                            {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
                                         </div>
                                     </div>
                                 </div>

@@ -201,11 +201,9 @@ const CardSpecOffer = observer(() => {
                     </div>
                 </Col>
             </Row>
-            {/* <SimilarSpecOffers 
-                    categoryFilter={checkedCat}
-                    regionFilter={checkedRegion} 
+            <SimilarSpecOffers 
                     redirect={redirect}
-            /> */}
+            />
             <FotoSlider
                 fotoArray={specOffer?.Files}
                 setShow={setShowSlider}
