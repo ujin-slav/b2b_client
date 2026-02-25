@@ -203,6 +203,7 @@ const CardSpecOffer = observer(() => {
             </Row>
             <SimilarSpecOffers 
                     redirect={redirect}
+                    id={idprice}
             />
             <FotoSlider
                 fotoArray={specOffer?.Files}

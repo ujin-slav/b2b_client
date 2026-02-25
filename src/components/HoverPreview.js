@@ -51,19 +51,19 @@ export default function HoverPreview({
                 <div
                     className="position-absolute"
                 >
-                        <img
-                            style={{ width: size, height: size }}
-                            src={getSrc()}
-                            className="object-contain rounded-5"
-                        />
+                    <img
+                        style={{ width: size, height: size }}
+                        className='foto'
+                        src={getSrc()}
+                    />
 
                     {limitedImages.length > 1 && (
                         <div
                             className="
-                absolute bottom-0.5 right-0.5
-                bg-black/60 text-white text-[9px] px-1 rounded
-                leading-none
-              "
+                                        absolute bottom-0.5 right-0.5
+                                        bg-black/60 text-white text-[9px] px-1 rounded
+                                        leading-none
+                                    "
                         >
                             {limitedImages.length > 4
                                 ? `+${limitedImages.length - 1}`

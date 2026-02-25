@@ -311,7 +311,7 @@ const SpecOffersTable = observer(() => {
                     <PlusCircleFill onClick={() => history.push(CREATESPECOFFER)} className="addNew" />
                     <span className="createNew">Создать новое</span>
                     <div className='parentSpec'>
-                        {specOffers.map((item, index) => {
+                        {specOffers?.map((item, index) => {
                             return (
                                 <div
                                     className='childSpec'
