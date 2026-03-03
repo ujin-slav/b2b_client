@@ -16,11 +16,6 @@ const B2b = observer(() => {
             component: <SpecOffersTable />,
           },
           {
-            id: "price",
-            title: "Прайс",
-            component: <Prices />,
-          },
-          {
             id: "participants",
             title: "Участники",
             component: <Carousel />,
@@ -115,7 +110,9 @@ const B2b = observer(() => {
     return (
         <div>
             <SearchForm />
-            {listItems()}
+            {/* {listItems()} */}
+            <SpecOffersTable />
+            <Carousel />
         </div>
     );
 });

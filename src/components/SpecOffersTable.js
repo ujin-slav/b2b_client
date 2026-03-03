@@ -1,5 +1,5 @@
 import { React, useContext, useEffect, useState, useRef } from 'react';
-import { Card, InputGroup, Button, Col, Row, Form } from "react-bootstrap";
+import { Card, InputGroup, Button, Table, Row, Form } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
 import { useHistory } from 'react-router-dom';
@@ -8,15 +8,36 @@ import dateFormat from "dateformat";
 import { getCategoryName } from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import DatePicker, { registerLocale } from 'react-datepicker'
+import ru from 'date-fns/locale/ru'
 import CardSpecOffer from '../pages/CardSpecOffer';
-import { CARDSPECOFFER, CREATESPECOFFER } from '../utils/routes';
+import {
+    CARDSPECOFFER,
+    ORGINFO,
+    CREATEPRICEASK,
+    CREATEPRICEASKFIZ
+} from '../utils/routes';
 import ReactPaginate from "react-paginate";
-import { CaretDownFill, CaretUpFill, PlusCircleFill, Search, Heart } from 'react-bootstrap-icons';
+import {
+    CaretDownFill,
+    CaretUpFill,
+    HandIndexThumb,
+    Search,
+    FileEarmarkRichtext,
+    Toggle2On,
+    Toggle2Off
+} from 'react-bootstrap-icons';
 import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
-import video from "../icons/video.svg";
+import table from "../icons/table.svg"
+import tableList from "../icons/table-list.svg"
+import grid from "../icons/grid.svg"
+import HoverPreview from '../components/HoverPreview'
+import HoverPreviewBig from '../components/HoverPreviewBig'
+import cart from "../icons/cart.svg"
+import { faBalanceScaleLeft } from '@fortawesome/free-solid-svg-icons';
 
 
+registerLocale('ru', ru)
 const SpecOffersTable = observer(() => {
     const [loading, setLoading] = useState(true)
     const { ask } = useContext(Context);
@@ -32,6 +53,8 @@ const SpecOffersTable = observer(() => {
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [limit, setLimit] = useState(10);
+    const [displayOption, setDisplayOption] = useState(1)
+    const [displayOnlySpecOffers, setDisplayOnlySpecOffers] = useState(false)
     const [sort, setSort] = useState("cheaper");
     const imgs = useRef([])
     const maxPhoto = 5
@@ -48,7 +71,9 @@ const SpecOffersTable = observer(() => {
                 startDate,
                 endDate,
                 user: user.user.id,
-                limit, page: currentPage
+                limit,
+                displayOnlySpecOffers,
+                page: currentPage
             }).then((data) => {
                 console.log(data)
                 if (Array.isArray(data.docs)) {
@@ -61,7 +86,15 @@ const SpecOffersTable = observer(() => {
                 setCurrentPage(data.page)
             }).finally(() => setLoading(false))
         }
-    }, [ask.categoryFilter, ask.regionFilter, ask.searchText, ask.searchInn, visible, fetching, user.isFetching]);
+    }, [
+        ask.categoryFilter, 
+        ask.regionFilter, 
+        ask.searchText, 
+        ask.searchInn, 
+        visible, 
+        fetching, 
+        user.isFetching
+    ]);
 
     const fetchPage = async (currentPage) => {
         setCurrentPage(currentPage)
@@ -73,6 +106,11 @@ const SpecOffersTable = observer(() => {
     };
 
     const handleClickDate = () => {
+        setCurrentPage(1)
+        setFetching(!fetching)
+    }
+
+    const handleClickToggleSpecOffers = () => {
         setCurrentPage(1)
         setFetching(!fetching)
     }
@@ -161,7 +199,7 @@ const SpecOffersTable = observer(() => {
                             :
                             <CaretDownFill className='caret' />
                         }
-                        Специальные предложения
+                        Предложения
                     </div>
                 </Card.Header>
                 {visible ?
@@ -228,6 +266,70 @@ const SpecOffersTable = observer(() => {
         )
     }
 
+    const getHoverPreview = (item) => {
+        const previews = item.filesPreview?.map(f => f.filename) || []
+        if (item?.specOffer && displayOption == 1) {
+            return (
+                <HoverPreview images={previews} size={100}>
+                    <FileEarmarkRichtext
+                        className='earmarkRichText'
+                        onClick={() => history.push(
+                            CARDSPECOFFER + '/' + item?.specOffer + '/' +
+                            item?.id
+                        )} />
+                </HoverPreview>
+            )
+        } else if (!item?.specOffer && displayOption == 1) {
+            return (
+                <FileEarmarkRichtext
+                    className='earmarkRichTextGray'
+                    onClick={() => history.push(
+                        CARDSPECOFFER + '/' + item?.specOffer + '/' +
+                        item?.id
+                    )} />
+            )
+
+        } else if (item?.specOffer && displayOption == 2) {
+            return (
+                <HoverPreviewBig images={previews} size={100} />
+            )
+        } else if (!item?.specOffer && displayOption == 2) {
+            return (
+                <FileEarmarkRichtext
+                    className='earmarkRichTextGray50'
+                    onClick={() => history.push(
+                        CARDSPECOFFER + '/' + item?.specOffer + '/' +
+                        item?.id
+                    )} />
+            )
+        }
+    }
+    const getCardImage = (item, index) => {
+        if (!item?.specOffer && displayOption == 3)
+            return (
+                <div className='noSpecOfferWrapper'>
+                    <FileEarmarkRichtext
+                        className='earmarkRichTextGrayCenter'
+                        onClick={() => history.push(
+                            CARDSPECOFFER + '/' + item?.specOffer + '/' +
+                            item?.id
+                        )} />
+                </div>
+            )
+        return (
+            <>
+                {
+                    item?.filesPreview?.length == 0 || item.filesPreview == null ?
+                        <img
+                            className="fotoSpec"
+                            src={noImage} />
+                        :
+                        getImg(item, index)
+                }
+            </>
+        )
+    }
+
     return (
         <Card className='section sectionOffers'>
             <Card.Header className='sectionHeaderOffer headerOffers'
@@ -238,7 +340,7 @@ const SpecOffersTable = observer(() => {
                         :
                         <CaretDownFill className='caret' />
                     }
-                    Специальные предложения
+                    Предложения
                 </div>
             </Card.Header>
             {visible ?
@@ -246,40 +348,80 @@ const SpecOffersTable = observer(() => {
                     <Form className="searchFormMenu searchFormMenuMain">
                         <Row>
                             <div className='inputGroupMenuSelect'>
-                                <div className='captionMenuSelect'>Период:</div>
+                                <div className='captionMenuSelect'>Варианты отображения</div>
+                                <img
+                                    onClick={() => setDisplayOption(1)}
+                                    src={table}
+                                    className={displayOption == 1 ?
+                                        'displayOptionIconSelected' : 'displayOptionIcon'}
+                                />
+                                <img
+                                    onClick={() => setDisplayOption(2)}
+                                    src={tableList}
+                                    className={displayOption == 2 ?
+                                        'displayOptionIconSelected' : 'displayOptionIcon'}
+                                />
+                                <img
+                                    onClick={() => setDisplayOption(3)}
+                                    src={grid}
+                                    className={displayOption == 3 ?
+                                        'displayOptionIconSelected' : 'displayOptionIcon'}
+                                />
+                            </div>
+                            <div className='inputGroupMenuSelect'>
+                                <div className='captionMenuSelect'>Показать только с карточками</div>
+                                <div className='toggleWrapper'>
+                                    {displayOnlySpecOffers ?
+                                        <Toggle2On
+                                            className='toggleSpecOffers'
+                                            style={{ color: '#FF6A00' }}
+                                            onClick={() => {
+                                                setDisplayOnlySpecOffers(false)
+                                                handleClickToggleSpecOffers()
+                                            }}
+                                        />
+                                        :
+                                        <Toggle2Off
+                                            className='toggleSpecOffers'
+                                            onClick={() => {
+                                                setDisplayOnlySpecOffers(true)
+                                                handleClickToggleSpecOffers()
+                                            }}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className='inputGroupMenuSelect'>
+                                <div className='captionMenuSelect'>Период</div>
                                 <InputGroup>
                                     <DatePicker
-                                        locale="ru"
+                                        locale="ru"    
                                         selected={startDate}
                                         name="StartDateOffers"
                                         className='form-control datePicker'
                                         dateFormat="dd.MM.yyyy"
-                                        onChange={date => setStartDate(date)}
+                                        onChange={
+                                            (date) => {
+                                                setStartDate(date)
+                                                handleClickDate()
+                                        }}
                                     />
-                                    <Button
-                                        variant="outline-secondary"
-                                        className='buttonSearchDataPicker'
-                                        onClick={() => handleClickDate()}
-                                    >
-                                        <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-                                    </Button>
                                 </InputGroup>
                                 <InputGroup>
                                     <DatePicker
-                                        locale="ru"
-                                        selected={endDate}
+                                        locale="ru" 
+                                        selected={endDate}   
                                         name="EndDateOffers"
                                         className='form-control datePicker'
                                         dateFormat="dd.MM.yyyy"
-                                        onChange={date => setEndDate(date)}
+                                        onChange={
+                                            (date) => {
+                                                setEndDate(date)
+                                                handleClickDate()
+                                        }}
                                     />
-                                    <Button
-                                        variant="outline-secondary"
-                                        className='buttonSearchDataPicker'
-                                        onClick={() => handleClickDate()}
-                                    >
-                                        <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-                                    </Button>
                                 </InputGroup>
                                 <div className='captionMenuSelect'>Показать:</div>
                                 <Form.Control
@@ -308,32 +450,14 @@ const SpecOffersTable = observer(() => {
                             </div>
                         </Row>
                     </Form>
-                    <PlusCircleFill onClick={() => history.push(CREATESPECOFFER)} className="addNew" />
-                    <span className="createNew">Создать новое</span>
                     <div className='parentSpec'>
-                        {specOffers?.map((item, index) => {
+                        {displayOption == 3 && specOffers?.map((item, index) => {
                             return (
                                 <div
                                     className='childSpec'
                                     ref={el => imgs.current[index] = el}
                                     onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
-                                    {user.isAuth ?
-                                        <div className='favoriteHeartContainer'>
-                                            <Heart
-                                                className={item.isFavorite ? "heartRed" : "heart"}
-                                                onClick={() => addToFavorites((item))}
-                                            />
-                                        </div>
-                                        :
-                                        <></>
-                                    }
-                                    {item.filesPreview?.length == 0 || item.filesPreview == null ?
-                                        <img
-                                            className="fotoSpec"
-                                            src={noImage} />
-                                        :
-                                        getImg(item, index)
-                                    }
+                                    {getCardImage(item, index)}
                                     {getItemSwitch(item, index)}
                                     <div className='specInfo'>
                                         <div className=" d-flex justify-content-between">
@@ -364,6 +488,51 @@ const SpecOffersTable = observer(() => {
                             )
                         })}
                     </div>
+                    {(displayOption == 1 || displayOption == 2) &&
+                        <div class="table-responsive">
+                            <Table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Артикул</th>
+                                        <th>Наименование</th>
+                                        <th><HandIndexThumb className='handIndexThumb' /></th>
+                                        <th>Цена</th>
+                                        <th>Остаток</th>
+                                        <th>Ед.изм</th>
+                                        <th>Организация</th>
+                                        <th>Дата</th>
+                                        <th>+</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {specOffers?.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{item?.code}</td>
+                                                <td>{item?.name}</td>
+                                                <td>{getHoverPreview(item)}
+                                                </td>
+                                                <td>{item?.price}</td>
+                                                <td>{item?.balance}</td>
+                                                <td>{item?.measure}</td>
+                                                <td> <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?.userId)}>
+                                                    {item?.userNameOrg}</a></td>
+                                                <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                                                <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
+                                                    onClick={() => {
+                                                        if (user.isAuth) {
+                                                            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
+                                                        } else {
+                                                            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
+                                                        }
+                                                    }}
+                                                /></td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </Table>
+                        </div>}
                     <ReactPaginate
                         forcePage={currentPage - 1}
                         previousLabel={"<"}

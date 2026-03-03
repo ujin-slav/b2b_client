@@ -64,6 +64,7 @@ const CreateSpecOffer = observer(() => {
 
   const [specOffer, setSpecOffer] = useState({
     data: {
+      name: "",
       text: "",
       code: "",
       rutube: ""
@@ -268,6 +269,7 @@ const CreateSpecOffer = observer(() => {
     setSubmiting(true)
     const data = new FormData();
     data.append("author", user.user.id)
+    data.append("name", specOffer.data.name)
     data.append("text", specOffer.data.text)
     data.append("codes", JSON.stringify(selectedCodes))
     data.append("rutube", specOffer.data.rutube)
@@ -347,6 +349,15 @@ const CreateSpecOffer = observer(() => {
               <col style={{ "width": "25%" }} />
               <col style={{ "width": "75%" }} />
               <tbody>
+              <tr>
+                  <td>Название</td>
+                  <td><Form.Control
+                    name="name"
+                    placeholder="Пользователи не видят, чтобы было легче искать"
+                    onChange={handleChangeControl}
+                  />
+                  </td>
+                </tr>
                 <tr>
                   <td>Артикул</td>
                   <td> <TagsInput
