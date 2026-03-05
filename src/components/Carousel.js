@@ -8,6 +8,7 @@ import { ORGINFO, CREATEPRICEASK, CREATEPRICEASKFIZ } from "../utils/routes";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite"
 import ReactPaginate from "react-paginate"
+import CarouselSkeleton from '../components/CarouselSkeleton'
 import MyImage from '../components/MyImage'
 
 const Carousel = observer(() => {
@@ -74,22 +75,14 @@ const Carousel = observer(() => {
         }
     }
 
-    return (
-        <Card className='section sectionOffers'>
-            <Card.Header className='sectionHeader headerAsks'
-                onClick={() => setVisible(!visible)}>
-                <div className='sectionName'>
-                    {visible ?
-                        <CaretUpFill className='caret' />
-                        :
-                        <CaretDownFill className='caret' />
-                    }
-                    Участники
-                </div>
-            </Card.Header>
-            {visible ?
-                <div>
-                    <div class="parentSpec">
+    const tableRender =()=>{
+        if (loading && carousel?.length==0) {
+            return (
+                <CarouselSkeleton />
+            )
+        } else {
+            return(
+                <div class={loading ? "parentSpec loadingBlur" : "parentSpec"}>
                         {carousel.map((item, index) =>
                             <div key={index} class="childSpec">
                                 <div>
@@ -134,6 +127,26 @@ const Carousel = observer(() => {
                             </div>
                         )}
                     </div>
+            )
+        }
+    }
+
+    return (
+        <Card className='section sectionOffers'>
+            <Card.Header className='sectionHeader headerAsks'
+                onClick={() => setVisible(!visible)}>
+                <div className='sectionName'>
+                    {visible ?
+                        <CaretUpFill className='caret' />
+                        :
+                        <CaretDownFill className='caret' />
+                    }
+                    Участники
+                </div>
+            </Card.Header>
+            {visible ?
+                <div>
+                    {tableRender()}
                     <ReactPaginate
                         forcePage={currentPage - 1}
                         previousLabel={"<"}

@@ -1,0 +1,28 @@
+.skeleton,
+.skeleton-row {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #e5e7eb;
+  border-radius: 8px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.skeleton-switch {
+  height: 36px;
+  margin: 12px 0;
+  background: #e5e7eb;
+  border-radius: 6px;
+}
+
+.skeleton-text,
+.skeleton-cell {
+  height: 18px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  animation: pulse 2s infinite ease-in-out;
+}

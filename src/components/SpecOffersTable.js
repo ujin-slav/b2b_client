@@ -33,6 +33,7 @@ import tableList from "../icons/table-list.svg"
 import grid from "../icons/grid.svg"
 import HoverPreview from '../components/HoverPreview'
 import HoverPreviewBig from '../components/HoverPreviewBig'
+import SpecOffersSkeleton from '../components/SpecOfferTableSkeleton'
 import cart from "../icons/cart.svg"
 import { faBalanceScaleLeft } from '@fortawesome/free-solid-svg-icons';
 
@@ -53,7 +54,7 @@ const SpecOffersTable = observer(() => {
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
     const [limit, setLimit] = useState(10);
-    const [displayOption, setDisplayOption] = useState(1)
+    const [displayOption, setDisplayOption] = useState(3)
     const [displayOnlySpecOffers, setDisplayOnlySpecOffers] = useState(false)
     const [sort, setSort] = useState("cheaper");
     const imgs = useRef([])
@@ -87,12 +88,12 @@ const SpecOffersTable = observer(() => {
             }).finally(() => setLoading(false))
         }
     }, [
-        ask.categoryFilter, 
-        ask.regionFilter, 
-        ask.searchText, 
-        ask.searchInn, 
-        visible, 
-        fetching, 
+        ask.categoryFilter,
+        ask.regionFilter,
+        ask.searchText,
+        ask.searchInn,
+        visible,
+        fetching,
         user.isFetching
     ]);
 
@@ -188,28 +189,28 @@ const SpecOffersTable = observer(() => {
         }
     }
 
-    if (loading) {
-        return (
-            <Card className='section sectionOffers'>
-                <Card.Header className='sectionHeaderOffer headerOffers'
-                    onClick={() => setVisible(!visible)}>
-                    <div className='sectionName'>
-                        {visible ?
-                            <CaretUpFill className='caret' />
-                            :
-                            <CaretDownFill className='caret' />
-                        }
-                        Предложения
-                    </div>
-                </Card.Header>
-                {visible ?
-                    <div class="loader">Loading...</div>
-                    :
-                    <div></div>
-                }
-            </Card>
-        )
-    }
+    // if (loading) {
+    //     return (
+    //         <Card className='section sectionOffers'>
+    //             <Card.Header className='sectionHeaderOffer headerOffers'
+    //                 onClick={() => setVisible(!visible)}>
+    //                 <div className='sectionName'>
+    //                     {visible ?
+    //                         <CaretUpFill className='caret' />
+    //                         :
+    //                         <CaretDownFill className='caret' />
+    //                     }
+    //                     Предложения
+    //                 </div>
+    //             </Card.Header>
+    //             {visible ?
+    //                 <div class="loader">Loading...</div>
+    //                 :
+    //                 <div></div>
+    //             }
+    //         </Card>
+    //     )
+    // }
 
     const getImg = (item, index) => {
         return (
@@ -330,6 +331,104 @@ const SpecOffersTable = observer(() => {
         )
     }
 
+    const tableRender = () => {
+        if (loading && specOffers?.length==0) {
+            return (
+                <SpecOffersSkeleton mode={displayOption} />
+            )
+        } else {
+            return (
+                <>
+                    <div className={loading ? 'parentSpec loadingBlur' : 'parentSpec'}>
+                        {displayOption == 3 && specOffers?.map((item, index) => {
+                            return (
+                                <div
+                                    className='childSpec'
+                                    ref={el => imgs.current[index] = el}
+                                    onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                    {getCardImage(item, index)}
+                                    {getItemSwitch(item, index)}
+                                    <div className='specInfo'>
+                                        <div className=" d-flex justify-content-between">
+                                            <span
+                                                className="specName"
+                                                onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                                {item?.name}
+                                            </span>
+                                        </div>
+                                        <div className="specPrice">
+                                            {item.price} ₽
+                                        </div>
+                                        <div className="specNameOrg">
+                                            {item.nameOrg}
+                                        </div>
+                                        <div className="specCloudy">
+                                            {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
+                                                `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
+                                                :
+                                                getCategoryName(item.region, regionNodes).join(", ")
+                                            }
+                                        </div>
+                                        <div className="specCloudy">
+                                            {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    {
+                        (displayOption == 1 || displayOption == 2) &&
+                        <div class={loading ? "table-responsive loadingBlur" : "table-responsive"}>
+                            <Table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Артикул</th>
+                                        <th>Наименование</th>
+                                        <th><HandIndexThumb className='handIndexThumb' /></th>
+                                        <th>Цена</th>
+                                        <th>Остаток</th>
+                                        <th>Ед.изм</th>
+                                        <th>Организация</th>
+                                        <th>Дата</th>
+                                        <th>+</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {specOffers?.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{item?.code}</td>
+                                                <td>{item?.name}</td>
+                                                <td>{getHoverPreview(item)}
+                                                </td>
+                                                <td>{item?.price}</td>
+                                                <td>{item?.balance}</td>
+                                                <td>{item?.measure}</td>
+                                                <td> <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?.userId)}>
+                                                    {item?.userNameOrg}</a></td>
+                                                <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
+                                                <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
+                                                    onClick={() => {
+                                                        if (user.isAuth) {
+                                                            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
+                                                        } else {
+                                                            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
+                                                        }
+                                                    }}
+                                                /></td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </Table>
+                        </div>
+                    }
+                </>
+            )
+        }
+    }
+
     return (
         <Card className='section sectionOffers'>
             <Card.Header className='sectionHeaderOffer headerOffers'
@@ -397,7 +496,7 @@ const SpecOffersTable = observer(() => {
                                 <div className='captionMenuSelect'>Период</div>
                                 <InputGroup>
                                     <DatePicker
-                                        locale="ru"    
+                                        locale="ru"
                                         selected={startDate}
                                         name="StartDateOffers"
                                         className='form-control datePicker'
@@ -406,13 +505,13 @@ const SpecOffersTable = observer(() => {
                                             (date) => {
                                                 setStartDate(date)
                                                 handleClickDate()
-                                        }}
+                                            }}
                                     />
                                 </InputGroup>
                                 <InputGroup>
                                     <DatePicker
-                                        locale="ru" 
-                                        selected={endDate}   
+                                        locale="ru"
+                                        selected={endDate}
                                         name="EndDateOffers"
                                         className='form-control datePicker'
                                         dateFormat="dd.MM.yyyy"
@@ -420,7 +519,7 @@ const SpecOffersTable = observer(() => {
                                             (date) => {
                                                 setEndDate(date)
                                                 handleClickDate()
-                                        }}
+                                            }}
                                     />
                                 </InputGroup>
                                 <div className='captionMenuSelect'>Показать:</div>
@@ -450,89 +549,7 @@ const SpecOffersTable = observer(() => {
                             </div>
                         </Row>
                     </Form>
-                    <div className='parentSpec'>
-                        {displayOption == 3 && specOffers?.map((item, index) => {
-                            return (
-                                <div
-                                    className='childSpec'
-                                    ref={el => imgs.current[index] = el}
-                                    onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
-                                    {getCardImage(item, index)}
-                                    {getItemSwitch(item, index)}
-                                    <div className='specInfo'>
-                                        <div className=" d-flex justify-content-between">
-                                            <span
-                                                className="specName"
-                                                onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
-                                                {item?.name}
-                                            </span>
-                                        </div>
-                                        <div className="specPrice">
-                                            {item.price} ₽
-                                        </div>
-                                        <div className="specNameOrg">
-                                            {item.nameOrg}
-                                        </div>
-                                        <div className="specCloudy">
-                                            {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
-                                                `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
-                                                :
-                                                getCategoryName(item.region, regionNodes).join(", ")
-                                            }
-                                        </div>
-                                        <div className="specCloudy">
-                                            {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    {(displayOption == 1 || displayOption == 2) &&
-                        <div class="table-responsive">
-                            <Table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Артикул</th>
-                                        <th>Наименование</th>
-                                        <th><HandIndexThumb className='handIndexThumb' /></th>
-                                        <th>Цена</th>
-                                        <th>Остаток</th>
-                                        <th>Ед.изм</th>
-                                        <th>Организация</th>
-                                        <th>Дата</th>
-                                        <th>+</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {specOffers?.map((item, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td>{item?.code}</td>
-                                                <td>{item?.name}</td>
-                                                <td>{getHoverPreview(item)}
-                                                </td>
-                                                <td>{item?.price}</td>
-                                                <td>{item?.balance}</td>
-                                                <td>{item?.measure}</td>
-                                                <td> <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?.userId)}>
-                                                    {item?.userNameOrg}</a></td>
-                                                <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
-                                                <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
-                                                    onClick={() => {
-                                                        if (user.isAuth) {
-                                                            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
-                                                        } else {
-                                                            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
-                                                        }
-                                                    }}
-                                                /></td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </Table>
-                        </div>}
+                    {tableRender()}
                     <ReactPaginate
                         forcePage={currentPage - 1}
                         previousLabel={"<"}
