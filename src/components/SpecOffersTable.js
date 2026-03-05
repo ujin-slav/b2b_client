@@ -331,6 +331,16 @@ const SpecOffersTable = observer(() => {
         )
     }
 
+    const redirect = (item) => {
+        if(item?.specOffer){
+            history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)
+        } else if(user.isAuth){
+            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
+        } else {
+            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
+        }
+    }
+
     const tableRender = () => {
         if (loading && specOffers?.length==0) {
             return (
@@ -345,14 +355,14 @@ const SpecOffersTable = observer(() => {
                                 <div
                                     className='childSpec'
                                     ref={el => imgs.current[index] = el}
-                                    onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                    onClick={() => redirect(item)}>
                                     {getCardImage(item, index)}
                                     {getItemSwitch(item, index)}
                                     <div className='specInfo'>
                                         <div className=" d-flex justify-content-between">
                                             <span
                                                 className="specName"
-                                                onClick={() => history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)}>
+                                                onClick={() => redirect(item)}>
                                                 {item?.name}
                                             </span>
                                         </div>
@@ -409,13 +419,7 @@ const SpecOffersTable = observer(() => {
                                                     {item?.userNameOrg}</a></td>
                                                 <td>{dateFormat(item.Date, "dd/mm/yyyy")}</td>
                                                 <td><img src={cart} style={{ "width": "25px", "height": "25px", "cursor": "pointer" }}
-                                                    onClick={() => {
-                                                        if (user.isAuth) {
-                                                            history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
-                                                        } else {
-                                                            history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
-                                                        }
-                                                    }}
+                                                    onClick={() => redirect(item)}
                                                 /></td>
                                             </tr>
                                         )
