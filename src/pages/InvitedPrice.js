@@ -14,8 +14,10 @@ import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import {
-  FileEarmarkText
+  Calendar3
 } from 'react-bootstrap-icons';
+import '../orderCard.css'
+import cartColor from "../icons/cartColor.svg";
 
 const InvitedPriceAsk = observer(() => {
   registerLocale("ru", ru)
@@ -163,39 +165,40 @@ const InvitedPriceAsk = observer(() => {
             {askPriceUser?.map((item, index) =>
               <div key={index} className='childSpecAsk'>
                 <div
-                  className='priceOrderWrapper'
-                  onClick={() => history.push(CARDPRICEASK + '/' + item._id)}
+                  className="order-card"
+                  onClick={() => history.push(`${CARDPRICEASK}/${item._id}`)}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <FileEarmarkText className='earmarTextGrayCenter' />
+                  <div className="order-card__header">
+                    <div className="order-card__icon">
+                    <img src={cartColor} />
+                    </div>
+
+                    <div className="order-card__amount text-right">
+                      {item?.Sum?.toLocaleString('ru-RU')} ₽
+                    </div>
+                  </div>
+
+                  <div className="order-card__body">
+                    <div className="order-card__number">
+                      #{dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+                    </div>
+
+                    <div className="order-card__person">
+                      {item?.FIZ
+                        ? `${item.NameFiz || ''} ${item.EmailFiz || ''}`
+                        : `${item?.Author?.name || ''} ${item?.Author?.nameOrg || ''}`}
+                    </div>
+
+                    <div className="order-card__date text-muted small mt-1">
+                      <Calendar3 size={20}/>
+                      <span className='mx-2'>
+                        {dateFormat(item?.Date, "dd.MM.yyyy HH:mm:ss")}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div>
-                    <span className="specCloudy">№ </span>
-                    <span>{dateFormat(item?.Date, "ddmmyyyyHHMMss")}</span>
-                  </div>
-                  <div>
-                    <span className="specCloudy">От </span>
-                    <span>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
-                  </div>
-                  <span className="specCloudy">Автор </span>
-                  {item?.FIZ ?
-                    `${item?.NameFiz + " " + item?.EmailFiz}`
-                    :
-                    `${item?.Author?.name + " " + item?.Author?.nameOrg}`
-                  }
-                </div>
-                <div><span className="specCloudy">Сумма </span>{item?.Sum}</div>
-                {!item?.FIZ ?
-                  <div><span className="specCloudy">Статус </span>
-                    {item?.Status?.Status ?
-                      <span className='statusLabel'>{item?.Status?.Status?.labelRu}</span>
-                      :
-                      <span className='statusLabel'>Доставлен поставщику</span>
-                    }
-                  </div>
-                  :
-                  <div></div>
-                }
               </div>
             )}
           </div>
