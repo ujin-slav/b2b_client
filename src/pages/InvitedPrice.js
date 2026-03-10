@@ -117,15 +117,18 @@ const InvitedPriceAsk = observer(() => {
                 name="StartDateOffers"
                 className='form-control datePicker'
                 dateFormat="dd.MM.yyyy"
-                onChange={date => setStartDate(date)}
+                onChange={(date) => {
+                  setStartDate(date)
+                  handleClickDate()
+                }}
               />
-              <Button
+              {/* <Button
                 variant="outline-secondary"
                 className='buttonSearchDataPicker'
                 onClick={() => handleClickDate()}
               >
                 <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-              </Button>
+              </Button> */}
             </InputGroup>
             <InputGroup>
               <DatePicker
@@ -134,15 +137,18 @@ const InvitedPriceAsk = observer(() => {
                 name="EndDateOffers"
                 className='form-control datePicker'
                 dateFormat="dd.MM.yyyy"
-                onChange={date => setEndDate(date)}
+                onChange={(date) => {
+                  setEndDate(date)
+                  handleClickDate()
+                }}
               />
-              <Button
+              {/* <Button
                 variant="outline-secondary"
                 className='buttonSearchDataPicker'
                 onClick={() => handleClickDate()}
               >
                 <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-              </Button>
+              </Button> */}
             </InputGroup>
             <div className='captionMenuSelect'>Показать:</div>
             <Form.Control
