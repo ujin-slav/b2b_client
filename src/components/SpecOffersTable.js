@@ -332,9 +332,9 @@ const SpecOffersTable = observer(() => {
     }
 
     const redirect = (item) => {
-        if(item?.specOffer){
+        if (item?.specOffer) {
             history.push(CARDSPECOFFER + '/' + item?.specOffer + '/' + item?.id)
-        } else if(user.isAuth){
+        } else if (user.isAuth) {
             history.push(CREATEPRICEASK + '/' + item?.userId + '/' + item?.id)
         } else {
             history.push(CREATEPRICEASKFIZ + '/' + item?.userId + '/' + item?.id)
@@ -342,7 +342,7 @@ const SpecOffersTable = observer(() => {
     }
 
     const tableRender = () => {
-        if (loading && specOffers?.length==0) {
+        if (loading && specOffers?.length == 0) {
             return (
                 <SpecOffersSkeleton mode={displayOption} />
             )
@@ -352,35 +352,40 @@ const SpecOffersTable = observer(() => {
                     <div className={loading ? 'parentSpec loadingBlur' : 'parentSpec'}>
                         {displayOption == 3 && specOffers?.map((item, index) => {
                             return (
-                                <div
-                                    className='childSpec'
-                                    ref={el => imgs.current[index] = el}
-                                    onClick={() => redirect(item)}>
-                                    {getCardImage(item, index)}
-                                    {getItemSwitch(item, index)}
-                                    <div className='specInfo'>
-                                        <div className=" d-flex justify-content-between">
-                                            <span
-                                                className="specName"
-                                                onClick={() => redirect(item)}>
-                                                {item?.name}
-                                            </span>
-                                        </div>
-                                        <div className="specPrice">
-                                            {item.price} ₽
-                                        </div>
-                                        <div className="specNameOrg">
-                                            {item.nameOrg}
-                                        </div>
-                                        <div className="specCloudy">
-                                            {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
-                                                `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
-                                                :
-                                                getCategoryName(item.region, regionNodes).join(", ")
-                                            }
-                                        </div>
-                                        <div className="specCloudy">
-                                            {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                <div className='childSpecWrapper' ref={el => imgs.current[index] = el}>
+                                    <div
+                                        className='childSpec'
+                                        onClick={() => redirect(item)}>
+                                        {getCardImage(item, index)}
+                                        {getItemSwitch(item, index)}
+                                        <div className='specInfo'>
+                                            <div className=" d-flex justify-content-between">
+                                                <span
+                                                    className="specName"
+                                                    onClick={() => redirect(item)}>
+                                                    {item?.name?.length > 60 ?
+                                                        `${item?.name?.substring(0, 60)}...`
+                                                        :
+                                                        item?.name
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div className="specPrice">
+                                                {item.price} ₽
+                                            </div>
+                                            <div className="specNameOrg">
+                                                {item.nameOrg}
+                                            </div>
+                                            <div className="specCloudy">
+                                                {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
+                                                    `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
+                                                    :
+                                                    getCategoryName(item.region, regionNodes).join(", ")
+                                                }
+                                            </div>
+                                            <div className="specCloudy">
+                                                {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

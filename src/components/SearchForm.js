@@ -11,6 +11,7 @@ import {
     InputGroup
 } from "react-bootstrap";
 import '../style.css';
+import '../searchForm.css';
 import ModalCT from './ModalCT';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import CategoryTree from './CategoryTree';
@@ -18,7 +19,7 @@ import RegionTree from './RegionTree';
 import { getCategoryName } from '../utils/Convert'
 import { categoryNodes } from '../config/Category';
 import { regionNodes } from '../config/Region';
-import { PlusCircle, DashCircle } from 'react-bootstrap-icons';
+import { PlusCircle, DashCircle, ChevronDown } from 'react-bootstrap-icons';
 import { Context } from "../index";
 import PriceService from '../services/PriceService'
 import CarouselService from '../services/CarouselService'
@@ -163,14 +164,50 @@ const SearchForm = () => {
                 <div className="searchForm">
                     <Row>
                         <Form.Group as={Col}>
-                            <InputGroup className="mb-3">
-                                <Form.Control type="nameOrder" placeholder="Наименование или код товара"
+                            <InputGroup className="mb-3 position-relative">
+                                <Form.Control
+                                    type="search"           // ← лучше семантика
+                                    placeholder="Наименование или код товара"
                                     ref={inputText}
+                                    value={searchText}      // ← controlled input — надёжнее
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    onFocus={() => suggestionsText.length > 0 && setShowDropdownText(true)} />
+                                    onFocus={() => suggestionsText.length > 0 && setShowDropdownText(true)}
+                                />
+
+                                {/* Крестик очистки */}
+                                {searchText && (
+                                    <button
+                                        type="button"
+                                        className="btn-clear position-absolute top-50 translate-middle-y"
+                                        style={{ right: '50px', zIndex: 5, background: 'transparent', border: 'none' }}
+                                        onClick={() => {
+                                            setSearchText('');
+                                            inputText.current?.focus(); // удобно — фокус остаётся
+                                        }}
+                                        aria-label="Очистить"
+                                    >
+                                    </button>
+                                )}
+
+                                {/* Лупа — кнопка поиска */}
+                                <button
+                                    type="button"
+                                    className="btn-search position-absolute top-50 translate-middle-y"
+                                    style={{ right: '12px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                                    onClick={() => {
+                                        ask.setSearchText(searchText);
+                                        ask.setSearchInn(searchInn);
+                                    }}
+                                    aria-label="Поиск"
+                                >
+                                    <Search size={20} color="#6c757d" />
+                                </button>
+
+                                {/* Подсказки */}
                                 {showDropdownText && (
                                     <ListGroup
-                                        className="dropDownSearchText position-absolute w-100 shadow-sm"
+                                        className="position-absolute w-100 shadow dropdown-menu show" // ← стили как у dropdown
+                                        style={{ top: '100%', zIndex: 1000, marginTop: '4px' }}
                                         ref={wrapperRef}
                                     >
                                         {loadingText ? (
@@ -183,42 +220,59 @@ const SearchForm = () => {
                                                     onClick={(e) => handleSelectText(e, item)}
                                                     className="py-2"
                                                 >
-                                                    <div className="d-flex justify-content-between">
-                                                        {item.name.substring(0, 100)}
-                                                    </div>
+                                                    {item.name.substring(0, 100)}
                                                 </ListGroup.Item>
                                             ))
                                         )}
                                     </ListGroup>
-                                )}{searchText && (
-                                    <button
-                                        className="btn-clear"
-                                        aria-label="Очистить поиск"
-                                        onClick={() => {
-                                            ask.setSearchText("")
-                                            setSearchText("")
-                                            inputText.current.value = ""
-                                        }}>
-                                        <X className="btn-clear-icon" />
-                                    </button>
                                 )}
-                                <Button variant="outline-secondary" id="button-addon2"
-                                    onClick={() => {
-                                        ask.setSearchText(searchText)
-                                        ask.setSearchInn(searchInn)
-                                    }}>
-                                    <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-                                </Button>
                             </InputGroup>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <InputGroup className="mb-3">
-                                <Form.Control type="nameClient" placeholder="Наименование или ИНН заказчика"
+                            <InputGroup className="mb-3 position-relative">
+                                <Form.Control
+                                    type="search"           // ← лучше семантика
+                                    placeholder="Наименование или ИНН заказчика"
                                     ref={inputInn}
-                                    onChange={(e) => setSearchInn(e.target.value)} />
+                                    value={searchInn}       // ← controlled input
+                                    onChange={(e) => setSearchInn(e.target.value)}
+                                    onFocus={() => suggestionsInn.length > 0 && setShowDropdownInn(true)}
+                                />
+
+                                {/* Крестик очистки */}
+                                {searchInn && (
+                                    <button
+                                        type="button"
+                                        className="btn-clear position-absolute top-50 translate-middle-y"
+                                        style={{ right: '50px', zIndex: 5, background: 'transparent', border: 'none' }}
+                                        onClick={() => {
+                                            setSearchInn('');
+                                            inputInn.current?.focus(); // удобно — фокус остаётся
+                                        }}
+                                        aria-label="Очистить"
+                                    >
+                                    </button>
+                                )}
+
+                                {/* Лупа — кнопка поиска */}
+                                <button
+                                    type="button"
+                                    className="btn-search position-absolute top-50 translate-middle-y"
+                                    style={{ right: '12px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                                    onClick={() => {
+                                        ask.setSearchInn(searchInn);
+                                        ask.setSearchText(searchText);
+                                    }}
+                                    aria-label="Поиск"
+                                >
+                                    <Search size={20} color="#6c757d" />
+                                </button>
+
+                                {/* Подсказки */}
                                 {showDropdownInn && (
                                     <ListGroup
-                                        className="dropDownSearchText position-absolute w-100 shadow-sm"
+                                        className="position-absolute w-100 shadow dropdown-menu show"
+                                        style={{ top: '100%', zIndex: 1000, marginTop: '4px' }}
                                         ref={wrapperRef}
                                     >
                                         {loadingInn ? (
@@ -229,13 +283,20 @@ const SearchForm = () => {
                                                     key={item._id || item.code}
                                                     action
                                                     onClick={(e) => handleSelectInn(e, item)}
-                                                    className="py-1"
+                                                    className="py-2"
                                                 >
-                                                    <div className="d-flex">
-                                                        <img className="avatarSuggestion" src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
-                                                        <div className="px-2">
-                                                            <div>{item?.name.substring(0, 100)}</div>
-                                                            <div>{item?.nameOrg.substring(0, 100)}</div>
+                                                    <div className="d-flex align-items-center">
+                                                        {item?.logo?.filename ? (
+                                                            <img
+                                                                className="avatarSuggestion me-2"
+                                                                src={`${process.env.REACT_APP_API_URL}getlogo/${item.logo.filename}`}
+                                                                alt={item.name || ''}
+                                                                style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px' }}
+                                                            />
+                                                        ) : null}
+                                                        <div>
+                                                            <div>{item.name?.substring(0, 100)}</div>
+                                                            <div className="text-muted small">{item.nameOrg?.substring(0, 100)}</div>
                                                         </div>
                                                     </div>
                                                 </ListGroup.Item>
@@ -243,69 +304,78 @@ const SearchForm = () => {
                                         )}
                                     </ListGroup>
                                 )}
-                                {searchInn && (
-                                    <button
-                                        className="btn-clear"
-                                        aria-label="Очистить поиск"
-                                        onClick={() => {
-                                            ask.setSearchInn("")
-                                            setSearchInn("")
-                                            inputInn.current.value = ""
-                                        }}>
-                                        <X className="btn-clear-icon" />
-                                    </button>
-                                )}
-                                <Button variant="outline-secondary" id="button-addon2"
-                                    onClick={() => {
-                                        ask.setSearchInn(searchInn)
-                                        ask.setSearchText(searchText)
-                                    }}>
-                                    <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-                                </Button>
                             </InputGroup>
                         </Form.Group>
                     </Row>
                     <Row>
                         <Form.Group as={Col} controlId="Tree">
-                            <InputGroup className="mb-3">
+                            <InputGroup className="mb-3 position-relative">
                                 <Form.Control
+                                    type="text"
                                     placeholder="Классификатор"
+                                    readOnly
                                     value={getCategoryName(checkedCat, categoryNodes).join(", ")}
                                 />
+
+                                {/* Крестик очистки — появляется, если есть выбранные */}
                                 {checkedCat.length > 0 && (
                                     <button
-                                        className="btn-clear btn-clear-checked"
-                                        aria-label="Очистить поиск"
-                                        onClick={() => {
-                                            setCheckedCat([])
-                                        }}>
-                                        <X className="btn-clear-icon" />
+                                        type="button"
+                                        className="btn-clear position-absolute top-50 translate-middle-y"
+                                        style={{ right: '50px', zIndex: 5, background: 'transparent', border: 'none' }}
+                                        onClick={() => setCheckedCat([])}
+                                        aria-label="Очистить выбранные категории"
+                                    >
+                                        <X size={20} color="#6c757d" />
                                     </button>
                                 )}
-                                <Button variant="outline-secondary" id="button-addon2" onClick={() => setModalActiveCat(true)}>
-                                    ...
-                                </Button>
+
+                                {/* Кнопка открытия модалки/дерева — иконка справа */}
+                                <button
+                                    type="button"
+                                    className="btn-search position-absolute top-50 translate-middle-y"
+                                    style={{ right: '12px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                                    onClick={() => setModalActiveCat(true)}
+                                    aria-label="Выбрать классификатор"
+                                >
+                                    <ChevronDown size={20} color="#6c757d" />
+                                </button>
                             </InputGroup>
                         </Form.Group>
                         <Form.Group as={Col} controlId="Tree">
-                            <InputGroup className="mb-3">
+                            <InputGroup className="mb-3 position-relative">
                                 <Form.Control
+                                    type="text"
                                     placeholder="Регионы"
+                                    readOnly
                                     value={getCategoryName(checkedRegion, regionNodes).join(", ")}
                                 />
+
+                                {/* Крестик очистки — появляется, если есть выбранные регионы */}
                                 {checkedRegion.length > 0 && (
                                     <button
-                                        className="btn-clear btn-clear-checked"
-                                        aria-label="Очистить поиск"
-                                        onClick={() => {
-                                            setCheckedRegion([])
-                                        }}>
-                                        <X className="btn-clear-icon" />
+                                        type="button"
+                                        className="btn-clear position-absolute top-50 translate-middle-y"
+                                        style={{ right: '50px', zIndex: 5, background: 'transparent', border: 'none' }}
+                                        onClick={() => setCheckedRegion([])}
+                                        aria-label="Очистить выбранные регионы"
+                                    >
+                                        <X size={20} color="#6c757d" />
                                     </button>
                                 )}
-                                <Button variant="outline-secondary" id="button-addon2" onClick={() => setModalActiveReg(true)}>
-                                    ...
-                                </Button>
+
+                                {/* Кнопка открытия модалки/списка регионов */}
+                                <button
+                                    type="button"
+                                    className="btn-search position-absolute top-50 translate-middle-y"
+                                    style={{ right: '12px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                                    onClick={() => setModalActiveReg(true)}
+                                    aria-label="Выбрать регионы"
+                                >
+                                    <ChevronDown size={20} color="#6c757d" />
+                                    {/* Если предпочитаешь оставить три точки как было: */}
+                                    {/* <span style={{ fontSize: '18px', fontWeight: 600 }}>...</span> */}
+                                </button>
                             </InputGroup>
                         </Form.Group>
                     </Row>
