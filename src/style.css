@@ -56,7 +56,12 @@ textarea {
     height: 20px;
     background-color: rgb(247, 12, 12, 0.5);
 }
-
+.dropdown-menu{
+ border-radius: 20px; 
+}
+div.dropdown-menu ul{
+  padding-left: 1rem !important;
+}
 .App {
     text-align: center;
   }
@@ -438,22 +443,32 @@ td.tdRed{
     background-color:white;
   }
   .childSpecWrapper {
-    overflow-wrap: break-word;
-    width: 20%;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: center;    
+    align-items: center;        
+    width: 100%;
     position: relative;
 
   }
   .childSpec{
-    margin:7px;
+    display: flex;
+    margin-left: 20%; 
+    margin-top: 15px;
+    width:50%;
     background-color: white;
     border-radius: 20px;
+  }
+  .childSpecInfo{
+    
   }
   .albumSpec {
     overflow-wrap: break-word;
     padding:10px 10px 10px 10px;
     box-sizing: border-box;
     position: relative;
+  }
+  .cardWrapper{
+    width: 250px;
   }
   .fotoSpec{
     display: block;

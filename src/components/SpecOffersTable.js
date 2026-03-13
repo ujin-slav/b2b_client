@@ -21,7 +21,7 @@ import {
     CaretDownFill,
     CaretUpFill,
     HandIndexThumb,
-    Search,
+    ViewList,
     FileEarmarkRichtext,
     Toggle2On,
     Toggle2Off
@@ -76,12 +76,12 @@ const SpecOffersTable = observer(() => {
                 displayOnlySpecOffers,
                 page: currentPage
             }).then((data) => {
-                console.log(data)
                 if (Array.isArray(data.docs)) {
                     data.docs.map((item) => {
                         item.indexFoto = 0
                     })
                 }
+                console.log(data.docs)
                 setSpecOffers(data.docs)
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
@@ -215,7 +215,7 @@ const SpecOffersTable = observer(() => {
     const getImg = (item, index) => {
         return (
             item.filesPreview?.map((innerItem, innerIndex) =>
-                <span style={{ 'display': 'grid' }}>
+                <span key={innerIndex} style={{ 'display': 'grid' }}>
                     <MyImage
                         className={"fotoSpec"}
                         disabled={item.indexFoto !== innerIndex ? true : false}
@@ -352,39 +352,46 @@ const SpecOffersTable = observer(() => {
                     <div className={loading ? 'parentSpec loadingBlur' : 'parentSpec'}>
                         {displayOption == 3 && specOffers?.map((item, index) => {
                             return (
-                                <div className='childSpecWrapper' ref={el => imgs.current[index] = el}>
+                                <div className='childSpecWrapper'>
                                     <div
                                         className='childSpec'
                                         onClick={() => redirect(item)}>
-                                        {getCardImage(item, index)}
-                                        {getItemSwitch(item, index)}
-                                        <div className='specInfo'>
-                                            <div className=" d-flex justify-content-between">
-                                                <span
-                                                    className="specName"
-                                                    onClick={() => redirect(item)}>
-                                                    {item?.name?.length > 60 ?
-                                                        `${item?.name?.substring(0, 60)}...`
+                                        <div
+                                            className='cardWrapper'
+                                            key={index}
+                                            ref={el => imgs.current[index] = el}>
+                                            {getCardImage(item, index)}
+                                            {getItemSwitch(item, index)}
+                                        </div>
+                                        <div className='childSpecInfo'>
+                                            <div className='specInfo'>
+                                                <div className=" d-flex justify-content-between">
+                                                    <span
+                                                        className="specName"
+                                                        onClick={() => redirect(item)}>
+                                                        {item?.name?.length > 60 ?
+                                                            `${item?.name?.substring(0, 60)}...`
+                                                            :
+                                                            item?.name
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <div className="specPrice">
+                                                    {item.price} ₽
+                                                </div>
+                                                <div className="specNameOrg">
+                                                    {item.nameOrg}
+                                                </div>
+                                                <div className="specCloudy">
+                                                    {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
+                                                        `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
                                                         :
-                                                        item?.name
+                                                        getCategoryName(item.region, regionNodes).join(", ")
                                                     }
-                                                </span>
-                                            </div>
-                                            <div className="specPrice">
-                                                {item.price} ₽
-                                            </div>
-                                            <div className="specNameOrg">
-                                                {item.nameOrg}
-                                            </div>
-                                            <div className="specCloudy">
-                                                {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
-                                                    `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
-                                                    :
-                                                    getCategoryName(item.region, regionNodes).join(", ")
-                                                }
-                                            </div>
-                                            <div className="specCloudy">
-                                                {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                                </div>
+                                                <div className="specCloudy">
+                                                    {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -469,9 +476,14 @@ const SpecOffersTable = observer(() => {
                                     className={displayOption == 2 ?
                                         'displayOptionIconSelected' : 'displayOptionIcon'}
                                 />
-                                <img
+                                {/* <img
                                     onClick={() => setDisplayOption(3)}
                                     src={grid}
+                                    className={displayOption == 3 ?
+                                        'displayOptionIconSelected' : 'displayOptionIcon'}
+                                /> */}
+                                <ViewList
+                                    onClick={() => setDisplayOption(3)}
                                     className={displayOption == 3 ?
                                         'displayOptionIconSelected' : 'displayOptionIcon'}
                                 />
