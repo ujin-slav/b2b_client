@@ -291,7 +291,6 @@ const SearchForm = () => {
                                                                 className="avatarSuggestion me-2"
                                                                 src={`${process.env.REACT_APP_API_URL}getlogo/${item.logo.filename}`}
                                                                 alt={item.name || ''}
-                                                                style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px' }}
                                                             />
                                                         ) : null}
                                                         <div>

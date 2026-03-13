@@ -9,7 +9,7 @@ import { getCategoryName } from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ru from 'date-fns/locale/ru'
-import CardSpecOffer from '../pages/CardSpecOffer';
+import { fetchUser } from '../http/askAPI'
 import {
     CARDSPECOFFER,
     ORGINFO,
@@ -79,9 +79,13 @@ const SpecOffersTable = observer(() => {
                 if (Array.isArray(data.docs)) {
                     data.docs.map((item) => {
                         item.indexFoto = 0
+                        fetchUser(item?.userId).then((result) => {
+                            if (result.status === 200) {
+                                item.user = result.data
+                            }
+                        })
                     })
                 }
-                console.log(data.docs)
                 setSpecOffers(data.docs)
                 setPageCount(data.totalPages);
                 setCurrentPage(data.page)
@@ -139,9 +143,12 @@ const SpecOffersTable = observer(() => {
         } else {
             num = Math.floor((e.clientX - left) / (width / countImage))
         }
-        item.indexFoto = num
+        if (num >= 0) {
+            item.indexFoto = num
+        }
         let newSpecOffers = JSON.parse(JSON.stringify(specOffers))
         setSpecOffers(newSpecOffers)
+        console.log(newSpecOffers)
     }
 
     const mouseEnterHandler = (e, item, index) => {
@@ -216,19 +223,21 @@ const SpecOffersTable = observer(() => {
         return (
             item.filesPreview?.map((innerItem, innerIndex) =>
                 <span key={innerIndex} style={{ 'display': 'grid' }}>
-                    <MyImage
-                        className={"fotoSpec"}
+                    <img
+                        className="fotoSpec"
                         disabled={item.indexFoto !== innerIndex ? true : false}
+                        style={{ display: (item.indexFoto !== innerIndex) ? "none" : "block" }}
                         src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename}
                         onMouseMove={(e) => mouseMoveHandler(e, item, index)}
                         onMouseEnter={(e) => mouseEnterHandler(e, item, index)}
                         onMouseLeave={(e) => mouseLeaveHandler(e, item, index)}
                         ref={el => imgs.current[index] = el} />
                     <div className="ImgSpecWrapper">
-                        <MyImage
+                        <img
                             src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename}
                             disabled={item.indexFoto !== innerIndex ? true : false}
-                            className={"fotoSpecBack"}
+                            style={{ display: (item.indexFoto !== innerIndex) ? "none" : "block" }}
+                            className="fotoSpecBack"
                         />
                     </div>
                 </span>
@@ -376,9 +385,6 @@ const SpecOffersTable = observer(() => {
                                                         }
                                                     </span>
                                                 </div>
-                                                <div className="specPrice">
-                                                    {item.price} ₽
-                                                </div>
                                                 <div className="specNameOrg">
                                                     {item.nameOrg}
                                                 </div>
@@ -392,7 +398,23 @@ const SpecOffersTable = observer(() => {
                                                 <div className="specCloudy">
                                                     {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
                                                 </div>
+                                                <div className="d-flex align-items-center">
+                                                    {item?.user?.logo?.filename ? (
+                                                        <img
+                                                            className="avatarSuggestion me-2"
+                                                            src={`${process.env.REACT_APP_API_URL}getlogo/${item?.user?.logo?.filename}`}
+                                                            alt={item.name || ''}
+                                                        />
+                                                    ) : null}
+                                                    <div>
+                                                        <div>{item?.user?.name?.substring(0, 100)}</div>
+                                                        <div className="text-muted small">{item.nameOrg?.substring(0, 100)}</div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div className="specPrice">
+                                            {item.price} ₽
                                         </div>
                                     </div>
                                 </div>
