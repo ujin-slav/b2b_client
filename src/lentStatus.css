@@ -1,0 +1,167 @@
+.event-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 16px 20px;
+    margin-bottom: 12px;           /* расстояние между карточками в ленте */
+    cursor: default;               /* обычно не кликабельны, но можно сделать pointer если нужно */
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  .event-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: #d1d5db;
+  }
+  
+  .event-card:active {
+    background: #f9fafb;
+  }
+  
+  /* Шапка карточки */
+  .event-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  
+  .event-card__left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .event-card__number {
+    font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4b5563;
+    letter-spacing: -0.3px;
+  }
+  
+  .event-card__date {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+  }
+  
+  .event-card__time {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    text-align: right;
+    white-space: nowrap;
+  }
+  
+  /* Основное содержимое */
+  .event-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .event-row {
+    display: flex;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #374151;
+  }
+  
+  .event-label {
+    width: 110px;               /* фиксированная ширина под русский текст */
+    color: #6b7280;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  
+  .event-value {
+    font-weight: 500;
+    color: #111827;
+  }
+  
+  .event-value--highlight {
+    color: #2563eb;             /* синий для нового статуса — привлекает внимание */
+    font-weight: 600;
+  }
+  
+  /* Если хочешь сохранить твой класс specCloudy */
+  .specCloudy {
+    color: #4b5563;
+    font-weight: 500;
+  }
+
+
+  /* Секция skeleton */
+
+  .event-card--skeleton {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  pointer-events: none; /* чтобы нельзя было кликнуть */
+}
+
+/* Базовый скелетон-элемент */
+.skeleton {
+  background: #e5e7eb;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: skeleton-loading 1.6s infinite linear;
+}
+
+@keyframes skeleton-loading {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%);   }
+}
+
+/* Размеры и формы */
+.skeleton-text {
+  height: 1.1rem;
+  width: 100%;
+}
+
+.skeleton-number {
+  width: 140px;
+  height: 1.25rem;
+  border-radius: 8px;
+}
+
+.skeleton-small {
+  width: 110px;
+  height: 0.9rem;
+  margin-top: 4px;
+}
+
+.skeleton-label {
+  width: 100px;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.skeleton-value {
+  flex: 1;
+  height: 1rem;
+}
+
+/* Более мягкие отступы внутри скелетона */
+.event-card--skeleton .event-card__header {
+  margin-bottom: 14px;
+}
+
+.event-card--skeleton .event-row {
+  gap: 12px;
+}
