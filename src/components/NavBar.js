@@ -48,6 +48,7 @@ import faviconNewMessage from '../faviconNewMessage.ico'
 import faviconStd from '../favicon.ico'
 import QuestForMe from '../pages/QuestForMe';
 import AuthService from "../services/AuthService";
+import navBar from "../navBar.css"
 
 const NavBar = observer(() => {
 
@@ -212,7 +213,7 @@ const NavBar = observer(() => {
 
     return (
         <div>
-            <Navbar bg="dark" variant="dark">
+            <Navbar variant="dark" className="custom-navbar">
                 <div className="navbar-collapse collapse justify-content-stretch" id="navbar6">
                     <NavLink to="/">
                         <img
