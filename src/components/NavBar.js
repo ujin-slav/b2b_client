@@ -30,8 +30,8 @@ import {
     MYFAVORITES
 } from "../utils/routes";
 import handShake from "../icons/handshake-o.svg";
-import basketShop from "../icons/shopping-basket.svg";
-import calc from "../icons/calculator.svg";
+import cartColor from "../icons/cartColor.svg";
+import priceColor from "../icons/priceColor.svg";
 import bullhorn from "../icons/bullhorn.svg";
 import comment from "../icons/comment.svg";
 import calendar from "../icons/calendar.svg";
@@ -244,7 +244,7 @@ const NavBar = observer(() => {
                                     <ul>
                                         <li className="dropdown-header">
                                             <div className="menu-icon-wrapper">
-                                                <div><img className="awesomeIcon" src={calc} /></div>
+                                                <div><img src={priceColor} /></div>
                                                 <div><b>&nbsp;&nbsp;Прайс-листы</b></div>
                                             </div>
                                         </li>
@@ -290,7 +290,7 @@ const NavBar = observer(() => {
                                     <ul>
                                         <li className="dropdown-header">
                                             <div className="menu-icon-wrapper">
-                                                <div><img className="awesomeIcon" src={basketShop} /></div>
+                                                <div><img src={cartColor} /></div>
                                                 <div><b>&nbsp;&nbsp;Карточки товаров</b></div>
                                             </div>
                                         </li>
@@ -301,7 +301,7 @@ const NavBar = observer(() => {
                                     <ul>
                                         <li className="dropdown-header">
                                             <div className="menu-icon-wrapper">
-                                                <div><img className="awesomeIcon" src={quest} /></div>
+                                                <div><img src={quest} /></div>
                                                 <div><b>&nbsp;&nbsp;О сервисе</b></div>
                                             </div>
                                         </li>
@@ -317,7 +317,7 @@ const NavBar = observer(() => {
                                     <ul>
                                         <li className="dropdown-header">
                                             <div className="menu-icon-wrapper">
-                                                <div><img className="awesomeIcon" src={calendar} /></div>
+                                                <div><img src={calendar} /></div>
                                                 <div><b>&nbsp;&nbsp;События</b></div>
                                             </div>
                                         </li>
@@ -337,7 +337,7 @@ const NavBar = observer(() => {
                                     <ul>
                                         <li className="dropdown-header">
                                             <div className="menu-icon-wrapper">
-                                                <div><img className="awesomeIcon" src={starHalf} /></div>
+                                                <div><img src={starHalf} /></div>
                                                 <div><b>&nbsp;&nbsp;Отзывы</b></div>
                                             </div>
                                         </li>
