@@ -1,0 +1,15 @@
+.parentMySpecOffers {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    background-color: white;
+}
+
+.childMySpecOffers {
+    overflow-wrap: break-word;
+    width: 20%;
+    height: 20%;
+    padding: 10px 10px 10px 10px;
+    box-sizing: border-box;
+    position: relative;
+}

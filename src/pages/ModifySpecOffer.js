@@ -199,9 +199,11 @@ const ModifySpecOffer = observer(() => {
 
   const handleDelete = (event, id) => {
     event.preventDefault()
+
     const list = sortedList.filter((item, i) =>
       i !== Number(event.target.id))
     setSortedList(list)
+    setDeletedList([...deletedList,id.id])
 
     URL.revokeObjectURL(files.find(item => item.id === id))
     const newFiles = files.filter((item, index, array) => item.id !== id);

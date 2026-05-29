@@ -6,7 +6,6 @@
       <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
     </linearGradient>
   </defs>
-  
   <!-- Закругленный квадрат с градиентом -->
   <rect x="10" y="10" width="180" height="180" rx="40" ry="40" fill="url(#gradient)"/>
   

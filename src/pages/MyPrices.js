@@ -101,9 +101,18 @@ const MyPrices = observer(() => {
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Текст или название прайса"
                         />
-                        <Button variant="outline-secondary" onClick={() => handleSearch()}>
+                        <button
+                            type="button"
+                            className="btn-search position-absolute top-50 translate-middle-y"
+                            style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                            onClick={() => handleSearch()}
+                            aria-label="Поиск"
+                        >
+                            <Search size={20} color="#6c757d" />
+                        </button>
+                        {/* <Button variant="outline-secondary" onClick={() => handleSearch()}>
                             <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-                        </Button>
+                        </Button> */}
                     </InputGroup>
                 </Row>
                 <Row>
@@ -132,7 +141,7 @@ const MyPrices = observer(() => {
                                 dateFormat="dd.MM.yyyy"
                                 onChange={
                                     (date) => {
-                                        setStartDate(date)
+                                        setEndDate(date)
                                         handleClickDate()
                                     }}
                             />

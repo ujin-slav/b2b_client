@@ -1,73 +1,74 @@
-import React,{useState,useEffect,useContext,useRef} from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import UserService from '../services/UserService';
 import MessageService from '../services/MessageService';
-import {Context} from "../index";
+import { Context } from "../index";
 import {
+    Button,
     Form,
     InputGroup,
-  } from "react-bootstrap";
+} from "react-bootstrap";
 import dateFormat from "dateformat";
 import Fountaing from '../components/Fountaing'
-import {observer} from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 
-const UserBox = observer(({recevier,setRecevier,idorg}) => {
+const UserBox = observer(({ recevier, setRecevier, idorg }) => {
 
-    const [fetching,setFetching] = useState(true) 
-    const [totalDocsUser,setTotalDocsUser] = useState(0) 
-    const [currentPageUser,setCurrentPageUser] = useState(1)
+    const [fetching, setFetching] = useState(true)
+    const [totalDocsUser, setTotalDocsUser] = useState(0)
+    const [currentPageUser, setCurrentPageUser] = useState(1)
     const [searchUser, setSearchUser] = useState("")
-    const {chat} = useContext(Context)
-    const {user} = useContext(Context)
+    const { chat } = useContext(Context)
+    const { user } = useContext(Context)
     const userBox = useRef(null)
 
-    useEffect(()=>{
-        if(chat.socket){
-            chat.socket.on("user_disconnected", (data) => { 
-                let newUsers = chat.contacts.map((item)=>{
-                    if(item.contact.id===data){
+    useEffect(() => {
+        if (chat.socket) {
+            chat.socket.on("user_disconnected", (data) => {
+                let newUsers = chat.contacts.map((item) => {
+                    if (item.contact.id === data) {
                         item.statusLine = false
                         item.lastVisit = new Date()
                     }
-                    return item 
+                    return item
                 })
                 chat.contacts = newUsers
             })
-            chat.socket.on("user_connected", (data) => { 
-                let newUsers = chat.contacts.map((item)=>{
-                    if(item.contact.id===data){
+            chat.socket.on("user_connected", (data) => {
+                let newUsers = chat.contacts.map((item) => {
+                    if (item.contact.id === data) {
                         item.statusLine = true
                     }
-                    return item 
+                    return item
                 })
                 chat.contacts = newUsers
             })
-            chat.socket.on("user_typing", (data) => { 
-                let newUsers = chat.contacts.map((item)=>{
-                    if(item.contact.id===data){
+            chat.socket.on("user_typing", (data) => {
+                let newUsers = chat.contacts.map((item) => {
+                    if (item.contact.id === data) {
                         item.typing = true
-                        setTimeout(()=>item.typing = false,5000)
+                        setTimeout(() => item.typing = false, 5000)
                     }
-                    return item 
+                    return item
                 })
                 chat.contacts = newUsers
             })
         }
-    },[])
+    }, [])
 
     useEffect(() => {
-        if(fetching){
-            if(chat.contacts.length===0 || chat.contacts.length<totalDocsUser){
-                UserService.fetchUsers({limit:8,page:currentPageUser,user:user.user.id,search:searchUser,idorg})
-                .then((response)=>{
-                    if(response.status===200){
-                        setTotalDocsUser(response.data.totalDocs)
-                        setCurrentPageUser(prevState=>prevState + 1)
-                        chat.contacts = [...chat.contacts,...response.data.docs]
-                    }            
-                }).finally(()=>{
-                    setFetching(false)
-                })
-            }else{
+        if (fetching) {
+            if (chat.contacts.length === 0 || chat.contacts.length < totalDocsUser) {
+                UserService.fetchUsers({ limit: 8, page: currentPageUser, user: user.user.id, search: searchUser, idorg })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            setTotalDocsUser(response.data.totalDocs)
+                            setCurrentPageUser(prevState => prevState + 1)
+                            chat.contacts = [...chat.contacts, ...response.data.docs]
+                        }
+                    }).finally(() => {
+                        setFetching(false)
+                    })
+            } else {
                 setFetching(false)
             }
         }
@@ -75,76 +76,81 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
 
     useEffect(() => {
         const element = userBox.current;
-        element.addEventListener('scroll',scrollHandlerUser);
-        return function(){
-            element.removeEventListener('scroll',scrollHandlerUser);
+        element.addEventListener('scroll', scrollHandlerUser);
+        return function () {
+            element.removeEventListener('scroll', scrollHandlerUser);
         }
-    },[]);
+    }, []);
 
-    const scrollHandlerUser = (e) =>{
-        if((e.target.scrollHeight - e.target.offsetHeight)<e.target.scrollTop+1){
+    const scrollHandlerUser = (e) => {
+        if ((e.target.scrollHeight - e.target.offsetHeight) < e.target.scrollTop + 1) {
             setFetching(true)
-        }    
+        }
     }
 
-    const handleRecevier =(contact)=>{
+    const handleRecevier = (contact) => {
         setRecevier(contact)
-        chat.recevier=contact
-        if(chat.unread){
-            const index = chat.unread.findIndex(item=>item.ID===contact.id)
-            if(index!==-1){
+        chat.recevier = contact
+        if (chat.unread) {
+            const index = chat.unread.findIndex(item => item.ID === contact.id)
+            if (index !== -1) {
                 const newUnread = chat.unread;
-                newUnread[index]={ID:contact.id,count:0}
+                newUnread[index] = { ID: contact.id, count: 0 }
                 chat.setUnread(newUnread)
             }
-        }    
+        }
     }
 
-    const searchUnread =(id)=>{
+    const searchUnread = (id) => {
         let result = 0
-        chat.unread.map((item)=>{
-            if(item.ID===id){
+        chat.unread.map((item) => {
+            if (item.ID === id) {
                 result = item.count;
             }
         })
-        if (result!==0){
-        return (
-            <div className="unread">{result}</div>
-        )} else {
+        if (result !== 0) {
+            return (
+                <div className="unread">{result}</div>
+            )
+        } else {
             return (
                 <div></div>
-            )    
+            )
         }
     }
 
-    const handleUserSearch=(text)=>{
-        UserService.fetchUsers({limit:8,page:1,user:user.user.id,search:text}).
-        then((response)=>{
-            if(response.status===200){
-                setTotalDocsUser(response.data.totalDocs)
-                setCurrentPageUser(2)
-                chat.contacts = response.data.docs
-                setSearchUser(text)
-            }            
-        }).finally(
-            ()=>setFetching(false)
-        )
+    const handleUserSearch = (text) => {
+        UserService.fetchUsers({ limit: 8, page: 1, user: user.user.id, search: text }).
+            then((response) => {
+                if (response.status === 200) {
+                    setTotalDocsUser(response.data.totalDocs)
+                    setCurrentPageUser(2)
+                    chat.contacts = response.data.docs
+                    setSearchUser(text)
+                }
+            }).finally(
+                () => setFetching(false)
+            )
+    }
+
+    const loadMoreUsers = () => {
+
     }
 
     return (
         <div>
             <InputGroup className="mt-2 bottom-0 mb-3">
-                        <Form.Control 
-                            type="nameOrder" 
-                            placeholder="Поиск по имени автора или организации" 
-                            onChange={(e)=>handleUserSearch(e.target.value)}
-                        />
+                <Form.Control
+                    type="nameOrder"
+                    placeholder="Поиск по имени автора или организации"
+                    onChange={(e) => handleUserSearch(e.target.value)}
+                />
             </InputGroup>
             <div className="userBox" ref={userBox}>
-                {chat.contacts.map((item,index)=>{
-                    return(
-                        <div key={index} id="userCard" className={item.contact?.id===recevier?.id?"userCardChange userCardListUserFlex":"userCard userCardListUserFlex"} 
-                            onClick={(e)=>handleRecevier(item.contact)}>
+                {chat.contacts.map((item, index) => {
+                    return (
+                        <div key={index} id="userCard" className={item.contact?.id === recevier?.id ? "userCardChange userCardListUserFlex" : "userCard userCardListUserFlex"}
+                            onClick={(e) => handleRecevier(item.contact)}>
                             <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.contact?.logo?.filename} />
                             <div>
                                 <div>{item.contact?.name}</div>
@@ -152,19 +158,27 @@ const UserBox = observer(({recevier,setRecevier,idorg}) => {
                                 <div className="typing">{item?.typing ? 'Печатает...' : <span></span>}</div>
                             </div>
                             {searchUnread(item?.contact?.id)}
-                            {item?.statusLine ? 
-                            <div></div>
-                            :
-                            <div className="lastVisit">
-                                {item?.lastVisit!==null ? dateFormat(item?.lastVisit?.Date, "dd/mm/yyyy HH:MM:ss"):``}
-                            </div>}
-                            {item?.statusLine ? 
-                            <div className="online"></div>
-                            :
-                            <div className="offline"></div>}
+                            {item?.statusLine ?
+                                <div></div>
+                                :
+                                <div className="lastVisit">
+                                    {item?.lastVisit !== null ? dateFormat(item?.lastVisit?.Date, "dd/mm/yyyy HH:MM:ss") : ``}
+                                </div>}
+                            {item?.statusLine ?
+                                <div className="online"></div>
+                                :
+                                <div className="offline"></div>}
                         </div>)
                 })}
-                <Fountaing show={fetching}/>
+                <div id="userCard">
+                    <button
+                        className="myButtonMessage"
+                        onClick={loadMoreUsers}
+                    >
+                        ∨ Показать еще ∨
+                    </button>
+                </div>
+                <Fountaing show={fetching} />
             </div>
         </div>
     );

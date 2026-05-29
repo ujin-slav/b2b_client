@@ -14,10 +14,9 @@ import { XCircle, Search } from 'react-bootstrap-icons';
 import dateFormat, { masks } from "dateformat";
 import PriceService from '../services/PriceService'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import "../myOrdersPrice.css"
 import bin from "../icons/bin.svg";
-import {
-  FileEarmarkText
-} from 'react-bootstrap-icons';
+import cartColor from "../icons/cartColor.svg";
 
 const MyOrdersPrice = () => {
   registerLocale("ru", ru)
@@ -106,18 +105,36 @@ const MyOrdersPrice = () => {
               onChange={(e) => setSearchInn(e.target.value)}
               placeholder="Название или инн организации"
             />
-            <Button variant="outline-secondary" onClick={() => handleSearchInn()}>
+            <button
+              type="button"
+              className="btn-search position-absolute top-50 translate-middle-y"
+              style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+              onClick={() => handleSearchInn()}
+              aria-label="Поиск"
+            >
+              <Search size={20} color="#6c757d" />
+            </button>
+            {/* <Button variant="outline-secondary" onClick={() => handleSearchInn()}>
               <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-            </Button>
+            </Button> */}
           </InputGroup>
           <InputGroup className='mt-2'>
             <Form.Control
               onChange={(e) => setSearchComment(e.target.value)}
               placeholder="Комментарий к закупке"
             />
-            <Button variant="outline-secondary" onClick={() => handleSearchComment()}>
+            <button
+              type="button"
+              className="btn-search position-absolute top-50 translate-middle-y"
+              style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+              onClick={() => handleSearchComment()}
+              aria-label="Поиск"
+            >
+              <Search size={20} color="#6c757d" />
+            </button>
+            {/* <Button variant="outline-secondary" onClick={() => handleSearchComment()}>
               <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-            </Button>
+            </Button> */}
           </InputGroup>
         </Row>
         <Row>
@@ -130,15 +147,12 @@ const MyOrdersPrice = () => {
                 name="StartDateOffers"
                 className='form-control datePicker'
                 dateFormat="dd.MM.yyyy"
-                onChange={date => setStartDate(date)}
+                onChange={
+                  (date) => {
+                    setStartDate(date)
+                    handleClickDate()
+                  }}
               />
-              <Button
-                variant="outline-secondary"
-                className='buttonSearchDataPicker'
-                onClick={() => handleClickDate()}
-              >
-                <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-              </Button>
             </InputGroup>
             <InputGroup>
               <DatePicker
@@ -147,15 +161,12 @@ const MyOrdersPrice = () => {
                 name="EndDateOffers"
                 className='form-control datePicker'
                 dateFormat="dd.MM.yyyy"
-                onChange={date => setEndDate(date)}
+                onChange={
+                  (date) => {
+                    setEndDate(date)
+                    handleClickDate()
+                  }}
               />
-              <Button
-                variant="outline-secondary"
-                className='buttonSearchDataPicker'
-                onClick={() => handleClickDate()}
-              >
-                <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-              </Button>
             </InputGroup>
             <div className='captionMenuSelect'>Показать:</div>
             <Form.Control
@@ -174,12 +185,12 @@ const MyOrdersPrice = () => {
       </Form>
       {!loading ?
         <div>
-          <div className='parentSpecAsk'>
+          <div className='parentMyOrdersPrice'>
             {askPriceUser?.map((item, index) =>
               <div key={index}
-                className='childSpecAsk'
+                className='childMyOrdersPrice'
               >
-                <div>
+                {/* <div>
                   <img
                     className="awesomeIcon binIcon"
                     src={bin}
@@ -189,52 +200,77 @@ const MyOrdersPrice = () => {
                       setDeleteId(item._id)
                     }}
                   />
-                </div>
+                </div> */}
                 <div
-                  className='priceOrderWrapper'
-                  onClick={() => item?.Sent ?
-                    history.push(CARDPRICEASK + '/' + item._id)
-                    :
-                    history.push(MODIFYPRICEASK + '/' + item._id)
+                  className="price-ask-card"
+                  onClick={() => item?.Sent
+                    ? history.push(CARDPRICEASK + '/' + item._id)
+                    : history.push(MODIFYPRICEASK + '/' + item._id)
                   }
                 >
-                  <FileEarmarkText className='earmarTextGrayCenter' />
-                </div>
-                <div>
-                  <span className="specCloudy">№ </span>
-                  <span>{dateFormat(item?.Date, "ddmmyyyyHHMMss")}</span>
-                </div>
-                <div>
-                  <span className="specCloudy">От </span>
-                  <span>{dateFormat(item?.Date, "dd/mm/yyyy HH:MM:ss")}</span>
-                </div>
-                <div><span className="specCloudy">Получатель: </span>
-                  {item?.To?.name} {item?.To?.nameOrg}
-                </div>
-                <div><span className="specCloudy">Стоимость: </span>{item?.Sum}</div>
-                <div></div>
-                <div><span className="specCloudy">Отправлен: </span>{item?.Sent ?
-                  <span style={{ "color": "green" }}>
-                    Да
-                  </span>
-                  :
-                  <span style={{ "color": "red" }}>
-                    Нет</span>
-                }</div>
-                {item?.Sent ?
-                  <div><span className="specCloudy">Статус: </span>{item?.Status?.Status?.labelRu}</div>
-                  :
-                  <div></div>
-                }
-                <div>
-                  <span className="specCloudy">Комментарий к закупке: </span>
-                  {item?.Comment?.length > 50 ?
-                    `${item?.Comment?.substring(0, 50)}...`
-                    :
-                    item?.Comment
-                  }
-                </div>
-                <div>
+                  <div className="price-ask-card__header">
+                    <div className="price-ask-card__icon">
+                      <img
+                        src={cartColor}
+                      />
+                    </div>
+                    <div className="price-ask-card__amount">
+                      {item?.Sum} ₽
+                    </div>
+                  </div>
+
+                  <div className="price-ask-card__body">
+
+                    <div className="price-ask-card__left">
+                      <div className="price-ask-card__number">
+                        № {dateFormat(item?.Date, "ddmmyyyyHHMMss")}
+                      </div>
+                      <div className="price-ask-card__date">
+                        {dateFormat(item?.Date, "dd.MM.yyyy HH:mm")}
+                      </div>
+                    </div>
+                    
+                    <div className="price-ask-card__row">
+                      <span className="specCloudy">Получатель:</span>
+                      <span>{item?.To?.name} {item?.To?.nameOrg || ""}</span>
+                    </div>
+
+                    <div className="price-ask-card__row">
+                      <span className="specCloudy">Отправлен:</span>
+                      <span style={{ color: item?.Sent ? "#10b981" : "#ef4444" }}>
+                        {item?.Sent ? "Да" : "Нет"}
+                      </span>
+                    </div>
+
+                    {item?.Sent && (
+                      <div className="price-ask-card__row">
+                        <span className="specCloudy">Статус:</span>
+                        <span>{item?.Status?.Status?.labelRu || "—"}</span>
+                      </div>
+                    )}
+
+                    <div className="price-ask-card__row">
+                      <span className="specCloudy">Комментарий:</span>
+                      <span>
+                        {item?.Comment?.length > 60
+                          ? `${item.Comment.substring(0, 60)}…`
+                          : item?.Comment || "—"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="price-ask-card__footer">
+                    <button
+                      className="myButtonMessage price-delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalActive(true);
+                        setDeleteId(item._id);
+                      }}
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

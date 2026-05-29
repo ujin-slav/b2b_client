@@ -1,65 +1,66 @@
-import {React,useContext,useEffect,useState,useRef} from 'react';
-import {Card, Form, InputGroup,Button,Row} from "react-bootstrap";
-import {observer} from "mobx-react-lite";
+import { React, useContext, useEffect, useState, useRef } from 'react';
+import { Card, Form, InputGroup, Button, Row } from "react-bootstrap";
+import { observer } from "mobx-react-lite";
 import SpecOfferService from '../services/SpecOfferService'
-import {useHistory} from 'react-router-dom';
-import {Context} from "../index";
+import { useHistory } from 'react-router-dom';
+import { Context } from "../index";
 import dateFormat from "dateformat";
-import {Search} from 'react-bootstrap-icons';
+import { Search } from 'react-bootstrap-icons';
 import DatePicker, { registerLocale } from 'react-datepicker'
-import {getCategoryName} from '../utils/Convert'
+import { getCategoryName } from '../utils/Convert'
 import { regionNodes } from '../config/Region';
 import CardSpecOffer from '../pages/CardSpecOffer';
-import { CARDSPECOFFER,CREATESPECOFFER, MODIFYSPECOFFER } from '../utils/routes';
+import { CARDSPECOFFER, CREATESPECOFFER, MODIFYSPECOFFER } from '../utils/routes';
 import ReactPaginate from "react-paginate";
-import { PlusCircleFill,XCircle,Pen} from 'react-bootstrap-icons';
+import { PlusCircleFill, XCircle, Pen } from 'react-bootstrap-icons';
 import ModalAlert from '../components/ModalAlert';
 import bin from "../icons/bin.svg";
 import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
+import mySpecOffers from "../mySpecOffers.css"
 
 const MySpecOffers = observer(() => {
 
     const [specOffers, setSpecOffers] = useState([]);
-    const {myalert} = useContext(Context);
+    const { myalert } = useContext(Context);
     const history = useHistory();
-    const [modalActive,setModalActive] = useState(false);
-    const [deleteId,setDeleteId] = useState();
+    const [modalActive, setModalActive] = useState(false);
+    const [deleteId, setDeleteId] = useState();
     const [pageCount, setPageCount] = useState(0);
-    const {user} = useContext(Context);
-    const [search,setSearch] = useState("")
-    const [currentImg,setCurrentImg] = useState()
-    const [currentPage,setCurrentPage] = useState(1)
-    const [loading,setLoading] = useState(false)
-    const [fetching,setFetching] = useState(true)
+    const { user } = useContext(Context);
+    const [search, setSearch] = useState("")
+    const [currentImg, setCurrentImg] = useState()
+    const [currentPage, setCurrentPage] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const [fetching, setFetching] = useState(true)
     const [startDate, setStartDate] = useState(new Date(2022, 0, 1, 0, 0, 0, 0))
     const [endDate, setEndDate] = useState(new Date());
-    const [limit,setLimit] = useState(10)
+    const [limit, setLimit] = useState(10)
     const imgs = useRef([])
     const maxPhoto = 5
 
     useEffect(() => {
         setLoading(true)
         SpecOfferService.getSpecOfferUser({
-            id:user.user.id,
+            id: user.user.id,
             limit,
             search,
-            page:currentPage,
+            page: currentPage,
             startDate,
             endDate
-            }).then((data)=>{
-                    if(Array.isArray(data.docs)){
-                        data.docs.map((item)=>{
-                            item.indexFoto = 0
-                        })
-                    } 
-                    setSpecOffers(data.docs);
-                    setPageCount(data.totalPages);
-                    setCurrentPage(data.page)
+        }).then((data) => {
+            if (Array.isArray(data.docs)) {
+                data.docs.map((item) => {
+                    item.indexFoto = 0
+                })
+            }
+            setSpecOffers(data.docs);
+            setPageCount(data.totalPages);
+            setCurrentPage(data.page)
         }).finally(
-            ()=>setLoading(false)
+            () => setLoading(false)
         )
-      },[fetching]);
+    }, [fetching]);
 
     const fetchPage = async (currentPage) => {
         setCurrentPage(currentPage)
@@ -70,31 +71,31 @@ const MySpecOffers = observer(() => {
         await fetchPage(data.selected + 1);
     }
 
-    const handleSearch = () =>{
+    const handleSearch = () => {
         setCurrentPage(1)
         setFetching(!fetching)
     }
 
-    const handleClickDate = () =>{
+    const handleClickDate = () => {
         setCurrentPage(1)
         setFetching(!fetching)
     }
 
-    const handleSelect = (value) =>{
+    const handleSelect = (value) => {
         setCurrentPage(1)
         setLimit(value)
         setFetching(!fetching)
     }
 
-    const mouseMoveHandler = (e,item,index) => {
+    const mouseMoveHandler = (e, item, index) => {
         let num = 0
         let left = imgs.current[index].getBoundingClientRect().left
         let width = imgs.current[index].getBoundingClientRect().width
-        let countImage = (item.FilesPreview.length == 0 ? 
+        let countImage = (item.FilesPreview.length == 0 ?
             item.FilesPreview.length + 1 : item.FilesPreview.length)
-        if(countImage>=maxPhoto){
+        if (countImage >= maxPhoto) {
             num = Math.floor((e.clientX - left) / (width / maxPhoto))
-        }else{
+        } else {
             num = Math.floor((e.clientX - left) / (width / countImage))
         }
         item.indexFoto = num
@@ -102,75 +103,75 @@ const MySpecOffers = observer(() => {
         setSpecOffers(newSpecOffers)
     }
 
-    const mouseEnterHandler = (e,item,index) => {
+    const mouseEnterHandler = (e, item, index) => {
         setCurrentImg(index)
     }
 
-    const mouseLeaveHandler = (e,item,index) => {
+    const mouseLeaveHandler = (e, item, index) => {
         setCurrentImg(null)
     }
-  
-    const deleteSpecOffer = async () =>{
-        const result = await SpecOfferService.deleteSpecOffer({id:deleteId});
-        if (result.status===200){
-          myalert.setMessage("Успешно"); 
-          setCurrentPage(1)
-          setFetching(!fetching)
+
+    const deleteSpecOffer = async () => {
+        const result = await SpecOfferService.deleteSpecOffer({ id: deleteId });
+        if (result.status === 200) {
+            myalert.setMessage("Успешно");
+            setCurrentPage(1)
+            setFetching(!fetching)
         } else {
-          myalert.setMessage(result.data.message);
+            myalert.setMessage(result.data.message);
         }
     }
 
-    const getImg = (item,index) => {
-        return(
-            item.FilesPreview?.map((innerItem, innerIndex)=>
-            <span style={{'display':'grid'}}>
-                <MyImage 
-                className={"fotoSpec"}
-                disabled={item.indexFoto !== innerIndex ? true : false}
-                src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
-                onMouseMove={(e)=>mouseMoveHandler(e,item,index)}
-                onMouseEnter={(e)=>mouseEnterHandler(e,item,index)}
-                onMouseLeave={(e)=>mouseLeaveHandler(e,item,index)}
-                ref={el => imgs.current[index] = el} />
-                <div className="ImgSpecWrapper">
+    const getImg = (item, index) => {
+        return (
+            item.FilesPreview?.map((innerItem, innerIndex) =>
+                <span style={{ 'display': 'grid' }}>
                     <MyImage
-                    src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename} 
-                    disabled={item.indexFoto !== innerIndex ? true : false}
-                    className={"fotoSpecBack"}
-                    />
-                </div>
-            </span>
-        ))
-    } 
+                        className={"fotoSpec"}
+                        disabled={item.indexFoto !== innerIndex ? true : false}
+                        src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename}
+                        onMouseMove={(e) => mouseMoveHandler(e, item, index)}
+                        onMouseEnter={(e) => mouseEnterHandler(e, item, index)}
+                        onMouseLeave={(e) => mouseLeaveHandler(e, item, index)}
+                        ref={el => imgs.current[index] = el} />
+                    <div className="ImgSpecWrapper">
+                        <MyImage
+                            src={process.env.REACT_APP_API_URL + `getpic/` + innerItem?.filename}
+                            disabled={item.indexFoto !== innerIndex ? true : false}
+                            className={"fotoSpecBack"}
+                        />
+                    </div>
+                </span>
+            ))
+    }
 
-    const getItemSwitch = (item,index) => {
+    const getItemSwitch = (item, index) => {
         let count = item.FilesPreview?.length
-        let amount = 0 
-        if(index!==currentImg){
-            return(
+        let amount = 0
+        if (index !== currentImg) {
+            return (
                 <div class="containerFotoSwitch">
                     <div className="itemSwitchOff"></div>
                 </div>
             )
         }
-        if(count>=maxPhoto){
+        if (count >= maxPhoto) {
             amount = maxPhoto
-        }else{
+        } else {
             amount = count
         }
         return (
-            <>  
+            <>
                 <div class="containerFotoSwitch">
-                {(() => {
-                    const arr = [];
-                    for (let i = 0; i < amount; i++) {
-                        arr.push(
-                            <div className={item.indexFoto==i ? "itemSwitchOn" : "itemSwitchOff"}></div>
-                        );
-                    }
-                    return arr;
-                })()}
+                    {(() => {
+                        const arr = [];
+                        for (let i = 0; i < amount; i++) {
+                            arr.push(
+                                <div className={item.indexFoto == i ? "itemSwitchOn" : "itemSwitchOff"}></div>
+                            );
+                        }
+                        return arr;
+                    })()}
                 </div>
             </>
         )
@@ -178,21 +179,30 @@ const MySpecOffers = observer(() => {
 
     return (
         <div>
-             <Form className="searchFormMenu">
-            <Row> 
-                <InputGroup>
-                    <Form.Control
-                        onChange={(e)=>setSearch(e.target.value)}
-                        placeholder="Текст или название предложения"
-                    />
-                    <Button variant="outline-secondary" onClick={()=>handleSearch()}>
+            <Form className="searchFormMenu">
+                <Row>
+                    <InputGroup>
+                        <Form.Control
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Текст или название предложения"
+                        />
+                        <button
+                            type="button"
+                            className="btn-search position-absolute top-50 translate-middle-y"
+                            style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+                            onClick={()=>handleSearch()}
+                            aria-label="Поиск"
+                        >
+                            <Search size={20} color="#6c757d" />
+                        </button>
+                        {/* <Button variant="outline-secondary" onClick={()=>handleSearch()}>
                         <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                    </Button>
-                </InputGroup>
-            </Row>   
-            <Row>
-            <div className='inputGroupMenuSelect'>
-                    <div className='captionMenuSelect'>Период:</div>
+                    </Button> */}
+                    </InputGroup>
+                </Row>
+                <Row>
+                    <div className='inputGroupMenuSelect'>
+                        <div className='captionMenuSelect'>Период:</div>
                         <InputGroup>
                             <DatePicker
                                 locale="ru"
@@ -200,15 +210,19 @@ const MySpecOffers = observer(() => {
                                 name="StartDateOffers"
                                 className='form-control datePicker'
                                 dateFormat="dd.MM.yyyy"
-                                onChange={date=>setStartDate(date)}
+                                onChange={
+                                    (date) => {
+                                        setStartDate(date)
+                                        handleClickDate()
+                                    }}
                             />
-                            <Button 
+                            {/* <Button 
                                 variant="outline-secondary"
                                 className='buttonSearchDataPicker'
                                 onClick={()=>handleClickDate()}
                             >
                                 <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                            </Button>
+                            </Button> */}
                         </InputGroup>
                         <InputGroup>
                             <DatePicker
@@ -217,115 +231,119 @@ const MySpecOffers = observer(() => {
                                 name="EndDateOffers"
                                 className='form-control datePicker'
                                 dateFormat="dd.MM.yyyy"
-                                onChange={date=>setEndDate(date)}
+                                onChange={
+                                    (date) => {
+                                        setEndDate(date)
+                                        handleClickDate()
+                                    }}
                             />
-                            <Button 
+                            {/* <Button 
                                 variant="outline-secondary" 
                                 className='buttonSearchDataPicker'
                                 onClick={()=>handleClickDate()}
                             >
                                 <Search color="black" style={{"width": "20px", "height": "20px"}}/>
-                            </Button>
+                            </Button> */}
                         </InputGroup>
-                    <div className='captionMenuSelect'>Показать:</div>
-                    <Form.Control
-                        as="select"  
-                        value={limit}
-                        className='searchFormMenuSelect'
-                        onChange={(e)=>handleSelect(e.target.value)} 
-                    >       
+                        <div className='captionMenuSelect'>Показать:</div>
+                        <Form.Control
+                            as="select"
+                            value={limit}
+                            className='searchFormMenuSelect'
+                            onChange={(e) => handleSelect(e.target.value)}
+                        >
                             <option>10</option>
                             <option value='25'>25</option>
                             <option value='50'>50</option>
                             <option value='100'>100</option>
-                    </Form.Control>
-            </div>
-            </Row>
-        </Form>
-        <PlusCircleFill onClick={()=>history.push(CREATESPECOFFER)}  className="addSpecOffer"/>
-        <span className="createNewOfferText">Создать новое</span>
-        {!loading ? 
-            <div>
-                <div className='parentSpec'>
-                {specOffers?.map((item,index)=>{
-                return(
-                    <div className='childSpec' ref={el => imgs.current[index] = el}>
-                        {item.FilesPreview?.length == 0 || item.FilesPreview==null?
-                        <img 
-                            className="fotoSpec"
-                            src={noImage}/>
-                                :
-                            getImg(item,index)
-                        }
-                        {getItemSwitch(item,index)}
-                        <div className="specName">
-                            {item.Name}
-                        </div>
-                        <div className="specPrice">
-                            {item.Price} ₽
-                        </div>
-                        <div className="specCloudy">
-                            {getCategoryName(item.Region, regionNodes).join(", ").length>40 ?
-                            `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
-                            :
-                            getCategoryName(item.Region, regionNodes).join(", ")
-                            }
-                        </div>
-                        <div className="specCloudy">
-                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                        </div>
-                        <div>
-                            <button 
-                                className="myButtonMessage w-100"
-                                onClick={(e)=>{
-                                    e.stopPropagation()
-                                    history.push(MODIFYSPECOFFER + '/' + item._id)
-                                }}>
-                                Редактировать</button>
-                            <button 
-                            className="myButtonMessage w-100"
-                            onClick={(e)=>{
-                                e.stopPropagation();
-                                setModalActive(true);
-                                setDeleteId(item._id)
-                            }}>
-                            Удалить</button>
-                        </div>
+                        </Form.Control>
                     </div>
-                    
-                )
-                })}
-            </div>
-            {specOffers?.length!==0 ? 
-                <ReactPaginate
-                forcePage = {currentPage-1}
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination justify-content-center"}
-                pageClassName={"page-item"}
-                pageLinkClassName={"page-link"}
-                previousClassName={"page-item"}
-                previousLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
-                breakClassName={"page-item"}
-                breakLinkClassName={"page-link"}
-                activeClassName={"active"}
+                </Row>
+            </Form>
+            <PlusCircleFill onClick={() => history.push(CREATESPECOFFER)} className="addSpecOffer" />
+            <span className="createNewOfferText">Создать новое</span>
+            {!loading ?
+                <div>
+                    <div className='parentMySpecOffers'>
+                        {specOffers?.map((item, index) => {
+                            return (
+                                <div className='childMySpecOffers' ref={el => imgs.current[index] = el}>
+                                    {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
+                                        <img
+                                            className="fotoSpec"
+                                            src={noImage} />
+                                        :
+                                        getImg(item, index)
+                                    }
+                                    {getItemSwitch(item, index)}
+                                    <div className="specName">
+                                        {item.Name}
+                                    </div>
+                                    <div className="specPrice">
+                                        {item.Price} ₽
+                                    </div>
+                                    <div className="specCloudy">
+                                        {getCategoryName(item.Region, regionNodes).join(", ").length > 40 ?
+                                            `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                                            :
+                                            getCategoryName(item.Region, regionNodes).join(", ")
+                                        }
+                                    </div>
+                                    <div className="specCloudy">
+                                        {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                    </div>
+                                    <div>
+                                        <button
+                                            className="myButtonMessage w-100"
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                history.push(MODIFYSPECOFFER + '/' + item._id)
+                                            }}>
+                                            Редактировать</button>
+                                        <button
+                                            className="myButtonMessage w-100"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setModalActive(true);
+                                                setDeleteId(item._id)
+                                            }}>
+                                            Удалить</button>
+                                    </div>
+                                </div>
+
+                            )
+                        })}
+                    </div>
+                    {specOffers?.length !== 0 ?
+                        <ReactPaginate
+                            forcePage={currentPage - 1}
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            breakLabel={"..."}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination justify-content-center"}
+                            pageClassName={"page-item"}
+                            pageLinkClassName={"page-link"}
+                            previousClassName={"page-item"}
+                            previousLinkClassName={"page-link"}
+                            nextClassName={"page-item"}
+                            nextLinkClassName={"page-link"}
+                            breakClassName={"page-item"}
+                            breakLinkClassName={"page-link"}
+                            activeClassName={"active"}
                         />
-                    :
-                <div></div>}
-                <ModalAlert header="Вы действительно хотите удалить" 
-                active={modalActive} 
-                setActive={setModalActive} funRes={deleteSpecOffer}/>
-            </div> 
-        : 
-            <div class="loader">Loading...</div>
-        }
+                        :
+                        <div></div>}
+                    <ModalAlert header="Вы действительно хотите удалить"
+                        active={modalActive}
+                        setActive={setModalActive} funRes={deleteSpecOffer} />
+                </div>
+                :
+                <div class="loader">Loading...</div>
+            }
         </div>
     );
 });

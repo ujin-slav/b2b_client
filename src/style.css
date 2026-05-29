@@ -487,7 +487,7 @@ td.tdRed{
     z-index: 1;
     grid-area: 1 / 1;
     border-radius: 20px 20px 20px 20px;
-    width: 250px;
+    width: 100%;
     height: 200px;
     object-fit: contain;
   }
@@ -799,19 +799,6 @@ td.tdRed{
   }
   .caret{
     color: #282c34;
-  }
-  .parentSpecAsk {
-    display: flex;
-    flex-wrap: wrap;
-    background-color:white;
-  }
-  .childSpecAsk {
-    overflow-wrap: break-word;
-    width: 25%;
-    height: 25%;
-    padding:10px 10px 10px 10px;
-    box-sizing: border-box;
-    position: relative;
   }
   .card{
     border-radius: 20px !important;

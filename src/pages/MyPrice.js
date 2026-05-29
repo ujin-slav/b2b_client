@@ -60,7 +60,7 @@ const MyPrice = observer(() => {
           Name: ""
         }
     });
-    let limit = 9999999999999999999
+    let limit = 999999999999999999
 
     useEffect(() => {
         const options = {

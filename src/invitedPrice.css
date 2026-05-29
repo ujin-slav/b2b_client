@@ -1,3 +1,16 @@
+.parentSpecAsk {
+  display: flex;
+  flex-wrap: wrap;
+  background-color:white;
+}
+.childSpecAsk {
+  overflow-wrap: break-word;
+  width: 25%;
+  height: 25%;
+  padding:10px 10px 10px 10px;
+  box-sizing: border-box;
+  position: relative;
+}
 .order-card {
     background: white;
     border-radius: 16px;

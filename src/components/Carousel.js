@@ -10,6 +10,7 @@ import { observer } from "mobx-react-lite"
 import ReactPaginate from "react-paginate"
 import CarouselSkeleton from '../components/CarouselSkeleton'
 import MyImage from '../components/MyImage'
+import carousel from "../carousel.css"
 
 const Carousel = observer(() => {
 
@@ -82,9 +83,9 @@ const Carousel = observer(() => {
             )
         } else {
             return(
-                <div class={loading ? "parentSpec loadingBlur" : "parentSpec"}>
+                <div class={loading ? "parentCarousel loadingBlur" : "parentCarousel"}>
                         {carousel.map((item, index) =>
-                            <div key={index} class="childSpec">
+                            <div key={index} class="childCarousel">
                                 <div>
                                     <a href="javascript:void(0)" onClick={() => history.push(ORGINFO + '/' + item?._id)}>
                                         <div>{item?.nameOrg}</div>

@@ -76,6 +76,7 @@ const SpecOffersTable = observer(() => {
                 displayOnlySpecOffers,
                 page: currentPage
             }).then((data) => {
+                console.log(data)
                 if (Array.isArray(data.docs)) {
                     data.docs.map((item) => {
                         item.indexFoto = 0
@@ -361,61 +362,59 @@ const SpecOffersTable = observer(() => {
                     <div className={loading ? 'parentSpec loadingBlur' : 'parentSpec'}>
                         {displayOption == 3 && specOffers?.map((item, index) => {
                             return (
-                                <div className='childSpecWrapper'>
+                                <div
+                                    className='childSpec'
+                                    onClick={() => redirect(item)}>
                                     <div
-                                        className='childSpec'
-                                        onClick={() => redirect(item)}>
-                                        <div
-                                            className='cardWrapper'
-                                            key={index}
-                                            ref={el => imgs.current[index] = el}>
-                                            {getCardImage(item, index)}
-                                            {getItemSwitch(item, index)}
-                                        </div>
-                                        <div className='childSpecInfo'>
-                                            <div className='specInfo'>
-                                                <div className=" d-flex justify-content-between">
-                                                    <span
-                                                        className="specName"
-                                                        onClick={() => redirect(item)}>
-                                                        {item?.name?.length > 60 ?
-                                                            `${item?.name?.substring(0, 60)}...`
-                                                            :
-                                                            item?.name
-                                                        }
-                                                    </span>
-                                                </div>
-                                                <div className="specNameOrg">
-                                                    {item.nameOrg}
-                                                </div>
-                                                <div className="specCloudy">
-                                                    {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
-                                                        `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
+                                        className='cardWrapper'
+                                        key={index}
+                                        ref={el => imgs.current[index] = el}>
+                                        {getCardImage(item, index)}
+                                        {getItemSwitch(item, index)}
+                                    </div>
+                                    <div className='childSpecInfo'>
+                                        <div className='specInfo'>
+                                            <div className=" d-flex justify-content-between">
+                                                <span
+                                                    className="specName"
+                                                    onClick={() => redirect(item)}>
+                                                    {item?.name?.length > 60 ?
+                                                        `${item?.name?.substring(0, 60)}...`
                                                         :
-                                                        getCategoryName(item.region, regionNodes).join(", ")
+                                                        item?.name
                                                     }
-                                                </div>
-                                                <div className="specCloudy">
-                                                    {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
-                                                </div>
-                                                <div className="d-flex align-items-center">
-                                                    {item?.user?.logo?.filename ? (
-                                                        <img
-                                                            className="avatarSuggestion me-2"
-                                                            src={`${process.env.REACT_APP_API_URL}getlogo/${item?.user?.logo?.filename}`}
-                                                            alt={item.name || ''}
-                                                        />
-                                                    ) : null}
-                                                    <div>
-                                                        <div>{item?.user?.name?.substring(0, 100)}</div>
-                                                        <div className="text-muted small">{item.nameOrg?.substring(0, 100)}</div>
-                                                    </div>
+                                                </span>
+                                            </div>
+                                            <div className="specNameOrg">
+                                                {item.nameOrg}
+                                            </div>
+                                            <div className="specCloudy">
+                                                {getCategoryName(item.region, regionNodes).join(", ").length > 40 ?
+                                                    `${getCategoryName(item.region, regionNodes).join(", ").substring(0, 40)}...`
+                                                    :
+                                                    getCategoryName(item.region, regionNodes).join(", ")
+                                                }
+                                            </div>
+                                            <div className="specCloudy">
+                                                {dateFormat(item.date, "dd/mm/yyyy HH:MM:ss")}
+                                            </div>
+                                            <div className="d-flex align-items-center">
+                                                {item?.user?.logo?.filename ? (
+                                                    <img
+                                                        className="avatarSuggestion me-2"
+                                                        src={`${process.env.REACT_APP_API_URL}getlogo/${item?.user?.logo?.filename}`}
+                                                        alt={item.name || ''}
+                                                    />
+                                                ) : null}
+                                                <div>
+                                                    <div>{item?.user?.name?.substring(0, 100)}</div>
+                                                    <div className="text-muted small">{item.nameOrg?.substring(0, 100)}</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="specPrice">
-                                            {item.price} ₽
-                                        </div>
+                                    </div>
+                                    <div className="specPrice">
+                                        {item.price} ₽
                                     </div>
                                 </div>
                             )

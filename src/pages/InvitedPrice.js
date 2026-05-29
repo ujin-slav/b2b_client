@@ -16,7 +16,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import {
   Calendar3
 } from 'react-bootstrap-icons';
-import '../orderCard.css'
+import '../invitedPrice.css'
 import cartColor from "../icons/cartColor.svg";
 
 const InvitedPriceAsk = observer(() => {
@@ -102,9 +102,18 @@ const InvitedPriceAsk = observer(() => {
               onChange={(e) => setSearchInn(e.target.value)}
               placeholder="Название или инн организации"
             />
-            <Button variant="outline-secondary" onClick={() => handleSearchInn()}>
+            <button
+              type="button"
+              className="btn-search position-absolute top-50 translate-middle-y"
+              style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
+              onClick={() => handleSearchInn()}
+              aria-label="Поиск"
+            >
+              <Search size={20} color="#6c757d" />
+            </button>
+            {/* <Button variant="outline-secondary" onClick={() => handleSearchInn()}>
               <Search color="black" style={{ "width": "20px", "height": "20px" }} />
-            </Button>
+            </Button> */}
           </InputGroup>
         </Row>
         <Row>
@@ -178,7 +187,7 @@ const InvitedPriceAsk = observer(() => {
                 >
                   <div className="order-card__header">
                     <div className="order-card__icon">
-                    <img src={cartColor} />
+                      <img src={cartColor} />
                     </div>
 
                     <div className="order-card__amount text-right">
@@ -198,7 +207,7 @@ const InvitedPriceAsk = observer(() => {
                     </div>
 
                     <div className="order-card__date text-muted small mt-1">
-                      <Calendar3 size={20}/>
+                      <Calendar3 size={20} />
                       <span className='mx-2'>
                         {dateFormat(item?.Date, "dd.MM.yyyy HH:mm:ss")}
                       </span>
