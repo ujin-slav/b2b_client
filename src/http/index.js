@@ -1,7 +1,7 @@
 import axios from 'axios';
 import SocketStore from '../store/SocketStore';
 
-export const API_URL = `http://85.93.42.213:5000/api`;
+export const API_URL = process.env.REACT_APP_API_URL;
 
 //Проверять связь с сервером
 const socketStore = new SocketStore()
