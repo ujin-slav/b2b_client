@@ -358,7 +358,7 @@ const SpecOffersTable = observer(() => {
             )
         } else {
             return (
-                <>
+                <div className="mt-2">
                     <div className={loading ? 'parentSpec loadingBlur' : 'parentSpec'}>
                         {displayOption == 3 && specOffers?.map((item, index) => {
                             return (
@@ -461,7 +461,7 @@ const SpecOffersTable = observer(() => {
                             </Table>
                         </div>
                     }
-                </>
+                </div>
             )
         }
     }

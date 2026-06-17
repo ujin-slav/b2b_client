@@ -427,7 +427,9 @@ td.tdRed{
   }
   .parentSpec {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
     cursor: pointer;
     background-color:#F5F7FA;
   }
@@ -451,10 +453,10 @@ td.tdRed{
     margin: 15px;
   }
   .childSpec{
-    display: flex;
-    margin-left: 20%; 
+    display: flex;   
     margin-top: 15px;
-    width:50%;
+    width:100%;
+    max-width: 650px;
     background-color: white;
     border-radius: 20px;
   }
@@ -1582,9 +1584,6 @@ ul.pagination.justify-content-center{
     width: 95%; 
   }
   .childSpecAsk {
-    width: 50%;
-  }
-  .childSpec {
     width: 50%;
   }
   body {

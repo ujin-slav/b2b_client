@@ -190,7 +190,7 @@ const MySpecOffers = observer(() => {
                             type="button"
                             className="btn-search position-absolute top-50 translate-middle-y"
                             style={{ right: '25px', zIndex: 5, background: 'transparent', border: 'none', padding: 0 }}
-                            onClick={()=>handleSearch()}
+                            onClick={() => handleSearch()}
                             aria-label="Поиск"
                         >
                             <Search size={20} color="#6c757d" />
@@ -268,46 +268,38 @@ const MySpecOffers = observer(() => {
                         {specOffers?.map((item, index) => {
                             return (
                                 <div className='childMySpecOffers' ref={el => imgs.current[index] = el}>
-                                    {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
-                                        <img
-                                            className="fotoSpec"
-                                            src={noImage} />
-                                        :
-                                        getImg(item, index)
-                                    }
-                                    {getItemSwitch(item, index)}
-                                    <div className="specName">
-                                        {item.Name}
-                                    </div>
-                                    <div className="specPrice">
-                                        {item.Price} ₽
-                                    </div>
-                                    <div className="specCloudy">
-                                        {getCategoryName(item.Region, regionNodes).join(", ").length > 40 ?
-                                            `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 40)}...`
+                                    <div className="spec-card">
+                                        {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
+                                            <img
+                                                className="fotoSpec"
+                                                src={noImage} />
                                             :
-                                            getCategoryName(item.Region, regionNodes).join(", ")
+                                            getImg(item, index)
                                         }
-                                    </div>
-                                    <div className="specCloudy">
-                                        {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                                    </div>
-                                    <div>
-                                        <button
-                                            className="myButtonMessage w-100"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                history.push(MODIFYSPECOFFER + '/' + item._id)
-                                            }}>
-                                            Редактировать</button>
-                                        <button
-                                            className="myButtonMessage w-100"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setModalActive(true);
-                                                setDeleteId(item._id)
-                                            }}>
-                                            Удалить</button>
+                                        {getItemSwitch(item, index)}
+                                        <div className="specName">
+                                            {item.Name}
+                                        </div>
+                                        <div className="specCloudy">
+                                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                        </div>
+                                        <div>
+                                            <button
+                                                className="myButtonMessage w-100"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    history.push(MODIFYSPECOFFER + '/' + item._id)
+                                                }}>
+                                                Редактировать</button>
+                                            <button
+                                                className="myButtonMessage w-100"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setModalActive(true);
+                                                    setDeleteId(item._id)
+                                                }}>
+                                                Удалить</button>
+                                        </div>
                                     </div>
                                 </div>
 

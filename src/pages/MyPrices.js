@@ -167,50 +167,52 @@ const MyPrices = observer(() => {
                 <div>
                     <div className='parentPrices'>
                         {prices?.map((item) => (
-                            <div
-                                key={item._id}
-                                onClick={() => history.push(MYPRICE + '/' + item._id)}
-                                className="price-card"
-                            >
-                                <div className="price-card__header">
-                                    <div className="price-card__icon">
-                                        <img src={excel} alt="Excel" className="price-card__excel-icon" />
-                                    </div>
-                                    <div className="price-card__info">
-                                        <div className="price-card__name">{item.Name}</div>
-                                        <div className="price-card__org">{item.NameOrg}</div>
-                                    </div>
-                                </div>
-
-                                <div className="price-card__body">
-                                    <div className="price-row">
-                                        <span className="price-label">Регион(ы):</span>
-                                        <span className="price-value">
-                                            {getCategoryName(item.Region, regionNodes).join(", ").length > 60
-                                                ? `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 60)}…`
-                                                : getCategoryName(item.Region, regionNodes).join(", ")}
-                                        </span>
+                            <div className="childMyPrices">
+                                <div
+                                    key={item._id}
+                                    onClick={() => history.push(MYPRICE + '/' + item._id)}
+                                    className="price-card"
+                                >
+                                    <div className="price-card__header">
+                                        <div className="price-card__icon">
+                                            <img src={excel} alt="Excel" className="price-card__excel-icon" />
+                                        </div>
+                                        <div className="price-card__info">
+                                            <div className="price-card__name">{item.Name}</div>
+                                            <div className="price-card__org">{item.NameOrg}</div>
+                                        </div>
                                     </div>
 
-                                    <div className="price-row">
-                                        <span className="price-label">Загружен:</span>
-                                        <span className="price-value price-date">
-                                            {dateFormat(item.Date, "dd.MM.yyyy HH:mm")}
-                                        </span>
-                                    </div>
-                                </div>
+                                    <div className="price-card__body">
+                                        <div className="price-row">
+                                            <span className="price-label">Регион(ы):</span>
+                                            <span className="price-value">
+                                                {getCategoryName(item.Region, regionNodes).join(", ").length > 60
+                                                    ? `${getCategoryName(item.Region, regionNodes).join(", ").substring(0, 60)}…`
+                                                    : getCategoryName(item.Region, regionNodes).join(", ")}
+                                            </span>
+                                        </div>
 
-                                <div className="price-card__footer">
-                                    <button
-                                        className="myButtonMessage price-delete-btn"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setModalActive(true);
-                                            setDeleteId(item._id);
-                                        }}
-                                    >
-                                        Удалить
-                                    </button>
+                                        <div className="price-row">
+                                            <span className="price-label">Загружен:</span>
+                                            <span className="price-value price-date">
+                                                {dateFormat(item.Date, "dd.MM.yyyy HH:mm")}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="price-card__footer">
+                                        <button
+                                            className="myButtonMessage price-delete-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setModalActive(true);
+                                                setDeleteId(item._id);
+                                            }}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
