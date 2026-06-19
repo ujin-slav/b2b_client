@@ -7,8 +7,7 @@
 
 .childMySpecOffers {
     overflow-wrap: break-word;
-    width: 20%;
-    height: 20%;
+    width: 50%;
     padding: 10px 10px 10px 10px;
     box-sizing: border-box;
     position: relative;
@@ -17,13 +16,39 @@
 .spec-card {
     background: white;
     border-radius: 16px;
-    border: 1px solid #e5e7eb;
     padding: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
+    border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
+    overflow-wrap: anywhere;
+  }
+
+.spec-card-image {
+    display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 2px;
+    flex-shrink: 0;
+    width: 250px;
   }
   
+  .spec-card-discription {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .spec-card-buttons{
+    margin-top: auto; 
+    display: flex;
+    flex-direction: column; 
+    gap: 8px;
+  }
+  @media (max-width: 980px) {
+    .childMySpecOffers 
+    {
+      width: 100%;
+    }
+  }

@@ -5,9 +5,7 @@ import { Table, Col, Container, Row, Card } from "react-bootstrap";
 import ModalCT from '../components/ModalCT';
 import MessageBox from '../components/MessageBox'
 import { Context } from "../index";
-import UserSpecOfferTable from "../components/UserSpecOfferTable";
-import UserAsk from "../components/UserAsk";
-import UserPrice from '../components/UserPrice';
+import noImage from "../icons/noImage.svg";
 import ReviewOrgItems from '../components/ReviewOrgItems';
 import '../fontawesome.css';
 import { CREATEPRICEASK, CREATEPRICEASKFIZ } from '../utils/routes';
@@ -27,6 +25,7 @@ const OrgInfo = () => {
     const [showSlider, setShowSlider] = useState(false)
     const [modalActiveMessage, setModalActiveMessage] = useState(false)
     const [modalAMC, setModalAMC] = useState(false)
+    const [hasErrorMyImage, setHasErrorMyImage] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
@@ -50,18 +49,24 @@ const OrgInfo = () => {
     }, []);
 
     const logo = () => {
+        if(hasErrorMyImage){
+            return  <img className={"fotoSpec"} src={noImage}/>
+        }
         if (file.length !== 0) {
             return (
                 <span style={{ 'display': 'grid' }}>
                     <MyImage
                         className={"fotoSpec"}
                         disabled={false}
-                        src={URL.createObjectURL(file)} />
+                        src={URL.createObjectURL(file)} 
+                        onError={() => setHasErrorMyImage(true)}
+                        />
                     <div className="ImgSpecWrapper">
                         <MyImage
                             src={URL.createObjectURL(file)}
                             disabled={false}
                             className={"fotoSpecBack"}
+                            onError={() => setHasErrorMyImage(true)}
                         />
                     </div>
                 </span>

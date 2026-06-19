@@ -11,7 +11,10 @@ const MyImage = (props) => {
 
   const setErrorTrue = useCallback(() => {
     setError(true)
-  }, [])
+    if (props.onError) {
+        props.onError() // Сообщаем родителю об ошибке
+    }
+  }, [props.onError])
 
   useEffect(() => {
     const img = new Image()

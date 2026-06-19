@@ -110,3 +110,9 @@
   color: #9ca3af;
   flex-shrink: 0;
 }
+
+@media (max-width: 650px) {
+  .childMyOrdersPrice {
+    width: 50%;
+  }
+}

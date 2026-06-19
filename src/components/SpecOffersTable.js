@@ -26,7 +26,6 @@ import {
     Toggle2On,
     Toggle2Off
 } from 'react-bootstrap-icons';
-import MyImage from '../components/MyImage'
 import noImage from "../icons/noImage.svg";
 import table from "../icons/table.svg"
 import tableList from "../icons/table-list.svg"
@@ -378,8 +377,8 @@ const SpecOffersTable = observer(() => {
                                                 <span
                                                     className="specName"
                                                     onClick={() => redirect(item)}>
-                                                    {item?.name?.length > 60 ?
-                                                        `${item?.name?.substring(0, 60)}...`
+                                                    {item?.name?.length > 150 ?
+                                                        `${item?.name?.substring(0, 150)}...`
                                                         :
                                                         item?.name
                                                     }

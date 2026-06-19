@@ -124,3 +124,8 @@
 .price-card .specCloudy {
   color: #6b7280;
 }
+@media (max-width: 650px) {
+  .childMyPrices {
+    width: 50%;
+  }
+}

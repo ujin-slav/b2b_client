@@ -1,109 +1,117 @@
 .parentInvitedPriceFiz {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: white;
 }
 
 .childInvitedPriceFiz {
-    overflow-wrap: break-word;
-    width: 25%;
-    height: 25%;
-    padding: 10px 10px 10px 10px;
-    box-sizing: border-box;
-    position: relative;
+  overflow-wrap: break-word;
+  width: 25%;
+  height: 25%;
+  padding: 10px 10px 10px 10px;
+  box-sizing: border-box;
+  position: relative;
 }
+
 .guest-order-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.guest-order-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.guest-order-card:active {
+  background: #f9fafb;
+}
+
+/* Можно сделать небольшое визуальное отличие от обычных заказов */
+.guest-order-card {
+  background: linear-gradient(to bottom, #ffffff, #fcfcfc);
+  /* или просто другой оттенок бордера/тени, если хотите явно отличать */
+  /* border-color: #dbeafe; */
+}
+
+/* Повторяем структуру из ваших карточек */
+.guest-order-card .order-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.guest-order-card .order-card__icon svg {
+  width: 32px;
+  height: 32px;
+  color: #9ca3af;
+}
+
+/* Сумма — самая заметная часть */
+.guest-order-card .order-card__amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: right;
+}
+
+/* Номер заказа моноширинным шрифтом */
+.guest-order-card .order-card__number {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+/* Имя + email / организация */
+.guest-order-card .order-card__person {
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 2px;
+}
+
+.guest-order-card .guest-email {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+/* Дата */
+.guest-order-card .order-card__date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/* Контейнер для содержимого (компенсация padding'а карточки) */
+.guest-order-card .order-card__body {
+  margin: 0 -16px -16px -16px;
+  padding: 12px 16px 16px 16px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  background: #f8fafc;
+  /* лёгкий фон для отличия */
+}
+
+/* Статус (если показывается) */
+.guest-order-card .order-card__status {
+  margin-top: 8px;
+  font-size: 0.875rem;
+}
+
+.guest-order-card .statusLabel {
+  /* ваши существующие стили для statusLabel */
+}
+
+@media (max-width: 650px) {
+  .childInvitedPriceFiz {
+    width: 50%;
   }
-  
-  .guest-order-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-color: #d1d5db;
-  }
-  
-  .guest-order-card:active {
-    background: #f9fafb;
-  }
-  
-  /* Можно сделать небольшое визуальное отличие от обычных заказов */
-  .guest-order-card {
-    background: linear-gradient(to bottom, #ffffff, #fcfcfc);
-    /* или просто другой оттенок бордера/тени, если хотите явно отличать */
-    /* border-color: #dbeafe; */
-  }
-  
-  /* Повторяем структуру из ваших карточек */
-  .guest-order-card .order-card__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
-  
-  .guest-order-card .order-card__icon svg {
-    width: 32px;
-    height: 32px;
-    color: #9ca3af;
-  }
-  
-  /* Сумма — самая заметная часть */
-  .guest-order-card .order-card__amount {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #111827;
-    text-align: right;
-  }
-  
-  /* Номер заказа моноширинным шрифтом */
-  .guest-order-card .order-card__number {
-    font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 4px;
-  }
-  
-  /* Имя + email / организация */
-  .guest-order-card .order-card__person {
-    font-weight: 500;
-    color: #1f2937;
-    margin-bottom: 2px;
-  }
-  
-  .guest-order-card .guest-email {
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-weight: normal;
-  }
-  
-  /* Дата */
-  .guest-order-card .order-card__date {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 4px;
-    margin-bottom: 8px;
-  }
-  
-  /* Контейнер для содержимого (компенсация padding'а карточки) */
-  .guest-order-card .order-card__body {
-    margin: 0 -16px -16px -16px;
-    padding: 12px 16px 16px 16px;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    background: #f8fafc;          /* лёгкий фон для отличия */
-  }
-  
-  /* Статус (если показывается) */
-  .guest-order-card .order-card__status {
-    margin-top: 8px;
-    font-size: 0.875rem;
-  }
-  
-  .guest-order-card .statusLabel {
-    /* ваши существующие стили для statusLabel */
-  }
+}

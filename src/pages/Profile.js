@@ -2,12 +2,7 @@ import { React, useEffect, useContext, useState, useRef, useMemo } from 'react';
 import { Card, Table, Col, Container, Row, Lable, Form, Button, InputGroup } from "react-bootstrap";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
-import RegionTree from '../components/RegionTree';
-import CategoryTree from '../components/CategoryTree';
-import ModalCT from '../components/ModalCT';
-import { getCategoryName } from '../utils/Convert'
-import { regionNodes } from '../config/Region';
-import { categoryNodes } from '../config/Category';
+import noImage from "../icons/noImage.svg";
 import AuthService from "../services/AuthService";
 import MyImage from '../components/MyImage'
 import bin from "../icons/bin.svg";
@@ -46,6 +41,7 @@ const Profile = observer(() => {
   const { myalert } = useContext(Context);
   const [file, setFile] = useState()
   const [deletedLogo, setDeletedLogo] = useState(false)
+  const [hasErrorMyImage, setHasErrorMyImage] = useState(false)
 
   const [sortedList, setSortedList] = useState([])
   const [deletedList, setDeletedList] = useState([])
@@ -74,7 +70,7 @@ const Profile = observer(() => {
     let nullValid = profile.nullValid
     let formErrors = profile.formErrors
 
-    setProfile({ data, nullValid,formErrors });
+    setProfile({ data, nullValid, formErrors });
     if (user.user.logo) {
       fetch(process.env.REACT_APP_API_URL + `getlogo/` + user.user.logo?.filename)
         .then(res => res.blob())
@@ -213,7 +209,7 @@ const Profile = observer(() => {
       myalert.setMessage(resultAlbum.data.message);
     }
 
-    if(result.status === 200 && resultAlbum.status === 200){
+    if (result.status === 200 && resultAlbum.status === 200) {
       myalert.setMessage("Данные успешно сохранены");
     }
   }
@@ -248,18 +244,24 @@ const Profile = observer(() => {
   };
 
   const logo = () => {
+    if (hasErrorMyImage) {
+      return <img className={"fotoSpec"} src={noImage} />
+    }
     if (file) {
       return (
         <span style={{ 'display': 'grid' }}>
           <MyImage
             className={"fotoSpec"}
             disabled={false}
-            src={file.file} />
+            src={file.file}
+            onError={() => setHasErrorMyImage(true)}
+          />
           <div className="ImgSpecWrapper">
             <MyImage
               src={file.file}
               disabled={false}
               className={"fotoSpecBack"}
+              onError={() => setHasErrorMyImage(true)}
             />
           </div>
         </span>

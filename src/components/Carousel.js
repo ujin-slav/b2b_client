@@ -9,7 +9,7 @@ import { Context } from "../index";
 import { observer } from "mobx-react-lite"
 import ReactPaginate from "react-paginate"
 import CarouselSkeleton from '../components/CarouselSkeleton'
-import MyImage from '../components/MyImage'
+import MyImageBackBlur from '../components/MyImageBackBlur'
 import carousel from "../carousel.css"
 
 const Carousel = observer(() => {
@@ -92,19 +92,7 @@ const Carousel = observer(() => {
                                         <div>{item?.name}</div>
                                     </a>
                                 </div>
-                                <span className="mt-2 mb-3" style={{ 'display': 'grid' }}>
-                                    <MyImage
-                                        className={"fotoSpec"}
-                                        disabled={false}
-                                        src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename} />
-                                    <div className="ImgSpecWrapper">
-                                        <MyImage
-                                            src={process.env.REACT_APP_API_URL + `getlogo/` + item?.logo?.filename}
-                                            disabled={false}
-                                            className={"fotoSpecBack"}
-                                        />
-                                    </div>
-                                </span>
+                                <MyImageBackBlur src={item?.logo?.filename}/>
                                 {item.contrIs === false ?
                                     <button
                                         className="myButtonMessage mt-0 w-100"

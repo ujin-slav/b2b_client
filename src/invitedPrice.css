@@ -71,3 +71,8 @@
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
+@media (max-width: 650px) {
+  .childSpecAsk {
+    width: 50%;
+  }
+}

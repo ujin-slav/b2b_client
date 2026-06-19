@@ -266,39 +266,53 @@ const MySpecOffers = observer(() => {
                 <div>
                     <div className='parentMySpecOffers'>
                         {specOffers?.map((item, index) => {
+                            console.log(item)
                             return (
                                 <div className='childMySpecOffers' ref={el => imgs.current[index] = el}>
                                     <div className="spec-card">
-                                        {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
-                                            <img
-                                                className="fotoSpec"
-                                                src={noImage} />
-                                            :
-                                            getImg(item, index)
-                                        }
-                                        {getItemSwitch(item, index)}
-                                        <div className="specName">
-                                            {item.Name}
+                                        <div className="spec-card-image">
+                                            {item.FilesPreview?.length == 0 || item.FilesPreview == null ?
+                                                <img
+                                                    className="fotoSpec"
+                                                    src={noImage} />
+                                                :
+                                                getImg(item, index)
+                                            }
+                                            {getItemSwitch(item, index)}
                                         </div>
-                                        <div className="specCloudy">
-                                            {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
-                                        </div>
-                                        <div>
-                                            <button
-                                                className="myButtonMessage w-100"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    history.push(MODIFYSPECOFFER + '/' + item._id)
-                                                }}>
-                                                Редактировать</button>
-                                            <button
-                                                className="myButtonMessage w-100"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setModalActive(true);
-                                                    setDeleteId(item._id)
-                                                }}>
-                                                Удалить</button>
+                                        <div className="spec-card-discription">
+                                            <div className="specName">
+                                                {item.Name}
+                                            </div>
+                                            <div>
+                                                Описание: {item?.Text?.length > 60 ?
+                                                        `${item?.Text?.substring(0, 60)}...`
+                                                        :
+                                                        item?.Text
+                                                    }
+                                            </div>
+                                            <div className="specCloudy">
+                                                {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
+                                            </div>
+                                            <div className="spec-card-buttons">
+                                                <button
+                                                    className="myButtonMessage w-100"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        history.push(MODIFYSPECOFFER + '/' + item._id)
+                                                    }}>
+                                                    Редактировать
+                                                </button>
+                                                <button
+                                                    className="myButtonMessage w-100"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setModalActive(true);
+                                                        setDeleteId(item._id)
+                                                    }}>
+                                                    Удалить
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
