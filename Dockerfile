@@ -10,7 +10,7 @@ RUN npm i --legacy-peer-deps
 
 COPY . .
 
-RUN npm run build:win
+RUN npm run build:linux
 
 EXPOSE 3000
 
