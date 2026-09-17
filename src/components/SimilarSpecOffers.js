@@ -26,7 +26,7 @@ const SimilarSpecOffers = ({ redirect, id }) => {
 
 
     return (
-        <>Hello</>
+        <></>
     )
 
 }

@@ -408,11 +408,20 @@ td.tdRed{
     height: 200px;
   }
   .fotoContainer{
+    position: relative;
+    border-radius: 12px;
+    margin-left: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    transition: transform 0.2s ease;
     max-width: 50vw;
     max-height: 50vh;
     position: relative;
     cursor: pointer
   }
+  .fotoContainer:hover {
+    box-shadow: 0 0 15px rgb(59 130 246 / 60%);
+}
   .delButton {
     position: absolute;
     right:0;
@@ -432,6 +441,10 @@ td.tdRed{
     justify-content: center;
     cursor: pointer;
     background-color:#F5F7FA;
+  }
+  .parentAlbumSpec{
+    display: flex;
+    cursor: pointer;
   }
   .parentSpecAdvance {
     display: flex;
@@ -667,6 +680,7 @@ td.tdRed{
   .delSpecOffer{
     width: 25px; 
     height: 25px;
+    margin-right: 5px;
     color:gray;
     display: inline-block;
   }
@@ -804,9 +818,7 @@ td.tdRed{
   .caret{
     color: #282c34;
   }
-  .card{
-    border-radius: 20px !important;
-  }
+
   .parentPrice {
     display: flex;
     flex-wrap: wrap;
@@ -958,8 +970,16 @@ td.tdRed{
     height: 30px;
   }
   .reviewCard{
-    border: 1px solid #e5e7eb;
     margin-top: 5px;
+    overflow: hidden;
+    border-radius: 20px !important;
+  }
+  .reviewCard .bg-body{
+    background-color: #F7F7F7 !important;
+  }
+  .card{
+    border: 1px solid #e5e7eb !important;
+    border-radius: 20px;
   }
   .page-link{
     border-radius: 20px 20px 20px 20px !important; 

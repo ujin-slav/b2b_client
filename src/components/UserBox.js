@@ -175,7 +175,7 @@ const UserBox = observer(({ recevier, setRecevier, idorg }) => {
                         className="myButtonMessage"
                         onClick={loadMoreUsers}
                     >
-                        ∨ Показать еще ∨
+                        Показать еще
                     </button>
                 </div>
                 <Fountaing show={fetching} />

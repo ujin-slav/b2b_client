@@ -19,6 +19,7 @@ import rutube from "../icons/rutube.svg";
 import cart from "../icons/cart.svg";
 import video from "../icons/video.svg";
 import { fetchUser } from "../http/askAPI";
+import cardSpecOffer from "../cardSpecOffer.css"
 
 const CardSpecOffer = observer(() => {
     const { user } = useContext(Context);
@@ -45,8 +46,8 @@ const CardSpecOffer = observer(() => {
                 fetchUser(result.data?.specoffer?.Author).then((response) => {
                     setAuthor(response?.data)
                 })
-                if(idprice){
-                    PriceService.getPriceUnit(idprice).then((data)=>{
+                if (idprice) {
+                    PriceService.getPriceUnit(idprice).then((data) => {
                         setPriceUnit(data)
                     })
                 }
@@ -58,9 +59,45 @@ const CardSpecOffer = observer(() => {
 
     if (loading) {
         return (
-            <p className="waiting">
-                <div class="loader">Loading...</div>
-            </p>
+            <div className="spec-container skeleton-container">
+                {/* Левая колонка (на мобилке вторая) */}
+                <div className="spec-column spec-column-1">
+                    {/* Большое фото / плеер */}
+                    <div className="skeleton-main-image"></div>
+
+                    {/* Миниатюры */}
+                    <div className="parentAlbumSpec">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="skeleton-mini"></div>
+                        ))}
+                    </div>
+
+                    {/* Описание */}
+                    <div className="skeleton-title"></div>
+                    <div className="skeleton-text"></div>
+                    <div className="skeleton-text"></div>
+                    <div className="skeleton-text short"></div>
+                </div>
+
+                {/* Правая колонка (на мобилке первая) */}
+                <div className="spec-column spec-column-2">
+                    {/* Цена */}
+                    <div className="skeleton-price-box">
+                        <div className="skeleton-price"></div>
+                        <div className="skeleton-button"></div>
+                        <div className="skeleton-button"></div>
+                    </div>
+
+                    {/* Автор */}
+                    <div className="skeleton-author">
+                        <div className="skeleton-avatar"></div>
+                        <div>
+                            <div className="skeleton-line w-60"></div>
+                            <div className="skeleton-line w-80"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )
     }
 
@@ -122,10 +159,10 @@ const CardSpecOffer = observer(() => {
 
     const getThumbnailSrc = () => {
         const videoId = specOffer?.Rutube?.split('/embed/')[1]?.split('/')[0] || '';
-        return videoId 
-          ? `https://rutube.ru/api/video/${videoId}/thumbnail/?redirect=1&size=m`
-          : '';
-      };
+        return videoId
+            ? `https://rutube.ru/api/video/${videoId}/thumbnail/?redirect=1&size=m`
+            : '';
+    };
 
     if (error) {
         return (
@@ -143,67 +180,85 @@ const CardSpecOffer = observer(() => {
     }
 
     return (
-        <Container className="mx-auto my-4">
-            <Row>
-                <Col>
+        <>
+            <div className="spec-container mt-3">
+                {/* Вторая колонка (на мобилке идёт первой) */}
+                <div className="spec-column spec-column-2">
+                    {window.innerWidth > 650 && cartPrice()}
+
+                    {user.isAuth && (
+                        <button
+                            className="myButtonMessage mt-2"
+                            onClick={() => setModalActiveMessage(true)}
+                        >
+                            Написать сообщение
+                            <i className="col-2 fa fa-solid fa-paper-plane colorBlue" />
+                        </button>
+                    )}
+
+                    <div className="specContactData mt-3">
+                        <div className="author-info">
+                            <img
+                                className="avatarSuggestion"
+                                src={process.env.REACT_APP_API_URL + `getlogo/` + author?.logo?.filename}
+                                alt="avatar"
+                            />
+                            <div className="author-text">
+                                <div>{author?.name?.substring(0, 100)}</div>
+                                <div>{author?.nameOrg?.substring(0, 100)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Первая колонка */}
+                <div className="spec-column spec-column-1">
                     {returnPlayer()}
-                    <div className='parentSpec'>
-                        {specOffer?.FilesMini?.map((item, index) =>
-                            <div key={index} className='albumSpec'>
-                                <MyImage className='miniFotoSpecCard'
+
+                    <div className="parentAlbumSpec">
+                        {specOffer?.FilesMini?.map((item, index) => (
+                            <div key={index} className="albumSpec">
+                                <MyImage
+                                    className="miniFotoSpecCard"
                                     onClick={() => {
-                                        setFotoFocus(index)
-                                        setTypePlayer(0)
+                                        setFotoFocus(index);
+                                        setTypePlayer(0);
                                     }}
-                                    src={process.env.REACT_APP_API_URL + `getpic/` + item.filename} />
+                                    src={process.env.REACT_APP_API_URL + `getpic/` + item.filename}
+                                />
+                            </div>
+                        ))}
+
+                        {specOffer?.Rutube && (
+                            <div className="video-mini-wrapper">
+                                <img
+                                    className="miniFotoSpecCardSVG"
+                                    src={video}
+                                    onClick={() => { setVideoFocus(0); setTypePlayer(1); }}
+                                    alt="video"
+                                />
+                                <img
+                                    className="miniFotoSpecCard"
+                                    src={getThumbnailSrc()}
+                                    alt="thumbnail"
+                                />
                             </div>
                         )}
-                        {specOffer?.Rutube &&
-                            <div class="d-flex align-items-center position-relative" >
-                                <img
-                                    className='miniFotoSpecCardSVG position-absolute'
-                                    src={video}
-                                    onClick={() => { setVideoFocus(0); setTypePlayer(1) }}
-                                />
-                                <img className='miniFotoSpecCard' src={getThumbnailSrc()} />
-                            </div>
-                        }
                     </div>
-                    {window.innerWidth < 650 ? cartPrice() : <div></div>}
+
+                    {window.innerWidth < 650 && cartPrice()}
+
                     <div className="specContact">
                         <span>Описание</span>
                     </div>
                     <div className="specContactData">
                         <span>{specOffer?.Text}</span>
                     </div>
-                </Col>
-                <Col>
-                    {window.innerWidth > 650 ? cartPrice() : <div></div>}
-                    {user.isAuth ?
-                        <div>
-                            <button className="myButtonMessage mt-2"
-                                onClick={() => setModalActiveMessage(true)}>
-                                Написать сообщение
-                                <i className="col-2 fa fa-solid fa-paper-plane colorBlue" />
-                            </button>
-                        </div>
-                        :
-                        <div></div>
-                    }
-                    <div className="specContactData mt-3">
-                        <div className="d-flex">
-                            <img className="avatarSuggestion" src={process.env.REACT_APP_API_URL + `getlogo/` + author?.logo?.filename} />
-                            <div className="px-2">
-                                <div>{author?.name.substring(0, 100)}</div>
-                                <div>{author?.nameOrg.substring(0, 100)}</div>
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-            <SimilarSpecOffers 
-                    redirect={redirect}
-                    id={idprice}
+                </div>
+            </div>
+            <SimilarSpecOffers
+                redirect={redirect}
+                id={idprice}
             />
             <FotoSlider
                 fotoArray={specOffer?.Files}
@@ -234,7 +289,7 @@ const CardSpecOffer = observer(() => {
                     setActive={setModalActiveAskOrg} />}
                 setActive={setModalActiveAskOrg}
             />
-        </Container>
+        </>
     );
 });
 

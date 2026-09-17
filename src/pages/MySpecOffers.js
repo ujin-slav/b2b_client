@@ -286,10 +286,10 @@ const MySpecOffers = observer(() => {
                                             </div>
                                             <div>
                                                 Описание: {item?.Text?.length > 60 ?
-                                                        `${item?.Text?.substring(0, 60)}...`
-                                                        :
-                                                        item?.Text
-                                                    }
+                                                    `${item?.Text?.substring(0, 60)}...`
+                                                    :
+                                                    item?.Text
+                                                }
                                             </div>
                                             <div className="specCloudy">
                                                 {dateFormat(item.Date, "dd/mm/yyyy HH:MM:ss")}
@@ -348,7 +348,37 @@ const MySpecOffers = observer(() => {
                         setActive={setModalActive} funRes={deleteSpecOffer} />
                 </div>
                 :
-                <div class="loader">Loading...</div>
+                <div className='parentMySpecOffers'>
+                    {[...Array(6)].map((_, index) => (
+                        <div className="childInvitedPriceFiz">
+                        <div className="guest-order-card skeleton-card">
+                          <div className="order-card__header">
+                            <div className="order-card__icon">
+                              <div className="sk sk-icon" />
+                            </div>
+                            <div className="order-card__amount">
+                              <div className="sk sk-amount" />
+                            </div>
+                          </div>
+                  
+                          <div className="order-card__body">
+                            <div className="order-card__number">
+                              <div className="sk sk-number" />
+                            </div>
+                            <div className="order-card__person">
+                              <div className="sk sk-person" />
+                            </div>
+                            <div className="order-card__date">
+                              <div className="sk sk-date" />
+                            </div>
+                            <div className="order-card__status">
+                              <div className="sk sk-status" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
             }
         </div>
     );

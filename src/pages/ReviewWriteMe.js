@@ -13,6 +13,7 @@ import dateFormat, { masks } from "dateformat";
 import ReactPaginate from "react-paginate";
 import bin from "../icons/bin.svg";
 import StarsRatingShow from '../components/StarsRatingShow';
+import skeletonReview from "../skeletonReview.css"
 
 
 const ReviewWriteMe = () => {
@@ -34,6 +35,7 @@ const ReviewWriteMe = () => {
     let limit = 10
     
     useEffect(() => {
+        setLoading(true)
         ReviewOrgService.fetchReviewOrg({author:id,limit,page:currentPage,user:user.user.id}).then((response)=>{
             if(response.status===200){
                 setReview(response.data.docs)
@@ -99,11 +101,85 @@ const ReviewWriteMe = () => {
         setFetch(true)
     }
 
+    if (loading) {
+        return (
+            <div className="container-mycontr mt-3">
+                {[...Array(3)].map((_, index) => (
+                    <div key={index} className="mb-4">
+                        {/* Основная карточка отзыва */}
+                        <Card className="reviewCard">
+                            <Card.Header className="bg-body d-flex justify-content-between">
+                                <div className="d-flex">
+                                    {/* Аватар */}
+                                    <div
+                                        className="avatarChat skeleton-avatar"
+                                        style={{ backgroundColor: '#e0e0e0', borderRadius: '50%' }}
+                                    />
+                                    <div>
+                                        {/* Имя */}
+                                        <div className="skeleton-text" style={{ width: '140px', height: '18px' }} />
+                                        {/* Организация */}
+                                        <div className="skeleton-text mt-1" style={{ width: '110px', height: '16px' }} />
+                                        {/* Звёзды */}
+                                        <div className="skeleton-stars mt-1" />
+                                    </div>
+                                </div>
+
+                                <div className="d-flex align-items-center gap-2">
+                                    {/* Дата */}
+                                    <div className="skeleton-text" style={{ width: '90px', height: '16px' }} />
+                                    {/* Корзина */}
+                                    <div className="skeleton-icon" />
+                                </div>
+                            </Card.Header>
+
+                            <Card.Text className="m-3">
+                                <div className="skeleton-text" style={{ width: '100%', height: '20px' }} />
+                                <div className="skeleton-text mt-2" style={{ width: '85%', height: '20px' }} />
+                                <div className="skeleton-text mt-2" style={{ width: '60%', height: '20px' }} />
+                            </Card.Text>
+
+                            {/* Кнопка "Ответить" */}
+                            <div className="m-3">
+                                <div className="skeleton-button" style={{ width: '100px', height: '32px' }} />
+                            </div>
+                        </Card>
+
+                        {/* Ответы (иногда показываются) */}
+                        {index % 2 === 0 && (
+                            <Card className="answerReview mt-2 mb-2 reviewCard card">
+                                <Card.Header className="bg-body d-flex justify-content-between">
+                                    <div className="d-flex">
+                                        <div
+                                            className="avatarChat skeleton-avatar"
+                                            style={{ backgroundColor: '#e0e0e0', borderRadius: '50%' }}
+                                        />
+                                        <div>
+                                            <div className="skeleton-text" style={{ width: '120px', height: '18px' }} />
+                                            <div className="skeleton-text mt-1" style={{ width: '100px', height: '16px' }} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="skeleton-text" style={{ width: '85px', height: '16px' }} />
+                                    </div>
+                                </Card.Header>
+                                <Card.Text className="m-2">
+                                    <div className="skeleton-text" style={{ width: '100%', height: '20px' }} />
+                                    <div className="skeleton-text mt-2" style={{ width: '70%', height: '20px' }} />
+                                </Card.Text>
+                            </Card>
+                        )}
+                    </div>
+                ))}
+            </div>
+        )
+    }
+
     return (
         <div className='container-mycontr mt-3'>
             {review?.map((item,index)=>
                 <div key={index}>
-                    <Card className="reviewCard">
+                    <Card className="reviewCard card">
                     <Card.Header className="bg-body d-flex justify-content-between">
                     <div className="d-flex">
                         <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
@@ -141,7 +217,7 @@ const ReviewWriteMe = () => {
                     </Card>
                         {item.Answer.map((item)=>{
                             return(
-                            <Card className="answerReview border-0 mt-2 mb-5">
+                            <Card className="answerReview mt-2 mb-2 reviewCard card">
                                  <Card.Header className="bg-body d-flex justify-content-between">
                                     <div className="d-flex">
                                         <img className="avatarChat" src={process.env.REACT_APP_API_URL + `getlogo/` + item.Author?.logo?.filename} />
@@ -162,7 +238,7 @@ const ReviewWriteMe = () => {
                                         <span className="dateAnswer">{dateFormat(item.Date, "dd/mm/yyyy HH:MM")}</span>
                                     </div>
                                 </Card.Header>
-                                <Card.Text>
+                                <Card.Text className="m-2">
                                     {item.Text}
                                 </Card.Text>
                             </Card> 

@@ -15,6 +15,7 @@ import PriceService from '../services/PriceService'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import "../invitedPriceFiz.css"
 import cartColor from "../icons/cartColor.svg";
+import invitedPriceFiz from '../invitedPriceFiz.css';
 
 const InvitedPriceAskFiz = observer(() => {
   registerLocale("ru", ru)
@@ -241,7 +242,33 @@ const InvitedPriceAskFiz = observer(() => {
             setActive={setModalActive} funRes={deletePriceAsk} />
         </div>
         :
-        <div class="loader">Loading...</div>
+        <div className='parentMySpecOffers'>
+          {[...Array(6)].map((_, index) => (
+            <div className='childInvitedPriceFiz'>
+              <div className="guest-order-card">
+                <div className="order-card__header">
+                  <div className="order-card__icon">
+                    <div className="sk sk-icon" />
+                  </div>
+                  <div className="order-card__amount">
+                    <div className="sk sk-amount" />
+                  </div>
+                </div>
+                <div className="order-card__body">
+                  <div className="order-card__number">
+                    <div className="sk sk-number" />
+                  </div>
+                  <div className="order-card__person">
+                    <div className="sk sk-person" />
+                  </div>
+                  <div className="order-card__date">
+                    <div className="sk sk-date" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       }
     </div>
   );

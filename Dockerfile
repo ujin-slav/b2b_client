@@ -6,10 +6,12 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --legacy-peer-deps
+RUN npm i --legacy-peer-deps
 
 COPY . .
 
+RUN npm run build
+
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npx", "serve", "-s", "build", "-l", "3000"]

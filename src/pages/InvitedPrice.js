@@ -245,7 +245,39 @@ const InvitedPriceAsk = observer(() => {
             setActive={setModalActive} funRes={deletePriceAsk} />
         </div>
         :
-        <div class="loader">Loading...</div>
+        <div className='parentSpecAsk'>
+          {[...Array(6)].map((_, index) => (
+            <div className='childSpecAsk'>
+              <div
+                className="order-card"
+              >
+                <div className="order-card__header">
+                  <div className="order-card__icon">
+                  <div className="sk sk-icon" />
+                  </div>
+
+                  <div className="order-card__amount text-right">
+                  <div className="sk sk-amount" />
+                  </div>
+                </div>
+
+                <div className="order-card__body">
+                  <div className="order-card__number">
+                  <div className="sk sk-number" />
+                  </div>
+
+                  <div className="order-card__person">
+                  <div className="sk sk-person" />
+                  </div>
+
+                  <div className="order-card__date text-muted small mt-1">
+                  <div className="sk sk-date" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       }
     </div>
   );

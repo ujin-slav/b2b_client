@@ -47,18 +47,20 @@ const AnswerCardReviewOrg = ({ ...props }) => {
                 </ListGroup.Item>
             </ListGroup>
             {visible ?
-                <Card className="border-0">
-                    <Form.Control
-                        name="Text"
-                        placeholder="Текст сообщения"
-                        ref={inputEl}
-                        as="textarea"
-                        onChange={(e) => setTextAnswer(e.target.value)}
-                    />
-                    <button className="myButtonMessage mt-2 w-auto" onClick={(e) => handleAnswer(e)}>
+                <>
+                    <Card className="border-0 m-2">
+                        <Form.Control
+                            name="Text"
+                            placeholder="Текст сообщения"
+                            ref={inputEl}
+                            as="textarea"
+                            onChange={(e) => setTextAnswer(e.target.value)}
+                        />
+                    </Card>
+                    <button className="myButtonMessage m-2" onClick={(e) => handleAnswer(e)}>
                         Отправить
                     </button>
-                </Card>
+                </>
                 :
                 <div></div>
             }

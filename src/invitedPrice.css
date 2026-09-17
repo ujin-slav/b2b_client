@@ -76,3 +76,73 @@
     width: 50%;
   }
 }
+
+.sk {
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #e2e6ec 0%, #eef1f6 100%);
+}
+
+.sk::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: sk-shimmer 1.6s infinite;
+}
+
+@keyframes sk-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Размеры блоков — фиксированные, не в % */
+.sk-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.sk-amount {
+  width: 110px;
+  height: 28px;
+  margin-left: auto; /* цена прижата вправо */
+}
+
+.sk-number {
+  width: 140px;
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.sk-person {
+  width: 100px;
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.sk-date {
+  width: 80px;
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.sk-status {
+  width: 110px;
+  height: 14px;
+}
+
+/* Задержка анимации для эффекта волны */
+.childInvitedPriceFiz:nth-child(2n) .sk { animation-delay: 0.1s; }
+.childInvitedPriceFiz:nth-child(3n) .sk { animation-delay: 0.2s; }
+.childInvitedPriceFiz:nth-child(4n) .sk { animation-delay: 0.3s; }
+.childInvitedPriceFiz:nth-child(5n) .sk { animation-delay: 0.4s; }

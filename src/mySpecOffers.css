@@ -52,3 +52,93 @@
       width: 100%;
     }
   }
+
+  /*Skeletons*/
+
+/* Анимация мерцания */
+.skeleton-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Анимация shimmer */
+@keyframes skeletonLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-image {
+  width: 250px;
+  height: 180px;           /* подбери под свою реальную высоту */
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 12px;
+  animation: skeletonLoading 1.5s infinite linear;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 70%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: skeletonLoading 1.5s infinite linear;
+}
+
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: skeletonLoading 1.5s infinite linear;
+}
+
+.skeleton-text.short {
+  width: 45%;
+}
+
+.skeleton-date {
+  height: 14px;
+  width: 120px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: skeletonLoading 1.5s infinite linear;
+}
+
+.skeleton-button {
+  height: 40px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: skeletonLoading 1.5s infinite linear;
+}
+
+.skeleton-switch {
+  height: 32px;
+  width: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: skeletonLoading 1.5s infinite linear;
+  margin-top: 8px;
+}
+
+/* Темная тема (по желанию) */
+@media (prefers-color-scheme: dark) {
+  .skeleton-image,
+  .skeleton-title,
+  .skeleton-text,
+  .skeleton-date,
+  .skeleton-button,
+  .skeleton-switch {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  }
+}

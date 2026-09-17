@@ -1,0 +1,281 @@
+.spec-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Колонки */
+.spec-column {
+    flex: 1;
+    min-width: 320px;
+}
+
+/* Порядок на мобильных */
+@media (min-width: 651px) {
+    .spec-container {
+        flex-direction: row;
+    }
+    .spec-column-1 { order: 1; }
+    .spec-column-2 { order: 2; }
+}
+
+@media (max-width: 650px) {
+    .spec-container {
+        flex-direction: column;
+        padding: 20px 16px;
+    }
+    .spec-column-1 { order: 2; }
+    .spec-column-2 { order: 1; }
+}
+
+/* ====================== Основное фото + галерея ====================== */
+.parentAlbumSpec {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0 28px 0;
+}
+
+.albumSpec,
+.video-mini-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.albumSpec:hover,
+.video-mini-wrapper:hover {
+    transform: scale(1.04);
+}
+
+.miniFotoSpecCard {
+    width: 78px;
+    height: 78px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #f1f1f1;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.miniFotoSpecCard:hover {
+    border-color: #3b82f6;
+}
+
+/* ====================== Цена и кнопки ====================== */
+.cart-price {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+}
+
+.myButtonMessage,
+button.myButtonMessage {
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+}
+
+.myButtonMessage {
+    border-color: gray;
+    border:2px solid gray;
+    background-color: white;
+}
+
+.myButtonMessage:hover {
+    background: whitesmoke;
+    transform: translateY(-2px);
+}
+
+/* ====================== Автор ====================== */
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.avatarSuggestion {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ====================== Описание ====================== */
+.specContact {
+    margin: 28px 0 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.specContactData {
+    line-height: 1.65;
+    color: #374151;
+    font-size: 15.5px;
+}
+
+/* ====================== Шрифты ====================== */
+.spec-container,
+.spec-container * {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Заголовки можно сделать чуть жирнее */
+.spec-column h1,
+.spec-column h2 {
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+/* ====================== SKELETON ====================== */
+.skeleton-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-main-image {
+    width: 100%;
+    height: 380px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 16px;
+    animation: loading 1.5s infinite;
+    margin-bottom: 24px;
+}
+
+.skeleton-mini {
+    width: 78px;
+    height: 78px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 12px;
+    animation: loading 1.5s infinite;
+}
+
+.parentAlbumSpec .skeleton-mini {
+    margin-right: 12px;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 160px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 6px;
+    animation: loading 1.5s infinite;
+    margin: 28px 0 12px 0;
+}
+
+.skeleton-text {
+    height: 16px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: loading 1.5s infinite;
+    margin-bottom: 10px;
+}
+
+.skeleton-text.short {
+    width: 65%;
+}
+
+.skeleton-price-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.skeleton-price {
+    height: 42px;
+    width: 140px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 8px;
+    animation: loading 1.5s infinite;
+    margin-bottom: 20px;
+}
+
+.skeleton-button {
+    height: 52px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 12px;
+    animation: loading 1.5s infinite;
+    margin-bottom: 12px;
+}
+
+.skeleton-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.skeleton-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+.skeleton-line {
+    height: 18px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: loading 1.5s infinite;
+    margin-bottom: 8px;
+}
+
+.w-60 { width: 60%; }
+.w-80 { width: 80%; }
+
+/* Анимация shimmer */
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
