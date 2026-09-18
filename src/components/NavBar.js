@@ -225,7 +225,7 @@ const NavBar = observer(() => {
                         />
                     </NavLink >
                     <Nav className="me-auto">
-                        <Nav.Link onClick={() => activeLink(B2B_ROUTE)} className="generalLink">Главная_Test</Nav.Link>
+                        <Nav.Link onClick={() => activeLink(B2B_ROUTE)} className="generalLink">Главная</Nav.Link>
                         <NavDropdown title="Меню">
                             <div className="dropdown-menu-wrapper">
                                 <>
