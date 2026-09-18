@@ -56,9 +56,9 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start:win": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "start:linux": "export PORT=3000 NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build:win": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "build:linux": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "test": "react-scripts test --openssl-legacy-provider",
     "eject": "react-scripts eject --openssl-legacy-provider"
